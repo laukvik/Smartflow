@@ -40,7 +40,7 @@ function Smartflow (){
     };
 
     this._setViewVisibility = function(viewName, isVisible) {
-        document.getElementById(viewName).className = isVisible ? "application-view visible" : "application-view hidden";
+        document.getElementById(viewName).className = isVisible ? "smartflow-view smartflow-visible" : "smartflow-view smartflow-hidden";
     };
 
     this.setView = function(viewName, viewID) {
@@ -102,13 +102,33 @@ function Smartflow (){
     this._fireStateChanged = function(state, value, oldValue) {
         for (var x = 0; x < this._controllers.length; x++) {
             var ctrl = this._controllers[x];
-            ctrl.stateChanged({name: state, value: value, oldValue: oldValue});
+            if (typeof ctrl.stateChanged == "function") {
+                ctrl.stateChanged({name: state, value: value, oldValue: oldValue});
+            }
         }
+    };
+
+    this._getBindingElement = function(state){
+        var attributeName = 'data-smartflow-state="'+ state + '"';
+        return document.querySelector("[" + attributeName + "]");
     };
 
     this.setState = function(state, value){
         var oldValue = this._states[state];
         this._states[state] = value;
+        var el = this._getBindingElement(state);
+        if (el.tagName == "INPUT"){
+            if (value.constructor == String){
+                el.setAttribute("value", value);
+            } else if (value.constructor == Object){
+                var arr = Object.getOwnPropertyNames(value);
+                for (var x=0; x<arr.length; x++){
+                    var propName = arr[x];
+                    var propValue = value[ propName ];
+                    el.setAttribute(propName, propValue);
+                }
+            }
+        }
         this._fireStateChanged(state, value, oldValue);
     };
 
@@ -141,6 +161,7 @@ function Smartflow (){
                 ctrl.viewInitialized(this);
             }
         }
+        this._controllers[0].viewEnabled(this);
     };
 }
 
