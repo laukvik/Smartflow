@@ -2,8 +2,8 @@ function LoginController(){
     this.viewInitialized = function(){
         console.info("LoginController.viewInitialized()");
     };
-    this.stateChanged = function(){
-        console.info("LoginController.stateChanged()");
+    this.stateChanged = function(application){
+        console.info("LoginController.stateChanged: ", application);
     };
 
     this.viewEnabled = function(application) {

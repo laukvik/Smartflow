@@ -118,7 +118,9 @@ function Smartflow (){
         this._states[state] = value;
         var el = this._getBindingElement(state);
         if (el.tagName == "INPUT"){
-            if (value.constructor == String){
+            if (!value){
+
+            } else if (value.constructor == String){
                 el.setAttribute("value", value);
             } else if (value.constructor == Object){
                 var arr = Object.getOwnPropertyNames(value);
@@ -161,8 +163,29 @@ function Smartflow (){
                 ctrl.viewInitialized(this);
             }
         }
+        this._attachListeners();
         this._controllers[0].viewEnabled(this);
     };
+    this._attachListeners = function(){
+        var arr = document.querySelectorAll("[data-smartflow-state]");
+        var self = this;
+        for (var x=0; x<arr.length; x++){
+            var el = arr[ x ];
+            var stateName = el.getAttribute("data-smartflow-state");
+            if (el.tagName == "INPUT" && el.getAttribute("type") == "text"){
+                el.addEventListener("keypress", function(){
+                    //self.setState(stateName, this.getAttribute("value"));
+                    console.info("Keypress", this);
+                });
+            } else if (el.tagName == "INPUT" && el.getAttribute("type") == "button"){
+                el.addEventListener("click", function(){
+                    //self.setState(stateName, this.getAttribute("value"));
+                    console.info("Clicked", this);
+                });
+            }
+
+        }
+    }
 }
 
 function ActionList(){
