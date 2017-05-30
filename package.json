@@ -1,0 +1,24 @@
+{
+  "name": "smartflow",
+  "version": "0.1.1-alpha",
+  "description": "JavaScript API for controlling application flow.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/laukvik/Smartflow.git"
+  },
+  "keywords": [
+    "flow",
+    "javascript",
+    "application"
+  ],
+  "author": "Morten Laukvik",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/laukvik/Smartflow/issues"
+  },
+  "homepage": "https://github.com/laukvik/Smartflow#readme"
+}
