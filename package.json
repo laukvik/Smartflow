@@ -20,5 +20,8 @@
   "bugs": {
     "url": "https://github.com/laukvik/Smartflow/issues"
   },
-  "homepage": "https://github.com/laukvik/Smartflow#readme"
+  "homepage": "https://github.com/laukvik/Smartflow#readme",
+  "dependencies": {
+    "bootstrap": "^3.3.7"
+  }
 }
