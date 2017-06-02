@@ -1,8 +1,12 @@
+body{
+    background-color: #aaaaaa;
+}
+
 .smartflow-view{
 }
 
 .smartflow-hidden{
-    display: none;
+    //display: none;
 }
 
 .smartflow-visible{
