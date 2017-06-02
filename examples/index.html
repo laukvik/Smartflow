@@ -6,14 +6,13 @@
     <link rel="stylesheet" href="../node_modules/bootstrap/dist/css/bootstrap.css">
     <link rel="stylesheet" href="../src/smartflow.css">
     <script src="../src/smartflow.js"></script>
-    <script src="email.js"></script>
 </head>
-<body onload="app.startApplication()">
+<body>
 
 
 <div class="container">
 
-    <div id="login" class="smartflow-view smartflow-visible">
+    <div id="LoginView" class="smartflow-view">
         <div class="row">
             <div class="col-md-3"></div>
             <div class="col-md-6">
@@ -58,7 +57,7 @@
         </div>
     </div>
 
-    <div id="logout" class="smartflow-view smartflow-hidden">
+    <div id="LogoutView" class="smartflow-view">
         <div class="row">
             <div class="col-md-3"></div>
             <div class="col-md-6">
@@ -78,169 +77,304 @@
             </div>
             <div class="col-md-3"></div>
         </div>
+    </div>
 
-        <div id="mailbox" class="smartflow-view smartflow-hidden">
-            <div class="row">
-                <div class="col-md-12 col-lg-12">
+    <div id="InboxView" class="smartflow-view">
+        <div class="row">
+            <div class="col-md-12 col-lg-12">
 
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        Smartflow
+                        <button type="button" class="close pull-right" aria-label="Close"
+                                data-smartflow-state="mailboxLogoutButton"><span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="panel-body">
+
+                        <div class="row">
+                            <div class="col-md-3">
+
+                                <ul class="list-group">
+                                    <li class="list-group-item">
+                                        <span class="glyphicon glyphicon-inbox" aria-hidden="true"></span>
+                                        <span class="badge" data-smartflow-state="mailboxFolderInbox">3</span>
+                                        <a>Inbox</a>
+                                    </li>
+                                    <li class="list-group-item">
+                                        <span class="glyphicon glyphicon-draft" aria-hidden="true"></span>
+                                        <span class="badge" data-smartflow-state="mailboxFolderDraft">0</span>
+                                        <a>Draft</a>
+                                    </li>
+                                    <li class="list-group-item">
+                                        <span class="glyphicon glyphicon-send" aria-hidden="true"></span>
+                                        <span class="badge" data-smartflow-state="mailboxFolderSent">0</span>
+                                        <a>Sent</a>
+                                    </li>
+                                    <li class="list-group-item">
+                                        <span class="glyphicon glyphicon-folder-close" aria-hidden="true"></span>
+                                        <span class="badge" data-smartflow-state="mailboxFolderArchive">0</span>
+                                        <a>Archive</a>
+                                    </li>
+                                    <li class="list-group-item">
+                                        <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+                                        <span class="badge" data-smartflow-state="mailboxFolderTrash">0</span>
+                                        <a>Trash</a>
+                                    </li>
+                                </ul>
+
+                            </div>
+                            <div class="col-md-9">
+
+                                <div class="panel panel-default">
+                                    <table class="table table-striped">
+                                        <thead>
+                                        <tr>
+                                            <th></th>
+                                            <th>Date</th>
+                                            <th>Subject</th>
+                                            <th>From</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody data-smartflow-state="mailboxEmails">
+                                        <tr>
+                                            <td><input type="checkbox"></td>
+                                            <td>11. jan 2017</td>
+                                            <td>Didnt thought it should be this hard</td>
+                                            <td>Donald Trump</td>
+                                        </tr>
+                                        <tr>
+                                            <td><input type="checkbox"></td>
+                                            <td>11. jan 2009</td>
+                                            <td>Barack Obama</td>
+                                            <td>barack@obama.com</td>
+                                        </tr>
+                                        <tr>
+                                            <td><input type="checkbox"></td>
+                                            <td>11. jan 2001</td>
+                                            <td>George W. Bush</td>
+                                            <td>george@bush.com</td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="panel panel-default">
+                                    <div class="panel-body" data-smartflow-state="mailboxMessagePreview">
+                                        Lorem ipsum sit amet.
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="panel-footer">
+                        <button type="button" class="btn btn-primary" data-smartflow-state="mailboxComposeButton">
+                            <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span> Compose
+                        </button>
+                        <button type="button" class="btn btn-default" data-smartflow-state="mailboxDeleteButton">
+                            <span class="glyphicon glyphicon-trash" aria-hidden="true"></span> Delete
+                        </button>
+                        <button type="button" class="btn btn-default pull-right"
+                                data-smartflow-state="mailboxHelpButton">
+                            <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span> Help
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="ComposeView" class="smartflow-view">
+        <div class="row">
+            <div class="col-md-12">
+
+                <form>
                     <div class="panel panel-primary">
                         <div class="panel-heading">
                             Smartflow
-                            <button type="button"  class="close pull-right" aria-label="Close" data-smartflow-state="mailboxLogoutButton"><span aria-hidden="true">&times;</span></button>
                         </div>
-                        <div class="panel-body">
+                        <div class="panel-body ">
 
-                            <div class="row">
-                                <div class="col-md-3">
-
-                                    <ul class="list-group">
-                                        <li class="list-group-item">
-                                            <span class="glyphicon glyphicon-inbox" aria-hidden="true"></span>
-                                            <span class="badge" data-smartflow-state="mailboxFolderInbox">3</span>
-                                            <a>Inbox</a>
-                                        </li>
-                                        <li class="list-group-item">
-                                            <span class="glyphicon glyphicon-draft" aria-hidden="true"></span>
-                                            <span class="badge" data-smartflow-state="mailboxFolderDraft">0</span>
-                                            <a>Draft</a>
-                                        </li>
-                                        <li class="list-group-item">
-                                            <span class="glyphicon glyphicon-send" aria-hidden="true"></span>
-                                            <span class="badge" data-smartflow-state="mailboxFolderSent">0</span>
-                                            <a>Sent</a>
-                                        </li>
-                                        <li class="list-group-item">
-                                            <span class="glyphicon glyphicon-folder-close" aria-hidden="true"></span>
-                                            <span class="badge" data-smartflow-state="mailboxFolderArchive">0</span>
-                                            <a>Archive</a>
-                                        </li>
-                                        <li class="list-group-item">
-                                            <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
-                                            <span class="badge" data-smartflow-state="mailboxFolderTrash">0</span>
-                                            <a>Trash</a>
-                                        </li>
-                                    </ul>
-
+                            <div class="form-horizontal">
+                                <div class="form-group">
+                                    <label for="composeTo" class="col-sm-2 col-lg-2 control-label">To</label>
+                                    <div class="col-sm-10 col-lg-10">
+                                        <input type="email" class="form-control" id="composeTo" placeholder="Email"
+                                               data-smartflow-state="composeTo">
+                                    </div>
                                 </div>
-                                <div class="col-md-9">
-
-                                    <div class="panel panel-default">
-                                        <table class="table table-striped">
-                                            <thead>
-                                            <tr>
-                                                <th></th>
-                                                <th>Date</th>
-                                                <th>Subject</th>
-                                                <th>From</th>
-                                            </tr>
-                                            </thead>
-                                            <tbody data-smartflow-state="mailboxEmails">
-                                            <tr>
-                                                <td><input type="checkbox"></td>
-                                                <td>11. jan 2017</td>
-                                                <td>Didnt thought it should be this hard</td>
-                                                <td>Donald Trump</td>
-                                            </tr>
-                                            <tr>
-                                                <td><input type="checkbox"></td>
-                                                <td>11. jan 2009</td>
-                                                <td>Barack Obama</td>
-                                                <td>barack@obama.com</td>
-                                            </tr>
-                                            <tr>
-                                                <td><input type="checkbox"></td>
-                                                <td>11. jan 2001</td>
-                                                <td>George W. Bush</td>
-                                                <td>george@bush.com</td>
-                                            </tr>
-                                            </tbody>
-                                        </table>
+                                <div class="form-group">
+                                    <label for="composeSubject"
+                                           class="col-sm-2 col-lg-2 control-label">Subject</label>
+                                    <div class="col-sm-10 col-lg-10">
+                                        <input type="email" class="form-control" id="composeSubject"
+                                               placeholder="Subject" data-smartflow-state="composeSubject">
                                     </div>
-                                    <div class="panel panel-default">
-                                        <div class="panel-body" data-smartflow-state="mailboxMessagePreview">
-                                            Lorem ipsum sit amet.
-                                        </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="composeMessage"
+                                           class="col-sm-2 col-lg-2 control-label">Message</label>
+                                    <div class="col-sm-10 col-lg-10">
+                                        <textarea class="form-control" rows="10" id="composeMessage"
+                                                  data-smartflow-state="composeMessage"></textarea>
                                     </div>
-
                                 </div>
                             </div>
 
                         </div>
                         <div class="panel-footer">
-                            <button type="button" class="btn btn-primary" data-smartflow-state="mailboxComposeButton">
-                                <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span> Compose
+                            <button type="button" class="btn btn-primary" data-smartflow-state="composeSendButton">
+                                <span class="glyphicon glyphicon-send" aria-hidden="true"></span> Send
                             </button>
-                            <button type="button" class="btn btn-default" data-smartflow-state="mailboxDeleteButton">
-                                <span class="glyphicon glyphicon-trash" aria-hidden="true"></span> Delete
+                            <button type="button" class="btn btn-default"
+                                    data-smartflow-state="composeCancelButton">
+                                <span class="glyphicon" aria-hidden="true"></span> Cancel
                             </button>
-                            <button type="button" class="btn btn-default pull-right" data-smartflow-state="mailboxHelpButton">
+                            <button type="button" class="btn btn-default pull-right"
+                                    data-smartflow-state="composeHelpButton">
                                 <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span> Help
                             </button>
                         </div>
                     </div>
-                </div>
+                </form>
+
             </div>
         </div>
-
-        <div id="compose" class="smartflow-view smartflow-visible">
-            <div class="row">
-                <div class="col-md-12">
-
-                    <form>
-                        <div class="panel panel-primary">
-                            <div class="panel-heading">
-                                Smartflow
-                            </div>
-                            <div class="panel-body ">
-
-                                <div class="form-horizontal">
-                                    <div class="form-group">
-                                        <label for="composeTo" class="col-sm-2 col-lg-2 control-label">To</label>
-                                        <div class="col-sm-10 col-lg-10">
-                                            <input type="email" class="form-control" id="composeTo" placeholder="Email"
-                                                   data-smartflow-state="composeTo">
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="composeSubject"
-                                               class="col-sm-2 col-lg-2 control-label">Subject</label>
-                                        <div class="col-sm-10 col-lg-10">
-                                            <input type="email" class="form-control" id="composeSubject"
-                                                   placeholder="Subject" data-smartflow-state="composeSubject">
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="composeMessage"
-                                               class="col-sm-2 col-lg-2 control-label">Message</label>
-                                        <div class="col-sm-10 col-lg-10">
-                                            <textarea class="form-control" rows="10" id="composeMessage"
-                                                      data-smartflow-state="composeMessage"></textarea>
-                                        </div>
-                                    </div>
-                                </div>
-
-                            </div>
-                            <div class="panel-footer">
-                                <button type="button" class="btn btn-primary" data-smartflow-state="composeSendButton">
-                                    <span class="glyphicon glyphicon-send" aria-hidden="true"></span> Send
-                                </button>
-                                <button type="button" class="btn btn-default"
-                                        data-smartflow-state="composeCancelButton">
-                                    <span class="glyphicon" aria-hidden="true"></span> Cancel
-                                </button>
-                                <button type="button" class="btn btn-default pull-right"
-                                        data-smartflow-state="composeHelpButton">
-                                    <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span> Help
-                                </button>
-                            </div>
-                        </div>
-                    </form>
-
-                </div>
-            </div>
-        </div>
-
     </div>
+
+    <div id="ContactView" class="smartflow-view">ContactView</div>
+
+
+    <div id="AddressbookView" class="smartflow-view">
+
+        <div class="row">
+            <div class="col-md-12 col-lg-12">
+
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        Smartflow
+                        <button type="button" class="close pull-right" aria-label="Close"
+                                data-smartflow-state="mailboxLogoutButton"><span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="panel-body">
+
+                    <table class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th></th>
+                            <th>Last</th>
+                            <th>First</th>
+                            <th>Company</th>
+                        </tr>
+                        </thead>
+                        <tbody data-smartflow-state="mailboxEmails">
+                        <tr>
+                            <td><input type="checkbox"></td>
+                            <td>Trump</td>
+                            <td>Donald</td>
+                            <td>US President</td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox"></td>
+                            <td>Obama</td>
+                            <td>Barack</td>
+                            <td>US President</td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox"></td>
+                            <td>W. Bush</td>
+                            <td>George</td>
+                            <td>US President</td>
+                        </tr>
+                        </tbody>
+                    </table>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+<script>
+
+    function LoginView() {
+        this.viewInitialized = function (app) {
+            console.info("LoginView.viewInitialized");
+        };
+        this.viewEnabled = function (app) {
+            console.info("LoginView.viewEnabled");
+        };
+        this.viewDisabled = function (app) {
+            console.info("LoginView.viewDisabled");
+        };
+    }
+
+    function LogoutView() {
+        this.viewInitialized = function (app) {
+            console.info("LogoutView.viewInitialized");
+        }
+    }
+
+    function InboxView() {
+        this.viewInitialized = function (app) {
+            console.info("InboxView.viewInitialized");
+        }
+    }
+
+    function ComposeView() {
+        this.viewInitialized = function (app) {
+            console.info("ComposeView.viewInitialized");
+        }
+    }
+
+    function AddressbookView() {
+        this.viewInitialized = function (app) {
+            console.info("AddressbookView.viewInitialized: ");
+        };
+        this.viewEnabled = function (app) {
+            console.info("AddressbookView.viewEnabled: ", app.getPath());
+        };
+        this.viewDisabled = function (app) {
+            console.info("AddressbookView.viewDisabled: ", app.getPath());
+        };
+        this.pathChanged = function (app) {
+            console.info("AddressbookView.pathChanged: ", app.getPath());
+        };
+    }
+
+    var app = new Smartflow();
+    app.setDevelopmentMode(true);
+    app.loadLanguage("no", {"welcome": "Velkommen {0} {1}."});
+    app.loadLanguage("en", {"welcome": "Welcome {0} {1}."});
+    app.setLanguage("en");
+    app.addView(new LoginView(), "LoginView", "/");
+    app.addView(new LogoutView(), "LogoutView", "/logout");
+    app.addView(new AddressbookView(), "AddressbookView", "/addressbook");
+    app.addView(new InboxView(), "InboxView", "/inbox");
+    app.addView(new ComposeView(), "ComposeView", "/compose");
+    app.startApplication();
+
+    //console.info( app.listLanguages());
+    //console.info(app.translate("welcome", ["Morten", "Laukvik"]));
+
+</script>
+
+<div>
+    <h3>Path</h3>
+    <ul>
+        <li><a href="javascript:app.setPath('/')">Login</a></li>
+        <li><a href="javascript:app.setPath('/inbox')">Inbox</a></li>
+        <li><a href="javascript:app.setPath('/addressbook')">Addressbook</a></li>
+        <li><a href="javascript:app.setPath('/addressbook/1234')">Addressbook -&gt; Contact</a></li>
+        <li><a href="javascript:app.setPath('/compose')">Compose</a></li>
+        <li><a href="javascript:app.setPath('/logout')">Logout</a></li>
+    </ul>
+</div>
 
 
 </body>

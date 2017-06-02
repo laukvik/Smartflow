@@ -3,12 +3,5 @@ body{
 }
 
 .smartflow-view{
-}
-
-.smartflow-hidden{
-    //display: none;
-}
-
-.smartflow-visible{
-    display: block;
+    display: none;
 }
