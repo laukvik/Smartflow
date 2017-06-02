@@ -1,18 +1,16 @@
 /**
+ * Smartflow
  *
- *
- * Hierarchy:
- *
- * Application
- *   - State
- *     - stateChanged (event: name, value)
- * - Controller
- *   - Action
- *     - runAction (method)
- *     - actionCompleted (event: name, object)
- * - View
- *   - viewChanged (event: name)
- *
+ * Controller events:
+ * - viewInitialized
+ * - viewEnabled
+ * - viewDisabled
+ * - pathChanged
+ * - languageChanged
+ * - loginChanged
+ * - actionStarted
+ * - actionSuccess
+ * - actionFailed
  *
  * @constructor
  */
@@ -20,31 +18,139 @@
 'use strict';
 
 function Smartflow (){
-
+    this._loggedIn = false;
+    this._path = [];
     this._controllers = [];
     this._states = [];
     this._view = undefined;
     this._actionController = undefined;
     this._actionQueue = [];
     this._actionPlayer = undefined;
+    //
+    //
+    // Login
+    //
+    //
+    this.setLoggedIn = function(isLoggedIn){
+        this._loggedIn = isLoggedIn == "true";
+        for (var x = 0; x < this._controllers.length; x++) {
+            var ctrl = this._controllers[x];
+            if (typeof ctrl.loginChanged === "function") {
+                ctrl.loginChanged( isLoggedIn );
+            }
+        }
+    };
+    //
+    //
+    // Environment
+    //
+    //
+    this._developmentMode = false;
+    this.setDevelopmentMode = function(isDevelopmentMode){
+        this._developmentMode = isDevelopmentMode;
+    };
+    this.isDevelopmentMode = function(){
+        return this._developmentMode;
+    };
+    //
+    //
+    // Language stuff
+    //
+    //
+    this._languages = {};
+    this.listLanguages = function(){
+        return this._languages;
+    };
+    this.loadLanguage = function(isoLanguage, translation){
+        console.info("Smartflow.loadLanguage: ", isoLanguage, translation);
+        this._languages[ isoLanguage ] = translation;
+    }
+    this._language = undefined;
+    this.setLanguage = function(isoLanguage){
+        console.info("Smartflow.setLanguage: ", isoLanguage);
+        if (this._language == isoLanguage){
+            return;
+        }
+        this._language = isoLanguage;
+        for (var x = 0; x < this._controllers.length; x++) {
+            var ctrl = this._controllers[x];
+            if (typeof ctrl.languageChanged === "function") {
+                ctrl.languageChanged( isoLanguage );
+            }
+        }
+    };
+    this.translate = function(languageKey, keys){
+        var translation = this._languages[ this._language ];
+        var value = translation[ languageKey ];
+        var arr = [];
+        if (typeof keys === "String") {
+            arr[ 0 ] = keys;
+        } else if (Array.isArray(keys)){
+            arr = keys;
+        }
+        if (!value) {
+            return "???" + languageKey + "???";
+        } else {
+            var s = value;
+            for (var x = 0; x < arr.length; x++){
+                var symbol = "{" + x + "}";
+                s = s.replace( symbol, arr[x] );
+            }
+            return s;
+        }
+    };
 
+    //
+    //
+    // Formats
+    //
+    //
+    this._formatNumber = "";
+    this.formatNumber = function(value){
+        return value;
+    };
+    this._formatDate = "DD.MM.YYYY";
+    this.formatDate = function(value){
+        return value;
+    };
+    this._formatTime = "hh:mm:ss";
+    this.formatTime = function(value){
+        return value;
+    };
+
+    //
+    //
     // View stuff
-    this.addView = function(controller) {
+    //
+    //
+    this.addView = function(controller, viewName, viewPath) {
+        controller._view = viewName;
+        controller._path = viewPath;
         this._controllers.push(controller);
         return controller;
     };
 
     this.removeView = function(controller) {
         var index = this._controllers.indexOf(controller);
+        controller._view = undefined;
+        controller._path = undefined;
         this._controllers.splice(index, 1);
     };
 
     this._setViewVisibility = function(viewName, isVisible) {
-        document.getElementById(viewName).className = isVisible ? "smartflow-view smartflow-visible" : "smartflow-view smartflow-hidden";
+        document.getElementById(viewName).style.display = isVisible ? "block" : "none";
     };
 
-    this.setView = function(viewName, viewID) {
+    this.setView = function(viewName) {
         if (viewName === this._view) {
+            //console.info("Smartflow.setView: ", this._view);
+            for (var x = 0; x < this._controllers.length; x++) {
+                var ctrl = this._controllers[x];
+                if (typeof ctrl.pathChanged === "function") {
+                    ctrl.pathChanged(this);
+                }
+            }
+
             return;
         }
         for (var x = 0; x < this._controllers.length; x++) {
@@ -60,20 +166,45 @@ function Smartflow (){
         for (var x = 0; x < this._controllers.length; x++) {
             var ctrl = this._controllers[x];
             // Show new
-            if (viewName === ctrl.constructor.name) {
+            if (viewName === ctrl._view) {
                 if (typeof ctrl.viewEnabled === "function") {
                     ctrl.viewEnabled(this);
                 }
                 this._view = viewName;
                 this._setViewVisibility(this._view, true);
-                this.setRoute(viewName, viewID);
+                window.location.href = "#" + ctrl._path;
             }
         }
     };
 
-    // Action
+    this.setPath = function( path ){
+        if (path == "" || path == null || typeof path == "undefined" || path == "/") {
+            this._path = [];
+        } else {
+            this._path = path.substr(1).split("/");
+        }
+        var str = this._path.length == 0 ? "/" : "/" + this._path[ 0 ];
+        console.info("SetPath: ", this._path, str);
+        for (var x = 0; x < this._controllers.length; x++) {
+            var ctrl = this._controllers[x];
+
+            if (ctrl._path == str) {
+                this.setView(ctrl._view);
+            }
+
+        }
+    };
+    this.getPath = function(){
+        return this._path;
+    };
+
+    //
+    //
+    // Action stuff
+    //
+    //
     this.startAction = function(action){
-        // console.info("ApplicationModel.startAction", action);
+        // console.info("Smartflow.startAction", action);
         var list = new ActionList();
         action.runAction(this, list);
         action._actionList = list;
@@ -97,8 +228,11 @@ function Smartflow (){
             action.actionFailed(this);
         }
     };
-
+    //
+    //
     // State
+    //
+    //
     this._fireStateChanged = function(state, value, oldValue) {
         for (var x = 0; x < this._controllers.length; x++) {
             var ctrl = this._controllers[x];
@@ -112,49 +246,15 @@ function Smartflow (){
         var attributeName = 'data-smartflow-state="'+ state + '"';
         return document.querySelector("[" + attributeName + "]");
     };
-
     this.setState = function(state, value){
         var oldValue = this._states[state];
         this._states[state] = value;
-        var el = this._getBindingElement(state);
-        if (el.tagName == "INPUT"){
-            if (!value){
-
-            } else if (value.constructor == String){
-                el.setAttribute("value", value);
-            } else if (value.constructor == Object){
-                var arr = Object.getOwnPropertyNames(value);
-                for (var x=0; x<arr.length; x++){
-                    var propName = arr[x];
-                    var propValue = value[ propName ];
-                    el.setAttribute(propName, propValue);
-                }
-            }
-        }
         this._fireStateChanged(state, value, oldValue);
     };
-
     this.getState = function(state) {
         return this._states[state];
     };
 
-    // Routing
-    this.readRoute = function() {
-        var anchor = document.location.hash;
-        if (anchor !== "") {
-            var arr = anchor.split("/");
-            var view = arr[1];
-            var id = arr[2];
-            // console.debug(view, id);
-            this.setView(view, id);
-        }
-    };
-
-    this.setRoute = function(viewName, viewID) {
-        if (viewName !== "") {
-            window.location.href = "#/" + viewName + (viewID === undefined ? "" : "/" + viewID);
-        }
-    };
 
     this.startApplication = function() {
         for (var x = 0; x < this._controllers.length; x++) {
@@ -163,31 +263,19 @@ function Smartflow (){
                 ctrl.viewInitialized(this);
             }
         }
-        this._attachListeners();
-        this._controllers[0].viewEnabled(this);
+        var anchor = window.location.hash;
+        var path = anchor.indexOf("#") == 0 ? anchor.substr(1) : "/";
+        console.info("Smartflow.startApplication: ", path);
+        this.setPath( path );
     };
-    this._attachListeners = function(){
-        var arr = document.querySelectorAll("[data-smartflow-state]");
-        var self = this;
-        for (var x=0; x<arr.length; x++){
-            var el = arr[ x ];
-            var stateName = el.getAttribute("data-smartflow-state");
-            if (el.tagName == "INPUT" && el.getAttribute("type") == "text"){
-                el.addEventListener("keypress", function(){
-                    //self.setState(stateName, this.getAttribute("value"));
-                    console.info("Keypress", this);
-                });
-            } else if (el.tagName == "INPUT" && el.getAttribute("type") == "button"){
-                el.addEventListener("click", function(){
-                    //self.setState(stateName, this.getAttribute("value"));
-                    console.info("Clicked", this);
-                });
-            }
-
-        }
-    }
 }
 
+/**
+ * ActionList
+ *
+ *
+ * @constructor
+ */
 function ActionList(){
 
     this._actions = [];
@@ -201,6 +289,13 @@ function ActionList(){
     }
 }
 
+/**
+ * ActionPlayer
+ *
+ *
+ * @param application
+ * @constructor
+ */
 function ActionPlayer(application){
 
     this.STATUS_NOT_STARTED = 0;
@@ -306,3 +401,4 @@ function ActionPlayer(application){
     };
 
 }
+
