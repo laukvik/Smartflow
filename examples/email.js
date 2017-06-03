@@ -6,7 +6,7 @@ function EmailClient() {
         this.setVisible(view, false);
     };
     this.stateChanged = function (state) {
-        //console.info("Email.stateChanged: ", state);
+        console.info("Email.stateChanged: ", state);
     };
     this.loginChanged = function (login) {
         //console.info("Email.loginChanged: ", login);
@@ -15,6 +15,12 @@ function EmailClient() {
         //console.info("Email.pathChanged: ", path);
     };
     this.startApplication = function(){
+    };
+    this.dialogEnabled = function(name, features) {
+        console.info("Email.dialogEnabled: ", name, features);
+    };
+    this.dialogDisabled = function(answer) {
+        console.info("Email.dialogDisabled: ", answer);
     };
     this.setVisible = function(viewName, isVisible) {
         document.getElementById(viewName).style.display = isVisible ? "block" : "none";
@@ -46,25 +52,41 @@ function LogoutView() {
 }
 
 function MailView() {
+    this.folders = ["inbox", "draft", "sent", "archive", "trash"];
     this.viewInitialized = function (app) {
         this._app = app;
         var self = this._app;
         document.getElementById("mailboxLogoutButton").addEventListener("click", function(){
             app.setPath("/logout");
         });
-
         document.getElementById("mailboxComposeButton").addEventListener("click", function(){
             app.setPath("/compose");
         });
+        document.getElementById("mailboxDeleteButton").addEventListener("click", function(){
+            app.openDialog("ConfirmDelete");
+        });
+    };
+    this.pathChanged = function (path) {
+        console.info("MailView.stateChanged: ", path);
+        this._app.setState( "folder-selected", path );
     };
     this.stateChanged = function (state) {
-        console.info("InboxView.stateChanged: ", state);
+        console.info("MailView.stateChanged: ", state);
         if (state.name == "inbox") {
             this.updateTable(state.value);
+
         } else if (state.name == "preview") {
             this.updatePreview(state.value);
+
         } else if (state.name == "folder-selected") {
-            this.updateSelectedFolder(state.value, true);
+
+            console.info("folder: ", state.value );
+
+            for (var x=0; x<this.folders.length; x++){
+                var folder = this.folders[ x ];
+                this.updateSelectedFolder( folder, state.value == folder);
+            }
+
         } else if (state.name == "mail-selection") {
 
             var el = document.getElementById("inboxMailRows");
@@ -103,7 +125,7 @@ function MailView() {
     this.updateSelectedFolder = function(stateName, isSelected){
         var folder = document.getElementById(stateName + "ListItem");
         if (folder){
-            folder.className += isSelected ? "list-group-item active": "list-group-item";
+            folder.className = isSelected ? "list-group-item active": "list-group-item";
         }
     };
     this.updatePreview = function(data){
@@ -116,8 +138,22 @@ function MailView() {
 
 function ComposeView() {
     this.viewInitialized = function (app) {
-        document.getElementById("composeCancelButton").addEventListener("click", function(){
-            app.setPath("/inbox");
+        document.getElementById("ComposeView-CancelButton").addEventListener("click", function(){
+            app.setPath("/mails/inbox");
+        });
+
+        document.getElementById("ComposeView-SendButton").addEventListener("click", function(){
+
+            // ComposeView-To
+            // ComposeView-Subject
+            // ComposeView-Message
+            var to = document.getElementById("ComposeView-To").value;
+            var subject = document.getElementById("ComposeView-Subject").value;
+            var msg = document.getElementById("ComposeView-Message").value;
+
+            app.setState("sendmail", {"to": to, "subject": subject, "message": msg});
+
+            app.setPath("/mails/inbox");
         });
     }
 }
@@ -160,7 +196,41 @@ function InboxTutorial() {
     };
 }
 
+function ConfirmDialog() {
+    this._id = "ConfirmDialog";
+    this.dialogInitialized = function (app) {
+        console.info("ConfirmDialog.viewInitialized: ");
+        document.getElementById(this._id + "Yes").addEventListener("click", function(){
+            app.closeDialog("yes");
+        });
+        document.getElementById(this._id + "No").addEventListener("click", function(){
+            app.closeDialog("no");
+        });
+        document.getElementById(this._id + "Close").addEventListener("click", function(){
+            app.closeDialog();
+        });
+    };
+    this.stateChanged = function (state) {
+        console.info("ConfirmDialog.stateChanged: ", state);
+    };
+    this.dialogEnabled = function (features) {
+        console.info("ConfirmDialog.dialogEnabled: ", features);
+        //document.getElementById(this._id).querySelector(".modal-body").innerText = "Hei";
+        this.setDialogVisible(true);
+    };
+    this.dialogDisabled = function(answer) {
+        console.info("ConfirmDialog.dialogDisabled: ", answer);
+        this.setDialogVisible(false);
+    };
+    this.setDialogVisible = function(isVisible){
+        document.getElementById(this._id).style.display = isVisible ? "block" : "none";
+        document.getElementById(this._id).className = isVisible ? "modal fade in" : "modal fade out";
+    }
+}
 
+function SendMailAction(){
+
+}
 
 
 var app = new Smartflow(new EmailClient(), "EmailClient");
@@ -176,6 +246,8 @@ app.addView(new MailView(), "InboxView", "/mails", ["mails", "mail-index", "mail
 app.addView(new ComposeView(), "ComposeView", "/compose", ["compose"]);
 app.addView(new InboxTutorial(), "InboxTutorial", "", [] );
 
+app.addDialog(new ConfirmDialog(), "ConfirmDelete");
+
 app.registerArray( "inbox",   [], "A list of emails in the inbox folder", false );
 app.registerArray( "draft",   [], "A list of emails in the draft folder", false );
 app.registerArray( "sent",    [], "A list of emails in the sent folder", false );
@@ -183,7 +255,7 @@ app.registerArray( "archive", [], "A list of emails in the archive folder", fals
 app.registerArray( "trash",   [], "A list of emails in the trash folder", false );
 app.registerArray( "addressbook", [], "A list of contacts for the addressbook", false );
 app.registerJson( "preview", {}, "The selected email", false );
-app.registerString( "folder-index", 0, "The index of the selected folder", true );
+app.registerString( "folder-selected", "inbox", "The index of the selected folder", true );
 app.registerString( "mail-index", 0, "The index of the selected mail", true );
 app.registerString( "mail-selection", 0, "The name of the selected folder", true );
 

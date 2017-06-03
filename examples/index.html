@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <title>Smartflow</title>
     <link rel="stylesheet" href="../node_modules/bootstrap/dist/css/bootstrap.css">
+    <!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>-->
+    <!--<script src="../node_modules/bootstrap/dist/js/bootstrap.min.js"></script>-->
     <link rel="stylesheet" href="../src/smartflow.css">
     <script src="../src/smartflow.js"></script>
 </head>
@@ -96,7 +98,7 @@
                             <div class="col-md-3">
 
                                 <ul class="list-group">
-                                    <li class="list-group-item active" id="inboxListItem" role="presentation">
+                                    <li class="list-group-item" id="inboxListItem" role="presentation">
                                         <span class="glyphicon glyphicon-inbox" aria-hidden="true"></span>
                                         <span class="badge" id="inboxBadge"></span>
                                         <a>Inbox</a>
@@ -180,37 +182,35 @@
 
                             <div class="form-horizontal">
                                 <div class="form-group">
-                                    <label for="composeTo" class="col-sm-2 col-lg-2 control-label">To</label>
+                                    <label for="ComposeView-To" class="col-sm-2 col-lg-2 control-label">To</label>
                                     <div class="col-sm-10 col-lg-10">
-                                        <input type="email" class="form-control" id="composeTo" placeholder="Email"
-                                               id="composeTo">
+                                        <input type="email" class="form-control" id="ComposeView-To" placeholder="Email">
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label for="composeSubject"
+                                    <label for="ComposeView-Subject"
                                            class="col-sm-2 col-lg-2 control-label">Subject</label>
                                     <div class="col-sm-10 col-lg-10">
-                                        <input type="email" class="form-control" id="composeSubject"
-                                               placeholder="Subject" id="composeSubject">
+                                        <input type="email" class="form-control" id="ComposeView-Subject"
+                                               placeholder="Subject">
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label for="composeMessage"
+                                    <label for="ComposeView-Message"
                                            class="col-sm-2 col-lg-2 control-label">Message</label>
                                     <div class="col-sm-10 col-lg-10">
-                                        <textarea class="form-control" rows="10" id="composeMessage"
-                                                  id="composeMessage"></textarea>
+                                        <textarea class="form-control" rows="10" id="ComposeView-Message"></textarea>
                                     </div>
                                 </div>
                             </div>
 
                         </div>
                         <div class="panel-footer">
-                            <button type="button" class="btn btn-primary" id="composeSendButton">
+                            <button type="button" class="btn btn-primary" id="ComposeView-SendButton">
                                 <span class="glyphicon glyphicon-send" aria-hidden="true"></span> Send
                             </button>
                             <button type="button" class="btn btn-default"
-                                    id="composeCancelButton">
+                                    id="ComposeView-CancelButton">
                                 <span class="glyphicon" aria-hidden="true"></span> Cancel
                             </button>
                             <button type="button" class="btn btn-default pull-right"
@@ -267,18 +267,41 @@
 </div>
 
 
+<!-- Dialogs: "modal fade" til "modal fade in" -->
+<div id="ConfirmDialog" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" id="ConfirmDialogClose" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">ConfirmDelete</h4>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default"
+                        id="ConfirmDialogYes"
+                        data-dismiss="modal">Yes</button>
+                <button type="button" class="btn btn-default"
+                        id="ConfirmDialogNo"
+                        data-dismiss="modal">No</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 
 <ul>
     <li><a href="javascript:app.setPath('/')">Login</a></li>
-    <li><a href="javascript:app.setPath('/mails')">Mails</a></li>
     <li><a href="javascript:app.setPath('/mails/inbox')">Mails/Inbox</a></li>
     <li><a href="javascript:app.setPath('/mails/draft')">Mails/Draft</a></li>
     <li><a href="javascript:app.setPath('/mails/sent')">Mails/Sent</a></li>
     <li><a href="javascript:app.setPath('/mails/archive')">Mails/Archive</a></li>
     <li><a href="javascript:app.setPath('/mails/trash')">Mails/Trash</a></li>
     <li><a href="javascript:app.setPath('/addressbook')">Addressbook</a></li>
-    <li><a href="javascript:app.setPath('/addressbook/1234')">Addressbook -&gt; Contact</a></li>
+    <li><a href="javascript:app.setPath('/addressbook/1')">Addressbook -&gt; Contact</a></li>
     <li><a href="javascript:app.setPath('/compose')">Compose</a></li>
     <li><a href="javascript:app.setPath('/logout')">Logout</a></li>
 </ul>

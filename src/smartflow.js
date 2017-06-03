@@ -24,16 +24,39 @@ function Smartflow (main){
     this._statesType = [];
     this._statesDescription = [];
     this._statesPersistence = [];
-
-
-    this._persistence = [];
     this._main = main;
     this._controllers = [];
     this._view = undefined;
+    this._dialogs = [];
     this._actionController = undefined;
     this._actionQueue = [];
     this._actionPlayer = undefined;
-
+    //
+    //
+    // Dialogs
+    //
+    //
+    this.addDialog = function(dialog, name){
+        this._dialogs[ name ] = dialog;
+        dialog._dialogName = name;
+        if (typeof dialog.dialogInitialized === "function") {
+            dialog.dialogInitialized(this);
+        }
+    };
+    this.openDialog = function(name, features) {
+        if (this._dialog){
+            console.info("Smartflow: A dialog is already open: ", this._dialog );
+            return;
+        }
+        this._dialog = name;
+        this._dialogs[ name ].dialogEnabled(features);
+        this._main.dialogEnabled(name, features);
+    };
+    this.closeDialog = function(answer) {
+        this._dialogs[ this._dialog ].dialogDisabled(answer);
+        this._main.dialogDisabled(answer);
+        this._dialog = undefined;
+    };
     //
     //
     // Login
@@ -193,7 +216,7 @@ function Smartflow (main){
                     ctrl.viewEnabled(this);
                 }
                 this._view = viewName;
-                window.location.href = "#" + ctrl._path;
+                //window.location.href = "#" + ctrl._path;
             }
         }
         this._main.viewEnabled(viewName);
@@ -213,6 +236,7 @@ function Smartflow (main){
                 this.setView(ctrl._view);
             }
         }
+        window.location.href = "#" + path;
         this._main.pathChanged(path);
     };
     this.getPath = function(){
