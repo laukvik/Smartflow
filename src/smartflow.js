@@ -17,28 +17,40 @@
 
 'use strict';
 
-function Smartflow (){
-    this._loggedIn = false;
+function Smartflow (main){
+    this._login = {};
     this._path = [];
-    this._controllers = [];
     this._states = [];
+    this._statesType = [];
+    this._statesDescription = [];
+    this._statesPersistence = [];
+
+
+    this._persistence = [];
+    this._main = main;
+    this._controllers = [];
     this._view = undefined;
     this._actionController = undefined;
     this._actionQueue = [];
     this._actionPlayer = undefined;
+
     //
     //
     // Login
     //
     //
-    this.setLoggedIn = function(isLoggedIn){
-        this._loggedIn = isLoggedIn == "true";
+    this.setLogin = function(login){
+        this._login = login;
+        this._main.loginChanged( this._login );
         for (var x = 0; x < this._controllers.length; x++) {
             var ctrl = this._controllers[x];
             if (typeof ctrl.loginChanged === "function") {
-                ctrl.loginChanged( isLoggedIn );
+                ctrl.loginChanged( this._login );
             }
         }
+    };
+    this.logout = function(){
+        this.setLogin({});
     };
     //
     //
@@ -62,12 +74,10 @@ function Smartflow (){
         return this._languages;
     };
     this.loadLanguage = function(isoLanguage, translation){
-        console.info("Smartflow.loadLanguage: ", isoLanguage, translation);
         this._languages[ isoLanguage ] = translation;
-    }
+    };
     this._language = undefined;
     this.setLanguage = function(isoLanguage){
-        console.info("Smartflow.setLanguage: ", isoLanguage);
         if (this._language == isoLanguage){
             return;
         }
@@ -123,46 +133,58 @@ function Smartflow (){
     // View stuff
     //
     //
-    this.addView = function(controller, viewName, viewPath) {
+    /**
+     * Adds a named controller and maps it to a path.
+     *
+     * @param controller
+     * @param viewName
+     * @param viewPath
+     * @param states an array of states to subscribe to
+     * @returns {*}
+     */
+    this.addView = function(controller, viewName, viewPath, states) {
         controller._view = viewName;
         controller._path = viewPath;
+        controller._states = Array.isArray(states) ? states : [];
         this._controllers.push(controller);
-        return controller;
+
+        if (typeof controller.viewInitialized === "function") {
+            controller.viewInitialized(this);
+        }
     };
 
     this.removeView = function(controller) {
         var index = this._controllers.indexOf(controller);
         controller._view = undefined;
         controller._path = undefined;
+        controller._states = undefined;
         this._controllers.splice(index, 1);
     };
 
-    this._setViewVisibility = function(viewName, isVisible) {
-        document.getElementById(viewName).style.display = isVisible ? "block" : "none";
-    };
-
     this.setView = function(viewName) {
+        if (this._view && viewName !== this._view){
+            this._main.viewDisabled(this._view);
+        }
         if (viewName === this._view) {
-            //console.info("Smartflow.setView: ", this._view);
             for (var x = 0; x < this._controllers.length; x++) {
                 var ctrl = this._controllers[x];
                 if (typeof ctrl.pathChanged === "function") {
                     ctrl.pathChanged(this);
                 }
             }
-
-            return;
+            //return;
         }
+        // Hide old
         for (var x = 0; x < this._controllers.length; x++) {
             var ctrl = this._controllers[x];
-            // Hide exising
+
             if (this._view === ctrl.constructor.name) {
                 if (typeof ctrl.viewDisabled === "function") {
                     ctrl.viewDisabled(this);
                 }
-                this._setViewVisibility(this._view, false);
             }
         }
+        // Show new
         for (var x = 0; x < this._controllers.length; x++) {
             var ctrl = this._controllers[x];
             // Show new
@@ -171,10 +193,10 @@ function Smartflow (){
                     ctrl.viewEnabled(this);
                 }
                 this._view = viewName;
-                this._setViewVisibility(this._view, true);
                 window.location.href = "#" + ctrl._path;
             }
         }
+        this._main.viewEnabled(viewName);
     };
 
     this.setPath = function( path ){
@@ -184,15 +206,14 @@ function Smartflow (){
             this._path = path.substr(1).split("/");
         }
         var str = this._path.length == 0 ? "/" : "/" + this._path[ 0 ];
-        console.info("SetPath: ", this._path, str);
+        //console.info("SetPath: ", this._path, str);
         for (var x = 0; x < this._controllers.length; x++) {
             var ctrl = this._controllers[x];
-
             if (ctrl._path == str) {
                 this.setView(ctrl._view);
             }
-
         }
+        this._main.pathChanged(path);
     };
     this.getPath = function(){
         return this._path;
@@ -214,14 +235,12 @@ function Smartflow (){
             this._actionPlayer.startAction(action);
         }
     };
-
     this.actionSuccess = function(action) {
         // console.debug("ApplicationModel.success", action);
         if (typeof action.actionSuccess == "function") {
             action.actionSuccess(this);
         }
     };
-
     this.actionFailed = function(action) {
         // console.debug("ApplicationModel.failed", action);
         if (typeof action.actionFailed == "function") {
@@ -233,40 +252,90 @@ function Smartflow (){
     // State
     //
     //
-    this._fireStateChanged = function(state, value, oldValue) {
+    this._fireStateChanged = function(state, value) {
+        var stateData = {"name": state, "value": value};
+        if (typeof this._main.stateChanged == "function") {
+            this._main.stateChanged( stateData );
+        }
         for (var x = 0; x < this._controllers.length; x++) {
             var ctrl = this._controllers[x];
             if (typeof ctrl.stateChanged == "function") {
-                ctrl.stateChanged({name: state, value: value, oldValue: oldValue});
+                if (Array.isArray(ctrl._states)) {
+                    if (ctrl._states.indexOf(state) > -1){
+                        ctrl.stateChanged( stateData );
+                    }
+                }
             }
         }
     };
-
-    this._getBindingElement = function(state){
-        var attributeName = 'data-smartflow-state="'+ state + '"';
-        return document.querySelector("[" + attributeName + "]");
-    };
-    this.setState = function(state, value){
-        var oldValue = this._states[state];
+    this.setState = function(state, value, skipPersistence){
+        var stateType = this._statesType[ state ];
+        if (stateType === "Array") {
+            // todo Add type checking of state types
+        }
         this._states[state] = value;
-        this._fireStateChanged(state, value, oldValue);
-    };
-    this.getState = function(state) {
-        return this._states[state];
-    };
-
-
-    this.startApplication = function() {
-        for (var x = 0; x < this._controllers.length; x++) {
-            var ctrl = this._controllers[x];
-            if (typeof ctrl.viewInitialized === "function") {
-                ctrl.viewInitialized(this);
-            }
+        if (this._statesPersistence[ state ] === true) {
+            // This is required to not re-trigger state persistence
+            // when reading from persisting
+            console.info("Persisting: ", state, value);
+            localStorage.setItem(state, value);
         }
+        this._fireStateChanged(state, value);
+    };
+    this.registerArray = function(name, initialValue, description, persistence){
+        this._registerState(name, initialValue, "Array", description, persistence);
+    };
+    this.registerJson = function(name, initialValue, description, persistence){
+        this._registerState(name, initialValue, "Json", description, persistence);
+    };
+    this.registerString = function(name, initialValue, description, persistence){
+        this._registerState(name, initialValue, "String", description, persistence);
+    };
+    this.registerNumber = function(name, initialValue, description, persistence){
+        this._registerState(name, initialValue, "Number", description, persistence);
+    };
+    this.registerDate = function(name, initialValue, description, persistence){
+        this._registerState(name, initialValue, "Date", description, persistence);
+    };
+    this.registerObject = function(name, initialValue, description, persistence){
+        this._registerState(name, initialValue, "Object", description, persistence);
+    };
+    this._registerState = function(name, initialValue, dataType, description, persistence){
+        this._states[ name ] = initialValue;
+        this._statesType[ name ] = dataType;
+        this._statesDescription[ name ] = description;
+        this._statesPersistence[ name ] = persistence;
+
+        if (persistence === true) {
+            this._states[ name ] = localStorage.getItem(name);
+        }
+
+        this._fireStateChanged(name, initialValue);
+    };
+    //
+    //
+    // Main
+    //
+    //
+    this.startApplication = function() {
         var anchor = window.location.hash;
         var path = anchor.indexOf("#") == 0 ? anchor.substr(1) : "/";
-        console.info("Smartflow.startApplication: ", path);
         this.setPath( path );
+        this._main.startApplication();
+    };
+
+    this.displayDocumentation = function(){
+        // Supported languages, missing keys and default language
+        var langHtml = "";
+        // State - names, types, persistence
+        var stateHtml = "";
+        // Views -
+        var viewsHtml = "";
+        // Paths -
+        var pathHtml = "";
+        // Main -
+        var mainHtml = "";
+        return langHtml + stateHtml + viewsHtml + pathHtml + mainHtml;
     };
 }
 

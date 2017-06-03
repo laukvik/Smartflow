@@ -96,29 +96,29 @@
                             <div class="col-md-3">
 
                                 <ul class="list-group">
-                                    <li class="list-group-item">
+                                    <li class="list-group-item active" id="inboxListItem" role="presentation">
                                         <span class="glyphicon glyphicon-inbox" aria-hidden="true"></span>
-                                        <span class="badge" id="mailboxFolderInbox">3</span>
+                                        <span class="badge" id="inboxBadge"></span>
                                         <a>Inbox</a>
                                     </li>
-                                    <li class="list-group-item">
+                                    <li class="list-group-item" id="draftListItem" role="presentation">
                                         <span class="glyphicon glyphicon-draft" aria-hidden="true"></span>
-                                        <span class="badge" id="mailboxFolderDraft">0</span>
+                                        <span class="badge badge-primary" id="draftBadge"></span>
                                         <a>Draft</a>
                                     </li>
-                                    <li class="list-group-item">
+                                    <li class="list-group-item" id="sentListItem" role="presentation">
                                         <span class="glyphicon glyphicon-send" aria-hidden="true"></span>
-                                        <span class="badge" id="mailboxFolderSent">0</span>
+                                        <span class="badge" id="sentBadge"></span>
                                         <a>Sent</a>
                                     </li>
-                                    <li class="list-group-item">
+                                    <li class="list-group-item" id="archiveListItem" role="presentation">
                                         <span class="glyphicon glyphicon-folder-close" aria-hidden="true"></span>
-                                        <span class="badge" id="mailboxFolderArchive">0</span>
+                                        <span class="badge" id="archiveBadge"></span>
                                         <a>Archive</a>
                                     </li>
-                                    <li class="list-group-item">
+                                    <li class="list-group-item" id="trashListItem" role="presentation">
                                         <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
-                                        <span class="badge" id="mailboxFolderTrash">0</span>
+                                        <span class="badge" id="trashBadge"></span>
                                         <a>Trash</a>
                                     </li>
                                 </ul>
@@ -136,12 +136,12 @@
                                             <th>From</th>
                                         </tr>
                                         </thead>
-                                        <tbody id="inboxRows">
+                                        <tbody id="inboxMailRows">
                                         </tbody>
                                     </table>
                                 </div>
                                 <div class="panel panel-default">
-                                    <div class="panel-body" id="mailboxMessagePreview">
+                                    <div class="panel-body" id="inboxPreview">
                                         Lorem ipsum sit amet.
                                     </div>
                                 </div>
@@ -227,7 +227,6 @@
 
     <div id="ContactView" class="smartflow-view">ContactView</div>
 
-
     <div id="AddressbookView" class="smartflow-view">
 
         <div class="row">
@@ -261,49 +260,28 @@
         </div>
     </div>
 
+    <div id="InboxTutorial" style="display: none;" class="alert alert-success" role="alert">
+        Ingen melding
+    </div>
+
 </div>
 
 
 
 
-<form>
-    <div class="panel panel-default">
-        <div class="panel-heading">
-            Debug
-        </div>
-        <div class="panel-body ">
-
-            <div class="form-horizontal">
-                <div class="form-group">
-                    <label for="composeTo" class="col-sm-2 col-lg-2 control-label">State</label>
-                    <div class="col-sm-10 col-lg-10">
-                        <input type="email" class="form-control" id="stateName">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="composeSubject"
-                           class="col-sm-2 col-lg-2 control-label">Value</label>
-                    <div class="col-sm-10 col-lg-10">
-                        <textarea id="stateValue" class="form-control"></textarea>
-                    </div>
-                </div>
-            </div>
-
-            <ul>
-                <li><a href="javascript:app.setPath('/')">Login</a></li>
-                <li><a href="javascript:app.setPath('/inbox')">Inbox</a></li>
-                <li><a href="javascript:app.setPath('/addressbook')">Addressbook</a></li>
-                <li><a href="javascript:app.setPath('/addressbook/1234')">Addressbook -&gt; Contact</a></li>
-                <li><a href="javascript:app.setPath('/compose')">Compose</a></li>
-                <li><a href="javascript:app.setPath('/logout')">Logout</a></li>
-            </ul>
-
-        </div>
-        <div class="panel-footer">
-
-        </div>
-    </div>
-</form>
+<ul>
+    <li><a href="javascript:app.setPath('/')">Login</a></li>
+    <li><a href="javascript:app.setPath('/mails')">Mails</a></li>
+    <li><a href="javascript:app.setPath('/mails/inbox')">Mails/Inbox</a></li>
+    <li><a href="javascript:app.setPath('/mails/draft')">Mails/Draft</a></li>
+    <li><a href="javascript:app.setPath('/mails/sent')">Mails/Sent</a></li>
+    <li><a href="javascript:app.setPath('/mails/archive')">Mails/Archive</a></li>
+    <li><a href="javascript:app.setPath('/mails/trash')">Mails/Trash</a></li>
+    <li><a href="javascript:app.setPath('/addressbook')">Addressbook</a></li>
+    <li><a href="javascript:app.setPath('/addressbook/1234')">Addressbook -&gt; Contact</a></li>
+    <li><a href="javascript:app.setPath('/compose')">Compose</a></li>
+    <li><a href="javascript:app.setPath('/logout')">Logout</a></li>
+</ul>
 
 <script src="email.js"></script>
 
