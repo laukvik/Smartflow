@@ -12,8 +12,6 @@
  * - actionSuccess
  * - actionFailed
  *
- * todo State must be connected to {appID}-{userIdentity}-{stateName}
- *
  * @constructor
  */
 
@@ -56,7 +54,7 @@ function Smartflow (main){
     };
     this.closeDialog = function(answer) {
         this._dialogs[ this._dialog ].dialogDisabled(answer);
-        this._main.dialogDisabled(answer);
+        this._main.dialogDisabled(this._dialog, answer);
         this._dialog = undefined;
     };
     //
@@ -224,7 +222,6 @@ function Smartflow (main){
     };
 
     this.setPath = function( path ){
-        console.info("Smartflow:setPath: ", path);
         if (path == "" || path == null || typeof path == "undefined" || path == "/") {
             this._path = [];
         } else {
@@ -296,13 +293,12 @@ function Smartflow (main){
     this.setState = function(state, value, skipPersistence){
         var stateType = this._statesType[ state ];
         if (stateType === "Array") {
-            // todo Add type checking of state types
+            // TODO - Add type checking of state types
         }
         this._states[state] = value;
         if (this._statesPersistence[ state ] === true) {
             // This is required to not re-trigger state persistence
             // when reading from persisting
-            console.info("Persisting: ", state, value);
             localStorage.setItem(state, value);
         }
         this._fireStateChanged(state, value);
