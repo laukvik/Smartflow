@@ -5,3 +5,7 @@ body{
 .smartflow-view{
     display: none;
 }
+
+.selected{
+    background-color: aquamarine;
+}

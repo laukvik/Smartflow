@@ -53,9 +53,8 @@ function LogoutView() {
 
 function MailView() {
     this.folders = ["inbox", "draft", "sent", "archive", "trash"];
-    this.viewInitialized = function (app) {
+    this.viewInitialized = function(app) {
         this._app = app;
-        var self = this._app;
         document.getElementById("mailboxLogoutButton").addEventListener("click", function(){
             app.setPath("/logout");
         });
@@ -66,11 +65,12 @@ function MailView() {
             app.openDialog("ConfirmDelete");
         });
     };
-    this.pathChanged = function (path) {
-        console.info("MailView.stateChanged: ", path);
-        this._app.setState( "folder-selected", path );
+    this.pathChanged = function(path) {
+        console.info("MailView.pathChanged: ", path );
+        var folder = path.length > 1 ? path[ 1 ] : path[ 0 ];
+        this._app.setState( "folder", folder );
     };
-    this.stateChanged = function (state) {
+    this.stateChanged = function(state) {
         console.info("MailView.stateChanged: ", state);
         if (state.name == "inbox") {
             this.updateTable(state.value);
@@ -78,13 +78,13 @@ function MailView() {
         } else if (state.name == "preview") {
             this.updatePreview(state.value);
 
-        } else if (state.name == "folder-selected") {
+        } else if (state.name == "folder") {
 
             console.info("folder: ", state.value );
 
             for (var x=0; x<this.folders.length; x++){
                 var folder = this.folders[ x ];
-                this.updateSelectedFolder( folder, state.value == folder);
+                this.updateFolder( folder, state.value == folder);
             }
 
         } else if (state.name == "mail-selection") {
@@ -122,10 +122,10 @@ function MailView() {
             badge.innerText = data.length == 0 ? "" : data.length;
         }
     };
-    this.updateSelectedFolder = function(stateName, isSelected){
+    this.updateFolder = function(stateName, isSelected){
         var folder = document.getElementById(stateName + "ListItem");
         if (folder){
-            folder.className = isSelected ? "list-group-item active": "list-group-item";
+            folder.className = isSelected ? "list-group-item selected": "list-group-item";
         }
     };
     this.updatePreview = function(data){
@@ -138,6 +138,7 @@ function MailView() {
 
 function ComposeView() {
     this.viewInitialized = function (app) {
+        var self = this;
         document.getElementById("ComposeView-CancelButton").addEventListener("click", function(){
             app.setPath("/mails/inbox");
         });
@@ -151,11 +152,17 @@ function ComposeView() {
             var subject = document.getElementById("ComposeView-Subject").value;
             var msg = document.getElementById("ComposeView-Message").value;
 
-            app.setState("sendmail", {"to": to, "subject": subject, "message": msg});
-
-            app.setPath("/mails/inbox");
+            var action = new SendMailAction( to, subject, msg );
+            app.startAction(action, self);
         });
     }
+    this.actionSuccess = function(results){
+        console.info("ComposeView.actionSuccess: ", results);
+        app.setPath("/mails/inbox");
+    };
+    this.actionFailed = function(results){
+        console.info("ComposeView.actionFailed: ", results);
+    };
 }
 
 function AddressbookView() {
@@ -228,8 +235,27 @@ function ConfirmDialog() {
     }
 }
 
-function SendMailAction(){
+function SendMailAction( to, subject, message ){
+    this.to = to;
+    this.subject = subject;
+    this.message = message;
 
+    this.runAction = function(app){
+        console.info("SendMailAction.runAction");
+        //var arr = app.getState("messages") || [];
+        //arr.push({to: this.to, subject: this.subject, message: this.message, date: new Date()});
+
+        // Progressbar while connecting to server
+        // Show error message when failed
+        // Show ok message if not
+
+    };
+    this.actionSuccess = function(result){
+
+    };
+    this.actionFailed = function(result){
+
+    };
 }
 
 
@@ -242,7 +268,7 @@ app.setLanguage("en");
 app.addView(new LoginView(), "LoginView", "/", []);
 app.addView(new LogoutView(), "LogoutView", "/logout", []);
 app.addView(new AddressbookView(), "AddressbookView", "/addressbook", ["addressbook"] );
-app.addView(new MailView(), "InboxView", "/mails", ["mails", "mail-index", "mail-selection", "preview", "inbox", "draft", "sent", "archive", "trash", "folder-selected"]);
+app.addView(new MailView(), "InboxView", "/mails", ["mails", "mail-index", "mail-selection", "preview", "inbox", "draft", "sent", "archive", "trash", "folder"]);
 app.addView(new ComposeView(), "ComposeView", "/compose", ["compose"]);
 app.addView(new InboxTutorial(), "InboxTutorial", "", [] );
 
@@ -255,7 +281,7 @@ app.registerArray( "archive", [], "A list of emails in the archive folder", fals
 app.registerArray( "trash",   [], "A list of emails in the trash folder", false );
 app.registerArray( "addressbook", [], "A list of contacts for the addressbook", false );
 app.registerJson( "preview", {}, "The selected email", false );
-app.registerString( "folder-selected", "inbox", "The index of the selected folder", true );
+app.registerString( "folder", "inbox", "The index of the selected folder", true );
 app.registerString( "mail-index", 0, "The index of the selected mail", true );
 app.registerString( "mail-selection", 0, "The name of the selected folder", true );
 

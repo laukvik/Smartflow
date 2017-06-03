@@ -12,6 +12,8 @@
  * - actionSuccess
  * - actionFailed
  *
+ * todo State must be connected to {appID}-{userIdentity}-{stateName}
+ *
  * @constructor
  */
 
@@ -73,7 +75,7 @@ function Smartflow (main){
         }
     };
     this.logout = function(){
-        this.setLogin({});
+        this.setLogin();
     };
     //
     //
@@ -170,7 +172,6 @@ function Smartflow (main){
         controller._path = viewPath;
         controller._states = Array.isArray(states) ? states : [];
         this._controllers.push(controller);
-
         if (typeof controller.viewInitialized === "function") {
             controller.viewInitialized(this);
         }
@@ -192,7 +193,7 @@ function Smartflow (main){
             for (var x = 0; x < this._controllers.length; x++) {
                 var ctrl = this._controllers[x];
                 if (typeof ctrl.pathChanged === "function") {
-                    ctrl.pathChanged(this);
+                    ctrl.pathChanged(this._path);
                 }
             }
             //return;
@@ -223,13 +224,13 @@ function Smartflow (main){
     };
 
     this.setPath = function( path ){
+        console.info("Smartflow:setPath: ", path);
         if (path == "" || path == null || typeof path == "undefined" || path == "/") {
             this._path = [];
         } else {
             this._path = path.substr(1).split("/");
         }
         var str = this._path.length == 0 ? "/" : "/" + this._path[ 0 ];
-        //console.info("SetPath: ", this._path, str);
         for (var x = 0; x < this._controllers.length; x++) {
             var ctrl = this._controllers[x];
             if (ctrl._path == str) {
@@ -237,7 +238,7 @@ function Smartflow (main){
             }
         }
         window.location.href = "#" + path;
-        this._main.pathChanged(path);
+        this._main.pathChanged(this._path);
     };
     this.getPath = function(){
         return this._path;
