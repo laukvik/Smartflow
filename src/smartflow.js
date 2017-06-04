@@ -45,12 +45,16 @@ function Smartflow (main){
     };
     this.openDialog = function(name, features) {
         if (this._dialog){
-            console.info("Smartflow: A dialog is already open: ", this._dialog );
+            console.warn("Smartflow: A dialog is already open: ", this._dialog );
             return;
         }
         this._dialog = name;
         this._dialogs[ name ].dialogEnabled(features);
         this._main.dialogEnabled(name, features);
+    };
+    this.updateDialog = function(features) {
+        this._dialogs[ this._dialog ].dialogChanged(features);
+        this._main.dialogChanged(features);
     };
     this.closeDialog = function(answer) {
         this._dialogs[ this._dialog ].dialogDisabled(answer);

@@ -263,18 +263,18 @@
         <!-- Modal content-->
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" id="ConfirmDialogClose" class="close" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title">ConfirmDelete</h4>
+                <button type="button" id="ConfirmDialog-Close" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title" id="ConfirmDialog-Label">ConfirmDelete</h4>
             </div>
-            <div class="modal-body">
-                <p>Are you sure you want to delete?</p>
+            <div class="modal-body" id="ConfirmDialog-Description">
+                <p>Are you sure?</p>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default"
-                        id="ConfirmDialogYes"
+                        id="ConfirmDialog-Yes"
                         data-dismiss="modal">Yes</button>
                 <button type="button" class="btn btn-default"
-                        id="ConfirmDialogNo"
+                        id="ConfirmDialog-No"
                         data-dismiss="modal">No</button>
             </div>
         </div>
@@ -325,7 +325,8 @@
  TODO - Add link on folders - OK
  TODO - Add link on mail in list
  TODO - Make sure that state is persisted
- TODO - Add progressbar when sending email
+ TODO - Add progressbar when sending email - OK
+ TODO - Add positive or negative outcome for send mail / action -
  TODO - Make the action player work again
  TODO - Add help dialog which uses timed animation to explain ui
 //-->

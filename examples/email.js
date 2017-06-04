@@ -6,7 +6,7 @@ function EmailClient() {
         this.setVisible(view, false);
     };
     this.stateChanged = function (state) {
-        console.info("Email.stateChanged: ", state);
+        //console.info("Email.stateChanged: ", state);
     };
     this.loginChanged = function (login) {
         //console.info("Email.loginChanged: ", login);
@@ -17,10 +17,13 @@ function EmailClient() {
     this.startApplication = function(){
     };
     this.dialogEnabled = function(name, features) {
-        console.info("Email.dialogEnabled: ", name, features);
+        //console.info("Email.dialogEnabled: ", name, features);
     };
     this.dialogDisabled = function(name, answer) {
-        console.info("Email.dialogDisabled: ", name, answer);
+        //console.info("Email.dialogDisabled: ", name, answer);
+    };
+    this.dialogChanged = function(features) {
+        //console.info("Email.dialogChanged: ", features);
     };
     this.setVisible = function(viewName, isVisible) {
         document.getElementById(viewName).style.display = isVisible ? "block" : "none";
@@ -61,7 +64,11 @@ function MailView() {
             app.setPath("/compose");
         });
         document.getElementById("mailboxDeleteButton").addEventListener("click", function(){
-            app.openDialog("ConfirmDelete");
+            app.openDialog("ConfirmDelete",
+                {
+                    "label": "Delete",
+                    "description": "Are you sure you want to delete the selected mails?"
+                });
         });
 
         for (var x = 0; x<this.folders.length; x++) {
@@ -75,28 +82,31 @@ function MailView() {
         }
     };
     this.pathChanged = function(path) {
-        console.info("MailView.pathChanged: ", path );
         var folder = path.length > 1 ? path[ 1 ] : path[ 0 ];
         this._app.setState( "folder", folder );
     };
     this.stateChanged = function(state) {
         //console.info("MailView.stateChanged: ", state);
 
-        if (state.name == "inbox") {
-            this.updateTable(state.value);
+        // Badge
+        if (this.folders.indexOf(state.name) > -1) {
+            this.updateBadge(state.name, state.value.length == 0 ? "" : state.value.length);
+        }
 
-        } else if (state.name == "preview") {
+        // Preview
+        if (state.name == "preview") {
             this.updatePreview(state.value);
+        }
 
-        } else if (state.name == "folder") {
-
+        // Left menu high lightning
+        if (state.name == "folder") {
             for (var x=0; x<this.folders.length; x++){
                 var folder = this.folders[ x ];
                 this.updateFolder( folder, state.value == folder);
             }
+        }
 
-        } else if (state.name == "mail-selection") {
-
+        if (state.name == "mail-selection") {
             var el = document.getElementById("inboxMailRows");
             var rows = el.getElementsByTagName("INPUT");
             var arr = state.value;
@@ -105,14 +115,12 @@ function MailView() {
                 rows[ rowIndex ].checked = true;
             }
 
-        } else if (state.name == "mail-index") {
+        } else if (state.name == "mails") {
 
             var el = document.getElementById("inboxMailRows");
             var rows = el.getElementsByTagName("TR");
-            //rows[ state.value ].style.backgroundColor = "#dddddd";
+            rows[ state.value ].style.backgroundColor = "#dddddd";
 
-        } else {
-            this.updateBadge(state.name, state.value);
         }
     };
     this.updateTable = function(data){
@@ -124,10 +132,10 @@ function MailView() {
         }
         el.innerHTML = html;
     };
-    this.updateBadge = function(stateName, data){
+    this.updateBadge = function(stateName, value){
         var badge = document.getElementById(stateName + "Badge");
         if (badge){
-            badge.innerText = data.length == 0 ? "0" : data.length;
+            badge.innerText = value;
         }
     };
     this.updateFolder = function(stateName, isSelected){
@@ -212,21 +220,34 @@ function ConfirmDialog() {
     this._id = "ConfirmDialog";
     this.dialogInitialized = function (app) {
         console.info("ConfirmDialog.viewInitialized: ");
-        document.getElementById(this._id + "Yes").addEventListener("click", function(){
+        document.getElementById(this._id + "-Yes").addEventListener("click", function(){
             app.closeDialog("yes");
         });
-        document.getElementById(this._id + "No").addEventListener("click", function(){
+        document.getElementById(this._id + "-No").addEventListener("click", function(){
             app.closeDialog("no");
         });
-        document.getElementById(this._id + "Close").addEventListener("click", function(){
+        document.getElementById(this._id + "-Close").addEventListener("click", function(){
             app.closeDialog();
         });
     };
-    this.stateChanged = function (state) {
-        console.info("ConfirmDialog.stateChanged: ", state);
+    this.setFeature = function(name, value){
+        if (value != undefined){
+            var el = document.getElementById(this._id + "-" + name);
+            if (el != undefined){
+                el.innerText = value;
+            }
+        }
+    };
+    this.dialogChanged = function (features) {
+        console.info("ConfirmDialog.dialogChanged: ", features, this._id);
+        if (features != undefined){
+            this.setFeature("Label", features.label);
+            this.setFeature("Description", features.description);
+        }
     };
     this.dialogEnabled = function (features) {
-        console.info("ConfirmDialog.dialogEnabled: ", features);
+        //console.info("ConfirmDialog.dialogEnabled: ", features);
+        this.dialogChanged(features);
         //document.getElementById(this._id).querySelector(".modal-body").innerText = "Hei";
         this.setDialogVisible(true);
     };
@@ -245,12 +266,15 @@ function ProgressDialog() {
     this.dialogInitialized = function (app) {
     };
     this.dialogEnabled = function (features) {
-        document.getElementById(this._id + "Text").innerText = features.label;
-        document.getElementById(this._id + "Value").style.width = features.value + "%";
+        this.dialogChanged(features);
         this.setDialogVisible(true);
     };
     this.dialogDisabled = function(answer) {
         this.setDialogVisible(false);
+    };
+    this.dialogChanged = function(features) {
+        document.getElementById(this._id + "Text").innerText = features.label;
+        document.getElementById(this._id + "Value").style.width = features.value + "%";
     };
     this.setDialogVisible = function(isVisible){
         document.getElementById(this._id).style.display = isVisible ? "block" : "none";
@@ -272,19 +296,22 @@ function SendMailAction( to, subject, message ){
         // Progressbar while connecting to server
         // Show error message when failed
         // Show ok message if not
-        app.openDialog("ProgressDialog", {"label": "Sending mail...", "value": 30});
+        app.openDialog("ProgressDialog", {"label": "1/2 Sending email...", "value": 30});
 
-        var self = this;
         setTimeout(function(){
-            //self.actionSuccess();
-            app.closeDialog();
+            app.updateDialog({"label": "2/2 Updating email...", "value": 60});
+        }, 1000);
+
+        setTimeout(function(){
+            app.updateDialog({"label": "2/2 Updating email...", "value": 80});
         }, 2000);
-    };
-    this.actionSuccess = function(result){
-        this._app.closeDialog();
-    };
-    this.actionFailed = function(result){
-        this._app.closeDialog();
+
+        setTimeout(function(){
+            app.updateDialog({"label": "Successfully sent", "value": 100});
+        }, 3000);
+        setTimeout(function(){
+            app.closeDialog();
+        }, 3500);
     };
 }
 
@@ -310,9 +337,10 @@ app.registerArray( "draft",   [], "A list of emails in the draft folder", false 
 app.registerArray( "sent",    [], "A list of emails in the sent folder", false );
 app.registerArray( "archive", [], "A list of emails in the archive folder", false );
 app.registerArray( "trash",   [], "A list of emails in the trash folder", false );
+//app.registerArray( "mails",   [], "A list of emails now seeing", false );
 app.registerArray( "addressbook", [], "A list of contacts for the addressbook", false );
 app.registerJson( "preview", {}, "The selected email", false );
-app.registerString( "folder", "inbox", "The index of the selected folder", true );
+app.registerString( "folder", "inbox", "The name of the selected folder", true );
 app.registerString( "mail-index", 0, "The index of the selected mail", true );
 app.registerString( "mail-selection", 0, "The name of the selected folder", true );
 
