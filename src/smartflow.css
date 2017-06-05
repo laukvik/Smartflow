@@ -25,8 +25,10 @@ body{
 
 .smartflow-documentation{
     border: 1px solid blue;
+    border-radius: 10px;
     background-color: #ffffff;
     padding: 1em;
+    margin: 1em;
 }
 
 .smartflow-documentation TABLE {

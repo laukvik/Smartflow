@@ -424,13 +424,6 @@ function Smartflow (main, id){
 
     this.displayDocumentation = function(){
         var self = this;
-        // Supported languages, missing keys and default language
-        var langHtml = "";
-        Object.keys(this._languages).forEach(function(lang,index) {
-            var langPack = self._languages[ lang ];
-            langHtml += '<tr><td>'+lang+'</td><td>'+ Object.keys(langPack).length +'</td><td>'+ Object.keys(langPack) +'</td></tr>';
-        });
-        langHtml = '<h2>Languages</h2><table><thead><tr><th>Language</th><th>Keys</th><th>Values</th></tr></thead><tbody>'+langHtml + '</tbody></table>';
 
         // State - names, types, persistence
         var stateHtml = "";
@@ -439,9 +432,9 @@ function Smartflow (main, id){
             var statesDescription = self._statesDescription[ stateName ];
             var statesPersistence = self._statesPersistence[ stateName ];
             var statesInitial = self._statesInitial[ stateName ];
-            stateHtml += '<tr><td>'+ stateName +'</td><td>'+ (statesPersistence ? "Yes":"No") +'</td><td>'+ JSON.stringify(statesInitial) +'</td><td>'+ statesDescription +'</td></tr>';
+            stateHtml += '<tr><td class="col-md-3">'+ stateName +'</td><td class="col-md-5">'+ statesDescription +'</td><td class="col-md-1">'+ (statesPersistence ? "Yes":"No") +'</td><td class="col-md-3">'+ JSON.stringify(statesInitial) +'</td></tr>';
         });
-        stateHtml = '<h2>States</h2><table><thead><tr><th>State</th><th>Persistent</th><th>Initial</th><th>Description</th></thead><tbody>' + stateHtml + '</tbody></table>';
+        stateHtml = '<h2>States</h2><table><thead><tr><th class="col-md-3">State</th><th class="col-md-5">Description</th><th class="col-md-1">Persistent</th><th class="col-md-3">Initial</th></thead><tbody>' + stateHtml + '</tbody></table>';
 
         // Views -
         var viewsHtml = "";
@@ -451,39 +444,51 @@ function Smartflow (main, id){
             var viewPath = view._path;
             var viewStates = view._states;
             var viewClass = view.constructor.name;
-            viewsHtml += '<tr><td>'+viewPath+'</td><td>'+viewName+'</td><td>'+ viewClass +'</td><td>'+ JSON.stringify(viewStates) +'</td></tr>';
+            viewsHtml += '<tr><td class="col-md-3">'+viewPath+'</td><td>'+viewName+'</td><td>'+ viewClass +'</td><td>'+ JSON.stringify(viewStates) +'</td></tr>';
         }
-        viewsHtml = '<h2>Views</h2><table><thead><tr><th>Path</th><th>Name</th><th>Class</th><th>State</th></tr></thead><tbody>'+viewsHtml + '</tbody></table>';
+        viewsHtml = '<h2>Views</h2><table><thead><tr><th class="col-md-3">Path</th><th>Name</th><th>Class</th><th>State</th></tr></thead><tbody>'+viewsHtml + '</tbody></table>';
 
 
         // Dialogs -
         var dialogHtml = "";
         Object.keys(this._dialogs).forEach(function(dialogName, index) {
             var d = self._dialogs[ dialogName ];
-            dialogHtml += '<tr><td>'+ d._dialogName +'</td><td>'+ d.constructor.name +'</td><td>'+ d._dialogDescription +'</td></tr>';
+            dialogHtml += '<tr><td class="col-md-3">'+ d._dialogName +'</td><td class="col-md-5">'+ d._dialogDescription +'</td><td>'+ d.constructor.name +'</td></tr>';
         });
-        dialogHtml = '<h2>Dialogs</h2><table><thead><tr><th>Name</th><th>Class</th><th>Description</th></tr></thead><tbody>' + dialogHtml + '</tbody></table>';
+        dialogHtml = '<h2>Dialogs</h2><table><thead><tr><th class="col-md-3">Name</th><th class="col-md-5">Description</th><th>Class</th></tr></thead><tbody>' + dialogHtml + '</tbody></table>';
 
-        // App
-        var mainHtml = "";
-        mainHtml = '<h2>Smartflow ' + this._smartflowVersion + '</h2><p>'+this._main.constructor.name+'</p>';
+
+        // Actions -
+        var actionsHtml = "";
+        Object.keys(this._actions).forEach(function(actionName, index) {
+            var a = self._actions[ actionName ];
+            actionsHtml += '<tr><td class="col-md-3">'+ a.constructor.name +'</td><td>'+ actionName +'</td></tr>';
+        });
+        actionsHtml = '<h2>Actions</h2><table><thead><tr><th class="col-md-3">Name</th><th>Description</th></tr></thead><tbody>' + actionsHtml + '</tbody></table>';
 
 
         // Tutorial -
         var tutorialHtml = "";
         Object.keys(this._tutorials).forEach(function(tutorialName, index) {
             var t = self._tutorials[ tutorialName ];
-            tutorialHtml += '<tr><td>'+ t.name +'</td><td>'+ t.description +'</td><td>'+ t.views +'</td></tr>';
+            tutorialHtml += '<tr><td class="col-md-3">'+ t.name +'</td><td class="col-md-5">'+ t.description +'</td><td class="col-md-4">'+ t.views +'</td></tr>';
         });
-        tutorialHtml = '<h2>Tutorials</h2><table><thead><tr><th>Name</th><th>Description</th><th>Views</th></tr></thead><tbody>' + tutorialHtml + '</tbody></table>';
+        tutorialHtml = '<h2>Tutorials</h2><table><thead><tr><th class="col-md-3">Name</th><th class="col-md-5">Description</th><th class="col-md-4">Views</th></tr></thead><tbody>' + tutorialHtml + '</tbody></table>';
 
-        // Actions -
-        var actionsHtml = "";
-        Object.keys(this._actions).forEach(function(actionName, index) {
-            var a = self._actions[ actionName ];
-            actionsHtml += '<tr><td>'+ a.constructor.name +'</td><td>'+ actionName +'</td></tr>';
+
+        // Supported languages, missing keys and default language
+        var langHtml = "";
+        Object.keys(this._languages).forEach(function(lang,index) {
+            var langPack = self._languages[ lang ];
+            langHtml += '<tr><td class="col-md-3">'+lang+'</td><td class="col-md-5">'+ Object.keys(langPack) +'</td><td class="col-md-4">'+ Object.keys(langPack).length +'</td></tr>';
         });
-        actionsHtml = '<h2>Actions</h2><table><thead><tr><th>Name</th><th>Description</th></tr></thead><tbody>' + actionsHtml + '</tbody></table>';
+        langHtml = '<h2>Languages</h2><table><thead><tr><th class="col-md-3">Language</th><th class="col-md-5">Values</th><th class="col-md-4">Keys</th></tr></thead><tbody>'+langHtml + '</tbody></table>';
+
+        // App
+        var mainHtml = "";
+        mainHtml = '<h1>' + this._main.constructor.name + '</h1><p>Smartflow v'+this._smartflowVersion+'</p>';
+
+
 
         return mainHtml + viewsHtml + actionsHtml + stateHtml + dialogHtml + tutorialHtml + langHtml;
     };
