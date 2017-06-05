@@ -99,19 +99,19 @@
 
                                 <ul class="nav nav-pills nav-stacked">
                                     <li role="presentation" id="inboxListItem">
-                                        <a><span class="glyphicon glyphicon-inbox" aria-hidden="true"></span> Inbox<span class="badge pull-right" id="inboxBadge"></span></a>
+                                        <a role="menuitem"><span class="glyphicon glyphicon-inbox" aria-hidden="true"></span> Inbox<span class="badge pull-right" id="inboxBadge"></span></a>
                                     </li>
                                     <li role="presentation" id="draftListItem">
-                                        <a><span class="glyphicon glyphicon-draft" aria-hidden="true"></span> Draft<span class="badge pull-right" id="draftBadge"></span></a>
+                                        <a role="menuitem"><span class="glyphicon glyphicon-draft" aria-hidden="true"></span> Draft<span class="badge pull-right" id="draftBadge"></span></a>
                                     </li>
                                     <li role="presentation" id="sentListItem">
-                                        <a><span class="glyphicon glyphicon-send" aria-hidden="true"></span> Sent<span class="badge pull-right" id="sentBadge"></span></a>
+                                        <a role="menuitem"><span class="glyphicon glyphicon-send" aria-hidden="true"></span> Sent<span class="badge pull-right" id="sentBadge"></span></a>
                                     </li>
                                     <li role="presentation" id="archiveListItem">
-                                        <a><span class="glyphicon glyphicon-folder-close" aria-hidden="true"></span> Archive<span class="badge pull-right" id="archiveBadge"></span></a>
+                                        <a role="menuitem"><span class="glyphicon glyphicon-folder-close" aria-hidden="true"></span> Archive<span class="badge pull-right" id="archiveBadge"></span></a>
                                     </li>
                                     <li role="presentation" id="trashListItem">
-                                        <a><span class="glyphicon glyphicon-trash" aria-hidden="true"></span> Trash<span class="badge pull-right" id="trashBadge"></span></a>
+                                        <a role="menuitem"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span> Trash<span class="badge pull-right" id="trashBadge"></span></a>
                                     </li>
                                 </ul>
 
@@ -301,22 +301,40 @@
 </div>
 
 
+    <div id="MailTutorial" class="tutorial alert alert-info alert-dismissible" role="alert">
+        <button id="MailTutorialClose" type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <div id="MailTutorial-Step-1" class="tutorial-step" data-delay="1000" data-target-id="inboxListItem">
+            <p>All unread email is here</p>
+        </div>
+        <div id="MailTutorial-Step-2" class="tutorial-step" data-delay="1000" data-target-id="draftListItem">
+            <p>Emails you have started but not sent</p>
+        </div>
+        <div id="MailTutorial-Step-3" class="tutorial-step" data-delay="1000" data-target-id="sentListItem">
+            <p>All previously sent emails are here</p>
+        </div>
+        <div id="MailTutorial-Step-4" class="tutorial-step" data-delay="1000" data-target-id="archiveListItem">
+            <p>All emails archived is here</p>
+        </div>
+        <div id="MailTutorial-Step-5" class="tutorial-step" data-delay="1000" data-target-id="trashListItem">
+            <p>All deleted emails are here</p>
+        </div>
+    </div>
 
 
+    <ul>
+        <li><a href="javascript:app.setPath('/')">Login</a></li>
+        <li><a href="javascript:app.setPath('/mails/inbox')">Mails/Inbox</a></li>
+        <li><a href="javascript:app.setPath('/mails/draft')">Mails/Draft</a></li>
+        <li><a href="javascript:app.setPath('/mails/sent')">Mails/Sent</a></li>
+        <li><a href="javascript:app.setPath('/mails/archive')">Mails/Archive</a></li>
+        <li><a href="javascript:app.setPath('/mails/trash')">Mails/Trash</a></li>
+        <li><a href="javascript:app.setPath('/addressbook')">Addressbook</a></li>
+        <li><a href="javascript:app.setPath('/addressbook/1')">Addressbook -&gt; Contact</a></li>
+        <li><a href="javascript:app.setPath('/compose')">Compose</a></li>
+        <li><a href="javascript:app.setPath('/logout')">Logout</a></li>
+    </ul>
 
-
-<ul>
-    <li><a href="javascript:app.setPath('/')">Login</a></li>
-    <li><a href="javascript:app.setPath('/mails/inbox')">Mails/Inbox</a></li>
-    <li><a href="javascript:app.setPath('/mails/draft')">Mails/Draft</a></li>
-    <li><a href="javascript:app.setPath('/mails/sent')">Mails/Sent</a></li>
-    <li><a href="javascript:app.setPath('/mails/archive')">Mails/Archive</a></li>
-    <li><a href="javascript:app.setPath('/mails/trash')">Mails/Trash</a></li>
-    <li><a href="javascript:app.setPath('/addressbook')">Addressbook</a></li>
-    <li><a href="javascript:app.setPath('/addressbook/1')">Addressbook -&gt; Contact</a></li>
-    <li><a href="javascript:app.setPath('/compose')">Compose</a></li>
-    <li><a href="javascript:app.setPath('/logout')">Logout</a></li>
-</ul>
+<div id="docs" class="smartflow-documentation"></div>
 
 <script src="email.js"></script>
 

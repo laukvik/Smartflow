@@ -9,3 +9,22 @@ body{
 .selected{
     background-color: rgba(0,0,0, 0.05);
 }
+
+
+.tutorial{
+    width: 300px;
+    display: none;
+}
+.tutorial-step{
+    display: none;
+}
+
+[data-tutorial-focus="yes"]{
+    border: 1px solid rgba(255,0,0);
+}
+
+.smartflow-documentation{
+    border: 1px solid blue;
+    background-color: #ffffff;
+    padding: 1em;
+}

@@ -15,22 +15,82 @@
  * @constructor
  */
 
-'use strict';
-
-function Smartflow (main){
+function Smartflow (main, id){
+    this._main = main;
+    this._main._smartflowID = id;
     this._login = {};
     this._path = [];
     this._states = [];
     this._statesType = [];
     this._statesDescription = [];
     this._statesPersistence = [];
-    this._main = main;
+    this._statesInitial = [];
     this._controllers = [];
     this._view = undefined;
     this._dialogs = [];
+    this._tutorials = [];
+    this._tutorialDescriptions = [];
+    this._tutorialsTimer = [];
     this._actionController = undefined;
     this._actionQueue = [];
     this._actionPlayer = undefined;
+    //
+    //
+    // Tutorial
+    //
+    //
+    this.addTutorial = function(tutorial, description){
+        this._tutorials[ tutorial ] = tutorial;
+        this._tutorialDescriptions[ tutorial ] = description;
+    };
+    this.playTutorial = function(tutorialName){
+
+        var self = this;
+        this._tutorialsTimer[ tutorialName ] = setInterval(function(){
+
+            console.info("Starting: ", self._tutorialsTimer[ tutorialName ] );
+
+            var el = document.getElementById(tutorialName);
+            el.style.display = "block";
+            var stepIndex = el.getAttribute("data-step-id");
+            if (!stepIndex || isNaN(stepIndex)){
+                stepIndex = 0;
+            } else {
+                stepIndex = parseInt(stepIndex);
+            }
+
+            var stepsArr = el.querySelectorAll(".tutorial-step");
+            if (stepIndex > 0){
+                var targetID = stepsArr[stepIndex-1].getAttribute("data-target-id");
+                var target = document.getElementById( targetID );
+                target.setAttribute("data-tutorial-focus", "no");
+                stepsArr[ stepIndex-1 ].style.display = "none";
+            }
+
+            if (stepIndex > stepsArr.length - 1){
+                el.style.display = "none";
+                clearInterval( self._tutorialsTimer[ tutorialName ] );
+                el.removeAttribute("data-step-id");
+                console.info("Stopping: ", self._tutorialsTimer[ tutorialName ] );
+            } else {
+                el.setAttribute("data-step-id", stepIndex + 1);
+
+                var step = stepsArr[ stepIndex ];
+                step.style.display = "block";
+
+                var targetID = step.getAttribute("data-target-id");
+                var target = document.getElementById( targetID );
+                target.setAttribute("data-tutorial-focus", "yes");
+
+                var r = target.getBoundingClientRect();
+                el.style.position = "absolute";
+                el.style.left = (r.right + 10) + "px";
+                el.style.top = r.top + "px";
+            }
+
+        }, 1000);
+
+    };
     //
     //
     // Dialogs
@@ -330,6 +390,7 @@ function Smartflow (main){
         this._statesType[ name ] = dataType;
         this._statesDescription[ name ] = description;
         this._statesPersistence[ name ] = persistence;
+        this._statesInitial[ name ] = initialValue;
 
         if (persistence === true) {
             this._states[ name ] = localStorage.getItem(name);
@@ -350,17 +411,65 @@ function Smartflow (main){
     };
 
     this.displayDocumentation = function(){
+        var self = this;
         // Supported languages, missing keys and default language
         var langHtml = "";
+        Object.keys(this._languages).forEach(function(lang,index) {
+            var langPack = self._languages[ lang ];
+            langHtml += '<tr><td>'+lang+'</td><td>'+ Object.keys(langPack).length +'</td></tr>';
+        });
+        langHtml = '<h2>Languages</h2><table border="1"><thead><tr><th>Language</th><th>Keys</th></tr></thead><tbody>'+langHtml + '</tbody></table>';
+
         // State - names, types, persistence
         var stateHtml = "";
+        Object.keys(this._states).forEach(function(stateName,index) {
+            var stateType = self._statesType[ stateName ];
+            var statesDescription = self._statesDescription[ stateName ];
+            var statesPersistence = self._statesPersistence[ stateName ];
+            var statesInitial = self._statesInitial[ stateName ];
+            stateHtml += '<tr><td>'+ stateName +'</td><td>'+ (statesPersistence ? "Yes":"No") +'</td><td>'+ JSON.stringify(statesInitial) +'</td><td>'+ statesDescription +'</td></tr>';
+        });
+        stateHtml = '<h2>States</h2><table border="1"><thead><tr><th>State</th><th>Persistent</th><th>Initial</th><th>Description</th></thead><tbody>' + stateHtml + '</tbody></table>';
+
+        console.info(self._controllers[0]);
+
         // Views -
         var viewsHtml = "";
-        // Paths -
-        var pathHtml = "";
-        // Main -
+        for (var x=0; x<this._controllers.length; x++){
+            var view = this._controllers[ x ];
+            var viewName = view._view;
+            var viewPath = view._path;
+            var viewStates = view._states;
+            var viewClass = view.constructor.name;
+            viewsHtml += '<tr><td>'+viewName+'</td><td>'+ viewClass +'</td><td>'+viewPath+'</td><td>'+ JSON.stringify(viewStates) +'</td></tr>';
+        }
+        viewsHtml = '<h2>Views</h2><table border="1"><thead><tr><th>Name</th><th>Function</th><th>Path</th><th>State</th></tr></thead><tbody>'+viewsHtml + '</tbody></table>';
+
+
+        // Dialogs -
+        var dialogHtml = "";
+        Object.keys(this._dialogs).forEach(function(dialog, index) {
+            dialogHtml += '<tr><td>'+ dialog +'</td><td>'+ dialog.constructor +'</td></tr>';
+        });
+        dialogHtml = '<h2>Dialogs</h2><table border="1"><thead><tr><th>Name</th><th>Function</th></tr></thead><tbody>' + dialogHtml + '</tbody></table>';
+
+        // App
         var mainHtml = "";
-        return langHtml + stateHtml + viewsHtml + pathHtml + mainHtml;
+        mainHtml += '<tr><td>'+ this._main._smartflowID +'</td><td>'+ this._main.constructor.name +'</td></tr>';
+
+        mainHtml = '<h2>Application</h2><table border="1"><thead><tr><th>Name</th><th>Function</th></tr></thead><tbody>' + mainHtml + '</tbody></table>';
+
+
+        // Tutorial -
+        var tutorialHtml = "";
+        Object.keys(this._tutorials).forEach(function(tutorial, index) {
+            var desc = self._tutorialDescriptions[ tutorial ];
+            tutorialHtml += '<tr><td>'+ tutorial +'</td><td>'+ desc +'</td></tr>';
+        });
+        tutorialHtml = '<h2>Tutorials</h2><table border="1"><thead><tr><th>Name</th><th>Function</th></tr></thead><tbody>' + tutorialHtml + '</tbody></table>';
+
+
+        return mainHtml + viewsHtml + stateHtml + dialogHtml + tutorialHtml + langHtml;
     };
 }
 

@@ -63,6 +63,9 @@ function MailView() {
         document.getElementById("mailboxComposeButton").addEventListener("click", function(){
             app.setPath("/compose");
         });
+        document.getElementById("mailboxHelpButton").addEventListener("click", function(){
+            app.playTutorial("MailTutorial")
+        });
         document.getElementById("mailboxDeleteButton").addEventListener("click", function(){
             app.openDialog("ConfirmDelete",
                 {
@@ -208,18 +211,10 @@ function AddressbookView() {
     };
 }
 
-function InboxTutorial() {
-    this.viewInitialized = function (app) {
-    };
-    this.stateChanged = function (state) {
-        console.info("InboxTutorial.stateChanged: ", state);
-    };
-}
 
 function ConfirmDialog() {
     this._id = "ConfirmDialog";
     this.dialogInitialized = function (app) {
-        console.info("ConfirmDialog.viewInitialized: ");
         document.getElementById(this._id + "-Yes").addEventListener("click", function(){
             app.closeDialog("yes");
         });
@@ -315,6 +310,25 @@ function SendMailAction( to, subject, message ){
     };
 }
 
+function Notification(){
+    this._id = "Notification";
+    this.notificationInitialized = function(){
+
+    };
+    this.notificationClose = function(){
+        this.setVisible(false);
+    };
+    this.notificationOpen = function(features) {
+        document.getElementById(this._id + "Label").innerText = features.label;
+        document.getElementById(this._id + "Description").innerText = features.description;
+        this.setVisible(true);
+    };
+    this.setVisible = function(isVisible){
+        document.getElementById(this._id).style.display = isVisible ? "block" : "none";
+        //document.getElementById(this._id).className = isVisible ? "modal fade in" : "modal fade out";
+    }
+}
+
 
 var app = new Smartflow(new EmailClient(), "EmailClient");
 app.setDevelopmentMode(true);
@@ -327,10 +341,6 @@ app.addView(new LogoutView(), "LogoutView", "/logout", []);
 app.addView(new AddressbookView(), "AddressbookView", "/addressbook", ["addressbook"] );
 app.addView(new MailView(), "InboxView", "/mails", ["mails", "mail-index", "mail-selection", "preview", "inbox", "draft", "sent", "archive", "trash", "folder"]);
 app.addView(new ComposeView(), "ComposeView", "/compose", ["compose"]);
-app.addView(new InboxTutorial(), "InboxTutorial", "", [] );
-
-app.addDialog(new ConfirmDialog(), "ConfirmDelete");
-app.addDialog(new ProgressDialog(), "ProgressDialog");
 
 app.registerArray( "inbox",   [], "A list of emails in the inbox folder", false );
 app.registerArray( "draft",   [], "A list of emails in the draft folder", false );
@@ -344,9 +354,15 @@ app.registerString( "folder", "inbox", "The name of the selected folder", true )
 app.registerString( "mail-index", 0, "The index of the selected mail", true );
 app.registerString( "mail-selection", 0, "The name of the selected folder", true );
 
-app.displayDocumentation();
+
+
+app.addDialog(new ConfirmDialog(), "ConfirmDelete");
+app.addDialog(new ProgressDialog(), "ProgressDialog");
+
+app.addTutorial("MailTutorial", "A tutorial for explaining the mail view.");
 
 app.startApplication();
+
 
 var dataInbox = [
     { "date": "2017-01-01", "subject": "I thought it would be easier", "from": "Donald Trump", "body" : "'I loved my previous life. I had so many things going,' Trump told Reuters in an interview. 'This is more work than in my previous life. I thought it would be easier.'" },
@@ -362,3 +378,5 @@ var dataAddressbook = [
 
 app.setState("inbox", dataInbox);
 app.setState("addressbook", dataAddressbook);
+
+document.getElementById("docs").innerHTML = app.displayDocumentation();
