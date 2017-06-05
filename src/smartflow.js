@@ -16,6 +16,7 @@
  */
 
 function Smartflow (main, id){
+    this._smartflowVersion = 0.1;
     this._main = main;
     this._main._smartflowID = id;
     this._login = {};
@@ -29,19 +30,29 @@ function Smartflow (main, id){
     this._view = undefined;
     this._dialogs = [];
     this._tutorials = [];
-    this._tutorialDescriptions = [];
     this._tutorialsTimer = [];
+    this._actions = [];
     this._actionController = undefined;
     this._actionQueue = [];
     this._actionPlayer = undefined;
     //
     //
+    // Action
+    //
+    //
+    this.addAction = function(action, name, description){
+        this._actions[ name ] = action;
+        action._smartflowDescription = description;
+    };
+    //
+    //
     // Tutorial
     //
     //
-    this.addTutorial = function(tutorial, description){
-        this._tutorials[ tutorial ] = tutorial;
-        this._tutorialDescriptions[ tutorial ] = description;
+    this.addTutorial = function(tutorial, description, views){
+        this._tutorials[ tutorial ] = {
+            "name" : tutorial, "description" : description, "views": views
+        };
     };
     this.playTutorial = function(tutorialName){
 
@@ -96,9 +107,10 @@ function Smartflow (main, id){
     // Dialogs
     //
     //
-    this.addDialog = function(dialog, name){
+    this.addDialog = function(dialog, name, description){
         this._dialogs[ name ] = dialog;
         dialog._dialogName = name;
+        dialog._dialogDescription = description;
         if (typeof dialog.dialogInitialized === "function") {
             dialog.dialogInitialized(this);
         }
@@ -416,9 +428,9 @@ function Smartflow (main, id){
         var langHtml = "";
         Object.keys(this._languages).forEach(function(lang,index) {
             var langPack = self._languages[ lang ];
-            langHtml += '<tr><td>'+lang+'</td><td>'+ Object.keys(langPack).length +'</td></tr>';
+            langHtml += '<tr><td>'+lang+'</td><td>'+ Object.keys(langPack).length +'</td><td>'+ Object.keys(langPack) +'</td></tr>';
         });
-        langHtml = '<h2>Languages</h2><table border="1"><thead><tr><th>Language</th><th>Keys</th></tr></thead><tbody>'+langHtml + '</tbody></table>';
+        langHtml = '<h2>Languages</h2><table><thead><tr><th>Language</th><th>Keys</th><th>Values</th></tr></thead><tbody>'+langHtml + '</tbody></table>';
 
         // State - names, types, persistence
         var stateHtml = "";
@@ -429,9 +441,7 @@ function Smartflow (main, id){
             var statesInitial = self._statesInitial[ stateName ];
             stateHtml += '<tr><td>'+ stateName +'</td><td>'+ (statesPersistence ? "Yes":"No") +'</td><td>'+ JSON.stringify(statesInitial) +'</td><td>'+ statesDescription +'</td></tr>';
         });
-        stateHtml = '<h2>States</h2><table border="1"><thead><tr><th>State</th><th>Persistent</th><th>Initial</th><th>Description</th></thead><tbody>' + stateHtml + '</tbody></table>';
-
-        console.info(self._controllers[0]);
+        stateHtml = '<h2>States</h2><table><thead><tr><th>State</th><th>Persistent</th><th>Initial</th><th>Description</th></thead><tbody>' + stateHtml + '</tbody></table>';
 
         // Views -
         var viewsHtml = "";
@@ -441,35 +451,41 @@ function Smartflow (main, id){
             var viewPath = view._path;
             var viewStates = view._states;
             var viewClass = view.constructor.name;
-            viewsHtml += '<tr><td>'+viewName+'</td><td>'+ viewClass +'</td><td>'+viewPath+'</td><td>'+ JSON.stringify(viewStates) +'</td></tr>';
+            viewsHtml += '<tr><td>'+viewPath+'</td><td>'+viewName+'</td><td>'+ viewClass +'</td><td>'+ JSON.stringify(viewStates) +'</td></tr>';
         }
-        viewsHtml = '<h2>Views</h2><table border="1"><thead><tr><th>Name</th><th>Function</th><th>Path</th><th>State</th></tr></thead><tbody>'+viewsHtml + '</tbody></table>';
+        viewsHtml = '<h2>Views</h2><table><thead><tr><th>Path</th><th>Name</th><th>Class</th><th>State</th></tr></thead><tbody>'+viewsHtml + '</tbody></table>';
 
 
         // Dialogs -
         var dialogHtml = "";
-        Object.keys(this._dialogs).forEach(function(dialog, index) {
-            dialogHtml += '<tr><td>'+ dialog +'</td><td>'+ dialog.constructor +'</td></tr>';
+        Object.keys(this._dialogs).forEach(function(dialogName, index) {
+            var d = self._dialogs[ dialogName ];
+            dialogHtml += '<tr><td>'+ d._dialogName +'</td><td>'+ d.constructor.name +'</td><td>'+ d._dialogDescription +'</td></tr>';
         });
-        dialogHtml = '<h2>Dialogs</h2><table border="1"><thead><tr><th>Name</th><th>Function</th></tr></thead><tbody>' + dialogHtml + '</tbody></table>';
+        dialogHtml = '<h2>Dialogs</h2><table><thead><tr><th>Name</th><th>Class</th><th>Description</th></tr></thead><tbody>' + dialogHtml + '</tbody></table>';
 
         // App
         var mainHtml = "";
-        mainHtml += '<tr><td>'+ this._main._smartflowID +'</td><td>'+ this._main.constructor.name +'</td></tr>';
-
-        mainHtml = '<h2>Application</h2><table border="1"><thead><tr><th>Name</th><th>Function</th></tr></thead><tbody>' + mainHtml + '</tbody></table>';
+        mainHtml = '<h2>Smartflow ' + this._smartflowVersion + '</h2><p>'+this._main.constructor.name+'</p>';
 
 
         // Tutorial -
         var tutorialHtml = "";
-        Object.keys(this._tutorials).forEach(function(tutorial, index) {
-            var desc = self._tutorialDescriptions[ tutorial ];
-            tutorialHtml += '<tr><td>'+ tutorial +'</td><td>'+ desc +'</td></tr>';
+        Object.keys(this._tutorials).forEach(function(tutorialName, index) {
+            var t = self._tutorials[ tutorialName ];
+            tutorialHtml += '<tr><td>'+ t.name +'</td><td>'+ t.description +'</td><td>'+ t.views +'</td></tr>';
         });
-        tutorialHtml = '<h2>Tutorials</h2><table border="1"><thead><tr><th>Name</th><th>Function</th></tr></thead><tbody>' + tutorialHtml + '</tbody></table>';
+        tutorialHtml = '<h2>Tutorials</h2><table><thead><tr><th>Name</th><th>Description</th><th>Views</th></tr></thead><tbody>' + tutorialHtml + '</tbody></table>';
 
+        // Actions -
+        var actionsHtml = "";
+        Object.keys(this._actions).forEach(function(actionName, index) {
+            var a = self._actions[ actionName ];
+            actionsHtml += '<tr><td>'+ a.constructor.name +'</td><td>'+ actionName +'</td></tr>';
+        });
+        actionsHtml = '<h2>Actions</h2><table><thead><tr><th>Name</th><th>Description</th></tr></thead><tbody>' + actionsHtml + '</tbody></table>';
 
-        return mainHtml + viewsHtml + stateHtml + dialogHtml + tutorialHtml + langHtml;
+        return mainHtml + viewsHtml + actionsHtml + stateHtml + dialogHtml + tutorialHtml + langHtml;
     };
 }
 

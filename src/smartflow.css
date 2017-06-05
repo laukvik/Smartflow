@@ -28,3 +28,19 @@ body{
     background-color: #ffffff;
     padding: 1em;
 }
+
+.smartflow-documentation TABLE {
+    width: 100%;
+}
+
+.smartflow-documentation TBODY TR:nth-child(odd) {
+    background-color: #eeeeee;
+}
+
+.smartflow-documentation TBODY TR{
+    border-top: 1px solid black;
+}
+
+.smartflow-documentation TD, TH{
+    padding: 0.5em;
+}

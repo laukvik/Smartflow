@@ -332,8 +332,8 @@ function Notification(){
 
 var app = new Smartflow(new EmailClient(), "EmailClient");
 app.setDevelopmentMode(true);
-app.loadLanguage("no", {"welcome": "Velkommen {0} {1}."});
-app.loadLanguage("en", {"welcome": "Welcome {0} {1}."});
+app.loadLanguage("no", {"welcome": "Velkommen {0} {1}.", "answer": "Svar"});
+app.loadLanguage("en", {"welcome": "Welcome {0} {1}.", "question": "Question"});
 app.setLanguage("en");
 
 app.addView(new LoginView(), "LoginView", "/", []);
@@ -355,11 +355,12 @@ app.registerString( "mail-index", 0, "The index of the selected mail", true );
 app.registerString( "mail-selection", 0, "The name of the selected folder", true );
 
 
-
-app.addDialog(new ConfirmDialog(), "ConfirmDelete");
+app.addDialog(new ConfirmDialog(), "ConfirmDelete", "A confirmation dialog");
 app.addDialog(new ProgressDialog(), "ProgressDialog");
 
-app.addTutorial("MailTutorial", "A tutorial for explaining the mail view.");
+app.addTutorial("MailTutorial", "A tutorial for explaining the mail view.", ["InboxView"]);
+
+app.addAction(new SendMailAction(), "Sends emails from the MailView");
 
 app.startApplication();
 
