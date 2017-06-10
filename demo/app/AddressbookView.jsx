@@ -1,3 +1,6 @@
+import * as React from "react";
+
+
 function AddressbookView() {
     this.viewInitialized = function (app) {
         //console.info("AddressbookView.viewInitialized: ");
@@ -26,6 +29,22 @@ function AddressbookView() {
         }
         el.innerHTML = html;
     };
+}
+
+
+class AddressbookViewReact extends React.Component {
+  render() {
+    return (
+      <div className="shopping-list">
+        <h1>Shopping List</h1>
+        <ul>
+          <li>Instagram</li>
+          <li>WhatsApp</li>
+          <li>Oculus</li>
+        </ul>
+      </div>
+    );
+  }
 }
 
 module.exports = AddressbookView;

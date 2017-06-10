@@ -1,6 +1,6 @@
 var Smartflow = require('../../smartflow');
 var EmailClient = require('./EmailClient');
-var AddressbookView = require('./AddressbookView');
+var AddressbookView = require('./AddressbookView.jsx');
 var ComposeView = require('./ComposeView');
 var ConfirmDialog = require('./ConfirmDialog');
 var LoginView = require('./LoginView');
