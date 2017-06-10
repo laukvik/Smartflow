@@ -1,24 +1,12 @@
 /**
- * Smartflow
- *
- * Controller events:
- * - viewInitialized
- * - viewEnabled
- * - viewDisabled
- * - pathChanged
- * - languageChanged
- * - loginChanged
- * - actionStarted
- * - actionSuccess
- * - actionFailed
+ * Smartflow application
  *
  * @constructor
  */
-
-function Smartflow (main, id){
+function Smartflow(){
     this._smartflowVersion = 0.1;
-    this._main = main;
-    this._main._smartflowID = id;
+    this._main = new SmartflowMain();
+    this._main._smartflowID = SmartflowMain.prototype.name;
     this._login = {};
     this._path = [];
     this._states = [];
@@ -35,6 +23,10 @@ function Smartflow (main, id){
     this._actionController = undefined;
     this._actionQueue = [];
     this._actionPlayer = undefined;
+    this.setMain = function(main, id){
+        this._main = main;
+        this._main._smartflowID = id;
+    },
     //
     //
     // Action
@@ -140,13 +132,18 @@ function Smartflow (main, id){
     //
     this.setLogin = function(login){
         this._login = login;
-        this._main.loginChanged( this._login );
+        if (typeof  this._main != "undefined"){
+            this._main.loginChanged( this._login );
+        }
         for (var x = 0; x < this._controllers.length; x++) {
             var ctrl = this._controllers[x];
             if (typeof ctrl.loginChanged === "function") {
                 ctrl.loginChanged( this._login );
             }
         }
+    };
+    this.getLogin = function(){
+        return this._login;
     };
     this.logout = function(){
         this.setLogin();
@@ -176,6 +173,9 @@ function Smartflow (main, id){
         this._languages[ isoLanguage ] = translation;
     };
     this._language = undefined;
+    this.getLanguage = function(){
+        return this._language;
+    };
     this.setLanguage = function(isoLanguage){
         if (this._language == isoLanguage){
             return;
@@ -462,9 +462,9 @@ function Smartflow (main, id){
         var actionsHtml = "";
         Object.keys(this._actions).forEach(function(actionName, index) {
             var a = self._actions[ actionName ];
-            actionsHtml += '<tr><td class="col-md-3">'+ a.constructor.name +'</td><td>'+ actionName +'</td></tr>';
+            actionsHtml += '<tr><td class="col-md-3">'+ a.constructor.name +'</td><td class="col-md-5">'+ actionName +'</td><td>'+ "" +'</td><td>'+ "" +'</td></tr>';
         });
-        actionsHtml = '<h2>Actions</h2><table><thead><tr><th class="col-md-3">Name</th><th>Description</th></tr></thead><tbody>' + actionsHtml + '</tbody></table>';
+        actionsHtml = '<h2>Actions</h2><table><thead><tr><th class="col-md-3">Name</th><th class="col-md-5">Description</th><th>Type</th><th>URL</th></tr></thead><tbody>' + actionsHtml + '</tbody></table>';
 
 
         // Tutorial -
@@ -488,141 +488,33 @@ function Smartflow (main, id){
         var mainHtml = "";
         mainHtml = '<h1>' + this._main.constructor.name + '</h1><p>Smartflow v'+this._smartflowVersion+'</p>';
 
-
-
         return mainHtml + viewsHtml + actionsHtml + stateHtml + dialogHtml + tutorialHtml + langHtml;
     };
 }
 
-/**
- * ActionList
- *
- *
- * @constructor
- */
-function ActionList(){
 
-    this._actions = [];
-    this._names = [];
-    this._dependencies = [];
-
-    this.addAction = function(action, name, dependencies) {
-        action._actionName = name;
-        action._actionDependencies = dependencies;
-        this._actions.push(action);
-    }
+function SmartflowMain() {
+    this.viewEnabled = function (view) {
+    };
+    this.viewDisabled = function (view) {
+    };
+    this.stateChanged = function (state) {
+    };
+    this.loginChanged = function (login) {
+    };
+    this.pathChanged = function (path) {
+    };
+    this.startApplication = function(){
+    };
+    this.dialogEnabled = function(name, features) {
+    };
+    this.dialogDisabled = function(name, answer) {
+    };
+    this.dialogChanged = function(features) {
+    };
+    this.setVisible = function(viewName, isVisible) {
+    };
 }
 
-/**
- * ActionPlayer
- *
- *
- * @param application
- * @constructor
- */
-function ActionPlayer(application){
-
-    this.STATUS_NOT_STARTED = 0;
-    this.STATUS_RUNNING     = 1;
-    this.STATUS_SUCCESS     = 2;
-    this.STATUS_FAILED      = -1;
-    this.STATUS_HALTED      = -2;
-
-    this._application = application;
-    this._actionStatus = this.STATUS_NOT_STARTED;
-    this._actionInterval = undefined;
-    this._action = undefined;
-
-    this.startAction = function(action) {
-        this._action = action;
-        var self = this;
-        var actions = this._action._actionList._actions;
-        for (var x = 0; x < actions.length; x++) {
-            var a = actions[x];
-            a._actionStatus = self.STATUS_NOT_STARTED;
-        }
-        this._actionInterval = setInterval(function () {
-            self._runNotCompleted();
-        }, 1000);
-        this._actionStatus = this.STATUS_RUNNING;
-    };
-
-    this.fireSuccess = function() {
-        this._application.actionSuccess(this._action);
-    };
-
-    this.fireFailed = function() {
-        this._application.actionFailed(this._action);
-    };
-
-    this.actionSuccess = function(action) {
-        // console.info("Player.actionSuccess", action);
-        action._actionStatus = this.STATUS_SUCCESS;
-    };
-
-    this.actionFailed = function(action) {
-        // console.info("Player.actionFailed", action);
-        action._actionStatus = this.STATUS_FAILED;
-    };
-
-    this._getActionByName = function(actionName) {
-        var arr = this._action._actionList._actions;
-        for (var x = 0; x < arr.length; x++) {
-            var a = arr[x];
-            if (a._actionName === actionName) {
-                return a;
-            }
-        }
-        return null;
-    };
-
-    this._runNotCompleted = function() {
-        var actions = this._action._actionList._actions;
-        var max = actions.length;
-        var remaining = 0;
-        var failed = 0;
-        var success = 0;
-        for (var x = 0; x < max; x++) {
-            var a = actions[x];
-            failed += (a._actionStatus === this.STATUS_FAILED ? 1 : 0);
-            remaining += (a._actionStatus === this.STATUS_NOT_STARTED ? 1 : 0);
-            success += (a._actionStatus === this.STATUS_SUCCESS ? 1 : 0);
-        }
-        if (remaining === 0) {
-            clearInterval(this._actionInterval);
-            this.fireSuccess();
-        } else if (failed > 0) {
-            clearInterval(this._actionInterval);
-            this.fireFailed();
-        } else {
-            for (var x = 0; x < max; x++) {
-                var a = actions[x];
-                if (a._actionStatus === this.STATUS_NOT_STARTED) {
-                    // Check dependencies
-                    var depArray = a._actionDependencies;
-                    if (Array.isArray(depArray) && depArray.length > 0) {
-                        // Dependencies
-                        var missingDependency = false;
-                        for (var y = 0; y < depArray.length; y++) {
-                            var dependantActionName = depArray[y];
-                            var dependantAction = this._getActionByName(dependantActionName);
-                            if (dependantAction._actionStatus !== this.STATUS_SUCCESS) {
-                                missingDependency = true;
-                            }
-                        }
-                        if (missingDependency === false) {
-                            a._actionStatus = this.STATUS_RUNNING;
-                            a.runAction(this);
-                        }
-                    } else {
-                        // No dependencies
-                        a._actionStatus = this.STATUS_RUNNING;
-                        a.runAction(this);
-                    }
-                }
-            }
-        }
-    };
-
-}
+module.exports = Smartflow;
 

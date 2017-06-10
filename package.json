@@ -1,10 +1,13 @@
 {
   "name": "smartflow",
   "version": "0.1.1-alpha",
-  "description": "JavaScript API for controlling application flow.",
+  "description": "Easy to use application flow management.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest smartflow.js",
+    "watch": "jest --watch",
+    "coverage": "jest ./smartflow*.js --coverage",
+    "eslint": "eslint smartflow.js"
   },
   "repository": {
     "type": "git",
@@ -23,5 +26,16 @@
   "homepage": "https://github.com/laukvik/Smartflow#readme",
   "dependencies": {
     "bootstrap": "^3.3.7"
-  }
+  },
+  "devDependencies": {
+    "eslint": "^3.19.0",
+    "eslint-config-google": "^0.8.0",
+    "jest": "^20.0.4",
+    "jest-cli": "^20.0.4",
+    "webpack": "^2.6.1"
+  },
+  "files": [
+    "smartflow.js",
+    "LICENSE"
+  ]
 }
