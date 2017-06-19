@@ -84,6 +84,11 @@
       color: rgba(91,134,103,0.51)
     }
 
+    .action__wait .glyphicon{
+      color: rgba(191,85,56,1);
+      color: rgba(227,136,50, 0.5);
+    }
+
     .action__multi{
       margin-top: 1em;
       sborder: 1px solid rgba(123,175,135,0.51);
@@ -132,7 +137,6 @@
 </head>
 <body>
 
-
 <div class=" container-fluid">
 
   <div class="row">
@@ -143,61 +147,63 @@
         </h1>
       </div>
     </div>
+
   </div>
 
-  <div class="row">
-    <div class="col-md-12">
-      <h4>Code</h4>
-      <pre>
-SmartAction( state ){
-}
-      </pre>
-    </div>
-  </div>
+
 
   <div class="view row"><a name="InboxController"></a>
 
     <div class="actions actions__in col-md-3">
 
+      <!--actions : in -->
+
       <div class="action action__out row green">
         <div class="col-md-2  action__icon"><span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span></div>
         <div class="col-md-10">
-          <div class="action__class">GotoMailboxAction.js</div>
-          <div class="action__state">inbox
+          <div class="action__class">StartAction.js</div>
+          <div class="action__state"></div>
+          <div class="action__view">MailboxController.js</div>
+        </div>
+        <div class="col-md-12">
+          <div class="action__multi" style="">
 
-            <div class="action__multi" style="display: none">
-              <div class="action action__in row">
-                <div class="col-md-2  action__icon"><span class="glyphicon glyphicon-download"aria-hidden="true"></span></div>
-                <div class="col-md-10">
-                  <div class="action__class">GetFoldersAction.js</div>
-                  <div class="action__state">folder-list</div>
-                </div>
+            <!--Multi action-->
+
+
+            <div class="action action__in row">
+              <div class="col-md-2  action__icon"><span class="glyphicon glyphicon-download"aria-hidden="true"></span></div>
+              <div class="col-md-10">
+                <div class="action__class">LoginAction.js</div>
+                <div class="action__state">login</div>
               </div>
-
-              <div class="action action__in row">
-                <div class="col-md-2  action__icon"><span class="glyphicon glyphicon-download"aria-hidden="true"></span></div>
-                <div class="col-md-10">
-                  <div class="action__class">GetMailsAction.js</div>
-                  <div class="action__state">mail-list</div>
-                </div>
+            </div>
+            <div class="action action__in row">
+              <div class="col-md-2  action__icon"><span class="glyphicon glyphicon-download"aria-hidden="true"></span></div>
+              <div class="col-md-10">
+                <div class="action__class">GetFoldersAction.js</div>
+                <div class="action__state">folder-list</div>
+                <div class="action__wait"><span class="glyphicon glyphicon-time"aria-hidden="true"></span> LoginAction.js</div>
               </div>
-
-              <div class="action action__in row">
-                <div class="col-md-2  action__icon"><span class="glyphicon glyphicon-user"aria-hidden="true"></span></div>
-                <div class="col-md-10">
-                  <div class="action__class">SetMailSelection.js</div>
-                  <div class="action__state">
-                    mail-selected
-                    <span class="glyphicon glyphicon-arrow-left"aria-hidden="true"></span>
-                    folder-list, mail-list
-                  </div>
-                </div>
+            </div>
+            <div class="action action__in row">
+              <div class="col-md-2  action__icon"><span class="glyphicon glyphicon-download" aria-hidden="true"></span></div>
+              <div class="col-md-10">
+                <div class="action__class">GotoFolderAction.js</div>
+                <div class="action__state">folder-selected</div>
+                <div class="action__wait"><span class="glyphicon glyphicon-time"aria-hidden="true"></span> GetFoldersAction.js</div>
               </div>
-
+            </div>
+            <div class="action action__in row">
+              <div class="col-md-2  action__icon"><span class="glyphicon glyphicon-download"aria-hidden="true"></span></div>
+              <div class="col-md-10">
+                <div class="action__class">GetMailsAction.js</div>
+                <div class="action__state">mail-list</div>
+                <div class="action__wait"><span class="glyphicon glyphicon-time"aria-hidden="true"></span> GotoFolderAction.js</div>
+              </div>
             </div>
 
           </div>
-          <div class="action__view">MailboxController.js</div>
         </div>
       </div>
 
@@ -227,12 +233,14 @@ SmartAction( state ){
         <div class="state col-md-3 blue">mail-selected</div>
       </div>
 
+      <div style="display: none">
       <h4>Activation <small>- The controller will be activated when these states changes.</small></h4>
       <div class="activations row">
         <div class="activation col-md-3 yellow">folder-list</div>
         <div class="activation col-md-3 yellow">folder-selected</div>
         <div class="activation col-md-3 yellow">mail-list</div>
         <div class="activation col-md-3 yellow">mail-selected</div>
+      </div>
       </div>
 
 
@@ -241,17 +249,9 @@ SmartAction( state ){
         <div class="listen col-md-3 red">login</div>
       </div>
 
-      <h4>Events</h4>
-      <div class="events">
-        <div class="event">runAction( new GotoInboxFolderAction() );</div>
-        <div class="event">actionFailed( action );</div>
-      </div>
-
-
-
     </div>
     <div class="actions actions__out col-md-3">
-      <!--actions -->
+      <!--actions : out -->
 
       <div class="action action__out row green">
         <div class="col-md-2  action__icon"><span class="glyphicon glyphicon-download" aria-hidden="true"></span></div>
@@ -275,7 +275,7 @@ SmartAction( state ){
         <div class="col-md-10">
           <div class="action__class">ComposeMailAction.js</div>
           <div class="action__state">mail-compose</div>
-          <div class="action__view"><span class="glyphicon glyphicon-new-window" aria-hidden="true"></span> ComposeController.js</div>
+          <div class="action__view">ComposeController.js</div>
         </div>
       </div>
 
@@ -284,9 +284,13 @@ SmartAction( state ){
         <div class="col-md-10">
           <div class="action__class">LogoutAction.js</div>
           <div class="action__state">login</div>
-          <div class="action__view">LoginController.js</div>
+          <div class="action__view">
+            <span class="glyphicon glyphicon-arrow-down" style="text-align: center" aria-hidden="true"></span>
+            <div>LoginController.js</div>
+          </div>
         </div>
       </div>
+
     </div>
 
   </div>
@@ -294,6 +298,87 @@ SmartAction( state ){
 </div>
 
 
+<div class="col-md-12">
+
+  <h3>State</h3>
+  <table class="table table-striped">
+    <thead>
+    <tr>
+      <th>Name</th>
+      <th>Initial</th>
+      <th>Storage</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+      <td>folder</td>
+      <td>[]</td>
+      <td>no</td>
+    </tr>
+    </tbody>
+  </table>
+
+  <h3>Language support</h3>
+  <li>no</li>
+  <li>en</li>
+
+  <h3>API</h3>
+  <table class="table table-striped">
+    <thead>
+    <tr>
+      <th>Name</th>
+      <th>URL</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+      <td>mails</td>
+      <td>/api/mails/{0}?index={1}&count={2}</td>
+    </tr>
+    </tbody>
+  </table>
+
+</div>
+
+<div class="row">
+  <div class="col-md-12">
+    <h4>Code</h4>
+    <pre>
+GotoFolderAction( folder, index, count ){
+  this._flowState = "folder-selected";
+  this._flowValue = [ folder, index, count ];
+  this._flowAPI = "mails";
+  // /api/mails/{0}?index={1}&count={2}
+  this._flowMethod = "get;
+  this._flowView = "MailboxController";
+}</pre>
+
+    <pre>
+Smartflow(){
+  this.runAction = function( action ){
+      var req = new SmartRequest( action );
+
+      if (req.isSuccess()){
+        this.setState( action._flowState, req._flowResults );
+        this.setView( action._flowView );
+      } else {
+        this._view.actionFailed( action, req._flowResults );
+      }
+  }
+}
+SmartRequest( action ){
+}
+
+MailboxController(){
+  this.actionFailed = function( action, value ){
+
+  }
+}
+</pre>
+  </div>
+</div>
+
+Applikasjonen startes med en StartAction som velger rett view og state.
 
 </body>
 </html>
