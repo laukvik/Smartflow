@@ -1,3 +1,5 @@
 .idea/
 Smartflow.iml
 node_modules/
+demo/node_modules
+/demo/build/
