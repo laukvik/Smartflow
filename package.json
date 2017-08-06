@@ -8,7 +8,7 @@
     "watch": "jest --watch",
     "www": "npm run start",
     "coverage": "jest ./src/  --coverage",
-    "eslint": "eslint ./src/"
+    "eslint": "eslint ./src/*.js"
   },
   "repository": {
     "type": "git",

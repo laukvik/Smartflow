@@ -3,6 +3,22 @@
 <head>
   <meta charset="UTF-8">
   <title>Smartflow</title>
+  <style>
+    .smartflow-logo{
+      color: #62defd;
+      font-family: Helvetica, Arial, sans-serif, "Helvetica Neue";
+    }
+    .smartflow-logo span{
+      color: black;
+    }
+    .smartflow-tagline{
+      color: #ffffff;
+    }
+    body{
+      background-color: #00408d;
+      padding: 2em;
+    }
+  </style>
   <script>
     function module(){
         this.exports = function(){
@@ -13,39 +29,12 @@
 </head>
 <body>
 
-  <h1>Smartflow</h1>
+  <h1 class="smartflow-logo">Smartflow <span>js</span></h1>
+  <p class="smartflow-tagline">JavaScript API for controlling application flow</p>
 
 
 
-<script>
-
-  // ----------------------------- APP ------------------------------------------
-
-  var reqLogin = new SmartflowRequest("/api/login");
-  var reqCategories = new SmartflowRequest("/api/categories");
-  var reqAddressbook = new SmartflowRequest("/api/addressbook");
-  var reqQuote = new SmartflowRequest("/api/quote");
-
-
-  var actionWithRequests = new SmartflowAction();
-  actionWithRequests.addRequest( reqLogin );
-  actionWithRequests.addRequest( reqCategories );
-  actionWithRequests.addRequest( reqAddressbook );
-  actionWithRequests.addRequest( reqQuote );
-
-  function HelloWorldAction(){
-    this.runAction = function(){
-      console.info("HelloWorldAction: ");
-    };
-  }
-
-  var actionSimple = new HelloWorldAction();
-
-  var app = new SmartflowApplication();
-  app.startAction( actionWithRequests );
-  app.startAction( actionSimple );
-
-</script>
+<script src="app.js"></script>
 
 </body>
 </html>

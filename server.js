@@ -64,6 +64,11 @@ const server = http.createServer((req, res) => {
       html(res, data);
     });
 
+  } else if (path === '/app.js') {
+    fs.readFile('./public/app.js', (err, data) => {
+      html(res, data);
+    });
+
   } else if (path.startsWith('/node_modules')) {
     const contentType= findMimeType(path);
 

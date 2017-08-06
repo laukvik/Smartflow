@@ -19,13 +19,13 @@ function SmartflowApplication() {
   this._action = null;
   this._actionQueue = [];
   this.startAction = function(action) {
-    console.info('SmartflowApplication: Adding ', action, this._actionQueue);
+    //console.info('SmartflowApplication: Adding ', action, this._actionQueue);
     this._actionQueue.push(action);
     this._runQueuedActions();
   };
   this._runQueuedActions = function() {
     if (this._actionQueue.length > 0) {
-      console.info('SmartflowApplication: Run ', this._action);
+      //console.info('SmartflowApplication: Run ', this._action);
       this._action = this._actionQueue.shift();
 
       let tmp = this._action;
@@ -47,7 +47,7 @@ function SmartflowApplication() {
         this.fireSuccess();
       }
     } else {
-      console.info('SmartflowApplication: No actions in queue');
+      //console.info('SmartflowApplication: No actions in queue');
     }
   };
   this.fireSuccess = function() {
@@ -64,12 +64,10 @@ function SmartflowApplication() {
     let max = actions.length;
     let remaining = 0;
     let failed = 0;
-    let success = 0;
     for (var x = 0; x < max; x++) {
       var a = actions[x];
       failed += (a._actionStatus === this.STATUS_FAILED ? 1 : 0);
       remaining += (a._actionStatus === this.STATUS_NOT_STARTED ? 1 : 0);
-      success += (a._actionStatus === this.STATUS_SUCCESS ? 1 : 0);
     }
     if (remaining === 0) {
       clearInterval(this._actionInterval);
@@ -78,11 +76,11 @@ function SmartflowApplication() {
       clearInterval(this._actionInterval);
       this.fireFailed();
     } else {
-      for (var x = 0; x < max; x++) {
-        var a = actions[x];
-        if (a._actionStatus === this.STATUS_NOT_STARTED) {
-          a._actionStatus = this.STATUS_RUNNING;
-          a.connect(this);
+      for (var z = 0; z < max; z++) {
+        var a2 = actions[z];
+        if (a2._actionStatus === this.STATUS_NOT_STARTED) {
+          a2._actionStatus = this.STATUS_RUNNING;
+          a2.connect(this);
         }
       }
     }
@@ -107,23 +105,16 @@ function SmartflowRequest(url) {
   this._url = url;
   this.connect = function() {
     let self = this;
-
-    if (window.XMLHttpRequest) {
-      // code for modern browsers
-      this._request = new XMLHttpRequest();
-    } else {
-      // code for old IE browsers
-      this._request = new ActiveXObject('Microsoft.XMLHTTP');
-    }
+    this._request = new XMLHttpRequest();
     this._request.onreadystatechange = function() {
       if (this.readyState === self.READY_STATE_UNSENT) {
-
+        this.status(this.readyState);
       } else if (this.readyState === self.READY_STATE_OPENED) {
-
+        this.status(this.readyState);
       } else if (this.readyState === self.READY_STATE_HEADERS_RECEIVED) {
-
+        this.status(this.readyState);
       } else if (this.readyState === self.READY_STATE_LOADING) {
-
+        this.status(this.readyState);
       } else if (this.readyState === self.READY_STATE_DONE) {
         let statusCode = parseInt(this.status);
 
@@ -158,11 +149,14 @@ function SmartflowRequest(url) {
     this._request.send();
   };
   this.onError = function(response) {
-    console.info('Error: ', response);
+    this._smartflowResponse = response;
   };
   this.onSuccess = function(response) {
-    console.info('Success: ', response);
+    this._smartflowResponse = response;
   };
+  this.status = function(status){
+    this._smartflowStatus = status;
+  }
 }
 
 /**
@@ -175,8 +169,8 @@ function SmartflowAction() {
   this.addRequest = function(request) {
     this._smartflowActions.push(request);
   };
-  this.runAction = function() {
-    console.info('SmartflowAction: ', this);
+  this.runAction = function () {
+    //console.info('SmartflowAction: ', this);
   };
 }
 
