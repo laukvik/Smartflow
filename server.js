@@ -55,7 +55,7 @@ const server = http.createServer((req, res) => {
       '</ul></body></html>');
 
   } else if (path === '/index.html') {
-    fs.readFile('./src/index.html', (err, data) => {
+    fs.readFile('./public/index.html', (err, data) => {
       html(res, data);
     });
 

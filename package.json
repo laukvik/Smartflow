@@ -4,10 +4,10 @@
   "description": "Easy to use application flow management.",
   "main": "src/smartflow.js",
   "scripts": {
-    "test": "jest smartflow.js",
+    "test": "jest ./src/ --silent",
     "watch": "jest --watch",
-    "coverage": "jest ./smartflow*.js --coverage",
-    "eslint": "eslint smartflow.js"
+    "coverage": "jest ./src/  --coverage",
+    "eslint": "eslint ./src/"
   },
   "repository": {
     "type": "git",

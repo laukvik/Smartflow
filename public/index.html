@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Smartflow</title>
+  <script>
+    function module(){
+        this.exports = function(){
+        }
+    }
+  </script>
+  <script src="smartflow.js"></script>
+</head>
+<body>
+
+  <h1>Smartflow</h1>
+
+
+
+<script>
+
+  // ----------------------------- APP ------------------------------------------
+
+  var reqLogin = new SmartflowRequest("/api/login");
+  var reqCategories = new SmartflowRequest("/api/categories");
+  var reqAddressbook = new SmartflowRequest("/api/addressbook");
+  var reqQuote = new SmartflowRequest("/api/quote");
+
+
+  var actionWithRequests = new SmartflowAction();
+  actionWithRequests.addRequest( reqLogin );
+  actionWithRequests.addRequest( reqCategories );
+  actionWithRequests.addRequest( reqAddressbook );
+  actionWithRequests.addRequest( reqQuote );
+
+  function HelloWorldAction(){
+    this.runAction = function(){
+      console.info("HelloWorldAction: ");
+    };
+  }
+
+  var actionSimple = new HelloWorldAction();
+
+  var app = new SmartflowApplication();
+  app.startAction( actionWithRequests );
+  app.startAction( actionSimple );
+
+</script>
+
+</body>
+</html>
