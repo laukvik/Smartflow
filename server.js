@@ -72,8 +72,9 @@ const server = http.createServer((req, res) => {
     });
 
   } else if (path === '/favicon.ico') {
-    res.statusCode = 403;
-    res.end;
+    fs.readFile('./public/favicon.ico', (err, data) => {
+      out(res, "image/x-icon", data);
+    });
 
     // ------------------ SAMPLES -----------------------------
 

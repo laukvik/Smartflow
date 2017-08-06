@@ -6,6 +6,7 @@
   "scripts": {
     "test": "jest ./src/ --silent",
     "watch": "jest --watch",
+    "www": "npm run start",
     "coverage": "jest ./src/  --coverage",
     "eslint": "eslint ./src/"
   },
