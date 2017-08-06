@@ -52,11 +52,13 @@ function SmartflowApplication() {
   };
   this.fireSuccess = function() {
     this._action = null;
-    // this._runQueuedActions();
   };
   this.fireFailed = function() {
     this._action = null;
-    // this._runQueuedActions();
+  };
+
+  this.fireRequestSuccess = function(request) {
+    console.info("fireRequestSuccess");
   };
   this._runNotCompleted = function(act) {
     // var actions = this._action._smartflowActions;
@@ -103,18 +105,19 @@ function SmartflowRequest(url) {
   this.READY_STATE_DONE = 4;
 
   this._url = url;
-  this.connect = function() {
+  this.connect = function(app) {
     let self = this;
+    this._smartflowApp = app;
     this._request = new XMLHttpRequest();
     this._request.onreadystatechange = function() {
       if (this.readyState === self.READY_STATE_UNSENT) {
-        this.status(this.readyState);
+        self.status(self.readyState);
       } else if (this.readyState === self.READY_STATE_OPENED) {
-        this.status(this.readyState);
+        self.status(self.readyState);
       } else if (this.readyState === self.READY_STATE_HEADERS_RECEIVED) {
-        this.status(this.readyState);
+        self.status(self.readyState);
       } else if (this.readyState === self.READY_STATE_LOADING) {
-        this.status(this.readyState);
+        self.status(self.readyState);
       } else if (this.readyState === self.READY_STATE_DONE) {
         let statusCode = parseInt(this.status);
 
@@ -125,6 +128,7 @@ function SmartflowRequest(url) {
           // success
           let contentType = this.getResponseHeader('content-type');
           if (contentType === '') {
+            //self._smartflowApp.fireRequestSuccess(this);
             self.onSuccess(this.response);
           } else if (contentType.indexOf('json') > -1) {
             self.onSuccess(JSON.parse(this.response));

@@ -17,6 +17,36 @@
     body{
       background-color: #00408d;
       padding: 2em;
+      font-family: Helvetica, Arial, sans-serif, "Helvetica Neue";
+    }
+    .request{
+      width: 10em;
+      padding: 1.5em;
+      background-color: #00376e;
+      text-align: center;
+      color: white;
+      border-radius: 10px;
+      //float: left;
+      margin-right: 1em;
+      margin-bottom: 1em;
+    }
+    .success{
+      background-color: green;
+    }
+    .failed{
+      background-color: red;
+    }
+    button{
+      padding: 1em;
+    }
+    .demo-content{
+      background-color: #002d5a;
+      height: 500px;
+      padding: 0.5em;
+      border: 1px solid black;
+    }
+    .demo-controller{
+      margin-bottom: 1em;
     }
   </style>
   <script>
@@ -32,9 +62,15 @@
   <h1 class="smartflow-logo">Smartflow <span>js</span></h1>
   <p class="smartflow-tagline">JavaScript API for controlling application flow</p>
 
+  <div class="demo">
+    <div class="demo-controller" style="clear: both">
+      <button onclick="runDemo()">Run demo</button>
+    </div>
+    <div id="demoPanel" class="demo-content">
+    </div>
+  </div>
 
-
-<script src="app.js"></script>
+  <script src="app.js"></script>
 
 </body>
 </html>
