@@ -18,31 +18,52 @@ function SmartflowApplication(){
   this._actionInterval = null;
   this._action = null;
 
+  this._actionQueue = [];
+
   this.startAction = function(action) {
-    console.info("SmartflowApplication: Starting ", action);
-    this._action = action;
-    this._action.runAction();
-    if (this._action._smartflowActions.length > 0) {
-      var self = this;
-      var actions = this._action._smartflowActions;
-      for (var x = 0; x < actions.length; x++) {
-        var a = actions[x];
-        a._actionStatus = self.STATUS_NOT_STARTED;
+    console.info("SmartflowApplication: Adding ", action, this._actionQueue);
+    this._actionQueue.push( action );
+    this._runQueuedActions();
+  };
+  this._runQueuedActions = function(){
+    if (this._actionQueue.length > 0) {
+      console.info("SmartflowApplication: Run ", this._action );
+      this._action = this._actionQueue.shift();
+
+      var tmp = this._action;
+
+      this._action.runAction();
+
+      if (Array.isArray(this._action._smartflowActions) && this._action._smartflowActions.length > 0 ) {
+          var self = this;
+          var actions = this._action._smartflowActions;
+          for (var x = 0; x < actions.length; x++) {
+            var a = actions[x];
+            a._actionStatus = self.STATUS_NOT_STARTED;
+          }
+          this._actionInterval = setInterval(function () {
+            self._runNotCompleted( tmp );
+          }, 1000);
+          this._actionStatus = this.STATUS_RUNNING;
+      } else {
+        this.fireSuccess();
       }
-      this._actionInterval = setInterval(function () {
-        self._runNotCompleted();
-      }, 1000);
-      this._actionStatus = this.STATUS_RUNNING;
+
+    } else {
+      console.info("SmartflowApplication: No actions in queue");
     }
   };
   this.fireSuccess = function(){
-
+    this._action = null;
+    //this._runQueuedActions();
   };
   this.fireFailed = function(){
-
+    this._action = null;
+    //this._runQueuedActions();
   };
-  this._runNotCompleted = function() {
-    var actions = this._action._smartflowActions;
+  this._runNotCompleted = function( act ) {
+    //var actions = this._action._smartflowActions;
+    var actions = act._smartflowActions;
     var max = actions.length;
     var remaining = 0;
     var failed = 0;
@@ -163,14 +184,13 @@ function SmartflowRequest(url){
  * @param name
  * @constructor
  */
-function SmartflowAction(name){
-  this._smartflowAction = name;
+function SmartflowAction(){
   this._smartflowActions = [];
   this.addRequest = function( request ){
     this._smartflowActions.push( request );
   };
   this.runAction = function(){
-    console.info("SmartflowAction: ", this._smartflowAction);
+    console.info("SmartflowAction: ", this);
   };
 }
 
@@ -188,9 +208,17 @@ actionWithRequests.addRequest( reqCategories );
 actionWithRequests.addRequest( reqAddressbook );
 actionWithRequests.addRequest( reqQuote );
 
-//var actionSimple = new SmartflowAction();
+function HelloWorldAction(){
+  this.runAction = function(){
+    console.info("HelloWorldAction: ");
+  };
+}
+
+var actionSimple = new HelloWorldAction();
 
 var app = new SmartflowApplication();
 app.startAction( actionWithRequests );
+app.startAction( actionSimple );
+
 
 

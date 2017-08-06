@@ -2,7 +2,7 @@
   "name": "smartflow",
   "version": "0.1.1-alpha",
   "description": "Easy to use application flow management.",
-  "main": "index.js",
+  "main": "src/smartflow.js",
   "scripts": {
     "test": "jest smartflow.js",
     "watch": "jest --watch",
@@ -23,19 +23,23 @@
   "bugs": {
     "url": "https://github.com/laukvik/Smartflow/issues"
   },
+  "files": [
+    "smartflow.js",
+    "LICENSE"
+  ],
   "homepage": "https://github.com/laukvik/Smartflow#readme",
-  "dependencies": {
-    "bootstrap": "^3.3.7"
-  },
+  "dependencies": {},
   "devDependencies": {
+    "bootstrap": "^3.3.7",
+    "webpack-dev-server": "^2.4.5",
+    "babel-core": "^6.4.5",
+    "babel-loader": "^6.2.1",
+    "babel-preset-es2015": "^6.3.13",
+    "babel-preset-react": "^6.24.1",
     "eslint": "^3.19.0",
     "eslint-config-google": "^0.8.0",
     "jest": "^20.0.4",
     "jest-cli": "^20.0.4",
     "webpack": "^2.6.1"
-  },
-  "files": [
-    "smartflow.js",
-    "LICENSE"
-  ]
+  }
 }
