@@ -27,9 +27,7 @@ function SmartflowApplication() {
     if (this._actionQueue.length > 0) {
       //console.info('SmartflowApplication: Run ', this._action);
       this._action = this._actionQueue.shift();
-
       let tmp = this._action;
-
       this._action.runAction();
 
       if (Array.isArray(this._action._smartflowActions) && this._action._smartflowActions.length > 0) {
@@ -51,14 +49,19 @@ function SmartflowApplication() {
     }
   };
   this.fireSuccess = function() {
+    console.info("fireActionSuccess: ", this._action);
     this._action = null;
   };
   this.fireFailed = function() {
+    console.info("fireActionFailed: ", this._action);
     this._action = null;
   };
 
   this.fireRequestSuccess = function(request) {
-    console.info("fireRequestSuccess");
+    console.info("fireRequestSuccess: ", request);
+  };
+  this.fireRequestFailed = function(request) {
+    console.info("fireRequestFailed: ", request);
   };
   this._runNotCompleted = function(act) {
     // var actions = this._action._smartflowActions;
@@ -128,7 +131,7 @@ function SmartflowRequest(url) {
           // success
           let contentType = this.getResponseHeader('content-type');
           if (contentType === '') {
-            //self._smartflowApp.fireRequestSuccess(this);
+            self._smartflowApp.fireRequestSuccess(self._request, this.response);
             self.onSuccess(this.response);
           } else if (contentType.indexOf('json') > -1) {
             self.onSuccess(JSON.parse(this.response));
