@@ -74,56 +74,6 @@ function runDemo1(){
 }
 
 //----------------
-function App(){
-  this.addController = function(ctrl){
-
-  };
-  this.runAction = function(action){
-    if (action.smartflow) {
-      //console.info("App: starting ", action);
-      if (action.smartflow.request) {
-        // Run with request
-        //console.info("App: will start request");
-        var self = this;
-        var xhr = new XMLHttpRequest();
-        xhr.onreadystatechange = function() {
-          if (this.readyState == 4){
-            var statusCode = parseInt(this.status);
-            if (statusCode == 200) {
-              action.smartflow.value = this.response;
-              action.smartflow.view = action.smartflow.success;
-              self.stateChanged(action.smartflow.state, action.smartflow.value);
-              self.viewChanged(action.smartflow.view);
-            } else {
-              action.smartflow.value = undefined;
-              action.smartflow.view = action.smartflow.error;
-              self.viewChanged(action.smartflow.view);
-            }
-          }
-        };
-        xhr.open( 'GET', action.smartflow.request.url, true  );
-        xhr.send();
-
-      } else {
-        // Run without request
-        action.runAction();
-        this.stateChanged(action.smartflow.state, action.smartflow.value);
-        this.viewChanged(action.smartflow.view);
-      }
-    } else {
-      console.error("App: invalid action ", action);
-    }
-  };
-  this.stateChanged = function(state, value){
-    console.info("State changed: ", state, value);
-  };
-  this.viewChanged = function(view){
-    console.info("View changed: ", view);
-  };
-  this.setView = function(view){
-
-  };
-}
 
 
 function LoginAction() {
@@ -148,23 +98,49 @@ function ValidateAction(){
   }
 }
 
-function LoginController(){
+function MainController(){
+  this.viewInitialized = function(){
+    console.info("MainController.viewInitialized");
+    this.runAction( new LoginAction() );
+  };
   this.viewEnabled = function(){
+    console.info("MainController.viewEnabled");
+  };
+  this.actionPerformed = function(action){
+    console.info("MainController.actionPerformed: ", action);
+  }
+}
 
+function LoginController(){
+  this.viewInitialized = function(){
+    console.info("LoginController.viewInitialized");
+  };
+  this.viewEnabled = function(){
+    console.info("LoginController.viewEnabled");
+  };
+  this.actionPerformed = function(action){
+    console.info("LoginController.actionPerformed: ", action);
   }
 }
 
 function InboxController(){
+  this.viewInitialized = function(){
+    console.info("InboxController.viewInitialized");
+  };
   this.viewEnabled = function(){
-
+    console.info("InboxController.viewEnabled");
+  };
+  this.actionPerformed = function(action){
+    console.info("InboxController.actionPerformed: ", action);
   }
 }
 
 function runDemo2(){
-  var app = new App();
+  var app = new Smartflow();
+  app.addController(new MainController());
   app.addController(new LoginController());
-  app.addController(new InboxController());
-  app.setView("LoginController");
-  app.runAction(new LoginAction());
-  app.runAction(new ValidateAction());
+  //app.addController(new InboxController());
+  //app.runAction(new LoginAction());
+  //app.runAction(new ValidateAction());
+  app.start();
 }
