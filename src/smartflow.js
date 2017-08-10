@@ -51,15 +51,23 @@ function Smartflow(){
         if (action.runAction){
           action.runAction();
         }
-        this._fireStateChanged(action.smartflow.state, action.smartflow.value);
+
+        var obj = action.smartflow.states;
+        for(var key in obj){
+          this._fireStateChanged(key, obj[key]);
+        }
+
         this.setPath(action.smartflow.path);
         this._fireActionPerformed(action, callerCtrl);
       }
     } else {
-      console.error("App: invalid action ", action);
+      //console.error("App: invalid action ", action);
     }
   };
   this.setPath = function(path){
+    if (this._controller && this._controller.smartflow.path === path){
+      return;
+    }
     this._controller = undefined;
     window.location.href = "#" + path;
     for (var x=0; x<this._controllers.length; x++) {
@@ -86,5 +94,5 @@ function Smartflow(){
 }
 
 module.exports = {
-  'Smartflow' : Smartflow
+  'App' : Smartflow
 };

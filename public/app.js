@@ -14,32 +14,24 @@ function ComposeAction(){
   this.smartflow = {
     "path" : "/compose"
   };
-  this.runAction = function(){
-  }
 }
 
 function SendMailAction(){
   this.smartflow = {
     "path" : "/sent"
   };
-  this.runAction = function(){
-  }
 }
 
 function CancelComposeAction(){
   this.smartflow = {
     "path" : "/inbox"
   };
-  this.runAction = function(){
-  }
 }
 
 function LogoutAction(){
   this.smartflow = {
     "path" : "/"
   };
-  this.runAction = function(){
-  }
 }
 
 
@@ -47,31 +39,30 @@ function LogoutAction(){
 function ConfirmDeleteAction(){
   this.smartflow = {
     "path" : "/inbox",
-    "state": "confirm",
-    "value": true
+    "states": {
+      "confirm" : true
+    }
   };
-  this.runAction = function(){
-  }
 }
 
 function YesAction(){
   this.smartflow = {
     "path" : "/inbox",
-    "state": "confirm",
-    "value": false
+    "states": {
+      "confirm" : false,
+      "delete": true
+    }
   };
-  this.runAction = function(){
-  }
 }
 
 function NoAction(){
   this.smartflow = {
     "path" : "/inbox",
-    "state": "confirm",
-    "value": undefined
+    "states": {
+      "confirm" : false,
+      "delete": false
+    }
   };
-  this.runAction = function(){
-  }
 }
 
 
@@ -140,31 +131,27 @@ function InboxController(){
     this.setEnabled("composeButton", true);
     this.setEnabled("confirmDeleteButton", true);
     this.setEnabled("logoutButton", true);
-    //this.setEnabled("yesButton", false);
-    //this.setEnabled("noButton", false);
   };
   this.viewDisabled = function(){
     console.info("viewDisabled");
     this.setEnabled("composeButton", false);
     this.setEnabled("confirmDeleteButton", false);
     this.setEnabled("logoutButton", false);
-    this.setEnabled("yesButton", false);
-    this.setEnabled("noButton", false);
   };
   this.actionPerformed = function(action){
     //console.info("actionPerformed", action);
   };
   this.stateChanged = function(state, value){
+    console.info("stateChanged: ", state, value);
 
     if (state === "confirm") {
-      console.info("confirm: ", value);
       var enabled = value === true;
       this.setEnabled("yesButton", enabled);
       this.setEnabled("noButton", enabled);
-    } else {
-      console.info("stateChanged: ", state, value);
+      this.setEnabled("composeButton", !enabled);
+      this.setEnabled("confirmDeleteButton", !enabled);
+      this.setEnabled("logoutButton", !enabled);
     }
-
   }
 }
 
