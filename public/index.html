@@ -19,34 +19,26 @@
       padding: 2em;
       font-family: Helvetica, Arial, sans-serif, "Helvetica Neue";
     }
-    .request{
+    .controller{
       width: 10em;
+      height: 10em;
       padding: 1.5em;
+      padding-top: 0px;
       background-color: #00376e;
-      text-align: center;
-      color: white;
       border-radius: 10px;
-      //float: left;
+      float: left;
       margin-right: 1em;
       margin-bottom: 1em;
     }
-    .success{
-      background-color: green;
+    LABEL{
+      color: yellow;
     }
-    .failed{
-      background-color: red;
+    h5{
+      text-align: center;
     }
-    button{
+    input{
+      width: 100%;
       padding: 1em;
-    }
-    .demo-content{
-      background-color: #002d5a;
-      height: 500px;
-      padding: 0.5em;
-      border: 1px solid black;
-    }
-    .demo-controller{
-      margin-bottom: 1em;
     }
   </style>
   <script>
@@ -62,12 +54,23 @@
   <h1 class="smartflow-logo">Smartflow <span>js</span></h1>
   <p class="smartflow-tagline">JavaScript API for controlling application flow</p>
 
-  <div class="demo">
-    <div class="demo-controller" style="clear: both">
-      <button onclick="runDemo1()">Run demo 1</button>
-      <button onclick="runDemo2()">Run demo 2</button>
+  <div>
+    <div id="LoginController" class="controller"><h5>LoginController</h5>
+        <input id="loginButton" type="button" value="LoginAction"/>
     </div>
-    <div id="demoPanel" class="demo-content">
+    <div id="InboxController" class="controller"><h5>InboxController</h5>
+      <input id="composeButton" type="button" value="ComposeMailAction"/>
+      <input id="confirmDeleteButton" type="button" value="ConfirmDeleteAction"/>
+      <input id="logoutButton" type="button" value="LogoutAction"/>
+
+      <div style="margin-top: 1em;">
+        <input id="yesButton" type="button" value="YesAction" disabled/>
+        <input id="noButton" type="button" value="NoAction" disabled/>
+      </div>
+    </div>
+    <div id="ComposeController" class="controller"><h5>ComposeController</h5>
+      <input id="sendMailButton" type="button" value="SendMailAction"/>
+      <input id="cancelMailButton" type="button" value="CancelMailAction"/>
     </div>
   </div>
 

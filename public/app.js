@@ -1,146 +1,212 @@
-function fix(id, isSuccess){
-  document.getElementById(id).className = "request " + (isSuccess == null ? "" : (isSuccess ? "success" : "failed"));
-  document.getElementById(id).innerText = id;
-}
-
-
-var reqLogin = new SmartflowRequest('/api/login');
-reqLogin.onSuccess = function(){
-  fix("reqLogin", true);
-};
-reqLogin.onError = function(){
-  fix("reqLogin", false);
-};
-var reqCategories = new SmartflowRequest('/api/categories');
-reqCategories.onSuccess = function(){
-  fix("reqCategories", true);
-};
-reqCategories.onError = function(){
-  fix("reqCategories", false);
-};
-var reqAddressbook = new SmartflowRequest('/api/addressbook');
-reqAddressbook.onSuccess = function(){
-  fix("reqAddressbook", true);
-};
-reqAddressbook.onError = function(){
-  fix("reqAddressbook", false);
-};
-var reqQuote = new SmartflowRequest('/api/quote');
-reqQuote.onSuccess = function(){
-  fix("reqQuote", true);
-};
-reqQuote.onError = function(){
-  fix("reqQuote", false);
-};
-
-
-function buildDemo1(arr){
-  var html = "";
-  for (var x=0; x<arr.length; x++){
-    html += '<div id="'+ arr[x] +'" class="request">&nbsp;</div>';
-  }
-  document.getElementById("demoPanel").innerHTML = html;
-}
-
-function runDemo1(){
-  var arr = [ "reqLogin", "reqCategories", "reqAddressbook", "reqQuote" ];
-
-  buildDemo1(arr);
-
-  var actionWithRequests = new SmartflowAction();
-  actionWithRequests.addRequest( reqLogin );
-  actionWithRequests.addRequest( reqCategories );
-  actionWithRequests.addRequest( reqAddressbook );
-  actionWithRequests.addRequest( reqQuote );
-
-
-  function HelloWorldAction() {
-    this.runAction = function() {
-    };
-  }
-
-  function Main(){
-    this.actionFailed = function(){
-
-    }
-  }
-
-  var actionSimple = new HelloWorldAction();
-
-  var app = new SmartflowApplication();
-  app.startAction( actionWithRequests );
-  app.startAction( actionSimple );
-
-}
-
-//----------------
-
-
 function LoginAction() {
   this.smartflow = {
     "state": "time",
     "request": {
-      "url": "/api/time",
+      "url": "/api/login",
       "method": "get"
     },
-    "success" : "InboxController",
-    "error": "LoginController"
+    "success" : "/inbox",
+    "error": "/login"
   };
 }
 
-function ValidateAction(){
+function ComposeAction(){
   this.smartflow = {
-    "state": "formValidated",
-    "view" : "LoginController"
+    "path" : "/compose"
   };
   this.runAction = function(){
-    this.smartflow.value = true;
   }
 }
 
-function MainController(){
-  this.viewInitialized = function(){
-    console.info("MainController.viewInitialized");
-    this.runAction( new LoginAction() );
+function SendMailAction(){
+  this.smartflow = {
+    "path" : "/sent"
   };
-  this.viewEnabled = function(){
-    console.info("MainController.viewEnabled");
-  };
-  this.actionPerformed = function(action){
-    console.info("MainController.actionPerformed: ", action);
+  this.runAction = function(){
   }
 }
+
+function CancelComposeAction(){
+  this.smartflow = {
+    "path" : "/inbox"
+  };
+  this.runAction = function(){
+  }
+}
+
+function LogoutAction(){
+  this.smartflow = {
+    "path" : "/"
+  };
+  this.runAction = function(){
+  }
+}
+
+
+
+function ConfirmDeleteAction(){
+  this.smartflow = {
+    "path" : "/inbox",
+    "state": "confirm",
+    "value": true
+  };
+  this.runAction = function(){
+  }
+}
+
+function YesAction(){
+  this.smartflow = {
+    "path" : "/inbox",
+    "state": "confirm",
+    "value": false
+  };
+  this.runAction = function(){
+  }
+}
+
+function NoAction(){
+  this.smartflow = {
+    "path" : "/inbox",
+    "state": "confirm",
+    "value": undefined
+  };
+  this.runAction = function(){
+  }
+}
+
+
+
+
 
 function LoginController(){
+  this.smartflow = {
+    "path" : "/"
+  };
+  this.setEnabled = function(id, isEnabled){
+    if (isEnabled){
+      document.getElementById(id).removeAttribute("disabled");
+    } else {
+      document.getElementById(id).setAttribute("disabled", "true");
+    }
+  };
   this.viewInitialized = function(){
-    console.info("LoginController.viewInitialized");
+    var self = this;
+    document.getElementById("loginButton").addEventListener("click", function(){
+      self.runAction(new LoginAction());
+    })
   };
   this.viewEnabled = function(){
-    console.info("LoginController.viewEnabled");
+    this.setEnabled("loginButton", true);
+  };
+  this.viewDisabled = function(){
+    this.setEnabled("loginButton", false);
   };
   this.actionPerformed = function(action){
-    console.info("LoginController.actionPerformed: ", action);
+    console.info("actionPerformed", action);
   }
 }
 
 function InboxController(){
+  this.smartflow = {
+    "path" : "/inbox"
+  };
+  this.setEnabled = function(id, isEnabled){
+    if (isEnabled){
+      document.getElementById(id).removeAttribute("disabled");
+    } else {
+      document.getElementById(id).setAttribute("disabled", "true");
+    }
+  };
   this.viewInitialized = function(){
-    console.info("InboxController.viewInitialized");
+    var self = this;
+    document.getElementById("composeButton").addEventListener("click", function(){
+      self.runAction(new ComposeAction());
+    })
+    document.getElementById("logoutButton").addEventListener("click", function(){
+      self.runAction(new LogoutAction());
+    })
+    document.getElementById("confirmDeleteButton").addEventListener("click", function(){
+      self.runAction(new ConfirmDeleteAction());
+    })
+
+    document.getElementById("yesButton").addEventListener("click", function(){
+      self.runAction(new YesAction());
+    })
+    document.getElementById("noButton").addEventListener("click", function(){
+      self.runAction(new NoAction());
+    })
   };
   this.viewEnabled = function(){
-    console.info("InboxController.viewEnabled");
+    this.setEnabled("composeButton", true);
+    this.setEnabled("confirmDeleteButton", true);
+    this.setEnabled("logoutButton", true);
+    //this.setEnabled("yesButton", false);
+    //this.setEnabled("noButton", false);
+  };
+  this.viewDisabled = function(){
+    console.info("viewDisabled");
+    this.setEnabled("composeButton", false);
+    this.setEnabled("confirmDeleteButton", false);
+    this.setEnabled("logoutButton", false);
+    this.setEnabled("yesButton", false);
+    this.setEnabled("noButton", false);
   };
   this.actionPerformed = function(action){
-    console.info("InboxController.actionPerformed: ", action);
+    //console.info("actionPerformed", action);
+  };
+  this.stateChanged = function(state, value){
+
+    if (state === "confirm") {
+      console.info("confirm: ", value);
+      var enabled = value === true;
+      this.setEnabled("yesButton", enabled);
+      this.setEnabled("noButton", enabled);
+    } else {
+      console.info("stateChanged: ", state, value);
+    }
+
   }
 }
 
-function runDemo2(){
-  var app = new Smartflow();
-  app.addController(new MainController());
-  app.addController(new LoginController());
-  //app.addController(new InboxController());
-  //app.runAction(new LoginAction());
-  //app.runAction(new ValidateAction());
-  app.start();
+
+function ComposeController(){
+  this.smartflow = {
+    "path" : "/compose"
+  };
+  this.setEnabled = function(id, isEnabled){
+    if (isEnabled){
+      document.getElementById(id).removeAttribute("disabled");
+    } else {
+      document.getElementById(id).setAttribute("disabled", "true");
+    }
+  };
+  this.viewInitialized = function(){
+    var self = this;
+    document.getElementById("sendMailButton").addEventListener("click", function(){
+      self.runAction(new SendMailAction());
+    })
+    document.getElementById("cancelMailButton").addEventListener("click", function(){
+      self.runAction(new CancelComposeAction());
+    })
+  };
+  this.viewEnabled = function(){
+    this.setEnabled("sendMailButton", true);
+    this.setEnabled("cancelMailButton", true);
+  };
+  this.viewDisabled = function(){
+    this.setEnabled("sendMailButton", false);
+    this.setEnabled("cancelMailButton", false);
+  };
+  this.actionPerformed = function(action){
+    console.info("actionPerformed", action);
+  }
 }
+
+
+
+
+  var app = new Smartflow();
+  app.addController(new LoginController());
+  app.addController(new InboxController());
+  app.addController(new ComposeController());
+  app.start();

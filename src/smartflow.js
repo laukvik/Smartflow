@@ -1,200 +1,16 @@
 'use strict';
 
-/**
- * The Smartflow application controller.
- *
- * todo - Introduce dependencies in a actionWithRequests
- * todo - The URLs should be found in global settings in the controller.
- *
- * @constructor
- */
-function SmartflowApplication() {
-  this.STATUS_NOT_STARTED = 0;
-  this.STATUS_RUNNING = 1;
-  this.STATUS_SUCCESS = 2;
-  this.STATUS_FAILED = -1;
-  this.STATUS_HALTED = -2;
-  this._actionStatus = this.STATUS_NOT_STARTED;
-  this._actionInterval = null;
-  this._action = null;
-  this._actionQueue = [];
-  this.startAction = function(action) {
-    //console.info('SmartflowApplication: Adding ', action, this._actionQueue);
-    this._actionQueue.push(action);
-    this._runQueuedActions();
-  };
-  this._runQueuedActions = function() {
-    if (this._actionQueue.length > 0) {
-      //console.info('SmartflowApplication: Run ', this._action);
-      this._action = this._actionQueue.shift();
-      let tmp = this._action;
-      this._action.runAction();
-
-      if (Array.isArray(this._action._smartflowActions) && this._action._smartflowActions.length > 0) {
-        let self = this;
-        let actions = this._action._smartflowActions;
-        for (let x = 0; x < actions.length; x++) {
-          let a = actions[x];
-          a._actionStatus = self.STATUS_NOT_STARTED;
-        }
-        this._actionInterval = setInterval(function() {
-          self._runNotCompleted(tmp);
-        }, 1000);
-        this._actionStatus = this.STATUS_RUNNING;
-      } else {
-        this.fireSuccess();
-      }
-    } else {
-      //console.info('SmartflowApplication: No actions in queue');
-    }
-  };
-  this.fireSuccess = function() {
-    console.info("fireActionSuccess: ", this._action);
-    this._action = null;
-  };
-  this.fireFailed = function() {
-    console.info("fireActionFailed: ", this._action);
-    this._action = null;
-  };
-
-  this.fireRequestSuccess = function(request) {
-    console.info("fireRequestSuccess: ", request);
-  };
-  this.fireRequestFailed = function(request) {
-    console.info("fireRequestFailed: ", request);
-  };
-  this._runNotCompleted = function(act) {
-    // var actions = this._action._smartflowActions;
-    let actions = act._smartflowActions;
-    let max = actions.length;
-    let remaining = 0;
-    let failed = 0;
-    for (var x = 0; x < max; x++) {
-      var a = actions[x];
-      failed += (a._actionStatus === this.STATUS_FAILED ? 1 : 0);
-      remaining += (a._actionStatus === this.STATUS_NOT_STARTED ? 1 : 0);
-    }
-    if (remaining === 0) {
-      clearInterval(this._actionInterval);
-      this.fireSuccess();
-    } else if (failed > 0) {
-      clearInterval(this._actionInterval);
-      this.fireFailed();
-    } else {
-      for (var z = 0; z < max; z++) {
-        var a2 = actions[z];
-        if (a2._actionStatus === this.STATUS_NOT_STARTED) {
-          a2._actionStatus = this.STATUS_RUNNING;
-          a2.connect(this);
-        }
-      }
-    }
-  };
-}
-
-
-function SmartflowRequest(url) {
-  this.HTTP_INFO = 100;
-  this.HTTP_SUCCESS = 200;
-  this.HTTP_REDIRECT = 300;
-  this.HTTP_CLIENT_ERROR = 400;
-  this.HTTP_ERROR = 500;
-  this.HTTP_UNKNOWN = 600;
-
-  this.READY_STATE_UNSENT = 0;
-  this.READY_STATE_OPENED = 1;
-  this.READY_STATE_HEADERS_RECEIVED = 2;
-  this.READY_STATE_LOADING = 3;
-  this.READY_STATE_DONE = 4;
-
-  this._url = url;
-  this.connect = function(app) {
-    let self = this;
-    this._smartflowApp = app;
-    this._request = new XMLHttpRequest();
-    this._request.onreadystatechange = function() {
-      if (this.readyState === self.READY_STATE_UNSENT) {
-        self.status(self.readyState);
-      } else if (this.readyState === self.READY_STATE_OPENED) {
-        self.status(self.readyState);
-      } else if (this.readyState === self.READY_STATE_HEADERS_RECEIVED) {
-        self.status(self.readyState);
-      } else if (this.readyState === self.READY_STATE_LOADING) {
-        self.status(self.readyState);
-      } else if (this.readyState === self.READY_STATE_DONE) {
-        let statusCode = parseInt(this.status);
-
-        if (statusCode >= self.HTTP_INFO && statusCode < self.HTTP_SUCCESS) {
-          // information
-
-        } else if (statusCode >= self.HTTP_SUCCESS && statusCode < self.HTTP_REDIRECT) {
-          // success
-          let contentType = this.getResponseHeader('content-type');
-          if (contentType === '') {
-            self._smartflowApp.fireRequestSuccess(self._request, this.response);
-            self.onSuccess(this.response);
-          } else if (contentType.indexOf('json') > -1) {
-            self.onSuccess(JSON.parse(this.response));
-          } else if (contentType.indexOf('xml') > -1) {
-            self.onSuccess(this.responseXML);
-          } else {
-            self.onSuccess(this.response);
-          }
-        } else if (statusCode >= self.HTTP_REDIRECT && statusCode < self.HTTP_CLIENT_ERROR) {
-          // redirect
-          self.onError(statusCode);
-        } else if (statusCode >= self.HTTP_CLIENT_ERROR && statusCode < self.HTTP_ERROR) {
-          // client error
-          self.onError(statusCode);
-        } else if (statusCode >= self.HTTP_ERROR && statusCode < self.HTTP_UNKNOWN) {
-          // error
-          self.onError(statusCode);
-        }
-      }
-    };
-    this._request.open('GET', self._url, true);
-    this._request.send();
-  };
-  this.onError = function(response) {
-    this._smartflowResponse = response;
-  };
-  this.onSuccess = function(response) {
-    this._smartflowResponse = response;
-  };
-  this.status = function(status){
-    this._smartflowStatus = status;
-  }
-}
-
-/**
- *
- * @param name
- * @constructor
- */
-function SmartflowAction() {
-  this._smartflowActions = [];
-  this.addRequest = function(request) {
-    this._smartflowActions.push(request);
-  };
-  this.runAction = function () {
-    //console.info('SmartflowAction: ', this);
-  };
-}
-
-
-/**
- * Smartflow
- *
- * @constructor
- */
 function Smartflow(){
   this._controller = undefined;
   this._controllers = [];
   this.start = function(){
     for (var x=0; x<this._controllers.length; x++) {
       var ctrl = this._controllers[ x ];
-        ctrl.viewInitialized(this);
+      ctrl.viewInitialized(this);
     }
+    var anchor = window.location.hash;
+    var path = anchor.indexOf("#") == 0 ? anchor.substr(1) : "/";
+    this.setPath( path );
   };
   this.addController = function(ctrl){
     ctrl._smartflowID = ctrl.constructor.name;
@@ -206,10 +22,8 @@ function Smartflow(){
   };
   this.runAction = function(action, callerCtrl){
     if (action.smartflow) {
-      //console.info("App: starting ", action);
       if (action.smartflow.request) {
         // Run with request
-        //console.info("App: will start request");
         var self = this;
         var xhr = new XMLHttpRequest();
         xhr.onreadystatechange = function() {
@@ -217,14 +31,14 @@ function Smartflow(){
             var statusCode = parseInt(this.status);
             if (statusCode == 200) {
               action.smartflow.value = this.response;
-              action.smartflow.view = action.smartflow.success;
-              self.stateChanged(action.smartflow.state, action.smartflow.value);
-              self.viewChanged(action.smartflow.view);
+              action.smartflow.path = action.smartflow.success;
+              self._fireStateChanged(action.smartflow.state, action.smartflow.value);
+              self.setPath(action.smartflow.path);
               self._fireActionPerformed(action, callerCtrl);
             } else {
               action.smartflow.value = undefined;
-              action.smartflow.view = action.smartflow.error;
-              self.viewChanged(action.smartflow.view);
+              action.smartflow.path = action.smartflow.error;
+              self.setPath(action.smartflow.path);
               self._fireActionPerformed(action, callerCtrl);
             }
           }
@@ -234,41 +48,43 @@ function Smartflow(){
 
       } else {
         // Run without request
-        action.runAction();
-        this.stateChanged(action.smartflow.state, action.smartflow.value);
-        this.viewChanged(action.smartflow.view);
+        if (action.runAction){
+          action.runAction();
+        }
+        this._fireStateChanged(action.smartflow.state, action.smartflow.value);
+        this.setPath(action.smartflow.path);
         this._fireActionPerformed(action, callerCtrl);
       }
     } else {
       console.error("App: invalid action ", action);
     }
   };
-  this._fireActionPerformed = function(action, ctrl){
-    //console.info("Action performed: ", action);
-    // for (var x=0; x<this._controllers.length; x++) {
-    //   var ctrl = this._controllers[ x ];
-    //   ctrl.actionPerformed(action);
-    // }
-    ctrl.actionPerformed(action);
-  };
-  this.stateChanged = function(state, value){
-    console.info("State changed: ", state, " -> ", value);
-  };
-  this.viewChanged = function(view){
-    console.info("View changed: ", this._controller, " -> ", view);
-    this._controller = view;
+  this.setPath = function(path){
+    this._controller = undefined;
+    window.location.href = "#" + path;
     for (var x=0; x<this._controllers.length; x++) {
       var ctrl = this._controllers[ x ];
-      if (ctrl._smartflowID === view) {
+      if (ctrl.smartflow.path === path) {
+        this._controller = ctrl;
         ctrl.viewEnabled();
+      } else {
+        ctrl.viewDisabled();
+      }
+    }
+  };
+  this._fireActionPerformed = function(action, ctrl){
+    ctrl.actionPerformed(action);
+  };
+  this._fireStateChanged = function(state, value){
+    for (var x=0; x<this._controllers.length; x++) {
+      var ctrl = this._controllers[ x ];
+      if (ctrl.stateChanged) {
+        ctrl.stateChanged( state, value );
       }
     }
   };
 }
 
 module.exports = {
-  'SmartflowApplication' : SmartflowApplication,
-  'SmartflowAction' : SmartflowAction,
-  'SmartflowRequest' : SmartflowRequest,
   'Smartflow' : Smartflow
 };
