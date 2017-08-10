@@ -1,11 +1,11 @@
 function LoginAction() {
   this.smartflow = {
     "state": "time",
+    "path": "/inbox",
     "request": {
       "url": "/api/login",
       "method": "get"
     },
-    "success" : "/inbox",
     "error": "/login"
   };
 }
@@ -18,7 +18,10 @@ function ComposeAction(){
 
 function SendMailAction(){
   this.smartflow = {
-    "path" : "/sent"
+    "path" : "/compose",
+    "states": {
+      "receipt": true
+    }
   };
 }
 
@@ -65,7 +68,14 @@ function NoAction(){
   };
 }
 
-
+function CloseSentAction(){
+  this.smartflow = {
+    "path" : "/compose",
+    "states": {
+      "receipt": false
+    }
+  };
+}
 
 
 
@@ -93,7 +103,7 @@ function LoginController(){
     this.setEnabled("loginButton", false);
   };
   this.actionPerformed = function(action){
-    console.info("actionPerformed", action);
+    //console.info("actionPerformed", action);
   }
 }
 
@@ -133,7 +143,6 @@ function InboxController(){
     this.setEnabled("logoutButton", true);
   };
   this.viewDisabled = function(){
-    console.info("viewDisabled");
     this.setEnabled("composeButton", false);
     this.setEnabled("confirmDeleteButton", false);
     this.setEnabled("logoutButton", false);
@@ -142,8 +151,6 @@ function InboxController(){
     //console.info("actionPerformed", action);
   };
   this.stateChanged = function(state, value){
-    console.info("stateChanged: ", state, value);
-
     if (state === "confirm") {
       var enabled = value === true;
       this.setEnabled("yesButton", enabled);
@@ -175,17 +182,30 @@ function ComposeController(){
     document.getElementById("cancelMailButton").addEventListener("click", function(){
       self.runAction(new CancelComposeAction());
     })
+    document.getElementById("closeSentButton").addEventListener("click", function(){
+      self.runAction(new CloseSentAction());
+    })
   };
   this.viewEnabled = function(){
     this.setEnabled("sendMailButton", true);
     this.setEnabled("cancelMailButton", true);
+    this.setEnabled("closeSentButton", false);
   };
   this.viewDisabled = function(){
     this.setEnabled("sendMailButton", false);
     this.setEnabled("cancelMailButton", false);
+    this.setEnabled("closeSentButton", false);
   };
   this.actionPerformed = function(action){
-    console.info("actionPerformed", action);
+    //console.info("actionPerformed", action);
+  }
+  this.stateChanged = function(state, value){
+    if (state === "receipt") {
+      var enabled = value === true;
+      this.setEnabled("closeSentButton", enabled);
+      this.setEnabled("sendMailButton", !enabled);
+      this.setEnabled("cancelMailButton", !enabled);
+    }
   }
 }
 

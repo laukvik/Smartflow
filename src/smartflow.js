@@ -30,9 +30,7 @@ function Smartflow(){
           if (this.readyState == 4){
             var statusCode = parseInt(this.status);
             if (statusCode == 200) {
-              action.smartflow.value = this.response;
-              action.smartflow.path = action.smartflow.success;
-              self._fireStateChanged(action.smartflow.state, action.smartflow.value);
+              self._fireStateChanged(action.smartflow.state, this.response);
               self.setPath(action.smartflow.path);
               self._fireActionPerformed(action, callerCtrl);
             } else {
