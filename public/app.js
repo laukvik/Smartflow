@@ -1,12 +1,33 @@
 function LoginAction() {
   this.smartflow = {
-    "state": "time",
+    "state": "user",
     "path": "/inbox",
     "request": {
-      "url": "/api/login",
+      "url": "/api/time",
       "method": "get"
     },
-    "error": "/login"
+    "error": {
+      "path": "/",
+      "state": "loginFailed"
+    }
+  };
+}
+
+function ValidateLoginAction(){
+  this.smartflow = {
+    "path" : "/",
+    "states": {
+      "loginRequiredFields": undefined
+    }
+  };
+}
+
+function CloseLoginFailedAction(){
+  this.smartflow = {
+    "path" : "/",
+    "states": {
+      "loginFailed": undefined
+    }
   };
 }
 
@@ -33,7 +54,10 @@ function CancelComposeAction(){
 
 function LogoutAction(){
   this.smartflow = {
-    "path" : "/"
+    "path" : "/",
+    "states": {
+      "user": undefined
+    }
   };
 }
 
@@ -52,7 +76,7 @@ function YesAction(){
   this.smartflow = {
     "path" : "/inbox",
     "states": {
-      "confirm" : false,
+      "confirm" : undefined,
       "delete": true
     }
   };
@@ -62,21 +86,29 @@ function NoAction(){
   this.smartflow = {
     "path" : "/inbox",
     "states": {
-      "confirm" : false,
-      "delete": false
+      "confirm" : undefined,
+      "delete": undefined
     }
   };
 }
 
 function CloseSentAction(){
   this.smartflow = {
-    "path" : "/compose",
+    "path" : "/inbox",
     "states": {
-      "receipt": false
+      "receipt": undefined
     }
   };
 }
 
+function CloseDeletedAction(){
+  this.smartflow = {
+    "path" : "/inbox",
+    "states": {
+      "delete": undefined
+    }
+  };
+}
 
 
 function LoginController(){
@@ -90,11 +122,15 @@ function LoginController(){
       document.getElementById(id).setAttribute("disabled", "true");
     }
   };
-  this.viewInitialized = function(){
+  this.viewInitialized = function(lang){
     var self = this;
     document.getElementById("loginButton").addEventListener("click", function(){
       self.runAction(new LoginAction());
     })
+    document.getElementById("loginFailedButton").addEventListener("click", function(){
+      self.runAction(new CloseLoginFailedAction());
+    })
+    document.getElementById("loginInfoMessage").innerText = lang.format("welcome", ["Smartflow", 1, 2]);
   };
   this.viewEnabled = function(){
     this.setEnabled("loginButton", true);
@@ -102,8 +138,14 @@ function LoginController(){
   this.viewDisabled = function(){
     this.setEnabled("loginButton", false);
   };
+  this.stateChanged = function(state, value){
+    if (state == "loginFailed") {
+      this.setEnabled("loginFailedButton", value != undefined);
+      document.getElementById("loginErrorMessage").innerText = value != undefined ? value : "";
+    }
+    this.setEnabled("loginButton", value == undefined);
+  };
   this.actionPerformed = function(action){
-    //console.info("actionPerformed", action);
   }
 }
 
@@ -118,7 +160,8 @@ function InboxController(){
       document.getElementById(id).setAttribute("disabled", "true");
     }
   };
-  this.viewInitialized = function(){
+  this.viewInitialized = function(lang){
+    this.lang = lang;
     var self = this;
     document.getElementById("composeButton").addEventListener("click", function(){
       self.runAction(new ComposeAction());
@@ -136,6 +179,10 @@ function InboxController(){
     document.getElementById("noButton").addEventListener("click", function(){
       self.runAction(new NoAction());
     })
+
+    document.getElementById("closeDeletedButton").addEventListener("click", function(){
+      self.runAction(new CloseDeletedAction());
+    });
   };
   this.viewEnabled = function(){
     this.setEnabled("composeButton", true);
@@ -155,9 +202,22 @@ function InboxController(){
       var enabled = value === true;
       this.setEnabled("yesButton", enabled);
       this.setEnabled("noButton", enabled);
-      this.setEnabled("composeButton", !enabled);
-      this.setEnabled("confirmDeleteButton", !enabled);
-      this.setEnabled("logoutButton", !enabled);
+      if (value == undefined || value == true) {
+        this.setEnabled("composeButton", false);
+        this.setEnabled("confirmDeleteButton", false);
+        this.setEnabled("logoutButton", false);
+      }
+      document.getElementById("confirmDeleteMessage").innerText = enabled ? this.lang.format("confirmdelete") : "";
+    }
+    if (state === "delete") {
+      if (value == undefined) {
+        this.setEnabled("composeButton", true);
+        this.setEnabled("confirmDeleteButton", true);
+        this.setEnabled("logoutButton", true);
+        this.setEnabled("closeDeletedButton", false);
+      } else {
+        this.setEnabled("closeDeletedButton", value === true);
+      }
     }
   }
 }
@@ -174,7 +234,7 @@ function ComposeController(){
       document.getElementById(id).setAttribute("disabled", "true");
     }
   };
-  this.viewInitialized = function(){
+  this.viewInitialized = function(lang){
     var self = this;
     document.getElementById("sendMailButton").addEventListener("click", function(){
       self.runAction(new SendMailAction());
@@ -198,7 +258,7 @@ function ComposeController(){
   };
   this.actionPerformed = function(action){
     //console.info("actionPerformed", action);
-  }
+  };
   this.stateChanged = function(state, value){
     if (state === "receipt") {
       var enabled = value === true;
@@ -206,14 +266,31 @@ function ComposeController(){
       this.setEnabled("sendMailButton", !enabled);
       this.setEnabled("cancelMailButton", !enabled);
     }
-  }
+  };
 }
 
+var config = {
+  "LoginAction": "/api/login"
+};
+
+var langNO = {
+  "welcome": "Velkommen til {0}",
+  "confirmdelete": "Er du sikker på at du vil slette?",
+  "deleted" : "Slettet."
+};
+var langEN = {
+  "welcome": "Welcome til {0}",
+  "confirmdelete": "Are you sure you want to delete?",
+  "deleted" : "Deleted."
+};
 
 
-
-  var app = new Smartflow();
-  app.addController(new LoginController());
-  app.addController(new InboxController());
-  app.addController(new ComposeController());
-  app.start();
+var app = new Smartflow();
+app.setConfig(config);
+app.loadLanguage("no", langNO);
+app.loadLanguage("en", langEN);
+app.setDefaultLocale("en");
+app.addController(new LoginController());
+app.addController(new InboxController());
+app.addController(new ComposeController());
+app.start();

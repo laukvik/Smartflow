@@ -4,24 +4,28 @@
   <meta charset="UTF-8">
   <title>Smartflow</title>
   <style>
-    .smartflow-logo{
+    .smartflow-logo {
       color: #62defd;
       font-family: Helvetica, Arial, sans-serif, "Helvetica Neue";
     }
-    .smartflow-logo span{
+
+    .smartflow-logo span {
       color: black;
     }
-    .smartflow-tagline{
+
+    .smartflow-tagline {
       color: #ffffff;
     }
-    body{
+
+    body {
       background-color: #00408d;
       padding: 2em;
       font-family: Helvetica, Arial, sans-serif, "Helvetica Neue";
     }
-    .controller{
+
+    .controller {
       width: 10em;
-      height: 10em;
+      height: 12em;
       padding: 1.5em;
       padding-top: 0px;
       background-color: #00376e;
@@ -30,55 +34,76 @@
       margin-right: 1em;
       margin-bottom: 1em;
     }
-    LABEL{
-      color: yellow;
-    }
-    h5{
+
+    h5 {
       text-align: center;
+      color: #aaaaaa;
     }
-    input{
+
+    input {
       width: 100%;
       padding: 1em;
     }
+
+    .error {
+      color: red;
+      display: block;
+      text-align: center
+    }
+
+    .info {
+      color: yellow;
+      display: block;
+      text-align: center;
+    }
   </style>
   <script>
-    function module(){
-        this.exports = function(){
-        }
+    function module() {
+      this.exports = function () {
+      }
     }
   </script>
   <script src="smartflow.js"></script>
 </head>
 <body>
 
-  <h1 class="smartflow-logo">Smartflow <span>js</span></h1>
-  <p class="smartflow-tagline">JavaScript API for controlling application flow</p>
+<h1 class="smartflow-logo">Smartflow <span>js</span></h1>
+<p class="smartflow-tagline">JavaScript API for controlling application flow</p>
 
-  <div>
-    <div id="LoginController" class="controller"><h5>LoginController</h5>
-        <input id="loginButton" type="button" value="LoginAction"/>
+<div>
+  <div id="LoginController" class="controller"><h5>LoginController</h5>
+    <div id="loginInfoMessage" class="info"></div>
+    <input id="loginButton" type="button" value="LoginAction"/>
+    <div style="margin-top: 1em;">
+      <input id="loginFailedButton" type="button" value="CloseLoginFailedAction" disabled/>
     </div>
-    <div id="InboxController" class="controller"><h5>InboxController</h5>
-      <input id="composeButton" type="button" value="ComposeMailAction"/>
-      <input id="confirmDeleteButton" type="button" value="ConfirmDeleteAction"/>
-      <input id="logoutButton" type="button" value="LogoutAction"/>
+    <div id="loginErrorMessage" class="error"></div>
+  </div>
+  <div id="InboxController" class="controller"><h5>InboxController</h5>
+    <input id="composeButton" type="button" value="ComposeMailAction"/>
+    <input id="confirmDeleteButton" type="button" value="ConfirmDeleteAction"/>
+    <input id="logoutButton" type="button" value="LogoutAction"/>
 
-      <div style="margin-top: 1em;">
-        <input id="yesButton" type="button" value="YesAction" disabled/>
-        <input id="noButton" type="button" value="NoAction" disabled/>
-      </div>
+    <div id="confirmDeleteMessage" class="info"></div>
+
+    <div style="margin-top: 1em;">
+
+      <input id="yesButton" type="button" value="YesAction" disabled/>
+      <input id="noButton" type="button" value="NoAction" disabled/>
     </div>
-    <div id="ComposeController" class="controller"><h5>ComposeController</h5>
-      <input id="sendMailButton" type="button" value="SendMailAction"/>
-      <input id="cancelMailButton" type="button" value="CancelMailAction"/>
 
-      <div style="margin-top: 1em;">
-        <input id="closeSentButton" type="button" value="CloseSentAction"/>
-      </div>
+    <div style="margin-top: 1em;">
+      <input id="closeDeletedButton" type="button" value="CloseDeletedAction" disabled/>
     </div>
   </div>
+  <div id="ComposeController" class="controller"><h5>ComposeController</h5>
+    <input id="sendMailButton" type="button" value="SendMailAction"/>
+    <input id="cancelMailButton" type="button" value="CancelMailAction"/>
+    <input id="closeSentButton" type="button" value="CloseSentAction"/>
+  </div>
+</div>
 
-  <script src="app.js"></script>
+<script src="app.js"></script>
 
 </body>
 </html>
