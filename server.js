@@ -52,6 +52,8 @@ const server = http.createServer((req, res) => {
       link("/api/500") +
       link("/api/100") +
 
+      link("/api/timeout") +
+
       '</ul></body></html>');
 
   } else if (path === '/index.html') {
@@ -122,7 +124,8 @@ const server = http.createServer((req, res) => {
     });
 
   } else if (path === '/api/login') {
-    text(res, "usr=" + "");
+    const data = {"usr": "admin", "psw": "123"};
+    json(res, data);
 
   } else if (path === '/api/quote') {
     text(res, "I love you the more in that I believe you had liked me for my own sake and for nothing else.");
@@ -186,6 +189,8 @@ const server = http.createServer((req, res) => {
     res.setHeader('Content-Type', TYPE_PLAIN);
     res.end("Continue");
 
+  } else if (path === '/api/timeout') {
+
   } else {
     notFound(res, "Not found");
   }
@@ -208,7 +213,9 @@ function findMimeType(path){
 }
 
 function notFound(res, data){
-  out(res, TYPE_PLAIN, data );
+  res.statusCode = 404;
+  res.setHeader('Content-Type', TYPE_PLAIN);
+  res.end( data );
 }
 
 function json(res, data){
