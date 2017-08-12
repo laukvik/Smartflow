@@ -111,7 +111,7 @@ function CloseDeletedAction(){
 }
 
 
-function LoginController(){
+function LoginView(){
   this.smartflow = {
     "path" : "/"
   };
@@ -146,10 +146,11 @@ function LoginController(){
     this.setEnabled("loginButton", value == undefined);
   };
   this.actionPerformed = function(action){
+
   }
 }
 
-function InboxController(){
+function InboxView(){
   this.smartflow = {
     "path" : "/inbox"
   };
@@ -223,7 +224,7 @@ function InboxController(){
 }
 
 
-function ComposeController(){
+function ComposeView(){
   this.smartflow = {
     "path" : "/compose"
   };
@@ -290,7 +291,7 @@ app.setConfig(config);
 app.loadLanguage("no", langNO);
 app.loadLanguage("en", langEN);
 app.setDefaultLocale("en");
-app.addController(new LoginController());
-app.addController(new InboxController());
-app.addController(new ComposeController());
+app.addView(new LoginView());
+app.addView(new InboxView());
+app.addView(new ComposeView());
 app.start();

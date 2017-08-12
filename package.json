@@ -1,6 +1,6 @@
 {
   "name": "smartflow",
-  "version": "0.1.1-alpha",
+  "version": "0.1.2",
   "description": "Easy to use application flow management.",
   "main": "src/smartflow.js",
   "scripts": {

@@ -3,6 +3,7 @@
  * Smartflow features
  *
  * - performing actions
+ * - supports calling multiple request
  * - altering states with actions
  * - internationalization
  * - detecting user language
@@ -90,7 +91,7 @@ function Smartflow(){
     var path = anchor.indexOf("#") == 0 ? anchor.substr(1) : "/";
     this.setPath( path );
   };
-  this.addController = function(ctrl){
+  this.addView = function(ctrl){
     this._controllers.push(ctrl);
     var self = this;
     ctrl.runAction = function(action){
@@ -193,11 +194,20 @@ function Smartflow(){
         }
 
         this.setPath(action.smartflow.path);
-        this._fireActionPerformed(action);
+        this._fireActionPerformed( this._buildActionEvent(action, action.smartflow.states, undefined, undefined, action) );
       }
     } else {
       //console.error("App: invalid action ", action);
     }
+  };
+  this._buildActionEvent = function(action, states, path, error, fromView){
+    return {
+      "action" : action.constructor.name,
+      "states" : states,
+      "error"  : error,
+      "path"   : path,
+      "view"   : fromView
+    };
   };
   this.setPath = function(path){
     if (this._controller && this._controller.smartflow.path === path){
@@ -256,18 +266,15 @@ function SmartflowFormatter(config){
     if (value == undefined){
       return "???" + key + "???";
     }
-
     if (keys == undefined) {
       return value;
     }
-
     var arr = [];
     if (Array.isArray(keys)){
       arr = keys;
     } else {
       arr[ 0 ] = keys;
     }
-
     var s = value;
     for (var x = 0; x < arr.length; x++){
       var symbol = "{" + x + "}";

@@ -1,6 +1,0 @@
-{
-  "inbox": {
-    "method" : "get",
-    "url" : "http://localhost/api/mails/inbox"
-  }
-}
