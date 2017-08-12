@@ -12,8 +12,8 @@
  * - automatic show and hide views
  * - web requests are done with actions declarative
  * - TODO - enable local storage
- * - TODO - create action events: fromCtrl, duration, path, states
  * - TODO - documentation tool available
+ * - TODO - add support for deep paths /inbox/{states.folderID}
  * - no dependencies!
  *
  * @constructor
@@ -112,27 +112,50 @@ function Smartflow(){
       return;
     }
     this._action = action;
+
+    // Event object
+    var actionEvent = {
+      "action": {
+        "name": action.constructor.name,
+        "value": action.smartflow
+      },
+      "states": {},
+      "error": undefined,
+      "request": {
+        "method": undefined,
+        "url": undefined
+      },
+      "response": {
+        "status": undefined,
+        "body": undefined,
+        "contentType": undefined,
+      },
+      "path": undefined,
+      "from": this._path,
+      "start": Date.now(),
+      "finish": undefined
+    };
+
+    //
+    action._smartflowStarted = new Date();
     if (action.smartflow) {
       if (action.smartflow.request) {
         // Run with request
         var self = this;
         var xhr = new XMLHttpRequest();
         xhr.onreadystatechange = function() {
-          if (this.readyState === self.READY_STATE_UNSENT) {
-          } else if (this.readyState === self.READY_STATE_OPENED) {
-          } else if (this.readyState === self.READY_STATE_HEADERS_RECEIVED) {
-          } else if (this.readyState === self.READY_STATE_LOADING) {
-          } else if (this.readyState === self.READY_STATE_DONE){
+          if (this.readyState === self.READY_STATE_DONE){
             var statusCode = parseInt(this.status);
+            actionEvent.response.status = statusCode;
             var contentType = this.getResponseHeader('content-type');
-            var data = null;
+            actionEvent.response.contentType = contentType;
 
             if (contentType === 'json') {
-              data = JSON.parse(this.response);
+              actionEvent.response.body = JSON.parse(this.response);
             } else if (contentType === 'xml'){
-              data = this.responseXML;
+              actionEvent.response.body = this.responseXML;
             } else {
-              data = this.response;
+              actionEvent.response.body = this.response;
             }
 
             if (statusCode >= self.HTTP_INFO && statusCode < self.HTTP_SUCCESS) {
@@ -140,79 +163,94 @@ function Smartflow(){
 
             } else if (statusCode === self.HTTP_SUCCESS) {
               // Success
-              self._fireStateChanged(action.smartflow.state, data);
-              self.setPath(action.smartflow.path);
-              self._fireActionPerformed(action);
+              actionEvent.path = action.smartflow.path;
+              actionEvent.states[ action.smartflow.state ] = actionEvent.response.body;
+              delete (actionEvent.error);
+              self._fireActionPerformed(action, actionEvent);
 
             } else if (statusCode >= self.HTTP_REDIRECT && statusCode < self.HTTP_CLIENT_ERROR) {
               // Redirect
-              self._fireStateChanged(action.smartflow.error.state, "Error: Server responded " + statusCode + " (" + action.constructor.name + ")");
-              self.setPath(action.smartflow.error.path);
-              self._fireActionPerformed(action);
+              var errorRedirectMessage = "Error: Server responded " + statusCode + " (" + action.constructor.name + ")";
+              actionEvent.path = action.smartflow.error.path;
+              actionEvent.error = errorRedirectMessage;
+              actionEvent.states[ action.smartflow.error.state ] = errorRedirectMessage;
+              self._fireActionPerformed(action, actionEvent);
 
             } else if (statusCode >= self.HTTP_CLIENT_ERROR && statusCode < self.HTTP_ERROR) {
               // Client error
-              self._fireStateChanged(action.smartflow.error.state, "Error: Server responded " + statusCode + " (" + action.constructor.name + ") ");
-              self.setPath(action.smartflow.error.path);
-              self._fireActionPerformed(action);
+              var errorClientMessage = "Error: Server responded " + statusCode + " (" + action.constructor.name + ") ";
+              actionEvent.path = action.smartflow.error.path;
+              actionEvent.error = errorClientMessage;
+              actionEvent.states[ action.smartflow.error.state ] = errorClientMessage;
+              self._fireActionPerformed(action, actionEvent);
 
             } else if (statusCode >= self.HTTP_ERROR && statusCode < self.HTTP_UNKNOWN) {
               // Server error
-              self._fireStateChanged(action.smartflow.error.state, "Error: Server responded " + statusCode + " (" + action.constructor.name + ")  ");
-              self.setPath(action.smartflow.error.path);
-              self._fireActionPerformed(action);
+              var errorServerMessage = "Error: Server responded " + statusCode + " (" + action.constructor.name + ")  ";
+              actionEvent.path = action.smartflow.error.path;
+              actionEvent.error = errorServerMessage;
+              actionEvent.states[ action.smartflow.error.state ] = errorServerMessage;
+              self._fireActionPerformed(action, actionEvent);
             }
           }
         };
         xhr.timeout = self.REQUEST_TIMEOUT;
         xhr.ontimeout = function(evt) {
           // XMLHttpRequest timed out
-          self._fireStateChanged(action.smartflow.error.state, "Error: Timeout " + self.REQUEST_TIMEOUT + " ms for (" + action.constructor.name + ")");
-          self.setPath(action.smartflow.error.path);
-          self._fireActionPerformed(action);
+          var errorTimeoutMessage = "Error: Timeout " + self.REQUEST_TIMEOUT + " ms for (" + action.constructor.name + ")";
+          actionEvent.error = errorTimeoutMessage;
+          actionEvent.states[ action.smartflow.error.state ] = errorTimeoutMessage;
+          self._fireActionPerformed(action, actionEvent);
         };
 
         var url = self.getRequestURL(action);
-        if (url == undefined){
-          self._fireStateChanged(action.smartflow.error.state, "Error: URL not specified for (" + action.constructor.name + ")");
-          self.setPath(action.smartflow.error.path);
-          self._fireActionPerformed(action);
+        if (url === undefined){
+          var errorUrlMessage = "Error: URL not specified for (" + action.constructor.name + ")";
+          actionEvent.error = errorUrlMessage;
+          actionEvent.states[ action.smartflow.error.state ] = errorUrlMessage;
+          self._fireActionPerformed(action, actionEvent);
         } else {
+          actionEvent.request.method = action.smartflow.request.method;
+          actionEvent.request.url = url;
           xhr.open( action.smartflow.request.method, url, true  );
           xhr.send();
         }
 
       } else {
         // Run without request
+        delete (actionEvent.error);
         if (action.runAction){
           action.runAction();
         }
-
-        var obj = action.smartflow.states;
-        for(var key in obj){
-          this._fireStateChanged(key, obj[key]);
-        }
-
-        this.setPath(action.smartflow.path);
-        this._fireActionPerformed( this._buildActionEvent(action, action.smartflow.states, undefined, undefined, action) );
+        actionEvent.path = action.smartflow.path;
+        delete (actionEvent.request);
+        delete (actionEvent.response);
+        actionEvent.states = action.smartflow.states === undefined ? {} : action.smartflow.states;
+        this._fireActionPerformed( action, actionEvent );
       }
     } else {
       //console.error("App: invalid action ", action);
     }
   };
-  this._buildActionEvent = function(action, states, path, error, fromView){
-    return {
-      "action" : action.constructor.name,
-      "states" : states,
-      "error"  : error,
-      "path"   : path,
-      "view"   : fromView
-    };
+
+  this._fireActionPerformed = function(action, actionEvent) {
+    actionEvent.finish = Date.now();
+    for(var key in actionEvent.states){
+      this._fireStateChanged(key, actionEvent.states[key]);
+    }
+    this.setPath(actionEvent.path);
+    action._smartflowStarted = undefined;
+    var ctrl = action._smartflowCaller;
+    action._smartflowCaller = undefined;
+    this._action = undefined;
+    ctrl.actionPerformed(actionEvent);
+    this._runRemainingActions();
   };
   this.setPath = function(path){
     if (this._controller && this._controller.smartflow.path === path){
       return;
     }
+    this._path = path;
     this._controller = undefined;
     window.location.href = "#" + path;
     this._firePathChanged(path);
@@ -237,15 +275,9 @@ function Smartflow(){
       }
     }
   };
-  this._fireActionPerformed = function(action){
-    var ctrl = action._smartflowCaller;
-    action._smartflowCaller = undefined;
-    this._action = undefined;
-    ctrl.actionPerformed(action);
-    this._runRemainingActions();
-  };
+
   this._fireStateChanged = function(state, value){
-    if (value == undefined || value == null) {
+    if (value === undefined || value == null) {
       delete( this._states[ state ] );
     } else {
       this._states[state] = value;
@@ -263,10 +295,10 @@ function SmartflowFormatter(config){
   this.config = config;
   this.format = function(key, keys){
     var value = this.config[ key ];
-    if (value == undefined){
+    if (value === undefined){
       return "???" + key + "???";
     }
-    if (keys == undefined) {
+    if (keys === undefined) {
       return value;
     }
     var arr = [];
