@@ -3,7 +3,7 @@ function LoginAction() {
     "state": "user",
     "path": "/inbox",
     "request": {
-      "url": "/api/time",
+      "url": "/api/login",
       "method": "get"
     },
     "error": {
@@ -125,10 +125,10 @@ function LoginView(){
   this.viewInitialized = function(lang){
     var self = this;
     document.getElementById("loginButton").addEventListener("click", function(){
-      self.runAction(new LoginAction());
+      self.runSmartflow(new LoginAction());
     })
     document.getElementById("loginFailedButton").addEventListener("click", function(){
-      self.runAction(new CloseLoginFailedAction());
+      self.runSmartflow(new CloseLoginFailedAction());
     })
     document.getElementById("loginInfoMessage").innerText = lang.format("welcome", ["Smartflow", 1, 2]);
   };
@@ -146,7 +146,7 @@ function LoginView(){
     this.setEnabled("loginButton", value == undefined);
   };
   this.actionPerformed = function(action){
-
+    console.info("actionPerformed", action);
   }
 }
 
@@ -165,24 +165,24 @@ function InboxView(){
     this.lang = lang;
     var self = this;
     document.getElementById("composeButton").addEventListener("click", function(){
-      self.runAction(new ComposeAction());
+      self.runSmartflow(new ComposeAction());
     })
     document.getElementById("logoutButton").addEventListener("click", function(){
-      self.runAction(new LogoutAction());
+      self.runSmartflow(new LogoutAction());
     })
     document.getElementById("confirmDeleteButton").addEventListener("click", function(){
-      self.runAction(new ConfirmDeleteAction());
+      self.runSmartflow(new ConfirmDeleteAction());
     })
 
     document.getElementById("yesButton").addEventListener("click", function(){
-      self.runAction(new YesAction());
+      self.runSmartflow(new YesAction());
     })
     document.getElementById("noButton").addEventListener("click", function(){
-      self.runAction(new NoAction());
+      self.runSmartflow(new NoAction());
     })
 
     document.getElementById("closeDeletedButton").addEventListener("click", function(){
-      self.runAction(new CloseDeletedAction());
+      self.runSmartflow(new CloseDeletedAction());
     });
   };
   this.viewEnabled = function(){
@@ -196,7 +196,7 @@ function InboxView(){
     this.setEnabled("logoutButton", false);
   };
   this.actionPerformed = function(action){
-    //console.info("actionPerformed", action);
+    console.info("actionPerformed", action);
   };
   this.stateChanged = function(state, value){
     if (state === "confirm") {
@@ -238,13 +238,13 @@ function ComposeView(){
   this.viewInitialized = function(lang){
     var self = this;
     document.getElementById("sendMailButton").addEventListener("click", function(){
-      self.runAction(new SendMailAction());
+      self.runSmartflow(new SendMailAction());
     })
     document.getElementById("cancelMailButton").addEventListener("click", function(){
-      self.runAction(new CancelComposeAction());
+      self.runSmartflow(new CancelComposeAction());
     })
     document.getElementById("closeSentButton").addEventListener("click", function(){
-      self.runAction(new CloseSentAction());
+      self.runSmartflow(new CloseSentAction());
     })
   };
   this.viewEnabled = function(){
@@ -258,7 +258,7 @@ function ComposeView(){
     this.setEnabled("closeSentButton", false);
   };
   this.actionPerformed = function(action){
-    //console.info("actionPerformed", action);
+    console.info("actionPerformed", action);
   };
   this.stateChanged = function(state, value){
     if (state === "receipt") {
@@ -267,6 +267,25 @@ function ComposeView(){
       this.setEnabled("sendMailButton", !enabled);
       this.setEnabled("cancelMailButton", !enabled);
     }
+  };
+}
+
+
+function ToolbarView(){
+  this.smartflow = {
+  };
+  this.viewInitialized = function(lang){
+
+  };
+  this.viewEnabled = function(){
+  };
+  this.viewDisabled = function(){
+  };
+  this.actionPerformed = function(action){
+    console.info("actionPerformed", action);
+  };
+  this.stateChanged = function(state, value){
+
   };
 }
 
@@ -294,4 +313,5 @@ app.setDefaultLocale("en");
 app.addView(new LoginView());
 app.addView(new InboxView());
 app.addView(new ComposeView());
+//app.addView(new ToolbarView());
 app.start();

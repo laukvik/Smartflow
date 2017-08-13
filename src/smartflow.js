@@ -14,6 +14,9 @@
  * - TODO - enable local storage
  * - TODO - documentation tool available
  * - TODO - add support for deep paths /inbox/{states.folderID}
+ * - TODO - path is not required - go to oneself
+ * - TODO - get is default method
+ * - TODO - features - switches for UI elements (toggles display on/off)
  * - no dependencies!
  *
  * @constructor
@@ -27,7 +30,7 @@ function Smartflow() {
   this.setConfig = function (config) {
     this._config = config;
   };
-  this.getRequestURL = function (action) {
+  this._getRequestURL = function (action) {
     var key = action.constructor.name;
     var val = this._config[key];
     if (val === undefined) {
@@ -47,12 +50,11 @@ function Smartflow() {
     this._locale = locale;
     this._formatter.config = this._locales[this._locale];
   };
-  this.autoDetectLocale = function () {
-    var l = this.findClosestLocale();
+  this._autoDetectLocale = function () {
+    var l = this._findClosestLocale();
     this.setLocale(l === undefined ? this._localeDefault : l);
-
   };
-  this.findClosestLocale = function () {
+  this._findClosestLocale = function () {
     var arr = navigator.languages;
     for (var x = 0; x < arr.length; x++) {
       var locale = arr[x];
@@ -82,7 +84,7 @@ function Smartflow() {
   this._states = [];
   this._formatter = new SmartflowFormatter({});
   this.start = function () {
-    this.autoDetectLocale();
+    this._autoDetectLocale();
     for (var x = 0; x < this._controllers.length; x++) {
       var ctrl = this._controllers[x];
       ctrl.viewInitialized(this._formatter);
@@ -94,7 +96,7 @@ function Smartflow() {
   this.addView = function (ctrl) {
     this._controllers.push(ctrl);
     var self = this;
-    ctrl.runAction = function (action) {
+    ctrl.runSmartflow = function (action) {
       self.runAction(action, ctrl);
     };
   };
@@ -150,9 +152,10 @@ function Smartflow() {
             var contentType = this.getResponseHeader('content-type');
             actionEvent.response.contentType = contentType;
 
-            if (contentType === 'json') {
+            // TODO - Add support for variants of content types eg application/json;utf-8 etc
+            if (contentType === 'application/json') {
               actionEvent.response.body = JSON.parse(this.response);
-            } else if (contentType === 'xml') {
+            } else if (contentType === 'application/xml') {
               actionEvent.response.body = this.responseXML;
             } else {
               actionEvent.response.body = this.response;
@@ -203,7 +206,7 @@ function Smartflow() {
           self._fireActionPerformed(action, actionEvent);
         };
 
-        var url = self.getRequestURL(action);
+        var url = self._getRequestURL(action);
         if (url === undefined) {
           var errorUrlMessage = "Error: URL not specified for (" + action.constructor.name + ")";
           actionEvent.error = errorUrlMessage;
@@ -287,6 +290,26 @@ function Smartflow() {
       var ctrl = this._controllers[x];
       if (ctrl.stateChanged) {
         ctrl.stateChanged(state, value);
+      }
+    }
+    // Update DOM with state bindings
+    var states = {};
+    states[ state ] = value;
+    var els = document.querySelectorAll('[data-smartflow-state]');
+    for (var z=0; z<els.length; z++){
+      var el = els[z];
+      var stateExpression = el.getAttribute("data-smartflow-state");
+      if (stateExpression === state) {
+        el.innerHTML = value === undefined ? '' : value;
+      } else if (stateExpression.indexOf(state + ".") === 0) {
+        if (value === undefined){
+          el.innerHTML = "";
+        } else {
+          // TODO - Add support for unknown depth of references in state
+          var arr = stateExpression.split(".");
+          var subkey = arr[ 1 ];
+          el.innerHTML = value[ subkey ] == undefined ? '' : value[ subkey ];
+        }
       }
     }
   };
