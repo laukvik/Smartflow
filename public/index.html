@@ -53,6 +53,9 @@
       display: block;
       text-align: center;
     }
+    #ToolbarView{
+      background-color: #aaaaaa;
+    }
   </style>
   <script>
     function module() {
@@ -68,6 +71,10 @@
 <p class="smartflow-tagline">JavaScript API for controlling application flow</p>
 
 <div>
+  <div id="ToolbarView">
+    User <span data-smartflow-state="user.usr"></span>
+  </div>
+
   <div id="LoginView" class="controller"><h5>LoginController</h5>
     <div id="loginInfoMessage" class="info"></div>
     <input id="loginButton" type="button" value="LoginAction"/>
