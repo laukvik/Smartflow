@@ -11,9 +11,10 @@
  * - configuration of urls
  * - automatic show and hide views
  * - web requests are done with actions declarative
+ * - supports deep links
+ *
  * - TODO - enable local storage
  * - TODO - documentation tool available
- * - TODO - add support for deep paths /inbox/{states.folderID}
  * - TODO - path is not required - go to oneself
  * - TODO - get is default method
  * - TODO - features - switches for UI elements (toggles display on/off)
@@ -133,6 +134,7 @@ function Smartflow() {
         "contentType": undefined,
       },
       "path": undefined,
+      "params": [],
       "from": this._path,
       "start": Date.now(),
       "finish": undefined
@@ -167,14 +169,17 @@ function Smartflow() {
             } else if (statusCode === self.HTTP_SUCCESS) {
               // Success
               actionEvent.path = action.smartflow.path;
+              actionEvent.params = self._findParams(actionEvent.path).param;
               actionEvent.states[action.smartflow.state] = actionEvent.response.body;
               delete (actionEvent.error);
+
               self._fireActionPerformed(action, actionEvent);
 
             } else if (statusCode >= self.HTTP_REDIRECT && statusCode < self.HTTP_CLIENT_ERROR) {
               // Redirect
               var errorRedirectMessage = "Error: Server responded " + statusCode + " (" + action.constructor.name + ")";
               actionEvent.path = action.smartflow.error.path;
+              actionEvent.params = self._findParams(actionEvent.path).param;
               actionEvent.error = errorRedirectMessage;
               actionEvent.states[action.smartflow.error.state] = errorRedirectMessage;
               self._fireActionPerformed(action, actionEvent);
@@ -183,6 +188,7 @@ function Smartflow() {
               // Client error
               var errorClientMessage = "Error: Server responded " + statusCode + " (" + action.constructor.name + ") ";
               actionEvent.path = action.smartflow.error.path;
+              actionEvent.params = self._findParams(actionEvent.path).param;
               actionEvent.error = errorClientMessage;
               actionEvent.states[action.smartflow.error.state] = errorClientMessage;
               self._fireActionPerformed(action, actionEvent);
@@ -191,6 +197,7 @@ function Smartflow() {
               // Server error
               var errorServerMessage = "Error: Server responded " + statusCode + " (" + action.constructor.name + ")  ";
               actionEvent.path = action.smartflow.error.path;
+              actionEvent.params = self._findParams(actionEvent.path).param;
               actionEvent.error = errorServerMessage;
               actionEvent.states[action.smartflow.error.state] = errorServerMessage;
               self._fireActionPerformed(action, actionEvent);
@@ -226,6 +233,7 @@ function Smartflow() {
           action.runAction();
         }
         actionEvent.path = action.smartflow.path;
+        actionEvent.params = this._findParams(actionEvent.path).param;
         delete (actionEvent.request);
         delete (actionEvent.response);
         actionEvent.states = action.smartflow.states === undefined ? {} : action.smartflow.states;
@@ -249,19 +257,30 @@ function Smartflow() {
     ctrl.actionPerformed(actionEvent);
     this._runRemainingActions();
   };
-  this.setPath = function (path) {
-    if (this._controller && this._controller.smartflow.path === path) {
+  this._findParams = function(pathString){
+    var parameters = pathString.split("/");
+    if (parameters[0] == "") {
+      parameters.shift();
+    }
+    var firstElement = "/" + parameters.shift();
+    return {
+      "path" : firstElement,
+      "param" : parameters
+    };
+  }
+  this.setPath = function (pathString) {
+    var p = this._findParams(pathString);
+    var firstElement = p.path;
+    var parameters = p.param;
+    if (this._controller && this._controller.smartflow.path === firstElement) {
       return;
     }
-    this._path = path;
+    this._path = pathString;
     this._controller = undefined;
-    window.location.href = "#" + path;
-    this._firePathChanged(path);
+    window.location.href = "#" + pathString;
+    this._firePathChanged(firstElement, parameters);
   };
-  this._setControllerVisible = function (ctrl, isVisible) {
-    document.getElementById(ctrl.constructor.name).style.display = isVisible ? "block" : "none";
-  };
-  this._firePathChanged = function (path) {
+  this._firePathChanged = function (path, parameters) {
     var ctrl;
     for (var x = 0; x < this._controllers.length; x++) {
       ctrl = this._controllers[x];
@@ -279,7 +298,9 @@ function Smartflow() {
       }
     }
   };
-
+  this._setControllerVisible = function (ctrl, isVisible) {
+    document.getElementById(ctrl.constructor.name).style.display = isVisible ? "block" : "none";
+  };
   this._fireStateChanged = function (state, value) {
     if (value === undefined || value == null) {
       delete( this._states[state] );

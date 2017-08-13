@@ -1,7 +1,7 @@
 function LoginAction() {
   this.smartflow = {
     "state": "user",
-    "path": "/inbox",
+    "path": "/inbox/a/b",
     "request": {
       "url": "/api/login",
       "method": "get"
