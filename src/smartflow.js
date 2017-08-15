@@ -294,6 +294,9 @@ function Smartflow() {
       if (ctrl.smartflow.path === path) {
         this._controller = ctrl;
         ctrl.viewEnabled();
+        if (ctrl.pathChanged) {
+          ctrl.pathChanged(path, parameters);
+        }
         this._setControllerVisible(ctrl, true);
       }
     }
@@ -329,13 +332,21 @@ function Smartflow() {
           // TODO - Add support for unknown depth of references in state
           var arr = stateExpression.split(".");
           var subkey = arr[ 1 ];
-          el.innerHTML = value[ subkey ] == undefined ? '' : value[ subkey ];
+          el.innerHTML = value[ subkey ] === undefined ? '' : value[ subkey ];
         }
       }
     }
   };
 }
 
+/**
+ * Formats a String
+ *
+ * TODO - Support JSON object as the key so arguments can be named
+ *
+ * @param config
+ * @constructor
+ */
 function SmartflowFormatter(config) {
   this.config = config;
   this.format = function (key, keys) {
