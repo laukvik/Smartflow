@@ -11,7 +11,7 @@ instructions in JSON format, documentation of the whole application with its flo
 
 Diagram: 
 
-[[File:overview.png|frame|none]]
+![Overview](overview.png)
 
 
 The purpose of the application is
@@ -207,7 +207,7 @@ Example:
 ```javascript
 function LoginAction(){
   this.smartflow = {
-    "url" : «/api/login"
+    "url" : "/api/login"
   };
 } 
 
@@ -244,7 +244,7 @@ Example:
 ```javascript
 var lang = {
   "confirmdelete": "Are you sure you want to delete?",
-  "deleted" : «Deleted"
+  "deleted" : "Deleted"
 }
 var app = new Smartflow();
 app.loadLanguage("en", lang);
