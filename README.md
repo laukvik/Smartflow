@@ -9,12 +9,12 @@ All state changes are done by a View (controller) that performs an action. The a
 serial order. Actions are guaranteed to report when its done. No timeouts or silent errors. Since the actions are using 
 instructions in JSON format, documentation of the whole application with its flow is possible.
 
-Diagram: 
+**Overview 
 
 ![Overview](overview.png)
 
 
-The purpose of the application is
+**Features
 
 - handling user actions (fifo)
 - managing application state(s)
@@ -23,6 +23,8 @@ The purpose of the application is
 - detecting the appropriate language for the user
 - navigating between views (routing)
 - to simplify XHR communication
+
+
 
 
 | Event              | Description                                   |
@@ -53,7 +55,7 @@ All views are required to be mapped to a specific path (using the HTML anchor). 
 inside the view called smartflow. The view responds to all request with the path starting with «/compose/» . Views 
 cannot have overlapping paths.
 
-Example:
+**Example:
 
 ```javascript
 function ComposeView(){
@@ -64,7 +66,7 @@ function ComposeView(){
 
 To use a view you need to first add it to the application like this:
 
-Example:
+**Example:
 
 ```javascript
 var app = new Smartflow();
@@ -99,7 +101,7 @@ with the results.
 
 Usable for validation of inputs etc
 
-Example:
+**Example:
 
 ```javascript
 function ComposeAction(){
@@ -118,7 +120,7 @@ function ComposeAction(){
 
 Usable for using REST services and other XHR requests.
 
-Example:
+**Example:
 
 ```javascript
 function LoginAction() {
@@ -168,7 +170,7 @@ The action event contains essential information about the action and its results
 
 * Only available when performing server actions
 
-Example: 
+**Example: 
 
 ```json
 {
@@ -202,7 +204,7 @@ Example:
 The server actions specifies their URLs to use. These URLs can be controlled by using a config file that contains one or more name URLs. The application first looks for a configuration and uses that - otherwise the URL in the action is used instead. If an action is called LoginAction, the configuration key must have the same name.
 
 
-Example:
+**Example:
 
 ```javascript
 function LoginAction(){
@@ -230,7 +232,7 @@ Formatting strings with multiple parameters is also supported.
 
 ### Setting default language
 
-Example:
+**Example:
 
 ```javascript
 var app = new Smartflow();
@@ -239,7 +241,7 @@ app.setDefaultLocale(«en»);
 
 ### Loading language files
 
-Example:
+**Example:
 
 ```javascript
 var lang = {
@@ -254,7 +256,7 @@ app.loadLanguage("en", lang);
 
 When a view is initialised the language formatter is provided as a parameter to the controller.
 
-Example:
+**Example:
 
 ```javascript
 function ToolbarView(){
@@ -264,14 +266,14 @@ function ToolbarView(){
 ```
 The formatter can format text with a single parameter.
 
-
-Example:
+**Example:
 
 ```javascript
 var lang = {confirmDelete: 'Are you sure you want to delete the file {0}?'}
 formatter.format( 'confirmDelete', 'helloWorld.txt' );
 ```
-Example:
+
+**Example:
 
 ```javascript
 var lang = {confirmDelete, 'Are you sure you want to delete the file {filename}?'}
