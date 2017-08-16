@@ -9,22 +9,22 @@ All state changes are done by a View (controller) that performs an action. The a
 serial order. Actions are guaranteed to report when its done. No timeouts or silent errors. Since the actions are using 
 instructions in JSON format, documentation of the whole application with its flow is possible.
 
-**Overview 
+**Overview**
 
 ![Overview](overview.png)
 
 
 **Features**
 
-- handling user actions (fifo)
-- managing application state(s)
+- handling user actions
+- managing application states
 - booting the application
 - loading language files 
 - detecting the appropriate language for the user
 - navigating between views (routing)
 - to simplify XHR communication
 
-### Methods
+## Application
 
 The application has the following methods:
 
@@ -55,29 +55,7 @@ All views are required to be mapped to a specific path (using the HTML anchor). 
 inside the view called smartflow. The view responds to all request with the path starting with «/compose/» . Views 
 cannot have overlapping paths.
 
-**Example:**
-
-```javascript
-function ComposeView(){
-  this.smartflow = {
-    "path" : "/compose"
-  }; 
-```
-
-To use a view you need to first add it to the application like this:
-
-**Example:**
-
-```javascript
-var app = new Smartflow();
-app.addView(new ComposeView()); 
-```
-
-| JSON              | Description                                   |
-|:------------------|:----------------------------------------------| 
-| path              | The path to map the view to                   |
-
-
+### Events
 
 The controllers receives events when the application changes state.
 
@@ -89,6 +67,27 @@ The controllers receives events when the application changes state.
 | actionPerformed    | The specified action was performed            | actionEvent     |      
 | stateChanged       | The state change to the value                 | state, value    |    
 | pathChanged        | The path changed                              | path, parameters|    
+
+### Examples
+
+**Example: Declaring path in your view**
+
+```javascript
+function ComposeView(){
+  this.smartflow = {
+    "path" : "/compose"
+  }; 
+```
+
+To use a view you need to first add it to the application like this:
+
+**Example: **
+
+```javascript
+var app = new Smartflow();
+app.addView(new ComposeView()); 
+```
+
 
 
 ## Actions
