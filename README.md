@@ -70,7 +70,7 @@ The controllers receives events when the application changes state.
 
 ### Examples
 
-**Example: Declaring path in your view**
+**Declaring paths in the view**
 
 ```javascript
 function ComposeView(){
@@ -79,9 +79,8 @@ function ComposeView(){
   }; 
 ```
 
-To use a view you need to first add it to the application like this:
 
-**Example: **
+**Adding view to the application**
 
 ```javascript
 var app = new Smartflow();
@@ -96,9 +95,18 @@ There are two types of actions - client and server. Both are used by using a Jav
 structure named «smartflow» as a field. When the action is completed the controller will receive the an action event 
 with the results.
 
+
+
 ### Client actions
 
 Usable for validation of inputs etc
+
+
+| Smartflow   | Description                                   | Required        |
+|:------------|:----------------------------------------------|:----------------| 
+| states      | Specifies the state names and their values    | no              |
+| path        | The path to navigate to                       | no              |
+
 
 **Example:**
 
@@ -110,14 +118,17 @@ function ComposeAction(){
 }
 ```
 
-| Smartflow   | Description                                   | Required        |
-|:------------|:----------------------------------------------|:----------------| 
-| states      | Specifies the state names and their values    | no              |
-| path        | The path to navigate to                       | no              |
-
 ### Server actions
 
 Usable for using REST services and other XHR requests.
+
+| Smartflow       | Description                                                 | Required        |
+|:----------------|:------------------------------------------------------------|:----------------| 
+| state           | The name of the state to put the response into              | yes             |
+| request.url     | The url to connect to                                       | no              |
+| request.method  | The method to use while connecting. Default: GET            | no              |
+| error.path      | The path to navigate to if an error occurs                  | yes             |
+| error.state     | The name of the state to set the error message details into | yes             |
 
 **Example:**
 
@@ -138,13 +149,6 @@ function LoginAction() {
 }
 ```
 
-| Smartflow       | Description                                                 | Required        |
-|:----------------|:------------------------------------------------------------|:----------------| 
-| state           | The name of the state to put the response into              | yes             |
-| request.url     | The url to connect to                                       | no              |
-| request.method  | The method to use while connecting. Default: GET            | no              |
-| error.path      | The path to navigate to if an error occurs                  | yes             |
-| error.state     | The name of the state to set the error message details into | yes             |
 
 
 ### Action event
@@ -200,7 +204,9 @@ The action event contains essential information about the action and its results
 
 ## Configuration
 
-The server actions specifies their URLs to use. These URLs can be controlled by using a config file that contains one or more name URLs. The application first looks for a configuration and uses that - otherwise the URL in the action is used instead. If an action is called LoginAction, the configuration key must have the same name.
+The server actions specifies their URLs to use. These URLs can be controlled by using a config file that contains one or 
+more name URLs. The application first looks for a configuration and uses that - otherwise the URL in the action is used 
+instead. If an action is called LoginAction, the configuration key must have the same name.
 
 
 **Example:**
