@@ -90,30 +90,37 @@ app.addView(new ComposeView());
 
 
 ## Actions
-   
-There are two types of actions - client and server. Both are used by using a JavaScript function with a specific JSON 
-structure named «smartflow» as a field. When the action is completed the controller will receive the an action event 
-with the results.
 
+Actions changes the states and internal navigation in the application. Their behavior is declared as a JSON object
+inside an action. When an action is performed by the application, the view(s) are informed about the changes in states 
+(stateChanged) and the application will potentially navigate to a different path (pathChanged). The destination view
+for the application will be informed about the completion (actionPerformed).
 
 
 ### Client actions
 
-Usable for validation of inputs etc
+Actions that does not involve any communication with a server is a client action. A client action is limited to change
+states and path.
 
+#### Declaring the behavior
 
-| Smartflow   | Description                                   | Required        |
+| Node        | Description                                   | Required        |
 |:------------|:----------------------------------------------|:----------------| 
 | states      | Specifies the state names and their values    | no              |
 | path        | The path to navigate to                       | no              |
 
+#### Example
 
-**Example:**
+Declaring to navigate to /compose after setting two states
 
 ```javascript
 function ComposeAction(){
   this.smartflow = {
-    "path" : "/compose"
+    "path" : "/compose",
+    "states": {
+        "to": "nobody@nothing.org",
+        "subject": "Hello world"
+    }
   };
 }
 ```
@@ -121,6 +128,8 @@ function ComposeAction(){
 ### Server actions
 
 Usable for using REST services and other XHR requests.
+
+#### Declaring the behavior
 
 | Smartflow       | Description                                                 | Required        |
 |:----------------|:------------------------------------------------------------|:----------------| 
@@ -130,7 +139,11 @@ Usable for using REST services and other XHR requests.
 | error.path      | The path to navigate to if an error occurs                  | yes             |
 | error.state     | The name of the state to set the error message details into | yes             |
 
-**Example:**
+#### Example
+
+Declares how to connect to "/api/login" using a get request and setting the results in the state with the name
+"user" and navigating to /inbox. If the operation fails, the state "loginFailed" will be willed with the 
+error message then the application navigates to the path "/".
 
 ```javascript
 function LoginAction() {
@@ -173,7 +186,7 @@ The action event contains essential information about the action and its results
 
 * Only available when performing server actions
 
-**Example:**
+#### Example
 
 ```json
 {
