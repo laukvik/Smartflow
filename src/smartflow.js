@@ -27,11 +27,35 @@ function Smartflow() {
   this._controllers = [];
   this._actionQueue = [];
   this._locales = [];
-  // Config
+  this._localeDefault = undefined;
+  this._isAction = function(action){
+    if (action === undefined) {
+      return false;
+    } else {
+      if (action.constructor) {
+        if (action.constructor.name){
+          return true;
+        }
+      }
+    }
+    return false;
+  };
+  //--------------------------------- Config ---------------------------------
   this.setConfig = function (config) {
     this._config = config;
   };
-  this._getRequestURL = function (action) {
+  this.getConfig = function () {
+    return this._config;
+  };
+  this.getRequestUrl = function (action) {
+    if (!this._isAction(action)) {
+      //console.info("Smartflow: not an action", action);
+      return undefined;
+    }
+    if (this._config === undefined) {
+      //console.info("Smartflow: Missing configuration!");
+      return undefined;
+    }
     var key = action.constructor.name;
     var val = this._config[key];
     if (val === undefined) {
@@ -40,9 +64,12 @@ function Smartflow() {
       return val;
     }
   };
-  //Locale
+  //--------------------------------- Locale ---------------------------------
   this.setDefaultLocale = function (locale) {
     this._localeDefault = locale;
+  };
+  this.getDefaultLocale = function () {
+    return this._localeDefault;
   };
   this.loadLanguage = function (locale, data) {
     this._locales[locale] = data;
@@ -51,12 +78,14 @@ function Smartflow() {
     this._locale = locale;
     this._formatter.config = this._locales[this._locale];
   };
+  this.getLocale = function(){
+    return this._locale;
+  };
   this._autoDetectLocale = function () {
-    var l = this._findClosestLocale();
+    var l = this.findClosestLocale(navigator.languages);
     this.setLocale(l === undefined ? this._localeDefault : l);
   };
-  this._findClosestLocale = function () {
-    var arr = navigator.languages;
+  this.findClosestLocale = function (arr) {
     for (var x = 0; x < arr.length; x++) {
       var locale = arr[x];
       var language = locale.indexOf("-") > -1 ? locale : locale.split("-")[0];
@@ -66,7 +95,70 @@ function Smartflow() {
     }
     return undefined;
   };
-  //
+  //--------------------------------- View ----------------------------------------
+  this.isView = function(ctrl){
+    if (ctrl === undefined) {
+      return false;
+    }
+    if (!ctrl.smartflow) {
+      return false;
+    }
+    if (!ctrl.smartflow.path) {
+      return false;
+    }
+    if (typeof ctrl.smartflow.path !== 'string') {
+      return false;
+    }
+    return true;
+  };
+  this.findView = function(name){
+    if (typeof name !== 'string'){
+      return undefined;
+    }
+    for (var x=0; x<this._controllers.length; x++) {
+      var ctrl = this._controllers[ x ];
+      if (ctrl.constructor.name == name){
+        return ctrl;
+      }
+    }
+    return undefined;
+  };
+  this.addView = function (ctrl) {
+    if (!this.isView(ctrl)) {
+      return false;
+    }
+    if (this.findView(ctrl.constructor.name)){
+      return false;
+    }
+    this._controllers.push(ctrl);
+    var self = this;
+    ctrl.runSmartflow = function (action) {
+      self.runAction(action, ctrl);
+    };
+    return true;
+  };
+  this.removeView = function(ctrl){
+    if (!this.isView(ctrl)) {
+      return false;
+    }
+    for (var x=0; x<this._controllers.length; x++) {
+      var existCtrl = this._controllers[ x ];
+      if (existCtrl.constructor.name === ctrl.constructor.name) {
+        delete this._controllers[ x ];
+        return true;
+      }
+    }
+    return false;
+    // var index = this._controllers.indexOf(ctrl);
+    // if (index > -1) {
+    //   ctrl.runSmartflow = undefined;
+    //   this._controllers.slice(index);
+    //   return true;
+    // } else {
+    //   return false;
+    // }
+  };
+  //--------------------------------- Action runner ---------------------------------
   this.REQUEST_TIMEOUT = 3000;
   // Status codes
   this.HTTP_INFO = 100;
@@ -93,13 +185,6 @@ function Smartflow() {
     var anchor = window.location.hash;
     var path = anchor.indexOf("#") == 0 ? anchor.substr(1) : "/";
     this.setPath(path);
-  };
-  this.addView = function (ctrl) {
-    this._controllers.push(ctrl);
-    var self = this;
-    ctrl.runSmartflow = function (action) {
-      self.runAction(action, ctrl);
-    };
   };
   this.runAction = function (action, callerCtrl) {
     action._smartflowCaller = callerCtrl;
@@ -213,7 +298,7 @@ function Smartflow() {
           self._fireActionPerformed(action, actionEvent);
         };
 
-        var url = self._getRequestURL(action);
+        var url = self.getRequestUrl(action);
         if (url === undefined) {
           var errorUrlMessage = "Error: URL not specified for (" + action.constructor.name + ")";
           actionEvent.error = errorUrlMessage;
@@ -267,7 +352,8 @@ function Smartflow() {
       "path" : firstElement,
       "param" : parameters
     };
-  }
+  };
+  //--------------------------------- Path ----------------------------------------
   this.setPath = function (pathString) {
     var p = this._findParams(pathString);
     var firstElement = p.path;
@@ -304,6 +390,7 @@ function Smartflow() {
   this._setControllerVisible = function (ctrl, isVisible) {
     document.getElementById(ctrl.constructor.name).style.display = isVisible ? "block" : "none";
   };
+  //--------------------------------- State ----------------------------------------
   this._fireStateChanged = function (state, value) {
     if (value === undefined || value == null) {
       delete( this._states[state] );
@@ -372,6 +459,4 @@ function SmartflowFormatter(config) {
   };
 }
 
-module.exports = {
-  'App': Smartflow
-};
+module.exports = Smartflow;
