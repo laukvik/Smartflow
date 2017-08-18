@@ -163,25 +163,105 @@ describe('View', function() {
 });
 
 describe('Actions', function() {
-  it('should', function() {
+  it('should detect invalid action', function() {
+    var app = new Smartflow();
+    expect(app.isAction()).toBe(false);
   });
+  it('should find valid action', function() {
+    var app = new Smartflow();
+    expect(app.isAction(new TimeAction())).toBe(true);
+  });
+
+  it('should not run invalid action', function() {
+    var app = new Smartflow();
+    expect(app.runAction()).toBe(false);
+  });
+  it('should not run action without caller', function() {
+    var app = new Smartflow();
+    expect(app.runAction(new TimeAction())).toBe(false);
+  });
+  it('should not run action with invalid caller', function() {
+    var app = new Smartflow();
+    expect(app.runAction(new TimeAction(), "")).toBe(false);
+  });
+  // it('should run client action', function() {
+  //
+  //   function ClientView() {
+  //     this.smartflow = {
+  //       "path": "/login"
+  //     };
+  //     this.viewInitialized = function (formatter) {
+  //       this.runAction(new ClientAction());
+  //     }
+  //   }
+  //
+  //   function ClientAction() {
+  //     this.smartflow = {
+  //       "path": "/login"
+  //     };
+  //   }
+  //
+  //   var app = new Smartflow();
+  //   app.addView(new ClientView());
+  //   app.runAction(new ClientAction(), function () {
+  //     expect(app.runAciton('confirm')).toBe('Are you sure?');
+  //   });
+  //   //expect(app.runAciton('confirm')).toBe('Are you sure?');
+  //
+  // });
 });
 
 describe('Path', function() {
-  it('should', function() {
+  it('should set valid path', function() {
     var app = new Smartflow();
+    app.addView(new ValidView());
+    expect(app.setPath('/login')).toBe(true);
+  });
+  it('should not set invalid path', function() {
+    var app = new Smartflow();
+    app.addView(new ValidView());
+    expect(app.setPath('/nonsense')).toBe(false);
   });
 });
 
 describe('State', function() {
-  it('should', function() {
-    var app = new Smartflow();
-  });
+
+
+
 });
 
+var lang = {
+  "confirm": "Are you sure?",
+  "confirmIndex": "Delete {0} or {1}?",
+  "confirmJson": "Delete {filename} for {filesize}?",
+};
+
 describe('Formatter', function() {
-  it('should', function() {
+  it('should format without parameters', function() {
+
     var app = new Smartflow();
+    app.loadLanguage("no", lang);
+    app.setLocale("no");
+    expect(app.format('confirm')).toBe('Are you sure?');
+
   });
+  it('should format with indexed parameters', function() {
+
+    var app = new Smartflow();
+    app.loadLanguage("no", lang);
+    app.setLocale("no");
+    expect(app.format('confirmIndex', ['hello.txt', 'hello.doc'])).toBe('Delete hello.txt or hello.doc?');
+
+  });
+
+  // it('should format with named parameters', function() {
+  //
+  //   var app = new Smartflow();
+  //   app.loadLanguage("no", lang);
+  //   app.setLocale("no");
+  //   expect(app.format('confirmJson', {"filename": "hello.txt", "filesize": "150"})).toBe('Delete hello.txt for 150?');
+  //
+  // });
+
 });
 

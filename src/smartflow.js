@@ -28,7 +28,7 @@ function Smartflow() {
   this._actionQueue = [];
   this._locales = [];
   this._localeDefault = undefined;
-  this._isAction = function(action){
+  this.isAction = function(action){
     if (action === undefined) {
       return false;
     } else {
@@ -48,7 +48,7 @@ function Smartflow() {
     return this._config;
   };
   this.getRequestUrl = function (action) {
-    if (!this._isAction(action)) {
+    if (!this.isAction(action)) {
       //console.info("Smartflow: not an action", action);
       return undefined;
     }
@@ -149,24 +149,16 @@ function Smartflow() {
       }
     }
     return false;
-    // var index = this._controllers.indexOf(ctrl);
-    // if (index > -1) {
-    //   ctrl.runSmartflow = undefined;
-    //   this._controllers.slice(index);
-    //   return true;
-    // } else {
-    //   return false;
-    // }
   };
   //--------------------------------- Action runner ---------------------------------
   this.REQUEST_TIMEOUT = 3000;
   // Status codes
-  this.HTTP_INFO = 100;
-  this.HTTP_SUCCESS = 200;
-  this.HTTP_REDIRECT = 300;
-  this.HTTP_CLIENT_ERROR = 400;
-  this.HTTP_ERROR = 500;
-  this.HTTP_UNKNOWN = 600;
+  this.HTTP_STATUS_CODE_INFO = 100;
+  this.HTTP_STATUS_CODE_SUCCESS = 200;
+  this.HTTP_STATUS_CODE_REDIRECT = 300;
+  this.HTTP_STATUS_CODE_CLIENT_ERROR = 400;
+  this.HTTP_STATUS_CODE_ERROR = 500;
+  this.HTTP_STATUS_CODE_UNKNOWN = 600;
   // XMLHttpRequest
   this.READY_STATE_UNSENT = 0;
   this.READY_STATE_OPENED = 1;
@@ -175,7 +167,6 @@ function Smartflow() {
   this.READY_STATE_DONE = 4;
   //
   this._states = [];
-  this._formatter = new SmartflowFormatter({});
   this.start = function () {
     this._autoDetectLocale();
     for (var x = 0; x < this._controllers.length; x++) {
@@ -187,9 +178,16 @@ function Smartflow() {
     this.setPath(path);
   };
   this.runAction = function (action, callerCtrl) {
+    if (!this.isAction(action)){
+      return false;
+    }
+    if (!this.isView(callerCtrl)){
+      return false;
+    }
     action._smartflowCaller = callerCtrl;
     this._actionQueue.push(action);
     this._runRemainingActions();
+    return true;
   };
   this._runRemainingActions = function () {
     if (this._action !== undefined) {
@@ -248,10 +246,10 @@ function Smartflow() {
               actionEvent.response.body = this.response;
             }
 
-            if (statusCode >= self.HTTP_INFO && statusCode < self.HTTP_SUCCESS) {
+            if (statusCode >= self.HTTP_STATUS_CODE_INFO && statusCode < self.HTTP_STATUS_CODE_SUCCESS) {
               // Information
 
-            } else if (statusCode === self.HTTP_SUCCESS) {
+            } else if (statusCode === self.HTTP_STATUS_CODE_SUCCESS) {
               // Success
               actionEvent.path = action.smartflow.path;
               actionEvent.params = self._findParams(actionEvent.path).param;
@@ -260,7 +258,7 @@ function Smartflow() {
 
               self._fireActionPerformed(action, actionEvent);
 
-            } else if (statusCode >= self.HTTP_REDIRECT && statusCode < self.HTTP_CLIENT_ERROR) {
+            } else if (statusCode >= self.HTTP_STATUS_CODE_REDIRECT && statusCode < self.HTTP_STATUS_CODE_CLIENT_ERROR) {
               // Redirect
               var errorRedirectMessage = "Error: Server responded " + statusCode + " (" + action.constructor.name + ")";
               actionEvent.path = action.smartflow.error.path;
@@ -269,7 +267,7 @@ function Smartflow() {
               actionEvent.states[action.smartflow.error.state] = errorRedirectMessage;
               self._fireActionPerformed(action, actionEvent);
 
-            } else if (statusCode >= self.HTTP_CLIENT_ERROR && statusCode < self.HTTP_ERROR) {
+            } else if (statusCode >= self.HTTP_STATUS_CODE_CLIENT_ERROR && statusCode < self.HTTP_STATUS_CODE_ERROR) {
               // Client error
               var errorClientMessage = "Error: Server responded " + statusCode + " (" + action.constructor.name + ") ";
               actionEvent.path = action.smartflow.error.path;
@@ -278,7 +276,7 @@ function Smartflow() {
               actionEvent.states[action.smartflow.error.state] = errorClientMessage;
               self._fireActionPerformed(action, actionEvent);
 
-            } else if (statusCode >= self.HTTP_ERROR && statusCode < self.HTTP_UNKNOWN) {
+            } else if (statusCode >= self.HTTP_STATUS_CODE_ERROR && statusCode < self.HTTP_STATUS_CODE_UNKNOWN) {
               // Server error
               var errorServerMessage = "Error: Server responded " + statusCode + " (" + action.constructor.name + ")  ";
               actionEvent.path = action.smartflow.error.path;
@@ -354,6 +352,15 @@ function Smartflow() {
     };
   };
   //--------------------------------- Path ----------------------------------------
+  this.findViewByPath = function(path){
+    for (var x = 0; x < this._controllers.length; x++) {
+      var ctrl = this._controllers[ x ];
+      if (ctrl.smartflow.path === path) {
+        return ctrl;
+      }
+    }
+    return undefined;
+  };
   this.setPath = function (pathString) {
     var p = this._findParams(pathString);
     var firstElement = p.path;
@@ -361,17 +368,21 @@ function Smartflow() {
     if (this._controller && this._controller.smartflow.path === firstElement) {
       return;
     }
+    var ctrl = this.findViewByPath(firstElement);
     this._path = pathString;
     this._controller = undefined;
     window.location.href = "#" + pathString;
     this._firePathChanged(firstElement, parameters);
+    return ctrl != undefined;
   };
   this._firePathChanged = function (path, parameters) {
     var ctrl;
     for (var x = 0; x < this._controllers.length; x++) {
       ctrl = this._controllers[x];
       if (ctrl.smartflow.path !== path) {
-        ctrl.viewDisabled();
+        if (ctrl.viewDisabled) {
+          ctrl.viewDisabled();
+        }
         this._setControllerVisible(ctrl, false);
       }
     }
@@ -379,7 +390,9 @@ function Smartflow() {
       ctrl = this._controllers[y];
       if (ctrl.smartflow.path === path) {
         this._controller = ctrl;
-        ctrl.viewEnabled();
+        if (ctrl.viewEnabled){
+          ctrl.viewEnabled();
+        }
         if (ctrl.pathChanged) {
           ctrl.pathChanged(path, parameters);
         }
@@ -388,7 +401,10 @@ function Smartflow() {
     }
   };
   this._setControllerVisible = function (ctrl, isVisible) {
-    document.getElementById(ctrl.constructor.name).style.display = isVisible ? "block" : "none";
+    var el = document.getElementById(ctrl.constructor.name);
+    if (el) {
+      el.style.display = isVisible ? "block" : "none";
+    }
   };
   //--------------------------------- State ----------------------------------------
   this._fireStateChanged = function (state, value) {
@@ -424,6 +440,11 @@ function Smartflow() {
       }
     }
   };
+  //--------------------------------- Formatter ----------------------------------------
+  this._formatter = new SmartflowFormatter({});
+  this.format = function (key, values) {
+    return this._formatter.format(key, values);
+  }
 }
 
 /**
