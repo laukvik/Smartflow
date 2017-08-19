@@ -136,6 +136,8 @@ Usable for using REST services and other XHR requests.
 | state           | The name of the state to put the response into              | yes             |
 | request.url     | The url to connect to                                       | no              |
 | request.method  | The method to use while connecting. Default: GET            | no              |
+| success.path    | The path to navigate to when successful                     | yes             |
+| success.state   | The state to set the to when successful                     | yes             |
 | error.path      | The path to navigate to if an error occurs                  | yes             |
 | error.state     | The name of the state to set the error message details into | yes             |
 
@@ -148,11 +150,13 @@ error message then the application navigates to the path "/".
 ```javascript
 function LoginAction() {
   this.smartflow = {
-    "state": "user",
-    "path": "/inbox",
     "request": {
       "url": "/api/login",
       "method": "get"
+    },
+    "success": {
+      "path": "/inbox",  
+      "state": "user",  
     },
     "error": {
       "path": "/",
@@ -297,6 +301,23 @@ formatter.format( 'confirmDelete', 'helloWorld.txt' );
 var lang = {confirmDelete, 'Are you sure you want to delete the file {filename}?'}
 formatter.format( 'confirmDelete', {  filename: "helloWorld.txt" } )
 ```
+
+## Example
+
+The following example shows how to use the API.
+
+```javascript
+function LoginView(){
+    
+}
+
+var app = new Smartflow();
+app.setConfig()
+app.addView(new LoginView());
+app.start();
+
+```
+
 
 ## Installation
 

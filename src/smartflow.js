@@ -12,13 +12,16 @@
  * - automatic show and hide views
  * - web requests are done with actions declarative
  * - supports deep links
+ * - no dependencies!
  *
  * - TODO - enable local storage
  * - TODO - documentation tool available
  * - TODO - path is not required - go to oneself
  * - TODO - get is default method
  * - TODO - features - switches for UI elements (toggles display on/off)
- * - no dependencies!
+ * - TODO - support number formats
+ * - TODO - support date formats
+ * - TODO - support for application/json;utf-8 etc
  *
  * @constructor
  */
@@ -251,9 +254,9 @@ function Smartflow() {
 
             } else if (statusCode === self.HTTP_STATUS_CODE_SUCCESS) {
               // Success
-              actionEvent.path = action.smartflow.path;
+              actionEvent.path = action.smartflow.success.path;
               actionEvent.params = self._findParams(actionEvent.path).param;
-              actionEvent.states[action.smartflow.state] = actionEvent.response.body;
+              actionEvent.states[action.smartflow.success.state] = actionEvent.response.body;
               delete (actionEvent.error);
 
               self._fireActionPerformed(action, actionEvent);

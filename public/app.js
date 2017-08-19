@@ -1,10 +1,12 @@
 function LoginAction() {
   this.smartflow = {
-    "state": "user",
-    "path": "/inbox/a/b",
     "request": {
       "url": "/api/login",
       "method": "get"
+    },
+    "success": {
+      "path": "/inbox",
+      "state": "user"
     },
     "error": {
       "path": "/",
@@ -274,7 +276,7 @@ function ComposeView(){
 function ToolbarView(){
   this.smartflow = {
   };
-  this.viewInitialized = function(lang){
+  this.viewInitialized = function(formatter){
 
   };
   this.viewEnabled = function(){
@@ -290,7 +292,8 @@ function ToolbarView(){
 }
 
 var config = {
-  "LoginAction": "/api/login"
+  "LoginAction": "/api/login",
+  "DeleteAction": "/api/delete"
 };
 
 var langNO = {

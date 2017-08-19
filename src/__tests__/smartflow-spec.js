@@ -1,25 +1,15 @@
 var Smartflow = require('../smartflow');
 
-/**
- * Application
- * - Config
- * - Locale
- * - View
- * - ActionRunner
- * - Path
- * - ControllerVisible
- * View
- * ClientAction
- * ServerAction
- *
- */
 
 function EmptyAction(){
 }
 
 function TimeAction(){
   this.smartflow = {
-    "path": ""
+    "path": "/time",
+    "states": {
+      "format": "hh:mm"
+    }
   }
 }
 
