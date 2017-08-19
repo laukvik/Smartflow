@@ -223,35 +223,75 @@ describe('State', function() {
 var lang = {
   "confirm": "Are you sure?",
   "confirmIndex": "Delete {0} or {1}?",
-  "confirmJson": "Delete {filename} for {filesize}?",
+  "confirmJson": "Delete {file} for {size}?",
 };
 
 describe('Formatter', function() {
-  it('should format without parameters', function() {
 
-    var app = new Smartflow();
-    app.loadLanguage("no", lang);
-    app.setLocale("no");
-    expect(app.format('confirm')).toBe('Are you sure?');
+  describe('no parameters', function () {
+    it('should format without parameters', function () {
 
-  });
-  it('should format with indexed parameters', function() {
+      var app = new Smartflow();
+      app.loadLanguage("no", lang);
+      app.setLocale("no");
+      expect(app.format('confirm')).toBe('Are you sure?');
 
-    var app = new Smartflow();
-    app.loadLanguage("no", lang);
-    app.setLocale("no");
-    expect(app.format('confirmIndex', ['hello.txt', 'hello.doc'])).toBe('Delete hello.txt or hello.doc?');
+    });
 
   });
 
-  // it('should format with named parameters', function() {
-  //
-  //   var app = new Smartflow();
-  //   app.loadLanguage("no", lang);
-  //   app.setLocale("no");
-  //   expect(app.format('confirmJson', {"filename": "hello.txt", "filesize": "150"})).toBe('Delete hello.txt for 150?');
-  //
-  // });
+  describe('indexed parameters', function () {
+    it('should format with indexed parameters', function () {
+
+      var app = new Smartflow();
+      app.loadLanguage("no", lang);
+      app.setLocale("no");
+      expect(app.format('confirmIndex', ['hello.txt', 'hello.doc'])).toBe('Delete hello.txt or hello.doc?');
+
+    });
+
+  });
+
+  describe('json', function() {
+
+    it('should format incorrectly when no key', function() {
+
+      var app = new Smartflow();
+      app.loadLanguage("no", lang);
+      app.setLocale("no");
+      expect(app.formatJson()).toBe("???undefined???");
+
+    });
+
+    it('should format incorrectly when no json', function() {
+
+      var app = new Smartflow();
+      app.loadLanguage("no", lang);
+      app.setLocale("no");
+      expect(app.formatJson('confirmJson')).toBe("Delete {file} for {size}?");
+
+    });
+
+    it('should format incorrectly', function() {
+
+      var json = {"name": "hello.txt", "size": "200"};
+      var app = new Smartflow();
+      app.loadLanguage("no", lang);
+      app.setLocale("no");
+      expect(app.formatJson('confirmJson', json)).toBe('Delete {file} for 200?');
+
+    });
+
+    it('should format', function() {
+
+      var json = {"file": "hello.txt", "size": "150"};
+      var app = new Smartflow();
+      app.loadLanguage("no", lang);
+      app.setLocale("no");
+      expect(app.formatJson('confirmJson', json)).toBe('Delete hello.txt for 150?');
+
+    });
+  });
 
 });
 

@@ -447,20 +447,36 @@ function Smartflow() {
   this._formatter = new SmartflowFormatter({});
   this.format = function (key, values) {
     return this._formatter.format(key, values);
-  }
+  };
+  this.formatJson = function (key, json) {
+    return this._formatter.formatJson(key, json);
+  };
 }
 
 /**
  * Formats a String
- *
- * TODO - Support JSON object as the key so arguments can be named
  *
  * @param config
  * @constructor
  */
 function SmartflowFormatter(config) {
   this.config = config;
+  this.formatJson = function (key, json) {
+    if (key === undefined) {
+      return '???undefined???';
+    }
+    var s = this.config[key];
+
+    for (var k in json){
+      var val = json[k];
+      s = s.replace( '{' + k + '}', val );
+    }
+    return s;
+  };
   this.format = function (key, keys) {
+    if (key === undefined) {
+      return undefined;
+    }
     var value = this.config[key];
     if (value === undefined) {
       return "???" + key + "???";
