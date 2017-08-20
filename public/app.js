@@ -15,15 +15,6 @@ function LoginAction() {
   };
 }
 
-function ValidateLoginAction(){
-  this.smartflow = {
-    "path" : "/",
-    "states": {
-      "loginRequiredFields": undefined
-    }
-  };
-}
-
 function CloseLoginFailedAction(){
   this.smartflow = {
     "path" : "/",
@@ -141,11 +132,11 @@ function LoginView(){
     this.setEnabled("loginButton", false);
   };
   this.stateChanged = function(state, value){
-    if (state == "loginFailed") {
-      this.setEnabled("loginFailedButton", value != undefined);
-      document.getElementById("loginErrorMessage").innerText = value != undefined ? value : "";
+    if (state === "loginFailed") {
+      this.setEnabled("loginFailedButton", value !== undefined);
+      document.getElementById("loginErrorMessage").innerText = value !== undefined ? value : "";
     }
-    this.setEnabled("loginButton", value == undefined);
+    this.setEnabled("loginButton", value === undefined);
   };
   this.actionPerformed = function(action){
     console.info("actionPerformed", action);
@@ -205,7 +196,7 @@ function InboxView(){
       var enabled = value === true;
       this.setEnabled("yesButton", enabled);
       this.setEnabled("noButton", enabled);
-      if (value == undefined || value == true) {
+      if (value === undefined || value === true) {
         this.setEnabled("composeButton", false);
         this.setEnabled("confirmDeleteButton", false);
         this.setEnabled("logoutButton", false);
@@ -213,7 +204,7 @@ function InboxView(){
       document.getElementById("confirmDeleteMessage").innerText = enabled ? this.lang.format("confirmdelete") : "";
     }
     if (state === "delete") {
-      if (value == undefined) {
+      if (value === undefined) {
         this.setEnabled("composeButton", true);
         this.setEnabled("confirmDeleteButton", true);
         this.setEnabled("logoutButton", true);

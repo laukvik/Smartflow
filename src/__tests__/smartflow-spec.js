@@ -226,9 +226,9 @@ var lang = {
   "confirmJson": "Delete {file} for {size}?",
 };
 
-describe('Formatter', function() {
+describe('Formatting', function() {
 
-  describe('no parameters', function () {
+  describe('using no parameters', function () {
     it('should format without parameters', function () {
 
       var app = new Smartflow();
@@ -240,7 +240,7 @@ describe('Formatter', function() {
 
   });
 
-  describe('indexed parameters', function () {
+  describe('using indexed parameters', function () {
     it('should format with indexed parameters', function () {
 
       var app = new Smartflow();
@@ -252,7 +252,7 @@ describe('Formatter', function() {
 
   });
 
-  describe('json', function() {
+  describe('using json as parameter', function() {
 
     it('should format incorrectly when no key', function() {
 
@@ -293,5 +293,107 @@ describe('Formatter', function() {
     });
   });
 
+
+
+
+  describe('dates', function () {
+    it('should be empty when no value set', function () {
+      var app = new Smartflow();
+      app.loadLanguage("no", lang);
+      app.setLocale("no");
+      var d = new Date();
+      expect(app.formatDate(d)).toBe('');
+    });
+    it('should be empty when no date set', function () {
+      var app = new Smartflow();
+      app.loadLanguage("no", lang);
+      app.setLocale("no");
+      expect(app.formatDate()).toBe('');
+    });
+
+    it('should format with zero padding', function () {
+      var app = new Smartflow();
+      app.loadLanguage("no", lang);
+      app.setLocale("no");
+
+      var d = new Date();
+      d.setUTCFullYear(2017);
+      d.setMonth(8);
+      d.setDate(9);
+
+      d.setHours(22);
+      d.setMinutes(33);
+      d.setSeconds(44);
+      d.setMilliseconds(999);
+
+      expect(app.formatDate(d, 'YYYY.MM.DD hh:mm:ss.SSS')).toBe('2017.08.09 22:33:44.999');
+    });
+
+    it('should format without zero padding', function () {
+      var app = new Smartflow();
+      app.loadLanguage("no", lang);
+      app.setLocale("no");
+
+      var d = new Date();
+      d.setUTCFullYear(2017);
+      d.setMonth(8);
+      d.setDate(1);
+
+      d.setHours(2);
+      d.setMinutes(3);
+      d.setSeconds(4);
+      d.setMilliseconds(9);
+
+      expect(app.formatDate(d, 'Y.M.D h:m:s.S')).toBe('2017.8.1 2:3:4.9');
+    });
+  });
+
+
+
+  describe('numbers', function () {
+    it('should format correctly', function () {
+      var app = new Smartflow();
+      expect(app.formatNumber(123.45, '#,###,###,##0.00')).toBe('123.45');
+    });
+
+    it('should format with decimals only', function () {
+      var app = new Smartflow();
+      expect(app.formatNumber(123.45, '000.0')).toBe('123.4');
+    });
+
+    it('should format with decimals format only', function () {
+      var app = new Smartflow();
+      expect(app.formatNumber(123.45, '000')).toBe('123');
+    });
+
+    it('should format with no fraction value', function () {
+      var app = new Smartflow();
+      expect(app.formatNumber(123, '000.00')).toBe('123.00');
+    });
+
+
+
+    it('should fail with invalid value', function () {
+      var app = new Smartflow();
+      expect(app.formatNumber('', '###.##')).toBeUndefined();
+      expect(app.formatNumber(null, '###.##')).toBeUndefined();
+      expect(app.formatNumber(undefined, '###.##')).toBeUndefined();
+      expect(app.formatNumber("", '###.##')).toBeUndefined();
+      expect(app.formatNumber(' ', '###.##')).toBeUndefined();
+      expect(app.formatNumber({}, '###.##')).toBeUndefined();
+    });
+
+
+
+  });
+
 });
 
+
+
+describe('utils', function () {
+  it('should find mime type', function () {
+    var app = new Smartflow();
+    expect("").toBe('');
+  });
+});
