@@ -103,6 +103,37 @@ function CloseDeletedAction(){
   };
 }
 
+function LoginDialogAction(){
+  this.smartflow = {
+    "path": "/",
+    "dialog": {
+      "title": "Delete",
+      "body": "Are you sure you want to delete?",
+      "state": "dialogConfirm",
+      "accept": {
+        "button": "Yes",
+        "path": "/inbox"
+      },
+      "deny": {
+        "button": "No",
+        "path": "/"
+      },
+      "buttons": [
+        {
+          "label": "Ja",
+          "path": "/",
+          "value": "yes"
+        },
+        {
+          "label": "Nei",
+          "path": "/inbox",
+          "value": "no"
+        }
+      ]
+    }
+  };
+}
+
 
 function LoginView(){
   this.smartflow = {
@@ -118,11 +149,11 @@ function LoginView(){
   this.viewInitialized = function(lang){
     var self = this;
     document.getElementById("loginButton").addEventListener("click", function(){
-      self.runSmartflow(new LoginAction());
-    })
+      self.runSmartflow(new LoginDialogAction());
+    });
     document.getElementById("loginFailedButton").addEventListener("click", function(){
       self.runSmartflow(new CloseLoginFailedAction());
-    })
+    });
     document.getElementById("loginInfoMessage").innerText = lang.format("welcome", ["Smartflow", 1, 2]);
   };
   this.viewEnabled = function(){

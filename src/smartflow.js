@@ -201,20 +201,13 @@ function Smartflow() {
     this._runRemainingActions();
     return true;
   };
-  this._runRemainingActions = function () {
-    if (this._action !== undefined) {
-      return;
-    }
-    var action = this._actionQueue.shift();
-    if (action === undefined) {
-      return;
-    }
-    this._action = action;
-
-    // Event object
-    var actionEvent = {
+  this._findActionID = function(action){
+    return action.constructor.name;
+  };
+  this._buildActionEvent = function(action){
+    return {
       "action": {
-        "name": action.constructor.name,
+        "name": this._findActionID(action),
         "value": action.smartflow
       },
       "states": {},
@@ -234,6 +227,19 @@ function Smartflow() {
       "start": Date.now(),
       "finish": undefined
     };
+  };
+  this._runRemainingActions = function () {
+    if (this._action !== undefined) {
+      return;
+    }
+    var action = this._actionQueue.shift();
+    if (action === undefined) {
+      return;
+    }
+    this._action = action;
+
+    // Event object
+    var actionEvent = this._buildActionEvent(action);
 
     //
     action._smartflowStarted = new Date();
@@ -320,6 +326,39 @@ function Smartflow() {
           xhr.open(action.smartflow.request.method, url, true);
           xhr.send();
         }
+      } else if (action.smartflow.dialog) {
+        //
+        // Dialog
+        //
+        var dialogID = this._findActionID(action);
+
+        var builder = new MDCBuilder();
+        var d = action.smartflow.dialog;
+        var html = builder.buildDialog(dialogID, d.title, d.body, d.accept.button, d.deny.button);
+        var el = document.createElement("div");
+        el.innerHTML = html;
+        document.body.appendChild(el);
+
+        var self = this;
+
+        var stateName = d.state;
+
+        document.getElementById(dialogID + "__yes").addEventListener("click", function () {
+          var evt = self._buildActionEvent(action);
+          evt.states[ stateName ] = "yes";
+          delete evt.request;
+          delete evt.response;
+          delete evt.error;
+          evt.path = d.accept.path;
+          self._fireActionPerformed(action, evt);
+        });
+
+        document.getElementById(dialogID + "__no").addEventListener("click", function () {
+          //self._dialogCompleted(action, false);
+          var evt = self._buildActionEvent(action);
+          evt.states[ action.smartflow.dialog.state ] = "no";
+          self._fireActionPerformed(action, actionEvent);
+        });
 
       } else {
         // Run without request
@@ -338,17 +377,25 @@ function Smartflow() {
       //console.error("App: invalid action ", action);
     }
   };
-
   this._fireActionPerformed = function (action, actionEvent) {
     actionEvent.finish = Date.now();
     for (var key in actionEvent.states) {
       this._fireStateChanged(key, actionEvent.states[key]);
     }
-    this.setPath(actionEvent.path);
+    if (actionEvent.path){
+      this.setPath(actionEvent.path);
+    }
+
     action._smartflowStarted = undefined;
     var ctrl = action._smartflowCaller;
     action._smartflowCaller = undefined;
     this._action = undefined;
+
+    if (action.smartflow.dialog){
+      var dialogID = this._findActionID(action);
+      document.getElementById(dialogID).remove();
+    }
+
     ctrl.actionPerformed(actionEvent);
     this._runRemainingActions();
   };
@@ -621,6 +668,28 @@ function SmartflowFormatter(config) {
     }
     return s;
   };
+}
+
+function MDCBuilder(){
+  this.buildDialog = function( dialogID, title, body, yesText, noText ){
+    var yesButtonID = dialogID + "__yes";
+    var noButtonID = dialogID + "__no";
+    return "<aside id=\"" + dialogID + "\"\n" +
+      "       class=\"mdc-dialog mdc-dialog--open\" role=\"alertdialog\"\n" +
+      "       aria-labelledby=\"my-mdc-dialog-label\" aria-describedby=\"my-mdc-dialog-description\">\n" +
+      "  <div class=\"mdc-dialog__surface\">\n" +
+      "    <header class=\"mdc-dialog__header\">\n" +
+      "      <h2 class=\"mdc-dialog__header__title\">"+ title +"</h2>\n" +
+      "    </header>\n" +
+      "    <section id=\"my-mdc-dialog-description\" class=\"mdc-dialog__body\">"+ body +"</section>\n" +
+      "    <footer class=\"mdc-dialog__footer\">\n" +
+      "      <button type=\"button\" id=\""+ yesButtonID +"\"  class=\"mdc-button mdc-dialog__footer__button mdc-dialog__footer__button--accept\">" + yesText+ "</button>\n" +
+      "      <button type=\"button\" id=\""+ noButtonID +"\" class=\"mdc-button mdc-dialog__footer__button mdc-dialog__footer__button--cancel\">" + noText + "</button>\n" +
+      "    </footer>\n" +
+      "  </div>\n" +
+      "  <div class=\"mdc-dialog__backdrop\"></div>\n" +
+      "</aside>";
+  }
 }
 
 module.exports = Smartflow;
