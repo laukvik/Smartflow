@@ -107,17 +107,9 @@ function LoginDialogAction(){
   this.smartflow = {
     "path": "/",
     "dialog": {
-      "title": "Delete",
-      "body": "Are you sure you want to delete?",
+      "title": "Bekreft sletting",
+      "body": "Er du sikker på at du vil slette?",
       "state": "dialogConfirm",
-      "accept": {
-        "button": "Yes",
-        "path": "/inbox"
-      },
-      "deny": {
-        "button": "No",
-        "path": "/"
-      },
       "buttons": [
         {
           "label": "Ja",

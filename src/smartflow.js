@@ -334,7 +334,7 @@ function Smartflow() {
 
         var builder = new MDCBuilder();
         var d = action.smartflow.dialog;
-        var html = builder.buildDialog(dialogID, d.title, d.body, d.accept.button, d.deny.button);
+        var html = builder.buildDialog(dialogID, d.title, d.body, d.buttons);
         var el = document.createElement("div");
         el.innerHTML = html;
         document.body.appendChild(el);
@@ -343,25 +343,19 @@ function Smartflow() {
 
         var stateName = d.state;
 
-        document.getElementById(dialogID + "__yes").addEventListener("click", function () {
-          var evt = self._buildActionEvent(action);
-          evt.states[ stateName ] = "yes";
-          delete evt.request;
-          delete evt.response;
-          delete evt.error;
-          evt.path = d.accept.path;
-          self._fireActionPerformed(action, evt);
-        });
-
-        document.getElementById(dialogID + "__no").addEventListener("click", function () {
-          var evt = self._buildActionEvent(action);
-          evt.states[ stateName ] = "no";
-          delete evt.request;
-          delete evt.response;
-          delete evt.error;
-          evt.path = d.accept.path;
-          self._fireActionPerformed(action, actionEvent);
-        });
+        for (var x=0; x<d.buttons.length; x++) {
+          var btn = d.buttons[ x ];
+          var buttonID = dialogID + "__button__" + btn.value;
+          document.getElementById(buttonID).addEventListener("click", function(){
+            var evt = self._buildActionEvent(action);
+            evt.states[ stateName ] = btn.value;
+            delete evt.request;
+            delete evt.response;
+            delete evt.error;
+            evt.path = btn.path;
+            self._fireActionPerformed(action, evt);
+          });
+        }
 
       } else {
         // Run without request
@@ -674,9 +668,16 @@ function SmartflowFormatter(config) {
 }
 
 function MDCBuilder(){
-  this.buildDialog = function( dialogID, title, body, yesText, noText ){
-    var yesButtonID = dialogID + "__yes";
-    var noButtonID = dialogID + "__no";
+  this.buildDialog = function( dialogID, title, body, buttons ){
+    var buttonsHtml = "";
+
+    for (var x=0; x<buttons.length; x++) {
+      var btn = buttons[ x ];
+      var buttonID = dialogID + "__button__" + btn.value;
+      buttonsHtml += "<button type=\"button\" id=\"" +
+        buttonID +"\"  class=\"mdc-button mdc-dialog__footer__button \">" + btn.label + "</button>";
+    }
+
     return "<aside id=\"" + dialogID + "\"\n" +
       "       class=\"mdc-dialog mdc-dialog--open\" role=\"alertdialog\"\n" +
       "       aria-labelledby=\"my-mdc-dialog-label\" aria-describedby=\"my-mdc-dialog-description\">\n" +
@@ -685,9 +686,7 @@ function MDCBuilder(){
       "      <h2 class=\"mdc-dialog__header__title\">"+ title +"</h2>\n" +
       "    </header>\n" +
       "    <section id=\"my-mdc-dialog-description\" class=\"mdc-dialog__body\">"+ body +"</section>\n" +
-      "    <footer class=\"mdc-dialog__footer\">\n" +
-      "      <button type=\"button\" id=\""+ yesButtonID +"\"  class=\"mdc-button mdc-dialog__footer__button mdc-dialog__footer__button--accept\">" + yesText+ "</button>\n" +
-      "      <button type=\"button\" id=\""+ noButtonID +"\" class=\"mdc-button mdc-dialog__footer__button mdc-dialog__footer__button--cancel\">" + noText + "</button>\n" +
+      "    <footer class=\"mdc-dialog__footer\">\n" + buttonsHtml +
       "    </footer>\n" +
       "  </div>\n" +
       "  <div class=\"mdc-dialog__backdrop\"></div>\n" +
