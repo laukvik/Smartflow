@@ -354,9 +354,12 @@ function Smartflow() {
         });
 
         document.getElementById(dialogID + "__no").addEventListener("click", function () {
-          //self._dialogCompleted(action, false);
           var evt = self._buildActionEvent(action);
-          evt.states[ action.smartflow.dialog.state ] = "no";
+          evt.states[ stateName ] = "no";
+          delete evt.request;
+          delete evt.response;
+          delete evt.error;
+          evt.path = d.accept.path;
           self._fireActionPerformed(action, actionEvent);
         });
 
