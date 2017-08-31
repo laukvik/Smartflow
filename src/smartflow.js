@@ -153,16 +153,8 @@ function Smartflow() {
   this._buildComponents = function(ctrl) {
     // mount components
     if (ctrl.smartflow.components) {
-      var builder = new MaterialBuilder();
-      var ctrlID = ctrl.constructor.name;
-      var comps = ctrl.smartflow.components;
-      for (var x=0; x<comps.length; x++) {
-        var comp = comps[ x ];
-        var node = builder.buildComponent(comp, ctrl);
-        if (node){
-          document.getElementById(ctrlID).appendChild( node );
-        }
-      }
+      var builder = new MaterialBuilder(ctrl);
+      builder.buildComponents();
     }
   };
   this.removeView = function(ctrl){
@@ -683,8 +675,21 @@ function SmartflowFormatter(config) {
   };
 }
 
-function MaterialBuilder(){
-  this.buildComponent = function(comp, ctrl){
+function MaterialBuilder(ctrl){
+  this.ctrl = ctrl;
+  this.buildComponents = function () {
+    var ctrlID = ctrl.constructor.name;
+    var comps = ctrl.smartflow.components;
+    for (var x=0; x<comps.length; x++) {
+      var comp = comps[ x ];
+      var node = this._buildComponent(comp, ctrl);
+      if (node){
+        document.getElementById(ctrlID).appendChild( node );
+      }
+    }
+  };
+
+  this._buildComponent = function(comp, ctrl){
     var ctrlID = ctrl.constructor.name;
     if (comp.type === "button") {
       return this._buildButton(comp, ctrl);
