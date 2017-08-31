@@ -147,7 +147,23 @@ function Smartflow() {
     ctrl.runSmartflow = function (action) {
       self.runAction(action, ctrl);
     };
+    this._buildComponents(ctrl);
     return true;
+  };
+  this._buildComponents = function(ctrl) {
+    // mount components
+    if (ctrl.smartflow.components) {
+      var builder = new MaterialBuilder();
+      var ctrlID = ctrl.constructor.name;
+      var comps = ctrl.smartflow.components;
+      for (var x=0; x<comps.length; x++) {
+        var comp = comps[ x ];
+        var node = builder.buildComponent(comp, ctrl);
+        if (node){
+          document.getElementById(ctrlID).appendChild( node );
+        }
+      }
+    }
   };
   this.removeView = function(ctrl){
     if (!this.isView(ctrl)) {
@@ -667,7 +683,13 @@ function SmartflowFormatter(config) {
   };
 }
 
-function MDCBuilder(){
+function MaterialBuilder(){
+  this.buildComponent = function(comp, ctrl){
+    var ctrlID = ctrl.constructor.name;
+    if (comp.type === "button") {
+      return this._buildButton(comp, ctrl);
+    }
+  };
   this.buildDialog = function( dialogID, title, body, buttons ){
     var buttonsHtml = "";
 
@@ -691,6 +713,20 @@ function MDCBuilder(){
       "  </div>\n" +
       "  <div class=\"mdc-dialog__backdrop\"></div>\n" +
       "</aside>";
+  };
+  this._buildButton = function(comp, ctrl) {
+    var buttonNode = document.createElement("button");
+    buttonNode.setAttribute("class", "mdc-button");
+    buttonNode.innerText = comp.label;
+    buttonNode.addEventListener("click", function () {
+      ctrl.componentChanged(
+        {
+          "component": this,
+          "event": "click"
+        }
+        );
+    });
+    return buttonNode;
   }
 }
 

@@ -59,6 +59,8 @@
     #ToolbarView{
       background-color: #aaaaaa;
     }
+    #loginButton{
+    }
   </style>
   <script>
     function module() {
@@ -80,7 +82,9 @@
 
   <div id="LoginView" class="controller"><h5>LoginController</h5>
     <div id="loginInfoMessage" class="info"></div>
-    <input id="loginButton" type="button" value="LoginAction"/>
+
+    <button id="loginButton" class="mdc-button mdc-button--raised">LoginAction</button>
+
     <div style="margin-top: 1em;">
       <input id="loginFailedButton" type="button" value="CloseLoginFailedAction" disabled/>
     </div>

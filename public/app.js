@@ -129,7 +129,17 @@ function LoginDialogAction(){
 
 function LoginView(){
   this.smartflow = {
-    "path" : "/"
+    "path" : "/",
+    "components": [
+      {
+        "type": "button",
+        "label": "MyButton"
+      },
+      {
+        "type": "label",
+        "text": "AppName"
+      }
+    ]
   };
   this.setEnabled = function(id, isEnabled){
     if (isEnabled){
@@ -163,6 +173,9 @@ function LoginView(){
   };
   this.actionPerformed = function(action){
     console.info("actionPerformed", action);
+  };
+  this.componentChanged = function(evt){
+    console.info("componentChanged", evt);
   }
 }
 
