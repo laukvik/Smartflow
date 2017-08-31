@@ -340,7 +340,7 @@ function Smartflow() {
         //
         var dialogID = this._findActionID(action);
 
-        var builder = new MDCBuilder();
+        var builder = new MaterialBuilder();
         var d = action.smartflow.dialog;
         var html = builder.buildDialog(dialogID, d.title, d.body, d.buttons);
         var el = document.createElement("div");
