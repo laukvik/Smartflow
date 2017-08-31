@@ -136,8 +136,11 @@ function LoginView(){
         "label": "MyButton"
       },
       {
-        "type": "label",
-        "text": "AppName"
+        "type": "textfield",
+        "value": "AppName",
+        "placeholder": "Enter first name",
+        "label": "First"
+
       }
     ]
   };

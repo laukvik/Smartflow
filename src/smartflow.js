@@ -688,11 +688,12 @@ function MaterialBuilder(ctrl){
       }
     }
   };
-
   this._buildComponent = function(comp, ctrl){
     var ctrlID = ctrl.constructor.name;
     if (comp.type === "button") {
       return this._buildButton(comp, ctrl);
+    } else if (comp.type === "textfield") {
+      return this._buildTextfield(comp, ctrl);
     }
   };
   this.buildDialog = function( dialogID, title, body, buttons ){
@@ -732,7 +733,33 @@ function MaterialBuilder(ctrl){
         );
     });
     return buttonNode;
+  };
+  this._buildTextfield = function(comp, ctrl){
+    var labelNode = document.createElement("label");
+    labelNode.setAttribute("class", "mdc-textfield");
+    var inputNode = document.createElement("input");
+    inputNode.setAttribute("type", "text");
+    inputNode.setAttribute("class", "mdc-textfield__input");
+
+    var spanNode = document.createElement("span");
+    spanNode.setAttribute("class", "mdc-textfield__label");
+    spanNode.innerText = comp.label;
+
+    labelNode.appendChild(inputNode);
+    labelNode.appendChild(spanNode);
+
+    inputNode.addEventListener("keyup", function () {
+      ctrl.componentChanged(
+        {
+          "component": this,
+          "event": "keyup"
+        }
+      );
+    });
+    return labelNode;
   }
+
+
 }
 
 module.exports = Smartflow;
