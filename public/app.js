@@ -117,10 +117,8 @@ class InboxView {
   stateChanged(state, value){
   };
   actionPerformed(action){
-    console.info("actionPerformed", action);
   };
   componentChanged(evt){
-    console.info("componentChanged", evt);
   }
 }
 

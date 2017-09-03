@@ -488,7 +488,6 @@ function Smartflow() {
         ctrl.stateChanged(state, value);
       }
       for (var y=0; y<ctrl.smartflow.componentInstances.length; y++) {
-        console.info(ctrl.smartflow.componentInstances[y]);
         var compInstance = ctrl.smartflow.componentInstances[y];
         if (compInstance.comp && compInstance.comp.state === state){
           compInstance.stateChanged(state, value);
