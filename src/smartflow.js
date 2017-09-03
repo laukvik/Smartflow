@@ -24,7 +24,7 @@
  * TODO - support for application/json;utf-8 etc
  * TODO - Server Action må returnere headere
  * TODO - Material: Components, Child components, Custom components
- * TODO - Custom component
+ * TODO - Custom component - OK
  * TODO - Textfield component
  * TODO - textarea component
  * TODO - button component
@@ -158,7 +158,7 @@ function Smartflow() {
   this._buildComponents = function(ctrl) {
     // mount components
     if (ctrl.smartflow.components) {
-      var builder = new MaterialBuilder(ctrl);
+      var builder = new ComponentBuilder(ctrl, this._formatter);
       builder.buildComponents();
     }
   };
@@ -345,7 +345,7 @@ function Smartflow() {
         //
         var dialogID = this._findActionID(action);
 
-        var builder = new MaterialBuilder();
+        var builder = new ComponentBuilder();
         var d = action.smartflow.dialog;
         var html = builder.buildDialog(dialogID, d.title, d.body, d.buttons);
         var el = document.createElement("div");
@@ -680,40 +680,42 @@ function SmartflowFormatter(config) {
   };
 }
 
-function MaterialBuilder(ctrl){
+/**
+ * Builds components in a controller based on declarations
+ * as specified in the controller.
+ *
+ * @param ctrl
+ * @constructor
+ */
+function ComponentBuilder(ctrl, formatter){
   this.ctrl = ctrl;
+  this.formatter = formatter;
   this.buildComponents = function () {
     var ctrlID = ctrl.constructor.name;
     var comps = ctrl.smartflow.components;
-    for (var x=0; x<comps.length; x++) {
-      var comp = comps[ x ];
-      var node = this._buildComponent(comp, ctrl);
-      if (node){
-        document.getElementById(ctrlID).appendChild( node );
+    this._buildChildNodes( document.getElementById(ctrlID), comps);
+  };
+  this._buildChildNodes = function(parentNode, components){
+    for (var x=0; x<components.length; x++) {
+      var comp = components[x];
+      var node = this._buildComponent(comp);
+      if (node === undefined) {
+        console.info("Component not found", comp);
+      } else {
+        parentNode.appendChild(node);
       }
     }
   };
-  this._buildComponent = function(comp, ctrl){
-    var ctrlID = ctrl.constructor.name;
-    if (comp.type === "button") {
-      return this._buildButton(comp, ctrl);
-    } else if (comp.type === "textfield") {
-      return this._buildTextfield(comp, ctrl);
-    } else if (comp.type === "label") {
-      return this._buildLabel(comp, ctrl);
-    } else if (comp.type === "card") {
-      return this._buildCard(comp, ctrl);
-    } else if (comp.type === "table") {
-      return this._buildTable(comp, ctrl);
+  this._buildComponent = function(comp){
+    var func = window[ comp.type ];
+    if (func){
+      return func(comp, this.ctrl, this);
+    } else {
+      console.info("Component not found: ", comp.type);
+      return undefined;
     }
   };
-  this._buildLabel = function(comp, ctrl) {
-    var node = document.createElement("label");
-    node.setAttribute("id", comp.id);
-    node.setAttribute("class", comp.class);
-    node.innerText = comp.label;
-    return node;
-  };
+
   this.buildDialog = function( dialogID, title, body, buttons ){
     var buttonsHtml = "";
 
@@ -738,128 +740,185 @@ function MaterialBuilder(ctrl){
       "  <div class=\"mdc-dialog__backdrop\"></div>\n" +
       "</aside>";
   };
-  this._buildButton = function(comp, ctrl) {
-    var buttonNode = document.createElement("button");
-    buttonNode.setAttribute("id", comp.id);
-    buttonNode.setAttribute("class", "mdc-button mdc-button--raised");
-    buttonNode.innerText = comp.label;
-    buttonNode.addEventListener("click", function () {
-      if (comp.action){
-        var func = window[ comp.action ];
-        ctrl.runSmartflow(
-          new func()
-        );
+}
+
+function Dialog(comp, ctrl, builder) {
+  var rootNode = document.createElement("aside");
+  rootNode.setAttribute("id", comp.id);
+  rootNode.setAttribute("class", "mdc-dialog mdc-dialog--open");
+  rootNode.setAttribute("role", "alertdialog");
+
+  var surfaceNode = document.createElement("div");
+  surfaceNode.setAttribute("class", "mdc-dialog__surface");
+
+  var headerNode = document.createElement("header");
+
+  headerNode.setAttribute("class", "mdc-dialog__header");
+
+  var titleNode = document.createElement("h2");
+
+  titleNode.setAttribute("class", "dialog__header__title");
+  titleNode.innerText = comp.title;
+
+
+  var backdropNode = document.createElement("div");
+  backdropNode.setAttribute("class", "mdc-dialog__backdrop");
+
+  var bodyNode = document.createElement("section");
+  bodyNode.setAttribute("class", "mdc-dialog__body");
+
+  var footerNode = document.createElement("section");
+  footerNode.setAttribute("class", "mdc-dialog__footer");
+
+  builder._buildChildNodes(footerNode, comp.actions);
+
+  rootNode.appendChild(surfaceNode);
+  surfaceNode.appendChild(headerNode);
+  surfaceNode.appendChild(bodyNode);
+  surfaceNode.appendChild(footerNode);
+  headerNode.appendChild(titleNode);
+  rootNode.appendChild(backdropNode);
+
+  return rootNode;
+}
+
+
+function Button(comp, ctrl, builder) {
+  var buttonNode = document.createElement("button");
+  buttonNode.setAttribute("id", comp.id);
+  buttonNode.setAttribute("class", "mdc-button mdc-button--raised");
+  buttonNode.innerText = comp.label;
+  buttonNode.addEventListener("click", function () {
+    if (comp.action){
+      var func = window[ comp.action ];
+      if (func){
+        ctrl.runSmartflow(new func());
       }
-      if (ctrl.componentChanged) {
-        ctrl.componentChanged(
-          {
-            "component": this,
-            "event": "click"
-          }
-        );
-      }
-
-    });
-    return buttonNode;
-  };
-  /**
-   *
-   * @param comp
-   * @param ctrl
-   * @returns {Element}
-   * @private
-   */
-  this._buildTextfield = function(comp, ctrl){
-    var node = document.createElement("div");
-
-    var labelNode = document.createElement("label");
-    labelNode.setAttribute("for", "my-textfield");
-    labelNode.setAttribute("class", "mdc-label");
-    labelNode.innerText = comp.label;
-
-    var divNode = document.createElement("div");
-    divNode.setAttribute("class", "mdc-textfield");
-
-    var inputNode = document.createElement("input");
-    inputNode.setAttribute("id", "my-textfield");
-    inputNode.setAttribute("type", "text");
-    inputNode.setAttribute("placeholder", comp.placeholder);
-    inputNode.setAttribute("class", "mdc-textfield__input");
-
-    node.appendChild(labelNode);
-    node.appendChild(divNode);
-    divNode.appendChild(inputNode);
-
-    inputNode.addEventListener("keyup", function () {
+    }
+    if (ctrl.componentChanged) {
       ctrl.componentChanged(
         {
           "component": this,
-          "event": "keyup"
+          "event": "click"
         }
       );
-    });
-    return node;
-  };
-  this._buildCard = function(comp, ctrl) {
-    var rootNode = document.createElement("div");
-    rootNode.setAttribute("class", "mdc-card");
-
-    var headerNode = document.createElement("section");
-    headerNode.setAttribute("class", "mdc-card__primary");
-
-      var h1Node = document.createElement("h1");
-      h1Node.setAttribute("class", "mdc-card__title mdc-card__title--large");
-      h1Node.innerText = comp.title;
-
-      var h2Node = document.createElement("h2");
-      h2Node.setAttribute("class", "mdc-card__subtitle");
-      h2Node.innerText = comp.subtitle;
-
-    var bodyNode = document.createElement("section");
-    bodyNode.setAttribute("class", "mdc-card__supporting-text");
-    bodyNode.innerText = comp.text;
-
-    //this._buildComponents(comp, ctrl, rootNode);
+    }
+  });
+  return buttonNode;
+}
 
 
-    var footerNode = document.createElement("section");
-    footerNode.setAttribute("class", "mdc-card__actions");
-
-    rootNode.appendChild(headerNode);
-    headerNode.appendChild(h1Node);
-    headerNode.appendChild(h2Node);
-    rootNode.appendChild(bodyNode);
-    rootNode.appendChild(footerNode);
-
-    return rootNode;
-  };
-  this._buildTable = function(comp, ctrl) {
-    var rootNode = document.createElement("div");
-    rootNode.setAttribute("border", "1");
-    rootNode.setAttribute("class", "mdc-data-table");
-
-    var columns = comp.columns;
-
-    var headNode = document.createElement("thead");
-
-    var headerRowNode = document.createElement("tr");
-    headNode.appendChild(headerRowNode);
+function Table(comp, ctrl, builder) {
+  var rootNode = document.createElement("table");
+  rootNode.setAttribute("border", "1");
+  rootNode.setAttribute("class", "mdc-data-table");
+  var columns = comp.columns;
+  var headNode = document.createElement("thead");
+  var headerRowNode = document.createElement("tr");
+  headNode.appendChild(headerRowNode);
+  for (var x=0; x<columns.length; x++) {
+    var column = columns[ x ];
+    var thNode = document.createElement("th");
+    thNode.innerText = column.label;
+    headerRowNode.appendChild(thNode);
+  }
+  var bodyNode = document.createElement("tbody");
+  var rows = comp.rows;
+  for (var y=0; y< rows.length; y++){
+    var rowNode = document.createElement("tr");
+    bodyNode.appendChild(rowNode);
+    var rowData = rows[ y ];
     for (var x=0; x<columns.length; x++) {
       var column = columns[ x ];
-      var thNode = document.createElement("th");
-      thNode.innerText = column.label;
-      headerRowNode.appendChild(thNode);
+      var cellData = rowData[ column.key ];
+      var tdNode = document.createElement("td");
+      rowNode.appendChild(tdNode);
+      if (column.format) {
+        tdNode.innerText = builder.formatter.formatDate(cellData, column.format);
+      } else {
+        tdNode.innerText = cellData;
+      }
     }
-
-    var bodyNode = document.createElement("tbody");
-
-    rootNode.appendChild(headNode);
-    rootNode.appendChild(bodyNode);
-
-
-    return rootNode;
-  };
-
+  }
+  rootNode.appendChild(headNode);
+  rootNode.appendChild(bodyNode);
+  return rootNode;
 }
+
+function Label(comp, ctrl, builder) {
+  var node = document.createElement("label");
+  node.setAttribute("id", comp.id);
+  node.setAttribute("class", comp.class);
+  node.innerText = comp.label;
+  return node;
+}
+
+function Card(comp, ctrl, builder) {
+  var rootNode = document.createElement("div");
+  rootNode.setAttribute("class", "mdc-card");
+
+  var headerNode = document.createElement("section");
+  headerNode.setAttribute("class", "mdc-card__primary");
+
+  var h1Node = document.createElement("h1");
+  h1Node.setAttribute("class", "mdc-card__title mdc-card__title--large");
+  h1Node.innerText = comp.title;
+
+  var h2Node = document.createElement("h2");
+  h2Node.setAttribute("class", "mdc-card__subtitle");
+  h2Node.innerText = comp.subtitle;
+
+  var textNode = document.createElement("section");
+  textNode.setAttribute("class", "mdc-card__supporting-text");
+
+  var bodyNode = document.createElement("section");
+
+  builder._buildChildNodes(bodyNode, comp.components);
+
+  var footerNode = document.createElement("section");
+  footerNode.setAttribute("class", "mdc-card__actions");
+  builder._buildChildNodes(footerNode, comp.actions);
+
+  rootNode.appendChild(headerNode);
+  headerNode.appendChild(h1Node);
+  headerNode.appendChild(h2Node);
+  rootNode.appendChild(bodyNode);
+  rootNode.appendChild(footerNode);
+
+  return rootNode;
+}
+
+function Textfield(comp, ctrl, builder){
+  var node = document.createElement("div");
+
+  var labelNode = document.createElement("label");
+  labelNode.setAttribute("for", "my-textfield");
+  labelNode.setAttribute("class", "mdc-label");
+  labelNode.innerText = comp.label;
+
+  var divNode = document.createElement("div");
+  divNode.setAttribute("class", "mdc-textfield");
+
+  var inputNode = document.createElement("input");
+  inputNode.setAttribute("id", "my-textfield");
+  inputNode.setAttribute("type", "text");
+  inputNode.setAttribute("placeholder", comp.placeholder);
+  inputNode.setAttribute("class", "mdc-textfield__input");
+
+  node.appendChild(labelNode);
+  node.appendChild(divNode);
+  divNode.appendChild(inputNode);
+
+  inputNode.addEventListener("keyup", function () {
+    ctrl.componentChanged(
+      {
+        "component": this,
+        "event": "keyup"
+      }
+    );
+  });
+  return node;
+}
+
 
 module.exports = Smartflow;

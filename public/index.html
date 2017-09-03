@@ -11,44 +11,17 @@
     body {
       background-color: #aaaaaa;
       padding: 2em;
-      //font-family: Helvetica, Arial, sans-serif, "Helvetica Neue";
     }
     label{
       display: block;
     }
-    .controller {
-      width: 15em;
-      height: 15em;
-      padding: 1.5em;
-      padding-top: 0px;
-      background-color: #bebebe;
-      border-radius: 10px;
-      float: left;
-      margin-right: 1em;
-      margin-bottom: 1em;
-    }
 
     .mdc-card{
-      background-color: green;
-    }
+      background-color: white;
 
-
-
-    .error {
-      color: red;
-      display: block;
-      text-align: center
     }
-
-    .info {
-      color: yellow;
-      display: block;
-      text-align: center;
-    }
-    #ToolbarView{
-      background-color: #aaaaaa;
-    }
-    #loginButton{
+    .mdc-card__primary{
+      background-color: #6d9a77;
     }
   </style>
   <script>
@@ -62,44 +35,10 @@
 <body>
 
   <div>
-    <img src="smartflow.svg" width="64" height="64"/>
+    <div id="InboxView"></div>
   </div>
 
-
-  <div>
-    <div id="ToolbarView">
-      User <span data-smartflow-state="user.usr"></span>
-    </div>
-
-
-    <div id="LoginView" class="controller">
-    </div>
-
-
-    <div id="InboxView" class="controller"><h5>InboxController</h5>
-
-
-      <div id="confirmDeleteMessage" class="info"></div>
-
-      <div style="margin-top: 1em;">
-        <input id="yesButton" type="button" value="YesAction" disabled/>
-        <input id="noButton" type="button" value="NoAction" disabled/>
-      </div>
-
-      <div style="margin-top: 1em;">
-        <input id="closeDeletedButton" type="button" value="CloseDeletedAction" disabled/>
-      </div>
-    </div>
-
-
-    <div id="ComposeView" class="controller"><h5>ComposeController</h5>
-    </div>
-
-  </div>
-
-
-<script src="app.js"></script>
-
+  <script src="app.js"></script>
 
 </body>
 </html>
