@@ -1,7 +1,30 @@
 
+function ClearEmailsAction(){
+  this.smartflow = {
+    "states": {
+      "emails": [
+      ]
+    }
+  }
+}
+
+function AddEmailAction(){
+  this.smartflow = {
+    "states": {
+      "emails": [
+        {
+          "id": "4",
+          "email": "test@test4.com",
+          "subject": "Hello world",
+          "date": new Date()
+        },
+      ]
+    }
+  }
+}
+
 function FindEmailsAction(){
   this.smartflow = {
-    "path" : "/",
     "states": {
       "emails": [
         {
@@ -54,7 +77,7 @@ class InboxView {
                 {
                   "label": "Date",
                   "key" : "date",
-                  "format" : "DD.MM.YYYY"
+                  "format" : "DD.MM.YYYY hh:mm:ss"
                 }
               ],
               "state": "emails"
@@ -63,8 +86,18 @@ class InboxView {
           "actions": [
             {
               "type": "Button",
-              "label": "Find emails",
+              "label": "Find",
               "action": "FindEmailsAction"
+            },
+            {
+              "type": "Button",
+              "label": "Clear",
+              "action": "ClearEmailsAction"
+            },
+            {
+              "type": "Button",
+              "label": "Add",
+              "action": "AddEmailAction"
             }
           ]
         }

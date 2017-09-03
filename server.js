@@ -88,6 +88,13 @@ const server = http.createServer((req, res) => {
       out(res, contentType, data);
     });
 
+  } else if (path.startsWith('/src')) {
+    const contentType = findMimeType(path);
+
+    fs.readFile('./' + path, (err, data) => {
+      out(res, contentType, data);
+    });
+
   } else if (path === '/favicon.ico') {
     fs.readFile('./public/favicon.ico', (err, data) => {
       out(res, "image/x-icon", data);

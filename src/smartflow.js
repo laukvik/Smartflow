@@ -377,7 +377,9 @@ function Smartflow() {
           action.runAction();
         }
         actionEvent.path = action.smartflow.path;
-        actionEvent.params = this._findParams(actionEvent.path).param;
+        if (actionEvent.path) {
+          actionEvent.params = this._findParams(actionEvent.path).param;
+        }
         delete (actionEvent.request);
         delete (actionEvent.response);
         actionEvent.states = action.smartflow.states === undefined ? {} : action.smartflow.states;

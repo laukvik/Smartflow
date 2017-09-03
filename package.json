@@ -11,6 +11,9 @@
     "coverage": "jest ./src/  --coverage",
     "eslint": "eslint ./src/*.js"
   },
+  "watch": {
+    "test": "{src}/*.js"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/laukvik/Smartflow.git"

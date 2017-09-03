@@ -95,7 +95,7 @@ class Button {
   constructor(comp, ctrl, builder){
     var buttonNode = document.createElement("button");
     buttonNode.setAttribute("id", comp.id);
-    buttonNode.setAttribute("class", "mdc-button mdc-button--raised");
+    buttonNode.setAttribute("class", "mdc-button mdc-button--raised mdc-card__action");
     buttonNode.innerText = comp.label;
     buttonNode.addEventListener("click", function () {
       if (comp.action){
@@ -131,11 +131,15 @@ class Table {
     this.builder = builder;
     var rootNode = document.createElement("table");
     rootNode.setAttribute("border", "1");
-    rootNode.setAttribute("class", "mdc-data-table");
+    rootNode.setAttribute("class", "mdc-table");
     var columns = comp.columns;
     this.headNode = document.createElement("thead");
     var headerRowNode = document.createElement("tr");
     this.headNode.appendChild(headerRowNode);
+
+    var thSelectNode = document.createElement("th");
+    headerRowNode.appendChild(thSelectNode);
+
     for (var x=0; x<columns.length; x++) {
       var column = columns[ x ];
       var thNode = document.createElement("th");
@@ -143,25 +147,7 @@ class Table {
       headerRowNode.appendChild(thNode);
     }
     this.bodyNode = document.createElement("tbody");
-    var rows = comp.rows;
-    if (Array.isArray(rows)) {
-      for (var y=0; y< rows.length; y++){
-        var rowNode = document.createElement("tr");
-        this.bodyNode.appendChild(rowNode);
-        var rowData = rows[ y ];
-        for (var x=0; x<columns.length; x++) {
-          var column = columns[ x ];
-          var cellData = rowData[ column.key ];
-          var tdNode = document.createElement("td");
-          rowNode.appendChild(tdNode);
-          if (column.format) {
-            tdNode.innerText = builder.formatter.formatDate(cellData, column.format);
-          } else {
-            tdNode.innerText = cellData;
-          }
-        }
-      }
-    }
+
     rootNode.appendChild(this.headNode);
     rootNode.appendChild(this.bodyNode);
     this.rootNode = rootNode;
@@ -175,11 +161,21 @@ class Table {
       this.bodyNode.innerHTML = "";
       var rows = value;
       var columns = this.comp.columns;
-
       for (var y=0; y<rows.length; y++){
         var rowNode = document.createElement("tr");
         this.bodyNode.appendChild(rowNode);
         var rowData = rows[ y ];
+        var tdSelectNode = document.createElement("td");
+        var checkboxNode = document.createElement("input");
+        tdSelectNode.appendChild(checkboxNode);
+        checkboxNode.setAttribute("type", "checkbox");
+        checkboxNode.setAttribute("data-smartflow-id", "2");
+
+        checkboxNode.addEventListener("click", function(evt){
+          console.info("Checked", this.getAttribute("data-smartflow-id"), this.checked);
+        });
+
+        rowNode.appendChild(tdSelectNode);
         for (var x=0; x<columns.length; x++) {
           var column = columns[ x ];
           var cellData = rowData[ column.key ];
@@ -253,4 +249,5 @@ class Textfield{
     console.info("Textfield.stateChanged: ", stateEvent);
   }
 }
+
 
