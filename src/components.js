@@ -320,9 +320,11 @@ class GridList {
     this.ulNode.innerHTML = "";
     var urlPropertyName = this.comp[ "url" ];
     var baseUrl = this.comp["base"];
+    var tooltip = this.comp["tooltip"];
+    var maxItems = Number.isInteger(this.comp[ "max" ]) ? this.comp[ "max" ] : 3;
     var items = value;
     for (var x=0; x<items.length; x++) {
-      if (x > 9){
+      if (x > maxItems - 1){
         return;
       }
       var item = items[ x ];
@@ -331,6 +333,8 @@ class GridList {
       var liNode = document.createElement("div");
       liNode.setAttribute("class", "mdc-grid-tile");
       this.ulNode.appendChild(liNode);
+      liNode.setA
+      liNode.setAttribute("title", item[ tooltip ] );
 
       var primaryNode = document.createElement("div");
       primaryNode.setAttribute("class", "mdc-grid-tile__primary");

@@ -110,6 +110,8 @@ class InboxView {
             {
               "type": "GridList",
               "state": "movies",
+              "max": 50,
+              "tooltip": "storyline",
               "url": "poster",
               "base": "https://images-na.ssl-images-amazon.com/images/M/"
             },
