@@ -123,7 +123,18 @@ class Button {
   }
 }
 
-
+/**
+ * Table
+ *
+ * - columns
+ * - rows
+ * - selection
+ * - selectAll, selectNone
+ * - paging: index, size
+ *
+ * - prevPage, nextPage
+ *
+ */
 class Table {
   constructor(comp, ctrl, builder){
     this.comp  = comp;
@@ -169,7 +180,7 @@ class Table {
         var checkboxNode = document.createElement("input");
         tdSelectNode.appendChild(checkboxNode);
         checkboxNode.setAttribute("type", "checkbox");
-        checkboxNode.setAttribute("data-smartflow-id", "2");
+        checkboxNode.setAttribute("data-smartflow-id", rowData[ "id" ]);
 
         checkboxNode.addEventListener("click", function(evt){
           console.info("Checked", this.getAttribute("data-smartflow-id"), this.checked);
