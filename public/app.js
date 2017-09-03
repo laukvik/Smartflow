@@ -1,3 +1,4 @@
+
 function FindEmailsAction(){
   this.smartflow = {
     "path" : "/",
@@ -142,10 +143,13 @@ var langEN = {
 };
 
 
-var app = new Smartflow();
-app.setConfig(config);
-app.loadLanguage("no", langNO);
-app.loadLanguage("en", langEN);
-app.setDefaultLocale("en");
-app.addView(new InboxView());
-app.start();
+  var app = new Smartflow();
+  app.setConfig(config);
+  app.loadLanguage("no", langNO);
+  app.loadLanguage("en", langEN);
+  app.setDefaultLocale("en");
+  app.addView(new InboxView());
+  app.start();
+
+
+

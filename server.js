@@ -64,7 +64,7 @@ const server = http.createServer((req, res) => {
     });
 
   } else if (path === '/smartflow.js') {
-    fs.readFile('./src/smartflow.js', (err, data) => {
+    fs.readFile('./dist/smartflow.js', (err, data) => {
       html(res, data);
     });
 
