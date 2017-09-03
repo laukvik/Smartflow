@@ -158,7 +158,7 @@ function Smartflow() {
   this._buildComponents = function(ctrl) {
     // mount components
     if (ctrl.smartflow.components) {
-      var builder = new ComponentBuilder(ctrl, this._formatter);
+      var builder = new ComponentBuilder(ctrl, this._formatter, this);
       builder.buildComponents();
     }
   };
@@ -487,6 +487,13 @@ function Smartflow() {
       if (ctrl.stateChanged) {
         ctrl.stateChanged(state, value);
       }
+      for (var y=0; y<ctrl.smartflow.componentInstances.length; y++) {
+        console.info(ctrl.smartflow.componentInstances[y]);
+        var compInstance = ctrl.smartflow.componentInstances[y];
+        if (compInstance.comp && compInstance.comp.state === state){
+          compInstance.stateChanged(state, value);
+        }
+      }
     }
     // Update DOM with state bindings
     var states = {};
@@ -693,12 +700,16 @@ function ComponentBuilder(ctrl, formatter){
   this.buildComponents = function () {
     var ctrlID = ctrl.constructor.name;
     var comps = ctrl.smartflow.components;
+    ctrl.smartflow.componentInstances = [];
     this._buildChildNodes( document.getElementById(ctrlID), comps);
   };
   this._buildChildNodes = function(parentNode, components){
+
     for (var x=0; x<components.length; x++) {
       var comp = components[x];
-      var node = this._buildComponent(comp);
+      var componentInstance = this._buildComponent(comp);
+      this.ctrl.smartflow.componentInstances.push(componentInstance);
+      var node = componentInstance.getNode();
       if (node === undefined) {
         console.info("Component not found", comp);
       } else {
@@ -707,9 +718,10 @@ function ComponentBuilder(ctrl, formatter){
     }
   };
   this._buildComponent = function(comp){
-    var func = window[ comp.type ];
+    //var func = window[ comp.type ]; // Vanilla
+    var func = eval(comp.type); // ES
     if (func){
-      return func(comp, this.ctrl, this);
+      return new func(comp, this.ctrl, this);
     } else {
       console.info("Component not found: ", comp.type);
       return undefined;
@@ -742,7 +754,51 @@ function ComponentBuilder(ctrl, formatter){
   };
 }
 
-function Dialog(comp, ctrl, builder) {
+class Card {
+  constructor(comp, ctrl, builder){
+    var rootNode = document.createElement("div");
+    rootNode.setAttribute("class", "mdc-card");
+
+    var headerNode = document.createElement("section");
+    headerNode.setAttribute("class", "mdc-card__primary");
+
+    var h1Node = document.createElement("h1");
+    h1Node.setAttribute("class", "mdc-card__title mdc-card__title--large");
+    h1Node.innerText = comp.title;
+
+    var h2Node = document.createElement("h2");
+    h2Node.setAttribute("class", "mdc-card__subtitle");
+    h2Node.innerText = comp.subtitle;
+
+    var textNode = document.createElement("section");
+    textNode.setAttribute("class", "mdc-card__supporting-text");
+
+    var bodyNode = document.createElement("section");
+
+    builder._buildChildNodes(bodyNode, comp.components);
+
+    var footerNode = document.createElement("section");
+    footerNode.setAttribute("class", "mdc-card__actions");
+    builder._buildChildNodes(footerNode, comp.actions);
+
+    rootNode.appendChild(headerNode);
+    headerNode.appendChild(h1Node);
+    headerNode.appendChild(h2Node);
+    rootNode.appendChild(bodyNode);
+    rootNode.appendChild(footerNode);
+
+    this.rootNode = rootNode;
+  }
+  getNode(){
+    return this.rootNode;
+  }
+  stateChanged(stateEvent){
+    console.info("Card.stateChanged: ", stateEvent);
+  }
+}
+
+class Dialog {
+  constructor(comp, ctrl, builder){
   var rootNode = document.createElement("aside");
   rootNode.setAttribute("id", comp.id);
   rootNode.setAttribute("class", "mdc-dialog mdc-dialog--open");
@@ -779,11 +835,19 @@ function Dialog(comp, ctrl, builder) {
   headerNode.appendChild(titleNode);
   rootNode.appendChild(backdropNode);
 
-  return rootNode;
+  this.rootNode = rootNode;
+  }
+  getNode(){
+    return this.rootNode;
+  }
+  stateChanged(stateEvent){
+    console.info("Dialog.stateChanged: ", stateEvent);
+  }
 }
 
 
-function Button(comp, ctrl, builder) {
+class Button {
+  constructor(comp, ctrl, builder){
   var buttonNode = document.createElement("button");
   buttonNode.setAttribute("id", comp.id);
   buttonNode.setAttribute("class", "mdc-button mdc-button--raised");
@@ -804,91 +868,109 @@ function Button(comp, ctrl, builder) {
       );
     }
   });
-  return buttonNode;
+  this.rootNode = buttonNode;
+  }
+  getNode(){
+    return this.rootNode;
+  }
+  stateChanged(stateEvent){
+    console.info("Button.stateChanged: ", stateEvent);
+  }
 }
 
 
-function Table(comp, ctrl, builder) {
-  var rootNode = document.createElement("table");
-  rootNode.setAttribute("border", "1");
-  rootNode.setAttribute("class", "mdc-data-table");
-  var columns = comp.columns;
-  var headNode = document.createElement("thead");
-  var headerRowNode = document.createElement("tr");
-  headNode.appendChild(headerRowNode);
-  for (var x=0; x<columns.length; x++) {
-    var column = columns[ x ];
-    var thNode = document.createElement("th");
-    thNode.innerText = column.label;
-    headerRowNode.appendChild(thNode);
-  }
-  var bodyNode = document.createElement("tbody");
-  var rows = comp.rows;
-  for (var y=0; y< rows.length; y++){
-    var rowNode = document.createElement("tr");
-    bodyNode.appendChild(rowNode);
-    var rowData = rows[ y ];
+class Table {
+  constructor(comp, ctrl, builder){
+    this.comp  = comp;
+    this.ctrl = ctrl;
+    this.builder = builder;
+    var rootNode = document.createElement("table");
+    rootNode.setAttribute("border", "1");
+    rootNode.setAttribute("class", "mdc-data-table");
+    var columns = comp.columns;
+    this.headNode = document.createElement("thead");
+    var headerRowNode = document.createElement("tr");
+    this.headNode.appendChild(headerRowNode);
     for (var x=0; x<columns.length; x++) {
       var column = columns[ x ];
-      var cellData = rowData[ column.key ];
-      var tdNode = document.createElement("td");
-      rowNode.appendChild(tdNode);
-      if (column.format) {
-        tdNode.innerText = builder.formatter.formatDate(cellData, column.format);
-      } else {
-        tdNode.innerText = cellData;
+      var thNode = document.createElement("th");
+      thNode.innerText = column.label;
+      headerRowNode.appendChild(thNode);
+    }
+    this.bodyNode = document.createElement("tbody");
+    var rows = comp.rows;
+    if (Array.isArray(rows)) {
+      for (var y=0; y< rows.length; y++){
+        var rowNode = document.createElement("tr");
+        this.bodyNode.appendChild(rowNode);
+        var rowData = rows[ y ];
+        for (var x=0; x<columns.length; x++) {
+          var column = columns[ x ];
+          var cellData = rowData[ column.key ];
+          var tdNode = document.createElement("td");
+          rowNode.appendChild(tdNode);
+          if (column.format) {
+            tdNode.innerText = builder.formatter.formatDate(cellData, column.format);
+          } else {
+            tdNode.innerText = cellData;
+          }
+        }
+      }
+    }
+    rootNode.appendChild(this.headNode);
+    rootNode.appendChild(this.bodyNode);
+    this.rootNode = rootNode;
+  }
+  getNode(){
+    return this.rootNode;
+  }
+  stateChanged(state, value){
+    console.info("Table.stateChanged: ", state, value);
+    if (state === this.comp.state) {
+      this.bodyNode.innerHTML = "";
+      var rows = value;
+      var columns = this.comp.columns;
+
+      for (var y=0; y<rows.length; y++){
+        var rowNode = document.createElement("tr");
+        this.bodyNode.appendChild(rowNode);
+        var rowData = rows[ y ];
+        for (var x=0; x<columns.length; x++) {
+          var column = columns[ x ];
+          var cellData = rowData[ column.key ];
+          var tdNode = document.createElement("td");
+          rowNode.appendChild(tdNode);
+          if (column.format) {
+            tdNode.innerText = this.builder.formatter.formatDate(cellData, column.format);
+          } else {
+            tdNode.innerText = cellData;
+          }
+        }
       }
     }
   }
-  rootNode.appendChild(headNode);
-  rootNode.appendChild(bodyNode);
-  return rootNode;
 }
 
-function Label(comp, ctrl, builder) {
-  var node = document.createElement("label");
-  node.setAttribute("id", comp.id);
-  node.setAttribute("class", comp.class);
-  node.innerText = comp.label;
-  return node;
+class Label {
+  constructor(comp, ctrl, builder){
+    var node = document.createElement("label");
+    node.setAttribute("id", comp.id);
+    node.setAttribute("class", comp.class);
+    node.innerText = comp.label;
+    this.rootNode = node;
+  }
+  getNode(){
+    return this.rootNode;
+  }
+  stateChanged(stateEvent){
+    console.info("Label.stateChanged: ", stateEvent);
+  }
 }
 
-function Card(comp, ctrl, builder) {
-  var rootNode = document.createElement("div");
-  rootNode.setAttribute("class", "mdc-card");
 
-  var headerNode = document.createElement("section");
-  headerNode.setAttribute("class", "mdc-card__primary");
 
-  var h1Node = document.createElement("h1");
-  h1Node.setAttribute("class", "mdc-card__title mdc-card__title--large");
-  h1Node.innerText = comp.title;
-
-  var h2Node = document.createElement("h2");
-  h2Node.setAttribute("class", "mdc-card__subtitle");
-  h2Node.innerText = comp.subtitle;
-
-  var textNode = document.createElement("section");
-  textNode.setAttribute("class", "mdc-card__supporting-text");
-
-  var bodyNode = document.createElement("section");
-
-  builder._buildChildNodes(bodyNode, comp.components);
-
-  var footerNode = document.createElement("section");
-  footerNode.setAttribute("class", "mdc-card__actions");
-  builder._buildChildNodes(footerNode, comp.actions);
-
-  rootNode.appendChild(headerNode);
-  headerNode.appendChild(h1Node);
-  headerNode.appendChild(h2Node);
-  rootNode.appendChild(bodyNode);
-  rootNode.appendChild(footerNode);
-
-  return rootNode;
-}
-
-function Textfield(comp, ctrl, builder){
+class Textfield{
+  constructor(comp, ctrl, builder){
   var node = document.createElement("div");
 
   var labelNode = document.createElement("label");
@@ -917,7 +999,14 @@ function Textfield(comp, ctrl, builder){
       }
     );
   });
-  return node;
+  this.rootNode = node;
+  }
+  getNode(){
+    return this.rootNode;
+  }
+  stateChanged(stateEvent){
+    console.info("Textfield.stateChanged: ", stateEvent);
+  }
 }
 
 

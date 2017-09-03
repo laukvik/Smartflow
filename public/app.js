@@ -56,7 +56,7 @@ class InboxView {
                   "format" : "DD.MM.YYYY"
                 }
               ],
-              "rows": []
+              "state": "emails"
             },
           ],
           "actions": [
