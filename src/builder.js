@@ -18,8 +18,17 @@ class ComponentBuilder{
     this.ctrl.smartflow.componentInstances = [];
     this._buildChildNodes( document.getElementById(ctrlID), comps);
   };
+  buildChildNode(parentNode, comp) {
+    var componentInstance = this._buildComponent(comp);
+    this.ctrl.smartflow.componentInstances.push(componentInstance);
+    var node = componentInstance.getNode();
+    if (node === undefined) {
+      console.info("Component not found", comp);
+    } else {
+      parentNode.appendChild(node);
+    }
+  }
   _buildChildNodes(parentNode, components){
-
     for (var x=0; x<components.length; x++) {
       var comp = components[x];
       var componentInstance = this._buildComponent(comp);

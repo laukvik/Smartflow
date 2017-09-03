@@ -1,3 +1,14 @@
+function SelectAllAction(){
+  this.smartflow = {
+    "components": [
+      {
+        "id": "inboxTable",
+        "selectedIndexes": [ 0, 2 ]
+      }
+    ]
+  }
+}
+
 
 function ClearEmailsAction(){
   this.smartflow = {
@@ -10,7 +21,7 @@ function ClearEmailsAction(){
 
 function AddEmailAction(){
   this.smartflow = {
-    "states": {
+    "addStates": {
       "emails": [
         {
           "id": "4",
@@ -50,6 +61,41 @@ function FindEmailsAction(){
   }
 }
 
+function FindMoviesAction(){
+  this.smartflow = {
+    "request": {
+      "url": "movies.json",
+      "method": "get",
+      "type": "json"
+    },
+    "success": {
+      "path": "/",
+      "state": "movies"
+    },
+    "error": {
+      "path": "/",
+      "state": "moviesFailed"
+    }
+  };
+}
+
+function FindMovies2Action(){
+  this.smartflow = {
+    "request": {
+      "url": "movies2.json",
+      "method": "get",
+      "type": "json"
+    },
+    "success": {
+      "path": "/",
+      "state": "movies"
+    },
+    "error": {
+      "path": "/",
+      "state": "moviesFailed"
+    }
+  };
+}
 
 class InboxView {
   constructor(){
@@ -62,7 +108,31 @@ class InboxView {
           "subtitle": "Application flow API for JavaScript",
           "components": [
             {
+              "type": "GridList",
+              "state": "movies",
+              "url": "poster",
+              "base": "https://images-na.ssl-images-amazon.com/images/M/"
+            },
+            {
+              "type": "Grid",
+              "components": [
+                {
+                  "type": "Label",
+                  "label": "Lorem ipsum dolor sit amet, ex eum veri alterum. Idque latine expetenda sea ad, purto novum evertitur sea ad, in purto possit iracundia quo."
+                },
+                {
+                  "type": "Label",
+                  "label": "Nec atqui oporteat scriptorem ne, est ex odio viderer nostrum. Sea agam graece possit id, ne quando nostro nusquam vis."
+                },
+                {
+                  "type": "Label",
+                  "label": "Purto consulatu sea no, ne nam tota verterem explicari, harum invidunt abhorreant ea cum. Ne vel viris labitur reprimique, et sit debet definiebas vituperata, vero quando deserunt mei at."
+                }
+              ]
+            },
+            {
               "type": "Table",
+              "id": "inboxTable",
               "rowId": "id",
               "selectable": true,
               "columns": [
@@ -98,7 +168,28 @@ class InboxView {
               "type": "Button",
               "label": "Add",
               "action": "AddEmailAction"
+            },
+            {
+              "type": "Button",
+              "label": "Select All",
+              "action": "SelectAllAction"
+            },
+            {
+              "type": "Button",
+              "label": "Select None",
+              "action": "SelectNoneAction"
+            },
+            {
+              "type": "Button",
+              "label": "Movies",
+              "action": "FindMoviesAction"
+            },
+            {
+              "type": "Button",
+              "label": "Movies2",
+              "action": "FindMovies2Action"
             }
+
           ]
         }
         ],
@@ -153,6 +244,7 @@ class InboxView {
   actionPerformed(action){
   };
   componentChanged(evt){
+    console.info("componentChanged: ", evt);
   }
 }
 

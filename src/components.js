@@ -182,8 +182,16 @@ class Table {
         checkboxNode.setAttribute("type", "checkbox");
         checkboxNode.setAttribute("data-smartflow-id", rowData[ "id" ]);
 
-        checkboxNode.addEventListener("click", function(evt){
-          console.info("Checked", this.getAttribute("data-smartflow-id"), this.checked);
+        var ctrl = this.ctrl;
+        checkboxNode.addEventListener("click", function () {
+          ctrl.componentChanged(
+            {
+              "component": this,
+              "event": "selection",
+              "value": this.checked,
+              "id": this.getAttribute("data-smartflow-id")
+            }
+          );
         });
 
         rowNode.appendChild(tdSelectNode);
@@ -262,3 +270,87 @@ class Textfield{
 }
 
 
+
+class Grid {
+  constructor(comp, ctrl, builder){
+    this.comp = comp;
+    var node = document.createElement("div");
+    node.setAttribute("id", comp.id);
+    node.setAttribute("class", "mdc-layout-grid");
+    var innerNode = document.createElement("div");
+    innerNode.setAttribute("class", "mdc-layout-grid__inner");
+    node.appendChild(innerNode);
+    var items = this.comp.components;
+    for (var x=0; x<items.length; x++) {
+      var cellNode = document.createElement("div");
+      cellNode.setAttribute("class", "mdc-layout-grid__cell");
+      innerNode.appendChild(cellNode);
+      builder.buildChildNode(cellNode, items[ x ]);
+    }
+    this.rootNode = node;
+  }
+  getNode(){
+    return this.rootNode;
+  }
+  stateChanged(stateEvent){
+    console.info("Label.stateChanged: ", stateEvent);
+  }
+}
+
+
+
+
+class GridList {
+  constructor(comp, ctrl, builder){
+    this.comp = comp;
+    var node = document.createElement("div");
+    node.setAttribute("id", comp.id);
+    node.setAttribute("class", "mdc-grid-list");
+    var ulNode = document.createElement("div");
+    ulNode.setAttribute("class", "mdc-grid-list__tiles");
+    node.appendChild(ulNode);
+    this.ulNode = ulNode;
+    this.rootNode = node;
+  }
+  getNode(){
+    return this.rootNode;
+  }
+  stateChanged(state, value){
+    console.info("GridList.stateChanged: ", state);
+    this.ulNode.innerHTML = "";
+    var urlPropertyName = this.comp[ "url" ];
+    var baseUrl = this.comp["base"];
+    var items = value;
+    for (var x=0; x<items.length; x++) {
+      if (x > 9){
+        return;
+      }
+      var item = items[ x ];
+      console.info( item);
+
+      var liNode = document.createElement("div");
+      liNode.setAttribute("class", "mdc-grid-tile");
+      this.ulNode.appendChild(liNode);
+
+      var primaryNode = document.createElement("div");
+      primaryNode.setAttribute("class", "mdc-grid-tile__primary");
+      liNode.appendChild(primaryNode);
+
+      var primaryContentNode = document.createElement("div");
+      primaryContentNode.setAttribute("class", "mdc-grid-tile__primary-content");
+      primaryNode.appendChild(primaryContentNode);
+      var url = baseUrl + item[ urlPropertyName ];
+      primaryContentNode.style.backgroundImage = "url('" + url +  "')";
+
+      var secondaryNode = document.createElement("span");
+      secondaryNode.setAttribute("class", "mdc-grid-tile__secondary");
+      liNode.appendChild(secondaryNode);
+
+
+      var titleNode = document.createElement("span");
+      titleNode.setAttribute("class", "mdc-grid-tile__title");
+      titleNode.innerText = item[ "title" ];
+      secondaryNode.appendChild(titleNode);
+    }
+  }
+}

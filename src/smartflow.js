@@ -383,6 +383,8 @@ function Smartflow() {
         delete (actionEvent.request);
         delete (actionEvent.response);
         actionEvent.states = action.smartflow.states === undefined ? {} : action.smartflow.states;
+        actionEvent.addStates = action.smartflow.addStates === undefined ? {} : action.smartflow.addStates;
+        actionEvent.removeStates = action.smartflow.removeStates === undefined ? {} : action.smartflow.removeStates;
         this._fireActionPerformed(action, actionEvent);
       }
     } else {
@@ -391,8 +393,33 @@ function Smartflow() {
   };
   this._fireActionPerformed = function (action, actionEvent) {
     actionEvent.finish = Date.now();
+
+    // Appends states to existing collection
+    if (actionEvent.addStates) {
+      for (var keyAdd in actionEvent.addStates) {
+        var entriesArray = actionEvent.addStates[keyAdd];
+        if (Array.isArray(entriesArray)) {
+          for (var x=0; x<entriesArray.length; x++){
+            this._states[ keyAdd ].push( entriesArray[x] );
+          }
+          if (actionEvent.states[keyAdd] === undefined) {
+            actionEvent.states[keyAdd] = this._states[ keyAdd ];
+          }
+        }
+      }
+    }
+
+    // Remove states from collection
+    if (actionEvent.removeStates) {
+      for (var keyRemove in actionEvent.removeStates) {
+        var entriesArray = actionEvent.removeStates[keyRemove];
+
+      }
+    }
+
     for (var key in actionEvent.states) {
-      this._fireStateChanged(key, actionEvent.states[key]);
+      this._states[ key ] = actionEvent.states[key]; // Save new state internally
+      this._fireStateChanged(key, this._states[ key ]); // Push to listeners
     }
     if (actionEvent.path){
       this.setPath(actionEvent.path);
