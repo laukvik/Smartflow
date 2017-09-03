@@ -11,6 +11,8 @@ const TYPE_XML = 'application/xml';
 const TYPE_PLAIN = 'text/plain';
 const TYPE_CSS = 'text/css';
 const TYPE_JS = 'text/js';
+const TYPE_SVG = 'image/svg+xml';
+
 
 
 
@@ -71,8 +73,16 @@ const server = http.createServer((req, res) => {
       html(res, data);
     });
 
+  } else if (path === '/smartflow.svg') {
+    //const contentType = findMimeType(path);
+
+    fs.readFile('./smartflow.svg' , (err, data) => {
+      //out(res, contentType, data);
+      svg(res,data)
+    });
+
   } else if (path.startsWith('/node_modules')) {
-    const contentType= findMimeType(path);
+    const contentType = findMimeType(path);
 
     fs.readFile('./' + path, (err, data) => {
       out(res, contentType, data);
@@ -207,6 +217,8 @@ function findMimeType(path){
     return TYPE_HTML;
   } else if (path.endsWith(".xml")){
     return TYPE_XML;
+  } else if (path.endsWith(".svg")){
+    return TYPE_SVG;
   } else {
     return TYPE_UNKNOWN;
   }
@@ -240,6 +252,10 @@ function css(res, data){
 
 function js(res, data){
   out(res, TYPE_JS, data);
+}
+
+function svg(res, data){
+  out(res, TYPE_SVG, data);
 }
 
 function out(res, mimeType, data){

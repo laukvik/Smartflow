@@ -15,22 +15,27 @@
  * - date formatting
  * - no dependencies!
  *
- * - TODO - enable local storage
- * - TODO - documentation tool available
- * - TODO - path is not required - go to oneself
- * - TODO - get is default method
- * - TODO - features - switches for UI elements (toggles display on/off)
- * - TODO - support number formats
- * - TODO - support for application/json;utf-8 etc
- * - TODO - Virker med ECMA 2015
- * - TODO - Material plugins
- * - TODO - Server Action må returnere headere
+ * TODO - enable local storage
+ * TODO - documentation tool available
+ * TODO - path is not required - go to oneself
+ * TODO - get is default method
+ * TODO - features - switches for UI elements (toggles display on/off)
+ * TODO - support number formats
+ * TODO - support for application/json;utf-8 etc
+ * TODO - Server Action må returnere headere
+ * TODO - Material: Components, Child components, Custom components
+ * TODO - Custom component
+ * TODO - Textfield component
+ * TODO - textarea component
+ * TODO - button component
+ * TODO - radio component
+ * TODO - dialog component
+ * TODO - tab component
+ * TODO - pulldown component
+ * TODO - grid component
+ * TODO - toolbar component
+ * TODO - table component
  *
- * smartflow-ui {
- *   "tabs" : [
- *    "Innboks", "Folder"
- *   ]
- * }
  *
  * @constructor
  */
@@ -694,7 +699,20 @@ function MaterialBuilder(ctrl){
       return this._buildButton(comp, ctrl);
     } else if (comp.type === "textfield") {
       return this._buildTextfield(comp, ctrl);
+    } else if (comp.type === "label") {
+      return this._buildLabel(comp, ctrl);
+    } else if (comp.type === "card") {
+      return this._buildCard(comp, ctrl);
+    } else if (comp.type === "table") {
+      return this._buildTable(comp, ctrl);
     }
+  };
+  this._buildLabel = function(comp, ctrl) {
+    var node = document.createElement("label");
+    node.setAttribute("id", comp.id);
+    node.setAttribute("class", comp.class);
+    node.innerText = comp.label;
+    return node;
   };
   this.buildDialog = function( dialogID, title, body, buttons ){
     var buttonsHtml = "";
@@ -703,7 +721,7 @@ function MaterialBuilder(ctrl){
       var btn = buttons[ x ];
       var buttonID = dialogID + "__button__" + btn.value;
       buttonsHtml += "<button type=\"button\" id=\"" +
-        buttonID +"\"  class=\"mdc-button mdc-dialog__footer__button \">" + btn.label + "</button>";
+        buttonID +"\"  class=\"mdc-button mdc-dialog__footer__button mdc-button--raised\">" + btn.label + "</button>";
     }
 
     return "<aside id=\"" + dialogID + "\"\n" +
@@ -722,31 +740,55 @@ function MaterialBuilder(ctrl){
   };
   this._buildButton = function(comp, ctrl) {
     var buttonNode = document.createElement("button");
-    buttonNode.setAttribute("class", "mdc-button");
+    buttonNode.setAttribute("id", comp.id);
+    buttonNode.setAttribute("class", "mdc-button mdc-button--raised");
     buttonNode.innerText = comp.label;
     buttonNode.addEventListener("click", function () {
-      ctrl.componentChanged(
-        {
-          "component": this,
-          "event": "click"
-        }
+      if (comp.action){
+        var func = window[ comp.action ];
+        ctrl.runSmartflow(
+          new func()
         );
+      }
+      if (ctrl.componentChanged) {
+        ctrl.componentChanged(
+          {
+            "component": this,
+            "event": "click"
+          }
+        );
+      }
+
     });
     return buttonNode;
   };
+  /**
+   *
+   * @param comp
+   * @param ctrl
+   * @returns {Element}
+   * @private
+   */
   this._buildTextfield = function(comp, ctrl){
+    var node = document.createElement("div");
+
     var labelNode = document.createElement("label");
-    labelNode.setAttribute("class", "mdc-textfield");
+    labelNode.setAttribute("for", "my-textfield");
+    labelNode.setAttribute("class", "mdc-label");
+    labelNode.innerText = comp.label;
+
+    var divNode = document.createElement("div");
+    divNode.setAttribute("class", "mdc-textfield");
+
     var inputNode = document.createElement("input");
+    inputNode.setAttribute("id", "my-textfield");
     inputNode.setAttribute("type", "text");
+    inputNode.setAttribute("placeholder", comp.placeholder);
     inputNode.setAttribute("class", "mdc-textfield__input");
 
-    var spanNode = document.createElement("span");
-    spanNode.setAttribute("class", "mdc-textfield__label");
-    spanNode.innerText = comp.label;
-
-    labelNode.appendChild(inputNode);
-    labelNode.appendChild(spanNode);
+    node.appendChild(labelNode);
+    node.appendChild(divNode);
+    divNode.appendChild(inputNode);
 
     inputNode.addEventListener("keyup", function () {
       ctrl.componentChanged(
@@ -756,9 +798,67 @@ function MaterialBuilder(ctrl){
         }
       );
     });
-    return labelNode;
-  }
+    return node;
+  };
+  this._buildCard = function(comp, ctrl) {
+    var rootNode = document.createElement("div");
+    rootNode.setAttribute("class", "mdc-card");
 
+    var headerNode = document.createElement("section");
+    headerNode.setAttribute("class", "mdc-card__primary");
+
+      var h1Node = document.createElement("h1");
+      h1Node.setAttribute("class", "mdc-card__title mdc-card__title--large");
+      h1Node.innerText = comp.title;
+
+      var h2Node = document.createElement("h2");
+      h2Node.setAttribute("class", "mdc-card__subtitle");
+      h2Node.innerText = comp.subtitle;
+
+    var bodyNode = document.createElement("section");
+    bodyNode.setAttribute("class", "mdc-card__supporting-text");
+    bodyNode.innerText = comp.text;
+
+    //this._buildComponents(comp, ctrl, rootNode);
+
+
+    var footerNode = document.createElement("section");
+    footerNode.setAttribute("class", "mdc-card__actions");
+
+    rootNode.appendChild(headerNode);
+    headerNode.appendChild(h1Node);
+    headerNode.appendChild(h2Node);
+    rootNode.appendChild(bodyNode);
+    rootNode.appendChild(footerNode);
+
+    return rootNode;
+  };
+  this._buildTable = function(comp, ctrl) {
+    var rootNode = document.createElement("div");
+    rootNode.setAttribute("border", "1");
+    rootNode.setAttribute("class", "mdc-data-table");
+
+    var columns = comp.columns;
+
+    var headNode = document.createElement("thead");
+
+    var headerRowNode = document.createElement("tr");
+    headNode.appendChild(headerRowNode);
+    for (var x=0; x<columns.length; x++) {
+      var column = columns[ x ];
+      var thNode = document.createElement("th");
+      thNode.innerText = column.label;
+      headerRowNode.appendChild(thNode);
+    }
+
+    var bodyNode = document.createElement("tbody");
+
+    rootNode.appendChild(headNode);
+    rootNode.appendChild(bodyNode);
+
+
+    return rootNode;
+  };
 
 }
 

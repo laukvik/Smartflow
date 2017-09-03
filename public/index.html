@@ -2,48 +2,37 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <script src="https://material-components-web.appspot.com/assets/material-components-web.js"></script>
   <title>Smartflow</title>
   <link
     rel="stylesheet"
     href="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css">
   <style>
-    .smartflow-logo {
-      color: #62defd;
-      font-family: Helvetica, Arial, sans-serif, "Helvetica Neue";
-    }
-    .smartflow-logo span {
-      color: black;
-    }
-    .smartflow-tagline {
-      color: #ffffff;
-    }
     body {
-      background-color: #00408d;
+      background-color: #aaaaaa;
       padding: 2em;
-      font-family: Helvetica, Arial, sans-serif, "Helvetica Neue";
+      //font-family: Helvetica, Arial, sans-serif, "Helvetica Neue";
     }
-
+    label{
+      display: block;
+    }
     .controller {
       width: 15em;
       height: 15em;
       padding: 1.5em;
       padding-top: 0px;
-      background-color: #00376e;
+      background-color: #bebebe;
       border-radius: 10px;
       float: left;
       margin-right: 1em;
       margin-bottom: 1em;
     }
 
-    h5 {
-      text-align: center;
-      color: #aaaaaa;
+    .mdc-card{
+      background-color: green;
     }
 
-    input {
-      width: 100%;
-      spadding: 1em;
-    }
+
 
     .error {
       color: red;
@@ -72,76 +61,45 @@
 </head>
 <body>
 
-<h1 class="smartflow-logo">Smartflow <span>js</span></h1>
-<p class="smartflow-tagline">JavaScript API for controlling application flow</p>
-
-<div>
-  <div id="ToolbarView">
-    User <span data-smartflow-state="user.usr"></span>
-  </div>
-
-  <div id="LoginView" class="controller"><h5>LoginController</h5>
-    <div id="loginInfoMessage" class="info"></div>
-
-    <button id="loginButton" class="mdc-button mdc-button--raised">LoginAction</button>
-
-    <div style="margin-top: 1em;">
-      <input id="loginFailedButton" type="button" value="CloseLoginFailedAction" disabled/>
-    </div>
-    <div id="loginErrorMessage" class="error"></div>
-  </div>
-  <div id="InboxView" class="controller"><h5>InboxController</h5>
-
-    <table border="1">
-      <thead>
-      <tr>
-        <th></th>
-        <th>Subject</th>
-        <th>From</th>
-      </tr>
-      </thead>
-      <tr>
-        <td><input type="checkbox"></td>
-        <td>Its hard</td>
-        <td>Obama</td>
-      </tr>
-    </table>
-
-    <input id="composeButton" type="button" value="ComposeMailAction"/>
-    <input id="confirmDeleteButton" type="button" value="ConfirmDeleteAction"/>
-    <input id="logoutButton" type="button" value="LogoutAction"/>
-
-    <div id="confirmDeleteMessage" class="info"></div>
-
-    <div style="margin-top: 1em;">
-
-      <input id="yesButton" type="button" value="YesAction" disabled/>
-      <input id="noButton" type="button" value="NoAction" disabled/>
-    </div>
-
-    <div style="margin-top: 1em;">
-      <input id="closeDeletedButton" type="button" value="CloseDeletedAction" disabled/>
-    </div>
+  <div>
+    <img src="smartflow.svg" width="64" height="64"/>
   </div>
 
 
-  <div id="ComposeView" class="controller"><h5>ComposeController</h5>
-    <div><label>To</label>
-      <input type="text">
-    </div>
-    <div><label>Body</label>
-      <textarea></textarea>
+  <div>
+    <div id="ToolbarView">
+      User <span data-smartflow-state="user.usr"></span>
     </div>
 
-    <input id="sendMailButton" type="button" value="SendMailAction"/>
-    <input id="cancelMailButton" type="button" value="CancelMailAction"/>
-    <input id="closeSentButton" type="button" value="CloseSentAction"/>
+
+    <div id="LoginView" class="controller">
+    </div>
+
+
+    <div id="InboxView" class="controller"><h5>InboxController</h5>
+
+
+      <div id="confirmDeleteMessage" class="info"></div>
+
+      <div style="margin-top: 1em;">
+        <input id="yesButton" type="button" value="YesAction" disabled/>
+        <input id="noButton" type="button" value="NoAction" disabled/>
+      </div>
+
+      <div style="margin-top: 1em;">
+        <input id="closeDeletedButton" type="button" value="CloseDeletedAction" disabled/>
+      </div>
+    </div>
+
+
+    <div id="ComposeView" class="controller"><h5>ComposeController</h5>
+    </div>
+
   </div>
-</div>
-
 
 
 <script src="app.js"></script>
+
 
 </body>
 </html>

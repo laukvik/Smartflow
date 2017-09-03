@@ -126,74 +126,141 @@ function LoginDialogAction(){
   };
 }
 
+class LoginView {
+  constructor(){
+    this.smartflow = {
+      "path" : "/",
+      "components": [
+        {
+          "type": "card",
+          "title": "Smartflow",
+          "subtitle": "v1b",
+          "text": "Heloe text",
+          "components": [
+            {
+              "type": "label",
+              "label": "Sub component"
+            },
+          ]
+        },
+        {
+          "type": "label",
+          "label": "LoginView",
+          "class": "info",
+          "id": "loginInfoMessage"
+        },
 
-function LoginView(){
-  this.smartflow = {
-    "path" : "/",
-    "components": [
-      {
-        "type": "button",
-        "label": "MyButton"
-      },
-      {
-        "type": "textfield",
-        "value": "AppName",
-        "placeholder": "Enter first name",
-        "label": "First"
+        {
+          "type": "button",
+          "label": "LoginAction",
+          "action": "LoginDialogAction",
+          "id": "loginButton"
+        },
+        {
+          "type": "button",
+          "label": "CloseLoginFailedAction",
+          "action": "CloseLoginFailedAction",
+          "id": "loginFailedButton"
+        },
+        {
+          "type": "label",
+          "label": "",
+          "class": "error",
+          "id": "loginErrorMessage"
+        }
+      ]
+    };
+  }
 
-      }
-    ]
-  };
-  this.setEnabled = function(id, isEnabled){
+  setEnabled(id, isEnabled){
     if (isEnabled){
       document.getElementById(id).removeAttribute("disabled");
     } else {
       document.getElementById(id).setAttribute("disabled", "true");
     }
   };
-  this.viewInitialized = function(lang){
+  viewInitialized(lang){
     var self = this;
-    document.getElementById("loginButton").addEventListener("click", function(){
-      self.runSmartflow(new LoginDialogAction());
-    });
+    // document.getElementById("loginButton").addEventListener("click", function(){
+    //   self.runSmartflow(new LoginDialogAction());
+    // });
     document.getElementById("loginFailedButton").addEventListener("click", function(){
       self.runSmartflow(new CloseLoginFailedAction());
     });
     document.getElementById("loginInfoMessage").innerText = lang.format("welcome", ["Smartflow", 1, 2]);
   };
-  this.viewEnabled = function(){
+  viewEnabled(){
     this.setEnabled("loginButton", true);
   };
-  this.viewDisabled = function(){
+  viewDisabled(){
     this.setEnabled("loginButton", false);
   };
-  this.stateChanged = function(state, value){
+  stateChanged(state, value){
     if (state === "loginFailed") {
       this.setEnabled("loginFailedButton", value !== undefined);
       document.getElementById("loginErrorMessage").innerText = value !== undefined ? value : "";
     }
     this.setEnabled("loginButton", value === undefined);
   };
-  this.actionPerformed = function(action){
+  actionPerformed(action){
     console.info("actionPerformed", action);
   };
-  this.componentChanged = function(evt){
+  componentChanged(evt){
     console.info("componentChanged", evt);
   }
 }
 
-function InboxView(){
-  this.smartflow = {
-    "path" : "/inbox"
-  };
-  this.setEnabled = function(id, isEnabled){
+
+
+class InboxView{
+  constructor(){
+    this.smartflow = {
+      "path" : "/inbox",
+      "components": [
+        {
+          "type": "table",
+          "columns": [
+            {
+              "label": "",
+            },
+            {
+              "label": "From"
+            },
+            {
+              "label": "Subject"
+            }
+          ]
+        },
+        {
+          "type": "button",
+          "label": "ComposeMailAction",
+          "action": "ComposeMailAction",
+          "id": "composeButton"
+        },
+        {
+          "type": "button",
+          "label": "ConfirmDeleteAction",
+          "action": "ConfirmDeleteAction",
+          "id": "confirmDeleteButton"
+        },
+        {
+          "type": "button",
+          "label": "LogoutAction",
+          "action": "LogoutAction",
+          "id": "logoutButton"
+        },
+      ]
+    };
+  }
+
+  setEnabled(id, isEnabled){
     if (isEnabled){
       document.getElementById(id).removeAttribute("disabled");
     } else {
       document.getElementById(id).setAttribute("disabled", "true");
     }
   };
-  this.viewInitialized = function(lang){
+  viewInitialized(lang){
     this.lang = lang;
     var self = this;
     document.getElementById("composeButton").addEventListener("click", function(){
@@ -217,20 +284,20 @@ function InboxView(){
       self.runSmartflow(new CloseDeletedAction());
     });
   };
-  this.viewEnabled = function(){
+  viewEnabled(){
     this.setEnabled("composeButton", true);
     this.setEnabled("confirmDeleteButton", true);
     this.setEnabled("logoutButton", true);
   };
-  this.viewDisabled = function(){
+  viewDisabled(){
     this.setEnabled("composeButton", false);
     this.setEnabled("confirmDeleteButton", false);
     this.setEnabled("logoutButton", false);
   };
-  this.actionPerformed = function(action){
+  actionPerformed(action){
     console.info("actionPerformed", action);
   };
-  this.stateChanged = function(state, value){
+  stateChanged(state, value){
     if (state === "confirm") {
       var enabled = value === true;
       this.setEnabled("yesButton", enabled);
@@ -256,43 +323,78 @@ function InboxView(){
 }
 
 
-function ComposeView(){
-  this.smartflow = {
-    "path" : "/compose"
-  };
-  this.setEnabled = function(id, isEnabled){
+class ComposeView {
+  constructor(){
+    this.smartflow = {
+      "path" : "/compose",
+      "components": [
+        {
+          "type": "textfield",
+          "label": "To",
+          "value": "Morten",
+          "placeholder": "email"
+        },
+        {
+          "type": "textfield",
+          "label": "Body",
+          "value": "Morten",
+          "placeholder": "Message"
+        },
+        {
+          "type": "button",
+          "label": "SendMailAction",
+          "action": "SendMailAction",
+          "id": "sendMailButton"
+        },
+        {
+          "type": "button",
+          "label": "CancelComposeAction",
+          "action": "CancelComposeAction",
+          "id": "cancelMailButton"
+        },
+        {
+          "type": "button",
+          "label": "CloseSentAction",
+          "action": "CloseSentAction",
+          "id": "closeSentButton"
+        }
+      ]
+    };
+  }
+
+  setEnabled(id, isEnabled){
     if (isEnabled){
       document.getElementById(id).removeAttribute("disabled");
     } else {
       document.getElementById(id).setAttribute("disabled", "true");
     }
   };
-  this.viewInitialized = function(lang){
-    var self = this;
-    document.getElementById("sendMailButton").addEventListener("click", function(){
-      self.runSmartflow(new SendMailAction());
-    })
-    document.getElementById("cancelMailButton").addEventListener("click", function(){
-      self.runSmartflow(new CancelComposeAction());
-    })
-    document.getElementById("closeSentButton").addEventListener("click", function(){
-      self.runSmartflow(new CloseSentAction());
-    })
+  viewInitialized(formatter){
+    // var self = this;
+    // document.getElementById("sendMailButton").addEventListener("click", function(){
+    //   self.runSmartflow(new SendMailAction());
+    // })
+    // document.getElementById("cancelMailButton").addEventListener("click", function(){
+    //   self.runSmartflow(new CancelComposeAction());
+    // })
+    // document.getElementById("closeSentButton").addEventListener("click", function(){
+    //   self.runSmartflow(new CloseSentAction());
+    //})
   };
-  this.viewEnabled = function(){
+  viewEnabled(){
     this.setEnabled("sendMailButton", true);
     this.setEnabled("cancelMailButton", true);
     this.setEnabled("closeSentButton", false);
   };
-  this.viewDisabled = function(){
+  viewDisabled(){
     this.setEnabled("sendMailButton", false);
     this.setEnabled("cancelMailButton", false);
     this.setEnabled("closeSentButton", false);
   };
-  this.actionPerformed = function(action){
+  actionPerformed(action){
     console.info("actionPerformed", action);
   };
-  this.stateChanged = function(state, value){
+  stateChanged(state, value){
     if (state === "receipt") {
       var enabled = value === true;
       this.setEnabled("closeSentButton", enabled);
@@ -303,23 +405,6 @@ function ComposeView(){
 }
 
 
-function ToolbarView(){
-  this.smartflow = {
-  };
-  this.viewInitialized = function(formatter){
-
-  };
-  this.viewEnabled = function(){
-  };
-  this.viewDisabled = function(){
-  };
-  this.actionPerformed = function(action){
-    console.info("actionPerformed", action);
-  };
-  this.stateChanged = function(state, value){
-
-  };
-}
 
 var config = {
   "LoginAction": "/api/login",
@@ -346,5 +431,4 @@ app.setDefaultLocale("en");
 app.addView(new LoginView());
 app.addView(new InboxView());
 app.addView(new ComposeView());
-//app.addView(new ToolbarView());
 app.start();
