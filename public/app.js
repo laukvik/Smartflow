@@ -88,7 +88,7 @@ function FindMovies2Action(){
     },
     "success": {
       "path": "/",
-      "state": "movies"
+      "state": "movies2"
     },
     "error": {
       "path": "/",
@@ -110,13 +110,28 @@ class InboxView {
             {
               "type": "GridList",
               "state": "movies",
-              "max": 50,
               "tooltip": "storyline",
               "url": "poster",
-              "base": "https://images-na.ssl-images-amazon.com/images/M/"
+              "base": "https://images-na.ssl-images-amazon.com/images/M/",
+              "sort": {
+                "match": "year",
+                "order": "asc"
+              },
+              "filter": [
+                {
+                  "match": "genres",
+                  "type": "contains",
+                  "value": "war"
+                }
+              ],
+              "paging":{
+                "size": 10,
+                "page": 0,
+              },
             },
             {
               "type": "Grid",
+              "hidden": "true",
               "components": [
                 {
                   "type": "Label",
@@ -137,22 +152,46 @@ class InboxView {
               "id": "inboxTable",
               "rowId": "id",
               "selectable": true,
-              "columns": [
+              "sort": {
+                  "match": "year",
+                  "order": "asc"
+              },
+              "filter": [
                 {
-                  "label": "From",
-                  "key" : "email"
-                },
-                {
-                  "label": "Subject",
-                  "key" : "subject"
-                },
-                {
-                  "label": "Date",
-                  "key" : "date",
-                  "format" : "DD.MM.YYYY hh:mm:ss"
+                  "match": "genres",
+                  "type": "contains",
+                  "value": "comedy"
                 }
               ],
-              "state": "emails"
+              "paging":{
+                "size": 10,
+                "page": 0,
+              },
+              "columns": [
+                {
+                  "label": "Year",
+                  "key" : "year"
+                },
+                {
+                  "label": "Title",
+                  "key" : "title"
+                },
+                {
+                  "label": "Genre",
+                  "key" : "genres"
+                },
+                {
+                  "label": "Story",
+                  "key" : "storyline"
+                },
+                {
+                  "label": "Released",
+                  "key": "releaseDate",
+                  "formats": "DD.MM.YYYY",
+                  "inputFormat": "YYYY-MM-DD"
+                }
+              ],
+              "state": "movies2"
             },
           ],
           "actions": [

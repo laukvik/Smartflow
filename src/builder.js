@@ -25,6 +25,9 @@ class ComponentBuilder{
     if (node === undefined) {
       console.info("Component not found", comp);
     } else {
+      if (comp.hidden == 'true') {
+        node.style.display = 'none';
+      }
       parentNode.appendChild(node);
     }
   }
@@ -37,6 +40,9 @@ class ComponentBuilder{
       if (node === undefined) {
         console.info("Component not found", comp);
       } else {
+        if (comp.hidden == 'true') {
+          node.style.display = 'none';
+        }
         parentNode.appendChild(node);
       }
     }
