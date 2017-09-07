@@ -238,7 +238,8 @@ function Smartflow() {
       "params": [],
       "from": this._path,
       "start": Date.now(),
-      "finish": undefined
+      "finish": undefined,
+      "commands": []
     };
   };
   this._runRemainingActions = function () {
@@ -253,6 +254,13 @@ function Smartflow() {
 
     // Event object
     var actionEvent = this._buildActionEvent(action);
+
+
+    if (!action.smartflow.commands) {
+      delete (actionEvent.commands)
+    } else {
+      actionEvent.commands = action.smartflow.commands;
+    }
 
     //
     action._smartflowStarted = new Date();
@@ -385,6 +393,7 @@ function Smartflow() {
         actionEvent.states = action.smartflow.states === undefined ? {} : action.smartflow.states;
         actionEvent.addStates = action.smartflow.addStates === undefined ? {} : action.smartflow.addStates;
         actionEvent.removeStates = action.smartflow.removeStates === undefined ? {} : action.smartflow.removeStates;
+
         this._fireActionPerformed(action, actionEvent);
       }
     } else {
@@ -412,6 +421,7 @@ function Smartflow() {
     // Remove states from collection
     if (actionEvent.removeStates) {
       for (var keyRemove in actionEvent.removeStates) {
+        // TODO - Remove states
         var entriesArray = actionEvent.removeStates[keyRemove];
 
       }
@@ -425,8 +435,22 @@ function Smartflow() {
       this.setPath(actionEvent.path);
     }
 
-    action._smartflowStarted = undefined;
     var ctrl = action._smartflowCaller;
+
+    if (actionEvent.commands) {
+      for (var y=0; y<ctrl.smartflow.componentInstances.length; y++) {
+        var component = ctrl.smartflow.componentInstances[ y ];
+        for (var z=0; z<actionEvent.commands.length; z++) {
+          var command = actionEvent.commands[ z ];
+          if (component.id == command.id) {
+            component.commandPerformed(command.command, command.value);
+          }
+        }
+      }
+    }
+
+    action._smartflowStarted = undefined;
+
     action._smartflowCaller = undefined;
     this._action = undefined;
 
@@ -436,6 +460,9 @@ function Smartflow() {
     }
 
     ctrl.actionPerformed(actionEvent);
+
+
+
     this._runRemainingActions();
   };
   this._findParams = function(pathString){

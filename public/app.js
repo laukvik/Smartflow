@@ -1,9 +1,22 @@
 function SelectAllAction(){
   this.smartflow = {
-    "components": [
+    "commands": [
       {
         "id": "inboxTable",
-        "selectedIndexes": [ 0, 2 ]
+        "command": "selection",
+        "value": [ 0, 2 ]
+      }
+    ]
+  }
+}
+
+function SelectNoneAction(){
+  this.smartflow = {
+    "commands": [
+      {
+        "id": "inboxTable",
+        "command": "selection",
+        "value": [  ]
       }
     ]
   }
@@ -13,7 +26,7 @@ function SelectAllAction(){
 function ClearEmailsAction(){
   this.smartflow = {
     "states": {
-      "emails": [
+      "movies": [
       ]
     }
   }
@@ -285,7 +298,7 @@ class InboxView {
   actionPerformed(action){
   };
   componentChanged(evt){
-    console.info("componentChanged: ", evt);
+    //console.info("componentChanged: ", evt);
   }
 }
 

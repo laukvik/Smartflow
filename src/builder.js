@@ -35,6 +35,7 @@ class ComponentBuilder{
     for (var x=0; x<components.length; x++) {
       var comp = components[x];
       var componentInstance = this._buildComponent(comp);
+      componentInstance.id = comp.id;
       this.ctrl.smartflow.componentInstances.push(componentInstance);
       var node = componentInstance.getNode();
       if (node === undefined) {

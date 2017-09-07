@@ -167,6 +167,25 @@ class Table {
   getNode(){
     return this.rootNode;
   }
+  commandPerformed(command, value){
+    console.info("commandPerformed: ", command, value);
+    var inputArr = this.bodyNode.getElementsByTagName("input");
+    for (var x=0; x<inputArr.length; x++) {
+      var inp = inputArr[ x ];
+      if (command == "selection") {
+        var selectArr = value;
+        var foundMatch = false;
+        for (var y=0; y<selectArr.length; y++) {
+          var selectIndex = selectArr[ y ];
+            if (selectIndex == x){
+              foundMatch = true;
+            }
+        }
+        inp.checked = foundMatch;
+      }
+
+    }
+  }
   stateChanged(state, value){
     console.info("Table.stateChanged: ", state, value);
     if (state === this.comp.state) {
