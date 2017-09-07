@@ -1,0 +1,80 @@
+
+.sf-label{
+  font-size: 12pt;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-weight: bold;
+  color: #555555;
+  display: block;
+  margin-bottom: 0.25em;
+}
+
+.sf-required:after {
+  content:" *";
+  color: #d80009;
+}
+
+
+
+.sf-checkbox,
+.sf-radio,
+.sf-pulldown,
+.sf-textfield{
+  font-size: 11pt;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  padding: 0.5em;
+}
+
+
+
+.sf-checkbox{
+
+}
+.sf-checkbox-option{
+  font-size: 12pt;
+  color: #555555;
+  margin-right: 1em;
+}
+.sf-checkbox-option-label{
+  margin-left: 0.25em;
+}
+
+.sf-radio{
+}
+.sf-radio-option{
+  font-size: 12pt;
+  color: #555555;
+  margin-right: 1em;
+}
+.sf-radio-option-label{
+  margin-left: 0.25em;
+}
+
+.sf-pulldown{
+}
+
+.sf-pulldown-select{
+  font-size: 12pt;
+  height: 2em;
+}
+
+
+.sf-textfield{
+}
+.sf-textfield-input{
+  font-size: 12pt;
+  width: 100%;
+  padding: 0.5em;
+  -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+  -moz-box-sizing: border-box;    /* Firefox, other Gecko */
+  box-sizing: border-box;         /* Opera/IE 8+ */
+}
+
+.sf-button{
+  padding: 0.5em 2em;
+  font-size: 12pt;
+  color: #555555;
+  border-radius: 0.25em;
+  background-color: #dddddd;
+}
+
+

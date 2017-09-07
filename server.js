@@ -73,6 +73,12 @@ const server = http.createServer((req, res) => {
       html(res, data);
     });
 
+  } else if (path === '/smartflow.css') {
+
+    fs.readFile('./public/smartflow.css' , (err, data) => {
+      css(res,data)
+    });
+
   } else if (path === '/smartflow.svg') {
     //const contentType = findMimeType(path);
 

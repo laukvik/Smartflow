@@ -2,19 +2,17 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <script src="https://material-components-web.appspot.com/assets/material-components-web.js"></script>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="smartflow.css">
+
+  <sscript src="https://material-components-web.appspot.com/assets/material-components-web.js"></sscript>
+  <slink rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
   <title>Smartflow</title>
-  <link
+  <slink
     rel="stylesheet"
     href="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css">
   <style>
-    body {
-      background-color: #aaaaaa;
-      padding: 2em;
-    }
-    label{
-      display: block;
+    body{
+      background-color: #dddddd;
     }
 
     .mdc-card{
@@ -35,6 +33,7 @@
   <script src="src/builder.js"></script>
   <script src="src/formatter.js"></script>
   <script src="src/smartflow.js"></script>
+
 </head>
 <body>
 
@@ -44,6 +43,48 @@
 
 
 
+
+
+  <div style="display:none; border: 1px solid black;">
+
+    <h2>Label</h2>
+    <div class="sf-label sf-required"><label>Name</label></div>
+
+    <div class="sf-checkbox">
+      <div class="sf-label">Checkbox</div>
+      <label class="sf-checkbox-option"><input type="checkbox"> Fish</label>
+      <label class="sf-checkbox-option"><input type="checkbox"> Fish</label>
+      <label class="sf-checkbox-option"><input type="checkbox"> Fish</label>
+    </div>
+
+    <div class="sf-radio">
+      <div class="sf-label">Radio</div>
+      <label class="sf-radio-option"><input type="radio"> Radio 1</label>
+      <label class="sf-radio-option"><input type="radio"> Radio 2</label>
+      <label class="sf-radio-option"><input type="radio"> Radio 3</label>
+    </div>
+
+    <div class="sf-pulldown">
+      <div class="sf-label">Pulldown</div>
+      <select class="sf-pulldown-select">
+        <optgroup label="Group">
+          <option>First</option>
+        </optgroup>
+      </select>
+    </div>
+
+    <div class="sf-textfield">
+      <div class="sf-label">Textfield</div>
+      <input placeholder="Email" class="sf-textfield-input"/>
+    </div>
+
+
+
+    <h2>Button</h2>
+    <button class="sf-button">Send</button>
+
+
+  </div>
 
 
 </body>

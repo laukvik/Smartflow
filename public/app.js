@@ -116,6 +116,63 @@ class InboxView {
       "path" : "/",
       "components": [
         {
+          "type": "Label",
+          "required": true,
+          "label": "Label"
+        },
+        {
+          "type": "Checkbox",
+          "label": "Checkbox",
+          "required": true,
+          "options": [
+            {"text": "Fish", "value": "0"},
+            {"text": "Eggs", "value": "1"},
+            {"text": "Milk", "value": "2"}
+          ]        },
+        {
+          "type": "Radio",
+          "label": "Radio",
+          "required": true,
+          "options": [
+            {"text": "Fish", "value": "0"},
+            {"text": "Eggs", "value": "1"},
+            {"text": "Milk", "value": "2"}
+          ]
+        },
+        {
+          "type": "Pulldown",
+          "label": "Pulldown",
+          "required": true,
+          "options": [
+            {"text": "Fish", "value": "0"},
+            {"text": "Eggs", "value": "1"},
+            {"text": "Milk", "value": "2"}
+          ]
+        }
+        ,
+        {
+          "type": "Textfield",
+          "label": "Textfield",
+          "required": true,
+          "value": "Textfield value",
+          "placeholder": "Placeholder here..."
+        },
+        {
+          "type": "Textfield",
+          "label": "Textarea",
+          "required": true,
+          "rows": 10,
+          "value": "Textfield value",
+          "placeholder": "Placeholder here..."
+        },
+        {
+          "type": "Button",
+          "label": "Button"
+        }
+
+      ],
+      "components2": [
+        {
           "type": "Card",
           "title": "Smartflow",
           "subtitle": "Application flow API for JavaScript",
