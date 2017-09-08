@@ -29,6 +29,9 @@
 .sf-checkbox{
 
 }
+.sf-checkbox-vertical .sf-checkbox-option{
+  display: block;
+}
 .sf-checkbox-option{
   font-size: 12pt;
   color: #555555;
@@ -39,6 +42,9 @@
 }
 
 .sf-radio{
+}
+.sf-radio-vertical .sf-radio-option{
+  display: block;
 }
 .sf-radio-option{
   font-size: 12pt;

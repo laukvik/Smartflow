@@ -25,11 +25,18 @@ class SmartflowComponent{
   getID(){
     return this.rootNode.getAttribute("id");
   }
-  buildRoot(name){
+  setLabel(text){
+    this.label.innerText = text;
+  }
+  getLabel(){
+    return this.label.innerText;
+  }
+  buildRoot(name, required){
     this.setElement(document.createElement("div"));
     this.rootNode.setAttribute("class", name);
     var label = document.createElement("div");
-    label.setAttribute("class", "sf-label" + (this.comp.required == true ? " sf-required" : ""));
+    this.label = label;
+    label.setAttribute("class", "sf-label" + (required ? " sf-required" : ""));
     label.innerText = this.comp.label;
     this.rootNode.appendChild(label);
   }
@@ -40,13 +47,24 @@ class SmartflowComponent{
     var func = eval(action);
     this.smartflow.runAction( new func(), this.getView());
   }
+  setReqiured(isRequired){
+    this.label.setAttribute("class", "sf-label" + (isRequired ? " sf-required" : ""));
+  }
 }
 
 class Checkbox extends SmartflowComponent{
   constructor(comp, ctrl, builder){
     super(comp, ctrl, builder);
-    this.buildRoot("sf-checkbox");
+    this.buildRoot("sf-checkbox", comp.required);
     this.setOptions(comp.options);
+    this.setVertical(false);
+  }
+  setVertical(isVertical){
+    this.vertical = isVertical;
+    this.getElement().setAttribute("class", "sf-checkbox " + (isVertical ? "sf-checkbox-vertical" : "sf-checkbox-horisontal") );
+  }
+  isVertical(){
+    return this.vertical;
   }
   setOptions(items){
     if (Array.isArray(items)) {
@@ -87,16 +105,25 @@ class Checkbox extends SmartflowComponent{
   }
 }
 
-class Radio  extends SmartflowComponent{
+class Radio extends SmartflowComponent{
   constructor(comp, ctrl, builder){
     super(comp, ctrl, builder);
-    this.buildRoot("sf-radio");
-    this.setOptions(comp.options)
+    this.buildRoot("sf-radio", comp.required);
+    this.optionsNode = document.createElement("div");
+    this.setOptions(comp.options);
+    this.setVertical(true);
+  }
+  setVertical(isVertical){
+    this.vertical = isVertical;
+    this.getElement().setAttribute("class", "sf-radio " + (isVertical ? "sf-radio-vertical" : "sf-radio-horisontal") );
+  }
+  isVertical(){
+    return this.vertical;
   }
   setOptions(items) {
     if (Array.isArray(items)) {
       this.inputs = [];
-      this.getElement().innerHTML = "";
+      this.optionsNode.innerHTML = "";
       var gui = "sf-radio-" + Math.round(100000);
       for (var x=0; x<items.length; x++) {
         var item = items[ x ];
@@ -104,7 +131,7 @@ class Radio  extends SmartflowComponent{
         var itemValue = item.value;
         var span = document.createElement("label");
         span.setAttribute("class", "sf-radio-option");
-        this.rootNode.appendChild(span);
+        this.getElement().appendChild(span);
         var input = document.createElement("input");
         span.appendChild(input);
         input.setAttribute("type", "radio");
@@ -137,7 +164,7 @@ class Radio  extends SmartflowComponent{
 class Pulldown extends SmartflowComponent {
   constructor(comp, ctrl, builder){
     super(comp, ctrl, builder);
-    this.buildRoot("sf-pulldown");
+    this.buildRoot("sf-pulldown", comp.required);
 
     this.select = document.createElement("select");
     this.select.setAttribute("class", "sf-pulldown-select");
@@ -157,6 +184,10 @@ class Pulldown extends SmartflowComponent {
     while (this.select.firstChild) {
       this.select.removeChild(this.select.firstChild);
     }
+    var optionEmpty = document.createElement("option");
+    optionEmpty.value = "";
+    this.select.appendChild(optionEmpty);
+
     for (var x=0; x<items.length; x++) {
       var item = items[ x ];
       var itemText = item.text;
@@ -174,8 +205,8 @@ class Pulldown extends SmartflowComponent {
 class Textfield extends SmartflowComponent {
   constructor(comp, ctrl, builder){
     super(comp, ctrl, builder);
-    this.buildRoot("sf-textfield");
-
+    this.buildRoot("sf-textfield", comp.required);
+    this.inputType = comp.rows ? 1 : 0;
     if (comp.rows){
       this.input = document.createElement("textarea");
       this.input.setAttribute("rows", comp.rows);
@@ -191,6 +222,28 @@ class Textfield extends SmartflowComponent {
     this.input.addEventListener("keyup", function (scope) {
       self.fireComponentChanged("value", self.input.value);
     });
+  }
+  setEnabled(isEnabled){
+    if (isEnabled) {
+      this.input.removeAttribute("disabled");
+    } else {
+      this.input.setAttribute("disabled", "true");
+    }
+  }
+  isEnabled(){
+    return this.getElement().hasAttribute("disabled");
+  }
+  setPlaceholder(text){
+    this.input.setAttribute("placeholder", text);
+  }
+  getPlaceholder(){
+    return this.input.getAttribute("placeholder");
+  }
+  setText(text){
+    this.input.value = text;
+  }
+  getText(){
+    return this.input.value;
   }
   stateChanged(stateEvent){
   }

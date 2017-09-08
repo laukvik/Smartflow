@@ -144,9 +144,10 @@ class InboxView {
           "label": "Pulldown",
           "required": true,
           "options": [
-            {"text": "Fish", "value": "0"},
-            {"text": "Eggs", "value": "1"},
-            {"text": "Milk", "value": "2"}
+            {"text": "Big Mac", "value": "bigMac", "group": "food"},
+            {"text": "Whopper", "value": "whopper", "group": "food"},
+            {"text": "Coke", "value": "coke", "group": "drink"},
+            {"text": "Sprite", "value": "sprite", "group": "drink"}
           ]
         }
         ,
