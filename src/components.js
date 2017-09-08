@@ -112,6 +112,7 @@ class Radio  extends SmartflowComponent{
         text.innerText = itemText;
 
         var inputs = this.inputs;
+        var self = this;
         input.addEventListener("change", function (evt) {
           self.fireComponentChanged("selection", {
             "value": evt.srcElement.value,
@@ -134,17 +135,30 @@ class Pulldown extends SmartflowComponent {
     super(comp, ctrl, builder);
     this.buildRoot("sf-pulldown");
 
-    var select = document.createElement("select");
-    select.setAttribute("class", "sf-pulldown-select");
-    this.rootNode.appendChild(select);
+    this.select = document.createElement("select");
+    this.select.setAttribute("class", "sf-pulldown-select");
+    this.rootNode.appendChild(this.select);
 
-    var items = comp.options;
+    var self = this;
+    this.select.addEventListener("change", function (evt) {
+      self.fireComponentChanged("selection", {
+        "value": evt.srcElement.value,
+        "selected": evt.srcElement.selectedIndex
+      });
+    });
+
+    this.setOptions(comp.options);
+  }
+  setOptions(items){
+    while (this.select.firstChild) {
+      this.select.removeChild(this.select.firstChild);
+    }
     for (var x=0; x<items.length; x++) {
       var item = items[ x ];
       var itemText = item.text;
       var itemValue = item.value;
       var option = document.createElement("option");
-      select.appendChild(option);
+      this.select.appendChild(option);
       option.setAttribute("value", itemValue);
       option.innerText = itemText;
     }

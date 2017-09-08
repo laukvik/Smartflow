@@ -15,26 +15,12 @@
  * - date formatting
  * - no dependencies!
  *
- * TODO - enable local storage
  * TODO - documentation tool available
  * TODO - path is not required - go to oneself
  * TODO - get is default method
- * TODO - features - switches for UI elements (toggles display on/off)
  * TODO - support number formats
  * TODO - support for application/json;utf-8 etc
  * TODO - Server Action må returnere headere
- * TODO - Material: Components, Child components, Custom components
- * TODO - Custom component - OK
- * TODO - Textfield component
- * TODO - textarea component
- * TODO - button component
- * TODO - radio component
- * TODO - dialog component
- * TODO - tab component
- * TODO - pulldown component
- * TODO - grid component
- * TODO - toolbar component
- * TODO - table component
  *
  *
  * @constructor
