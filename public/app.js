@@ -355,7 +355,7 @@ class InboxView {
   actionPerformed(action){
   };
   componentChanged(evt){
-    //console.info("componentChanged: ", evt);
+    console.info("InboxView.componentChanged: ", evt);
   }
 }
 

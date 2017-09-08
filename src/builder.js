@@ -8,9 +8,10 @@
  * @constructor
  */
 class ComponentBuilder{
-  constructor(ctrl, formatter){
+  constructor(ctrl, formatter, smartflow){
     this.ctrl = ctrl;
     this.formatter = formatter;
+    this.smartflow = smartflow;
   }
   buildComponents() {
     var ctrlID = this.ctrl.constructor.name;
@@ -21,7 +22,7 @@ class ComponentBuilder{
   buildChildNode(parentNode, comp) {
     var componentInstance = this._buildComponent(comp);
     this.ctrl.smartflow.componentInstances.push(componentInstance);
-    var node = componentInstance.getNode();
+    var node = componentInstance.getElement();
     if (node === undefined) {
       console.info("Component not found", comp);
     } else {
@@ -37,7 +38,7 @@ class ComponentBuilder{
       var componentInstance = this._buildComponent(comp);
       componentInstance.id = comp.id;
       this.ctrl.smartflow.componentInstances.push(componentInstance);
-      var node = componentInstance.getNode();
+      var node = componentInstance.getElement();
       if (node === undefined) {
         console.info("Component not found", comp);
       } else {
@@ -52,7 +53,9 @@ class ComponentBuilder{
     //var func = window[ comp.type ]; // Vanilla
     var func = eval(comp.type); // ES
     if (func){
-      return new func(comp, this.ctrl, this);
+      var f = new func(comp, this.ctrl, this);
+      f.setSmartflow(this.smartflow);
+      return f;
     } else {
       console.info("Component not found: ", comp.type);
       return undefined;

@@ -1,8 +1,17 @@
 class SmartflowComponent{
   constructor(comp, ctrl, builder){
     this.comp = comp;
-    this.ctrl = ctrl;
+    this.setView(ctrl);
     this.builder = builder;
+  }
+  setView(viewController){
+    this.ctrl = viewController;
+  }
+  getView(){
+    return this.ctrl;
+  }
+  setSmartflow(smartflow){
+    this.smartflow = smartflow;
   }
   setElement( node ){
     this.rootNode = node;
@@ -24,33 +33,51 @@ class SmartflowComponent{
     label.innerText = this.comp.label;
     this.rootNode.appendChild(label);
   }
+  fireComponentChanged(property, value){
+    this.smartflow.fireComponentChanged(this, property, value, this.ctrl);
+  }
 }
 
 class Checkbox extends SmartflowComponent{
   constructor(comp, ctrl, builder){
     super(comp, ctrl, builder);
     this.buildRoot("sf-checkbox");
-
-    var items = comp.options;
-    for (var x=0; x<items.length; x++) {
-      var item = items[ x ];
-      var itemText = item.text;
-      var itemValue = item.value;
-      var span = document.createElement("label");
-      span.setAttribute("class", "sf-checkbox-option");
-      this.rootNode.appendChild(span);
-      var input = document.createElement("input");
-      span.appendChild(input);
-      input.setAttribute("type", "checkbox");
-      input.setAttribute("value", itemValue);
-      var text = document.createElement("span");
-      span.appendChild(text);
-      text.setAttribute("class", "sf-checkbox-option-label");
-      text.innerText = itemText;
-    }
+    this.setOptions(comp.options);
   }
-  getNode(){
-    return this.rootNode;
+  setOptions(items){
+    if (Array.isArray(items)) {
+      this.inputs = [];
+      this.getElement().innerHTML = "";
+      for (var x=0; x<items.length; x++) {
+        var item = items[ x ];
+        var itemText = item.text;
+        var itemValue = item.value;
+        var span = document.createElement("label");
+        span.setAttribute("class", "sf-checkbox-option");
+        this.rootNode.appendChild(span);
+        var input = document.createElement("input");
+        this.inputs.push(input);
+        span.appendChild(input);
+        input.setAttribute("type", "checkbox");
+        input.setAttribute("value", itemValue);
+        var text = document.createElement("span");
+        span.appendChild(text);
+        text.setAttribute("class", "sf-checkbox-option-label");
+        text.innerText = itemText;
+        var self = this;
+        var inputs = this.inputs;
+        input.addEventListener("change", function (evt) {
+          self.fireComponentChanged("selection", {
+            "value": evt.srcElement.value,
+            "selected": inputs.filter(function(inp){ return inp.checked}).map(function(inp, index){
+              return index;
+            })
+          });
+        });
+      }
+    } else {
+      console.warn("Checkbox: Not an array: ", items)
+    }
   }
   stateChanged(stateEvent){
   }
@@ -60,30 +87,43 @@ class Radio  extends SmartflowComponent{
   constructor(comp, ctrl, builder){
     super(comp, ctrl, builder);
     this.buildRoot("sf-radio");
-
-    var gui = "sf-radio-" + Math.round(100000);
-
-    var items = comp.options;
-    for (var x=0; x<items.length; x++) {
-      var item = items[ x ];
-      var itemText = item.text;
-      var itemValue = item.value;
-      var span = document.createElement("label");
-      span.setAttribute("class", "sf-radio-option");
-      this.rootNode.appendChild(span);
-      var input = document.createElement("input");
-      span.appendChild(input);
-      input.setAttribute("type", "radio");
-      input.setAttribute("value", itemValue);
-      input.setAttribute("name", gui);
-      var text = document.createElement("span");
-      span.appendChild(text);
-      text.setAttribute("class", "sf-radio-option-label");
-      text.innerText = itemText;
-    }
+    this.setOptions(comp.options)
   }
-  getNode(){
-    return this.rootNode;
+  setOptions(items) {
+    if (Array.isArray(items)) {
+      this.inputs = [];
+      this.getElement().innerHTML = "";
+      var gui = "sf-radio-" + Math.round(100000);
+      for (var x=0; x<items.length; x++) {
+        var item = items[ x ];
+        var itemText = item.text;
+        var itemValue = item.value;
+        var span = document.createElement("label");
+        span.setAttribute("class", "sf-radio-option");
+        this.rootNode.appendChild(span);
+        var input = document.createElement("input");
+        span.appendChild(input);
+        input.setAttribute("type", "radio");
+        input.setAttribute("value", itemValue);
+        input.setAttribute("name", gui);
+        var text = document.createElement("span");
+        span.appendChild(text);
+        text.setAttribute("class", "sf-radio-option-label");
+        text.innerText = itemText;
+
+        var inputs = this.inputs;
+        input.addEventListener("change", function (evt) {
+          self.fireComponentChanged("selection", {
+            "value": evt.srcElement.value,
+            "selected": inputs.filter(function(inp){ return inp.checked}).map(function(inp, index){
+              return index;
+            })
+          });
+        });
+      }
+    } else {
+      console.warn("Radio.setOptions: ", items);
+    }
   }
   stateChanged(stateEvent){
   }
@@ -109,9 +149,6 @@ class Pulldown extends SmartflowComponent {
       option.innerText = itemText;
     }
   }
-  getNode(){
-    return this.rootNode;
-  }
   stateChanged(stateEvent){
   }
 }
@@ -121,31 +158,29 @@ class Textfield extends SmartflowComponent {
     super(comp, ctrl, builder);
     this.buildRoot("sf-textfield");
 
-    var input;
     if (comp.rows){
-      input = document.createElement("textarea");
-      input.setAttribute("rows", comp.rows);
-      input.setAttribute("class", "sf-textfield-input");
+      this.input = document.createElement("textarea");
+      this.input.setAttribute("rows", comp.rows);
+      this.input.setAttribute("class", "sf-textfield-input");
     } else {
-      input = document.createElement("input");
-      input.setAttribute("type", "text");
-      input.setAttribute("class", "sf-textfield-input");
+      this.input = document.createElement("input");
+      this.input.setAttribute("type", "text");
+      this.input.setAttribute("class", "sf-textfield-input");
     }
-    input.setAttribute("placeholder", comp.placeholder);
-    this.rootNode.appendChild(input);
-
-
-
-  }
-  getNode(){
-    return this.rootNode;
+    this.input.setAttribute("placeholder", comp.placeholder);
+    this.rootNode.appendChild(this.input);
+    var self = this;
+    this.input.addEventListener("keyup", function (scope) {
+      self.fireComponentChanged("value", self.input.value);
+    });
   }
   stateChanged(stateEvent){
   }
 }
 
-class Button {
+class Button  extends SmartflowComponent{
   constructor(comp, ctrl, builder){
+    super();
     var buttonNode = document.createElement("button");
     buttonNode.setAttribute("id", comp.id);
     buttonNode.setAttribute("class", "sf-button");
@@ -167,9 +202,6 @@ class Button {
       }
     });
     this.rootNode = buttonNode;
-  }
-  getNode(){
-    return this.rootNode;
   }
   stateChanged(stateEvent){
     console.info("Button.stateChanged: ", stateEvent);
@@ -192,9 +224,6 @@ class Label extends SmartflowComponent{
   getText(){
     return this.rootNode.innerText;
   }
-  getNode(){
-    return this.rootNode;
-  }
   stateChanged(stateEvent){
     console.info("Label.stateChanged: ", stateEvent);
   }
@@ -202,273 +231,12 @@ class Label extends SmartflowComponent{
 
 
 
-class Textfield2{
-  constructor(comp, ctrl, builder){
-    var node = document.createElement("div");
-
-    var labelNode = document.createElement("label");
-    labelNode.setAttribute("for", "my-textfield");
-    labelNode.setAttribute("class", "mdc-label");
-    labelNode.innerText = comp.label;
-
-    var divNode = document.createElement("div");
-    divNode.setAttribute("class", "mdc-textfield");
-
-    var inputNode = document.createElement("input");
-    inputNode.setAttribute("id", "my-textfield");
-    inputNode.setAttribute("type", "text");
-    inputNode.setAttribute("placeholder", comp.placeholder);
-    inputNode.setAttribute("class", "mdc-textfield__input");
-
-    node.appendChild(labelNode);
-    node.appendChild(divNode);
-    divNode.appendChild(inputNode);
-
-    inputNode.addEventListener("keyup", function () {
-      ctrl.componentChanged(
-        {
-          "component": this,
-          "event": "keyup"
-        }
-      );
-    });
-    this.rootNode = node;
-  }
-  getNode(){
-    return this.rootNode;
-  }
-  stateChanged(stateEvent){
-    console.info("Textfield.stateChanged: ", stateEvent);
-  }
-}
 
 
 
 
-class SmartflowComponent{
-  constructor(comp, ctrl, builder){
-    this.comp = comp;
-    this.ctrl = ctrl;
-    this.builder = builder;
-  }
-  buildRoot(name){
-    this.rootNode = document.createElement("div");
-    this.rootNode.setAttribute("class", name);
-    var label = document.createElement("div");
-    label.setAttribute("class", "sf-label" + (this.comp.required == true ? " sf-required" : ""));
-    label.innerText = this.comp.label;
-    this.rootNode.appendChild(label);
-  }
-}
-
-class Checkbox extends SmartflowComponent{
-  constructor(comp, ctrl, builder){
-    super(comp, ctrl, builder);
-    this.buildRoot("sf-checkbox");
-
-    var items = comp.options;
-    for (var x=0; x<items.length; x++) {
-      var item = items[ x ];
-      var itemText = item.text;
-      var itemValue = item.value;
-      var span = document.createElement("label");
-      span.setAttribute("class", "sf-checkbox-option");
-      this.rootNode.appendChild(span);
-      var input = document.createElement("input");
-      span.appendChild(input);
-      input.setAttribute("type", "checkbox");
-      input.setAttribute("value", itemValue);
-      var text = document.createElement("span");
-      span.appendChild(text);
-      text.setAttribute("class", "sf-checkbox-option-label");
-      text.innerText = itemText;
-    }
-  }
-  getNode(){
-    return this.rootNode;
-  }
-  stateChanged(stateEvent){
-  }
-}
-
-class Radio  extends SmartflowComponent{
-  constructor(comp, ctrl, builder){
-    super(comp, ctrl, builder);
-    this.buildRoot("sf-radio");
-
-    var gui = "sf-radio-" + Math.round(100000);
-
-    var items = comp.options;
-    for (var x=0; x<items.length; x++) {
-      var item = items[ x ];
-      var itemText = item.text;
-      var itemValue = item.value;
-      var span = document.createElement("label");
-      span.setAttribute("class", "sf-radio-option");
-      this.rootNode.appendChild(span);
-      var input = document.createElement("input");
-      span.appendChild(input);
-      input.setAttribute("type", "radio");
-      input.setAttribute("value", itemValue);
-      input.setAttribute("name", gui);
-      var text = document.createElement("span");
-      span.appendChild(text);
-      text.setAttribute("class", "sf-radio-option-label");
-      text.innerText = itemText;
-    }
-  }
-  getNode(){
-    return this.rootNode;
-  }
-  stateChanged(stateEvent){
-  }
-}
-
-class Pulldown extends SmartflowComponent {
-  constructor(comp, ctrl, builder){
-    super(comp, ctrl, builder);
-    this.buildRoot("sf-pulldown");
-
-    var select = document.createElement("select");
-    select.setAttribute("class", "sf-pulldown-select");
-    this.rootNode.appendChild(select);
-
-    var items = comp.options;
-    for (var x=0; x<items.length; x++) {
-      var item = items[ x ];
-      var itemText = item.text;
-      var itemValue = item.value;
-      var option = document.createElement("option");
-      select.appendChild(option);
-      option.setAttribute("value", itemValue);
-      option.innerText = itemText;
-    }
-  }
-  getNode(){
-    return this.rootNode;
-  }
-  stateChanged(stateEvent){
-  }
-}
-
-class Textfield extends SmartflowComponent {
-  constructor(comp, ctrl, builder){
-    super(comp, ctrl, builder);
-    this.buildRoot("sf-textfield");
-
-    var input;
-    if (comp.rows){
-      input = document.createElement("textarea");
-      input.setAttribute("rows", comp.rows);
-      input.setAttribute("class", "sf-textfield-input");
-    } else {
-      input = document.createElement("input");
-      input.setAttribute("type", "text");
-      input.setAttribute("class", "sf-textfield-input");
-    }
-    input.setAttribute("placeholder", comp.placeholder);
-    this.rootNode.appendChild(input);
 
 
-
-  }
-  getNode(){
-    return this.rootNode;
-  }
-  stateChanged(stateEvent){
-  }
-}
-
-class Button {
-  constructor(comp, ctrl, builder){
-    var buttonNode = document.createElement("button");
-    buttonNode.setAttribute("id", comp.id);
-    buttonNode.setAttribute("class", "sf-button");
-    buttonNode.innerText = comp.label;
-    buttonNode.addEventListener("click", function () {
-      if (comp.action){
-        var func = window[ comp.action ];
-        if (func){
-          ctrl.runSmartflow(new func());
-        }
-      }
-      if (ctrl.componentChanged) {
-        ctrl.componentChanged(
-          {
-            "component": this,
-            "event": "click"
-          }
-        );
-      }
-    });
-    this.rootNode = buttonNode;
-  }
-  getNode(){
-    return this.rootNode;
-  }
-  stateChanged(stateEvent){
-    console.info("Button.stateChanged: ", stateEvent);
-  }
-}
-
-
-
-class Label {
-  constructor(comp, ctrl, builder){
-    this.rootNode = document.createElement("label");
-    this.rootNode.setAttribute("id", comp.id);
-    this.rootNode.setAttribute("class", "sf-label" + (comp.required == true ? " sf-required" : ""));
-    this.rootNode.innerText = comp.label;
-  }
-  getNode(){
-    return this.rootNode;
-  }
-  stateChanged(stateEvent){
-    console.info("Label.stateChanged: ", stateEvent);
-  }
-}
-
-
-
-class Textfield2{
-  constructor(comp, ctrl, builder){
-    var node = document.createElement("div");
-
-    var labelNode = document.createElement("label");
-    labelNode.setAttribute("for", "my-textfield");
-    labelNode.setAttribute("class", "mdc-label");
-    labelNode.innerText = comp.label;
-
-    var divNode = document.createElement("div");
-    divNode.setAttribute("class", "mdc-textfield");
-
-    var inputNode = document.createElement("input");
-    inputNode.setAttribute("id", "my-textfield");
-    inputNode.setAttribute("type", "text");
-    inputNode.setAttribute("placeholder", comp.placeholder);
-    inputNode.setAttribute("class", "mdc-textfield__input");
-
-    node.appendChild(labelNode);
-    node.appendChild(divNode);
-    divNode.appendChild(inputNode);
-
-    inputNode.addEventListener("keyup", function () {
-      ctrl.componentChanged(
-        {
-          "component": this,
-          "event": "keyup"
-        }
-      );
-    });
-    this.rootNode = node;
-  }
-  getNode(){
-    return this.rootNode;
-  }
-  stateChanged(stateEvent){
-    console.info("Textfield.stateChanged: ", stateEvent);
-  }
-}
 
 
 

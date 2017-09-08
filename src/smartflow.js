@@ -45,6 +45,16 @@ function Smartflow() {
   this._actionQueue = [];
   this._locales = [];
   this._localeDefault = undefined;
+  this.fireComponentChanged = function(component, property, value, view) {
+    var componentEvent = {
+      "component": component,
+      "property" : property,
+      "value" : value,
+      "view" : view
+    };
+    //console.info("Smartflow.fireComponentChanged: ", componentEvent);
+    view.componentChanged(componentEvent);
+  }
   this.isAction = function(action){
     if (action === undefined) {
       return false;
