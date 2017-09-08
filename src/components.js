@@ -36,6 +36,10 @@ class SmartflowComponent{
   fireComponentChanged(property, value){
     this.smartflow.fireComponentChanged(this, property, value, this.ctrl);
   }
+  fireAction(action){
+    var func = eval(action);
+    this.smartflow.runAction( new func(), this.getView());
+  }
 }
 
 class Checkbox extends SmartflowComponent{
@@ -192,30 +196,32 @@ class Textfield extends SmartflowComponent {
   }
 }
 
-class Button  extends SmartflowComponent{
+class Button extends SmartflowComponent{
   constructor(comp, ctrl, builder){
-    super();
+    super(comp, ctrl, builder);
     var buttonNode = document.createElement("button");
     buttonNode.setAttribute("id", comp.id);
     buttonNode.setAttribute("class", "sf-button");
-    buttonNode.innerText = comp.label;
+    this.action = comp.action;
+    this.setElement(buttonNode);
+    this.setText(comp.label);
+    var self = this;
     buttonNode.addEventListener("click", function () {
-      if (comp.action){
-        var func = window[ comp.action ];
-        if (func){
-          ctrl.runSmartflow(new func());
-        }
-      }
-      if (ctrl.componentChanged) {
-        ctrl.componentChanged(
-          {
-            "component": this,
-            "event": "click"
-          }
-        );
-      }
+      self.fireAction(self.action);
     });
-    this.rootNode = buttonNode;
+  }
+  setEnabled(isEnabled){
+    if (isEnabled) {
+      this.getElement().removeAttribute("disabled");
+    } else {
+      this.getElement().setAttribute("disabled", "true");
+    }
+  }
+  setText(text) {
+    this.getElement().innerText = text;
+  }
+  getText(){
+    return this.getElement().innerText;
   }
   stateChanged(stateEvent){
     console.info("Button.stateChanged: ", stateEvent);

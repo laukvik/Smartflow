@@ -167,7 +167,8 @@ class InboxView {
         },
         {
           "type": "Button",
-          "label": "Button"
+          "label": "Button",
+          "action": "FindMoviesAction"
         }
 
       ],
@@ -352,7 +353,8 @@ class InboxView {
   };
   stateChanged(state, value){
   };
-  actionPerformed(action){
+  actionPerformed(evt){
+    console.info("InboxView.actionPerformed: ", evt);
   };
   componentChanged(evt){
     console.info("InboxView.componentChanged: ", evt);
