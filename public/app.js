@@ -1,3 +1,27 @@
+function StartAction() {
+  this.smartflow = {
+    "states": {
+      "checkboxes": [
+        {"text": "Fish", "value": "0"},
+        {"text": "Eggs", "value": "1"},
+        {"text": "Milk", "value": "2"}
+      ],
+      "radios": [
+        {"text": "Big Mac", "value": "bigMac", "group": "food"},
+        {"text": "Whopper", "value": "whopper", "group": "food"},
+        {"text": "Coke", "value": "coke", "group": "drink"},
+        {"text": "Sprite", "value": "sprite", "group": "drink"}
+      ],
+      "pulldown": [
+        {"text": "Big Mac", "value": "bigMac", "group": "food"},
+        {"text": "Whopper", "value": "whopper", "group": "food"},
+        {"text": "Coke", "value": "coke", "group": "drink"},
+        {"text": "Sprite", "value": "sprite", "group": "drink"}
+      ]
+    }
+  }
+}
+
 function SelectAllAction() {
   this.smartflow = {
     "commands": [
@@ -121,36 +145,46 @@ class InboxView {
               "type": "Checkbox",
               "label": "Checkbox",
               "required": true,
+              "optionsState": "checkboxes",
+              "selected": [
+                "0", "2"
+              ],
               "options": [
                 {"text": "Fish", "value": "0"},
                 {"text": "Eggs", "value": "1"},
                 {"text": "Milk", "value": "2"}
               ],
-              "col-md": "6"
+              "col-md": "6",
+              "col-lg": "4"
             },
             {
               "type": "Radio",
               "label": "Radio",
               "required": true,
               "vertical": "false",
+              "selected": "1",
               "options": [
                 {"text": "Fish", "value": "0"},
                 {"text": "Eggs", "value": "1"},
                 {"text": "Milk", "value": "2"}
               ],
-              "col-md": "6"
+              "col-md": "6",
+              "col-lg": "4"
             },
             {
               "type": "Pulldown",
               "label": "Pulldown",
               "required": true,
+              "selected": "coke",
+              "enabled": false,
               "options": [
                 {"text": "Big Mac", "value": "bigMac", "group": "food"},
                 {"text": "Whopper", "value": "whopper", "group": "food"},
                 {"text": "Coke", "value": "coke", "group": "drink"},
                 {"text": "Sprite", "value": "sprite", "group": "drink"}
               ],
-              "col-md": "6"
+              "col-md": "6",
+              "col-lg": "4"
             }
             ,
             {
@@ -159,7 +193,8 @@ class InboxView {
               "required": true,
               "value": "Textfield value",
               "placeholder": "Placeholder here...",
-              "col-md": "6"
+              "col-md": "6",
+              "col-lg": "12"
             },
             {
               "type": "Textfield",
@@ -357,6 +392,7 @@ class InboxView {
   };
 
   viewEnabled() {
+    this.runSmartflow(new StartAction());
   };
 
   viewDisabled() {

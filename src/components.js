@@ -62,6 +62,7 @@ class Checkbox extends SmartflowComponent{
     this.buildRootWithLabel("sf-checkbox", comp.required);
     this.optionsNode = document.createElement("div");
     this.setOptions(comp.options);
+    this.setSelected(comp.selected);
   }
   setVertical(isVertical){
     this.vertical = isVertical;
@@ -69,6 +70,24 @@ class Checkbox extends SmartflowComponent{
   }
   isVertical(){
     return this.vertical;
+  }
+  getSelected(){
+    this.inputs.filter(function(inp){ return inp.checked}).map(function(inp, index){
+      return index;
+    })
+  }
+  setSelected(selected){
+    for (var x = 0; x<this.inputs.length; x++) {
+      var inp = this.inputs[ x ];
+      var found = false;
+      for (var y=0; y<selected.length; y++) {
+        var val = selected[ y ];
+        if (inp.value == val) {
+          found = true;
+        }
+      }
+      inp.checked = found;
+    }
   }
   setOptions(items){
     if (Array.isArray(items)) {
@@ -116,6 +135,13 @@ class Radio extends SmartflowComponent{
     this.optionsNode = document.createElement("div");
     this.setOptions(comp.options);
     //this.setVertical(comp.vertical);
+    this.setSelected(comp.selected);
+  }
+  setSelected(selected){
+    for (var x = 0; x<this.inputs.length; x++) {
+      var inp = this.inputs[ x ];
+      inp.checked = inp.value == selected;
+    }
   }
   setVertical(isVertical){
     this.vertical = isVertical;
@@ -137,6 +163,7 @@ class Radio extends SmartflowComponent{
         span.setAttribute("class", "sf-radio-option");
         this.getElement().appendChild(span);
         var input = document.createElement("input");
+        this.inputs.push(input);
         span.appendChild(input);
         input.setAttribute("type", "radio");
         input.setAttribute("value", itemValue);
@@ -183,6 +210,18 @@ class Pulldown extends SmartflowComponent {
     });
 
     this.setOptions(comp.options);
+    this.setSelected(comp.selected);
+    this.setEnabled(false);
+  }
+  setEnabled(isEnabled){
+    if (isEnabled) {
+      this.select.removeAttribute("disabled");
+    } else {
+      this.select.setAttribute("disabled", "true");
+    }
+  }
+  isEnabled(){
+    return !this.select.hasAttribute("disabled");
   }
   setOptions(items){
     while (this.select.firstChild) {
@@ -200,6 +239,12 @@ class Pulldown extends SmartflowComponent {
       this.select.appendChild(option);
       option.setAttribute("value", itemValue);
       option.innerText = itemText;
+    }
+  }
+  setSelected(selected){
+    for (var x = 0; x<this.select.options.length; x++) {
+      var opt = this.select.options[ x ];
+      opt.selected = opt.value == selected;
     }
   }
   stateChanged(stateEvent){
@@ -223,9 +268,10 @@ class Textfield extends SmartflowComponent {
     this.input.setAttribute("placeholder", comp.placeholder);
     this.rootNode.appendChild(this.input);
     var self = this;
-    this.input.addEventListener("keyup", function (scope) {
+    this.input.addEventListener("keyup", function (evt) {
       self.fireComponentChanged("value", self.input.value);
     });
+    this.setText(comp.value);
   }
   setEnabled(isEnabled){
     if (isEnabled) {
@@ -235,7 +281,7 @@ class Textfield extends SmartflowComponent {
     }
   }
   isEnabled(){
-    return this.getElement().hasAttribute("disabled");
+    return !this.input.hasAttribute("disabled");
   }
   setPlaceholder(text){
     this.input.setAttribute("placeholder", text);
