@@ -1,5 +1,4 @@
-export class Collections {
-
+class Collections {
   constructor(component) {
     if (component.sort) {
       this.sortMatch = component.sort.match;
