@@ -1,6 +1,6 @@
 function StartAction() {
   this.smartflow = {
-    "states": {
+    "statess": {
       "checkboxes": [
         {"text": "Fish2", "value": "0"},
         {"text": "Eggs2", "value": "1"},
@@ -35,8 +35,8 @@ function StartAction() {
       "pulldownRequired": false,
       "pulldownLabel": "Pulldown2",
 
-      "textfield": "Textfield2",
-      "textfieldEnabled": false,
+      "textfield": "",
+      "textfieldEnabled": true,
       "textfieldRequired": false,
       "textfieldLabel": "Textfield2",
 
@@ -107,7 +107,6 @@ class InboxView {
                 "required": "radioRequired",
                 "label": "radioLabel"
               },
-              "selected": "1",
               "options": [
                 {"text": "Fish", "value": "0"},
                 {"text": "Eggs", "value": "1"},
@@ -121,7 +120,7 @@ class InboxView {
               "label": "Pulldown",
               "required": true,
               "selected": "coke",
-              "enabled": false,
+              "enabled": true,
               "options": [
                 {"text": "Big Mac", "value": "bigMac", "group": "food"},
                 {"text": "Whopper", "value": "whopper", "group": "food"},
@@ -143,8 +142,13 @@ class InboxView {
               "type": "Textfield",
               "label": "Textfield",
               "required": true,
-              "value": "Textfield value",
+              "value": "",
               "placeholder": "Placeholder here...",
+              "validation": {
+                "pattern": "hh:mm:ss",
+                "regex": "^[0-9]{1,2}:[0-9]{1,2}:[0-9]{1,2}$",
+                "message": "Please enter valid hour"
+              },
               "states": {
                 "enabled": "textfieldEnabled",
                 "value": "textfield",
@@ -159,13 +163,13 @@ class InboxView {
               "label": "Textarea",
               "required": true,
               "rows": 10,
-              "value": "Textarea value",
               "placeholder": "Placeholder here...",
               "col-md": "12"
             },
             {
               "type": "Button",
               "label": "Button",
+              "enabled": true,
               "states": {
                 "enabled": "buttonEnabled",
                 "value": "button"
