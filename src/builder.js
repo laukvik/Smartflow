@@ -31,6 +31,7 @@ class ComponentBuilder{
       }
       parentNode.appendChild(node);
     }
+    return componentInstance;
   }
   _buildChildNodes(parentNode, components){
     for (var x=0; x<components.length; x++) {

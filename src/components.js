@@ -31,9 +31,13 @@ class SmartflowComponent{
   getLabel(){
     return this.label.innerText;
   }
-  buildRoot(name, required){
+  buildRoot(name){
     this.setElement(document.createElement("div"));
     this.rootNode.setAttribute("class", name);
+  }
+  buildRootWithLabel(name, required){
+    this.buildRoot(name);
+    // label
     var label = document.createElement("div");
     this.label = label;
     label.setAttribute("class", "sf-label" + (required ? " sf-required" : ""));
@@ -55,9 +59,9 @@ class SmartflowComponent{
 class Checkbox extends SmartflowComponent{
   constructor(comp, ctrl, builder){
     super(comp, ctrl, builder);
-    this.buildRoot("sf-checkbox", comp.required);
+    this.buildRootWithLabel("sf-checkbox", comp.required);
+    this.optionsNode = document.createElement("div");
     this.setOptions(comp.options);
-    this.setVertical(false);
   }
   setVertical(isVertical){
     this.vertical = isVertical;
@@ -69,7 +73,7 @@ class Checkbox extends SmartflowComponent{
   setOptions(items){
     if (Array.isArray(items)) {
       this.inputs = [];
-      this.getElement().innerHTML = "";
+      this.optionsNode.innerHTML = "";
       for (var x=0; x<items.length; x++) {
         var item = items[ x ];
         var itemText = item.text;
@@ -108,10 +112,10 @@ class Checkbox extends SmartflowComponent{
 class Radio extends SmartflowComponent{
   constructor(comp, ctrl, builder){
     super(comp, ctrl, builder);
-    this.buildRoot("sf-radio", comp.required);
+    this.buildRootWithLabel("sf-radio", comp.required);
     this.optionsNode = document.createElement("div");
     this.setOptions(comp.options);
-    this.setVertical(true);
+    //this.setVertical(comp.vertical);
   }
   setVertical(isVertical){
     this.vertical = isVertical;
@@ -164,7 +168,7 @@ class Radio extends SmartflowComponent{
 class Pulldown extends SmartflowComponent {
   constructor(comp, ctrl, builder){
     super(comp, ctrl, builder);
-    this.buildRoot("sf-pulldown", comp.required);
+    this.buildRootWithLabel("sf-pulldown", comp.required);
 
     this.select = document.createElement("select");
     this.select.setAttribute("class", "sf-pulldown-select");
@@ -205,7 +209,7 @@ class Pulldown extends SmartflowComponent {
 class Textfield extends SmartflowComponent {
   constructor(comp, ctrl, builder){
     super(comp, ctrl, builder);
-    this.buildRoot("sf-textfield", comp.required);
+    this.buildRootWithLabel("sf-textfield", comp.required);
     this.inputType = comp.rows ? 1 : 0;
     if (comp.rows){
       this.input = document.createElement("textarea");
@@ -306,6 +310,36 @@ class Label extends SmartflowComponent{
 
 
 
+class Layout extends SmartflowComponent {
+  constructor(comp, ctrl, builder) {
+    super(comp, ctrl, builder);
+    this.buildRoot("container");
+    this.rows = document.createElement("div");
+    this.getElement().appendChild(this.rows);
+    this.rows.setAttribute("class", "row");
+
+    if (Array.isArray(comp.components)) {
+      for (var x=0; x<comp.components.length; x++) {
+        var c = comp.components[ x ];
+        // Grid
+
+        var colsXS = c["col-xs"] === undefined ? "" : " col-xs-" + c["col-xs"];
+        var colsSM = c["col-sm"] === undefined ? "" : " col-sm-" + c["col-sm"];
+        var colsMD = c["col-md"] === undefined ? "" : " col-md-" + c["col-md"];
+        var colsLG = c["col-lg"] === undefined ? "" : " col-lg-" + c["col-lg"];
+        var colsXL = c["col-xl"] === undefined ? "" : " col-xl-" + c["col-xl"];
+
+        var gridClass = (colsXS + colsSM + colsMD + colsLG + colsXL);
+
+        var layoutCell = document.createElement("div");
+        layoutCell.setAttribute("class", gridClass);
+        this.rows.appendChild(layoutCell);
+        // Component
+        builder.buildChildNode(layoutCell, c);
+      }
+    }
+  }
+}
 
 
 
@@ -315,10 +349,12 @@ class Label extends SmartflowComponent{
 
 
 
-class Card {
+class Card extends SmartflowComponent{
   constructor(comp, ctrl, builder){
+    super(comp, ctrl, builder);
     var rootNode = document.createElement("div");
     rootNode.setAttribute("class", "mdc-card");
+    this.setElement(rootNode);
 
     var headerNode = document.createElement("section");
     headerNode.setAttribute("class", "mdc-card__primary");
@@ -340,7 +376,11 @@ class Card {
 
     var footerNode = document.createElement("section");
     footerNode.setAttribute("class", "mdc-card__actions");
-    builder._buildChildNodes(footerNode, comp.actions);
+
+    if (Array.isArray(comp.actions)) {
+      builder._buildChildNodes(footerNode, comp.actions);
+    }
+
 
     rootNode.appendChild(headerNode);
     headerNode.appendChild(h1Node);

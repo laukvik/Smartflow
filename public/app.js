@@ -1,38 +1,37 @@
-function SelectAllAction(){
+function SelectAllAction() {
   this.smartflow = {
     "commands": [
       {
         "id": "inboxTable",
         "command": "selection",
-        "value": [ 0, 2 ]
+        "value": [0, 2]
       }
     ]
   }
 }
 
-function SelectNoneAction(){
+function SelectNoneAction() {
   this.smartflow = {
     "commands": [
       {
         "id": "inboxTable",
         "command": "selection",
-        "value": [  ]
+        "value": []
       }
     ]
   }
 }
 
 
-function ClearEmailsAction(){
+function ClearEmailsAction() {
   this.smartflow = {
     "states": {
-      "movies": [
-      ]
+      "movies": []
     }
   }
 }
 
-function AddEmailAction(){
+function AddEmailAction() {
   this.smartflow = {
     "addStates": {
       "emails": [
@@ -47,7 +46,7 @@ function AddEmailAction(){
   }
 }
 
-function FindEmailsAction(){
+function FindEmailsAction() {
   this.smartflow = {
     "states": {
       "emails": [
@@ -74,7 +73,7 @@ function FindEmailsAction(){
   }
 }
 
-function FindMoviesAction(){
+function FindMoviesAction() {
   this.smartflow = {
     "request": {
       "url": "movies.json",
@@ -92,7 +91,7 @@ function FindMoviesAction(){
   };
 }
 
-function FindMovies2Action(){
+function FindMovies2Action() {
   this.smartflow = {
     "request": {
       "url": "movies2.json",
@@ -111,67 +110,74 @@ function FindMovies2Action(){
 }
 
 class InboxView {
-  constructor(){
+  constructor() {
     this.smartflow = {
-      "path" : "/",
+      "path": "/",
       "components": [
         {
-          "type": "Label",
-          "required": true,
-          "label": "Label"
-        },
-        {
-          "type": "Checkbox",
-          "label": "Checkbox",
-          "required": true,
-          "options": [
-            {"text": "Fish", "value": "0"},
-            {"text": "Eggs", "value": "1"},
-            {"text": "Milk", "value": "2"}
-          ]        },
-        {
-          "type": "Radio",
-          "label": "Radio",
-          "required": true,
-          "options": [
-            {"text": "Fish", "value": "0"},
-            {"text": "Eggs", "value": "1"},
-            {"text": "Milk", "value": "2"}
-          ]
-        },
-        {
-          "type": "Pulldown",
-          "label": "Pulldown",
-          "required": true,
-          "options": [
-            {"text": "Big Mac", "value": "bigMac", "group": "food"},
-            {"text": "Whopper", "value": "whopper", "group": "food"},
-            {"text": "Coke", "value": "coke", "group": "drink"},
-            {"text": "Sprite", "value": "sprite", "group": "drink"}
+          "type": "Layout",
+          "components": [
+            {
+              "type": "Checkbox",
+              "label": "Checkbox",
+              "required": true,
+              "options": [
+                {"text": "Fish", "value": "0"},
+                {"text": "Eggs", "value": "1"},
+                {"text": "Milk", "value": "2"}
+              ],
+              "col-md": "6"
+            },
+            {
+              "type": "Radio",
+              "label": "Radio",
+              "required": true,
+              "vertical": "false",
+              "options": [
+                {"text": "Fish", "value": "0"},
+                {"text": "Eggs", "value": "1"},
+                {"text": "Milk", "value": "2"}
+              ],
+              "col-md": "6"
+            },
+            {
+              "type": "Pulldown",
+              "label": "Pulldown",
+              "required": true,
+              "options": [
+                {"text": "Big Mac", "value": "bigMac", "group": "food"},
+                {"text": "Whopper", "value": "whopper", "group": "food"},
+                {"text": "Coke", "value": "coke", "group": "drink"},
+                {"text": "Sprite", "value": "sprite", "group": "drink"}
+              ],
+              "col-md": "6"
+            }
+            ,
+            {
+              "type": "Textfield",
+              "label": "Textfield",
+              "required": true,
+              "value": "Textfield value",
+              "placeholder": "Placeholder here...",
+              "col-md": "6"
+            },
+            {
+              "type": "Textfield",
+              "label": "Textarea",
+              "required": true,
+              "rows": 10,
+              "value": "Textfield value",
+              "placeholder": "Placeholder here...",
+              "col-md": "12"
+            },
+            {
+              "type": "Button",
+              "label": "Button",
+              "action": "FindMoviesAction",
+              "col-md": "12"
+            }
           ]
         }
-        ,
-        {
-          "type": "Textfield",
-          "label": "Textfield",
-          "required": true,
-          "value": "Textfield value",
-          "placeholder": "Placeholder here..."
-        },
-        {
-          "type": "Textfield",
-          "label": "Textarea",
-          "required": true,
-          "rows": 10,
-          "value": "Textfield value",
-          "placeholder": "Placeholder here..."
-        },
-        {
-          "type": "Button",
-          "label": "Button",
-          "action": "FindMoviesAction"
-        }
-
       ],
       "components2": [
         {
@@ -196,7 +202,7 @@ class InboxView {
                   "value": "war"
                 }
               ],
-              "paging":{
+              "paging": {
                 "size": 10,
                 "page": 0,
               },
@@ -225,8 +231,8 @@ class InboxView {
               "rowId": "id",
               "selectable": true,
               "sort": {
-                  "match": "year",
-                  "order": "asc"
+                "match": "year",
+                "order": "asc"
               },
               "filter": [
                 {
@@ -235,26 +241,26 @@ class InboxView {
                   "value": "comedy"
                 }
               ],
-              "paging":{
+              "paging": {
                 "size": 10,
                 "page": 0,
               },
               "columns": [
                 {
                   "label": "Year",
-                  "key" : "year"
+                  "key": "year"
                 },
                 {
                   "label": "Title",
-                  "key" : "title"
+                  "key": "title"
                 },
                 {
                   "label": "Genre",
-                  "key" : "genres"
+                  "key": "genres"
                 },
                 {
                   "label": "Story",
-                  "key" : "storyline"
+                  "key": "storyline"
                 },
                 {
                   "label": "Released",
@@ -305,7 +311,7 @@ class InboxView {
 
           ]
         }
-        ],
+      ],
       "originals": [
         {
           "type": "Dialog",
@@ -346,23 +352,27 @@ class InboxView {
       ]
     };
   }
-  viewInitialized(formatter){
+
+  viewInitialized(formatter) {
   };
-  viewEnabled(){
+
+  viewEnabled() {
   };
-  viewDisabled(){
+
+  viewDisabled() {
   };
-  stateChanged(state, value){
+
+  stateChanged(state, value) {
   };
-  actionPerformed(evt){
+
+  actionPerformed(evt) {
     console.info("InboxView.actionPerformed: ", evt);
   };
-  componentChanged(evt){
+
+  componentChanged(evt) {
     console.info("InboxView.componentChanged: ", evt);
   }
 }
-
-
 
 
 var config = {
@@ -373,22 +383,22 @@ var config = {
 var langNO = {
   "welcome": "Velkommen til {0}",
   "confirmdelete": "Er du sikker på at du vil slette?",
-  "deleted" : "Slettet."
+  "deleted": "Slettet."
 };
 var langEN = {
   "welcome": "Welcome til {0}",
   "confirmdelete": "Are you sure you want to delete?",
-  "deleted" : "Deleted."
+  "deleted": "Deleted."
 };
 
 
-  var app = new Smartflow();
-  app.setConfig(config);
-  app.loadLanguage("no", langNO);
-  app.loadLanguage("en", langEN);
-  app.setDefaultLocale("en");
-  app.addView(new InboxView());
-  app.start();
+var app = new Smartflow();
+app.setConfig(config);
+app.loadLanguage("no", langNO);
+app.loadLanguage("en", langEN);
+app.setDefaultLocale("en");
+app.addView(new InboxView());
+app.start();
 
 
 

@@ -65,10 +65,12 @@
 
 
 .sf-textfield{
+
 }
 .sf-textfield-input{
   font-size: 12pt;
   width: 100%;
+  border: 1px inset;
   padding: 0.5em;
   -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
   -moz-box-sizing: border-box;    /* Firefox, other Gecko */
@@ -83,4 +85,24 @@
   background-color: #dddddd;
 }
 
+
+.sf-layout{
+  width : 100%;
+  max-width : 1200px;
+  box-sizing: border-box;
+}
+
+.sf-layout-row:before, .sf-layout-row:after{
+  content:"";
+  display: table ;
+  clear:both;
+}
+
+.sf-layout-col{
+
+}
+
+.sf-layout-col-12{
+
+}
 
