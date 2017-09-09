@@ -1,99 +1,48 @@
 function StartAction() {
   this.smartflow = {
-    "states": {
+    "statess": {
       "checkboxes": [
-        {"text": "Fish", "value": "0"},
-        {"text": "Eggs", "value": "1"},
+        {"text": "Fish2", "value": "0"},
+        {"text": "Eggs2", "value": "1"},
         {"text": "Milk", "value": "2"}
       ],
-      "radios": [
-        {"text": "Big Mac", "value": "bigMac", "group": "food"},
-        {"text": "Whopper", "value": "whopper", "group": "food"},
-        {"text": "Coke", "value": "coke", "group": "drink"},
-        {"text": "Sprite", "value": "sprite", "group": "drink"}
+      "checkboxEnabled": false,
+      "selectedCheckboxes": [
+        "1",
       ],
-      "pulldown": [
-        {"text": "Big Mac", "value": "bigMac", "group": "food"},
-        {"text": "Whopper", "value": "whopper", "group": "food"},
-        {"text": "Coke", "value": "coke", "group": "drink"},
-        {"text": "Sprite", "value": "sprite", "group": "drink"}
-      ]
+      "checkboxRequired": false,
+      "checkboxLabel": "Checkbox2",
+
+      "radios": [
+        {"text": "Big Mac2", "value": "bigMac", "group": "food"},
+        {"text": "Whopper2", "value": "whopper", "group": "food"},
+        {"text": "Coke2", "value": "coke", "group": "drink"},
+        {"text": "Sprite2", "value": "sprite", "group": "drink"}
+      ],
+      "selectedRadio": "whopper",
+      "radioEnabled": false,
+      "radioRequired": false,
+      "radioLabel": "Radio2",
+
+      "pulldowns": [
+        {"text": "Big Mac2", "value": "bigMac", "group": "food"},
+        {"text": "Whopper2", "value": "whopper", "group": "food"},
+        {"text": "Coke2", "value": "coke", "group": "drink"},
+        {"text": "Sprite2", "value": "sprite", "group": "drink"}
+      ],
+      "pulldownEnabled": true,
+      "selectedPulldown": "sprite",
+      "pulldownRequired": false,
+      "pulldownLabel": "Pulldown2",
+
+      "textfield": "",
+      "textfieldEnabled": true,
+      "textfieldRequired": false,
+      "textfieldLabel": "Textfield2",
+
+      "button": "Button2",
+      "buttonEnabled": false
     }
-  }
-}
-
-function SelectAllAction() {
-  this.smartflow = {
-    "commands": [
-      {
-        "id": "inboxTable",
-        "command": "selection",
-        "value": [0, 2]
-      }
-    ]
-  }
-}
-
-function SelectNoneAction() {
-  this.smartflow = {
-    "commands": [
-      {
-        "id": "inboxTable",
-        "command": "selection",
-        "value": []
-      }
-    ]
-  }
-}
-
-
-function ClearEmailsAction() {
-  this.smartflow = {
-    "states": {
-      "movies": []
-    }
-  }
-}
-
-function AddEmailAction() {
-  this.smartflow = {
-    "addStates": {
-      "emails": [
-        {
-          "id": "4",
-          "email": "test@test4.com",
-          "subject": "Hello world",
-          "date": new Date()
-        },
-      ]
-    }
-  }
-}
-
-function FindEmailsAction() {
-  this.smartflow = {
-    "states": {
-      "emails": [
-        {
-          "id": "1",
-          "email": "test@test1.com",
-          "subject": "Hello world",
-          "date": new Date()
-        },
-        {
-          "id": "2",
-          "email": "test@test2.com",
-          "subject": "Hello world2",
-          "date": new Date()
-        },
-        {
-          "id": "3",
-          "email": "test@test3.com",
-          "subject": "Hello world3",
-          "date": new Date()
-        }
-      ]
-    },
   }
 }
 
@@ -115,24 +64,6 @@ function FindMoviesAction() {
   };
 }
 
-function FindMovies2Action() {
-  this.smartflow = {
-    "request": {
-      "url": "movies2.json",
-      "method": "get",
-      "type": "json"
-    },
-    "success": {
-      "path": "/",
-      "state": "movies2"
-    },
-    "error": {
-      "path": "/",
-      "state": "moviesFailed"
-    }
-  };
-}
-
 class InboxView {
   constructor() {
     this.smartflow = {
@@ -145,6 +76,13 @@ class InboxView {
               "type": "Checkbox",
               "label": "Checkbox",
               "required": true,
+              "states": {
+                "options": "checkboxes",
+                "selected": "selectedCheckboxes",
+                "enabled": "checkboxEnabled",
+                "required": "checkboxRequired",
+                "label": "checkboxLabel"
+              },
               "optionsState": "checkboxes",
               "selected": [
                 "0", "2"
@@ -162,7 +100,13 @@ class InboxView {
               "label": "Radio",
               "required": true,
               "vertical": "false",
-              "selected": "1",
+              "states": {
+                "options": "radios",
+                "selected": "selectedRadio",
+                "enabled": "radioEnabled",
+                "required": "radioRequired",
+                "label": "radioLabel"
+              },
               "options": [
                 {"text": "Fish", "value": "0"},
                 {"text": "Eggs", "value": "1"},
@@ -176,13 +120,20 @@ class InboxView {
               "label": "Pulldown",
               "required": true,
               "selected": "coke",
-              "enabled": false,
+              "enabled": true,
               "options": [
                 {"text": "Big Mac", "value": "bigMac", "group": "food"},
                 {"text": "Whopper", "value": "whopper", "group": "food"},
                 {"text": "Coke", "value": "coke", "group": "drink"},
                 {"text": "Sprite", "value": "sprite", "group": "drink"}
               ],
+              "states": {
+                "options": "pulldowns",
+                "selected": "selectedPulldown",
+                "enabled": "pulldownEnabled",
+                "required": "pulldownRequired",
+                "label": "pulldownLabel"
+              },
               "col-md": "6",
               "col-lg": "4"
             }
@@ -191,8 +142,19 @@ class InboxView {
               "type": "Textfield",
               "label": "Textfield",
               "required": true,
-              "value": "Textfield value",
+              "value": "",
               "placeholder": "Placeholder here...",
+              "validation": {
+                "pattern": "hh:mm:ss",
+                "regex": "^[0-9]{1,2}:[0-9]{1,2}:[0-9]{1,2}$",
+                "message": "Please enter valid hour"
+              },
+              "states": {
+                "enabled": "textfieldEnabled",
+                "value": "textfield",
+                "required": "textfieldRequired",
+                "label": "textfieldLabel"
+              },
               "col-md": "6",
               "col-lg": "12"
             },
@@ -201,13 +163,17 @@ class InboxView {
               "label": "Textarea",
               "required": true,
               "rows": 10,
-              "value": "Textfield value",
               "placeholder": "Placeholder here...",
               "col-md": "12"
             },
             {
               "type": "Button",
               "label": "Button",
+              "enabled": true,
+              "states": {
+                "enabled": "buttonEnabled",
+                "value": "button"
+              },
               "action": "FindMoviesAction",
               "col-md": "12"
             }

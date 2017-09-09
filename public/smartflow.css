@@ -61,6 +61,7 @@
 .sf-pulldown-select{
   font-size: 12pt;
   height: 2em;
+  color: #555555;
 }
 
 
@@ -70,6 +71,7 @@
 .sf-textfield-input{
   font-size: 12pt;
   width: 100%;
+  color: #555555;
   border: 1px inset;
   padding: 0.5em;
   -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
@@ -78,31 +80,14 @@
 }
 
 .sf-button{
-  padding: 0.5em 2em;
+  padding: 0.25em 2em;
   font-size: 12pt;
   color: #555555;
-  border-radius: 0.25em;
-  background-color: #dddddd;
+  border: 1px outset;
+  border-radius: 5px;
+  background-color: #ffffff;
 }
 
-
-.sf-layout{
-  width : 100%;
-  max-width : 1200px;
-  box-sizing: border-box;
+.sf-error {
+  color: #d80009;
 }
-
-.sf-layout-row:before, .sf-layout-row:after{
-  content:"";
-  display: table ;
-  clear:both;
-}
-
-.sf-layout-col{
-
-}
-
-.sf-layout-col-12{
-
-}
-

@@ -541,28 +541,14 @@ function Smartflow() {
       }
       for (var y=0; y<ctrl.smartflow.componentInstances.length; y++) {
         var compInstance = ctrl.smartflow.componentInstances[y];
-        if (compInstance.comp && compInstance.comp.state === state){
+
+        var states = compInstance.getStateBinding();
+
+        if (Array.isArray(states) && states.indexOf(state) > -1) {
           compInstance.stateChanged(state, value);
         }
-      }
-    }
-    // Update DOM with state bindings
-    var states = {};
-    states[ state ] = value;
-    var els = document.querySelectorAll('[data-smartflow-state]');
-    for (var z=0; z<els.length; z++){
-      var el = els[z];
-      var stateExpression = el.getAttribute("data-smartflow-state");
-      if (stateExpression === state) {
-        el.innerHTML = value === undefined ? '' : value;
-      } else if (stateExpression.indexOf(state + ".") === 0) {
-        if (value === undefined){
-          el.innerHTML = "";
-        } else {
-          // TODO - Add support for unknown depth of references in state
-          var arr = stateExpression.split(".");
-          var subkey = arr[ 1 ];
-          el.innerHTML = value[ subkey ] === undefined ? '' : value[ subkey ];
+
+        if (compInstance.comp && compInstance.comp.state === state){
         }
       }
     }
