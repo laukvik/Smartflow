@@ -29,6 +29,9 @@
 .sf-checkbox{
 
 }
+.sf-checkbox-vertical .sf-checkbox-option{
+  display: block;
+}
 .sf-checkbox-option{
   font-size: 12pt;
   color: #555555;
@@ -39,6 +42,9 @@
 }
 
 .sf-radio{
+}
+.sf-radio-vertical .sf-radio-option{
+  display: block;
 }
 .sf-radio-option{
   font-size: 12pt;
@@ -55,14 +61,18 @@
 .sf-pulldown-select{
   font-size: 12pt;
   height: 2em;
+  color: #555555;
 }
 
 
 .sf-textfield{
+
 }
 .sf-textfield-input{
   font-size: 12pt;
   width: 100%;
+  color: #555555;
+  border: 1px inset;
   padding: 0.5em;
   -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
   -moz-box-sizing: border-box;    /* Firefox, other Gecko */
@@ -70,11 +80,15 @@
 }
 
 .sf-button{
-  padding: 0.5em 2em;
+  padding: 0.25em 2em;
   font-size: 12pt;
   color: #555555;
-  border-radius: 0.25em;
-  background-color: #dddddd;
+  border: 1px outset;
+  border-radius: 5px;
+  background-color: #ffffff;
 }
 
+.sf-error {
+  color: #d80009;
 
+}

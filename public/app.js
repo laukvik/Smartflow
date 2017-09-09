@@ -1,80 +1,52 @@
-function SelectAllAction(){
+function StartAction() {
   this.smartflow = {
-    "commands": [
-      {
-        "id": "inboxTable",
-        "command": "selection",
-        "value": [ 0, 2 ]
-      }
-    ]
-  }
-}
+    "statess": {
+      "checkboxes": [
+        {"text": "Fish2", "value": "0"},
+        {"text": "Eggs2", "value": "1"},
+        {"text": "Milk", "value": "2"}
+      ],
+      "checkboxEnabled": false,
+      "selectedCheckboxes": [
+        "1",
+      ],
+      "checkboxRequired": false,
+      "checkboxLabel": "Checkbox2",
 
-function SelectNoneAction(){
-  this.smartflow = {
-    "commands": [
-      {
-        "id": "inboxTable",
-        "command": "selection",
-        "value": [  ]
-      }
-    ]
-  }
-}
+      "radios": [
+        {"text": "Big Mac2", "value": "bigMac", "group": "food"},
+        {"text": "Whopper2", "value": "whopper", "group": "food"},
+        {"text": "Coke2", "value": "coke", "group": "drink"},
+        {"text": "Sprite2", "value": "sprite", "group": "drink"}
+      ],
+      "selectedRadio": "whopper",
+      "radioEnabled": false,
+      "radioRequired": false,
+      "radioLabel": "Radio2",
 
+      "pulldowns": [
+        {"text": "Big Mac2", "value": "bigMac", "group": "food"},
+        {"text": "Whopper2", "value": "whopper", "group": "food"},
+        {"text": "Coke2", "value": "coke", "group": "drink"},
+        {"text": "Sprite2", "value": "sprite", "group": "drink"}
+      ],
+      "pulldownEnabled": true,
+      "selectedPulldown": "sprite",
+      "pulldownRequired": false,
+      "pulldownLabel": "Pulldown2",
 
-function ClearEmailsAction(){
-  this.smartflow = {
-    "states": {
-      "movies": [
-      ]
+      "textfield": "",
+      "textfieldEnabled": true,
+      "textfieldRequired": false,
+      "textfieldLabel": "Textfield2",
+
+      "button": "Button2",
+      "buttonEnabled": false
     }
   }
 }
 
-function AddEmailAction(){
-  this.smartflow = {
-    "addStates": {
-      "emails": [
-        {
-          "id": "4",
-          "email": "test@test4.com",
-          "subject": "Hello world",
-          "date": new Date()
-        },
-      ]
-    }
-  }
-}
-
-function FindEmailsAction(){
-  this.smartflow = {
-    "states": {
-      "emails": [
-        {
-          "id": "1",
-          "email": "test@test1.com",
-          "subject": "Hello world",
-          "date": new Date()
-        },
-        {
-          "id": "2",
-          "email": "test@test2.com",
-          "subject": "Hello world2",
-          "date": new Date()
-        },
-        {
-          "id": "3",
-          "email": "test@test3.com",
-          "subject": "Hello world3",
-          "date": new Date()
-        }
-      ]
-    },
-  }
-}
-
-function FindMoviesAction(){
+function FindMoviesAction() {
   this.smartflow = {
     "request": {
       "url": "movies.json",
@@ -92,84 +64,121 @@ function FindMoviesAction(){
   };
 }
 
-function FindMovies2Action(){
-  this.smartflow = {
-    "request": {
-      "url": "movies2.json",
-      "method": "get",
-      "type": "json"
-    },
-    "success": {
-      "path": "/",
-      "state": "movies2"
-    },
-    "error": {
-      "path": "/",
-      "state": "moviesFailed"
-    }
-  };
-}
-
 class InboxView {
-  constructor(){
+  constructor() {
     this.smartflow = {
-      "path" : "/",
+      "path": "/",
       "components": [
         {
-          "type": "Label",
-          "required": true,
-          "label": "Label"
-        },
-        {
-          "type": "Checkbox",
-          "label": "Checkbox",
-          "required": true,
-          "options": [
-            {"text": "Fish", "value": "0"},
-            {"text": "Eggs", "value": "1"},
-            {"text": "Milk", "value": "2"}
-          ]        },
-        {
-          "type": "Radio",
-          "label": "Radio",
-          "required": true,
-          "options": [
-            {"text": "Fish", "value": "0"},
-            {"text": "Eggs", "value": "1"},
-            {"text": "Milk", "value": "2"}
-          ]
-        },
-        {
-          "type": "Pulldown",
-          "label": "Pulldown",
-          "required": true,
-          "options": [
-            {"text": "Fish", "value": "0"},
-            {"text": "Eggs", "value": "1"},
-            {"text": "Milk", "value": "2"}
+          "type": "Layout",
+          "components": [
+            {
+              "type": "Checkbox",
+              "label": "Checkbox",
+              "required": true,
+              "states": {
+                "options": "checkboxes",
+                "selected": "selectedCheckboxes",
+                "enabled": "checkboxEnabled",
+                "required": "checkboxRequired",
+                "label": "checkboxLabel"
+              },
+              "optionsState": "checkboxes",
+              "selected": [
+                "0", "2"
+              ],
+              "options": [
+                {"text": "Fish", "value": "0"},
+                {"text": "Eggs", "value": "1"},
+                {"text": "Milk", "value": "2"}
+              ],
+              "col-md": "6",
+              "col-lg": "4"
+            },
+            {
+              "type": "Radio",
+              "label": "Radio",
+              "required": true,
+              "vertical": "false",
+              "states": {
+                "options": "radios",
+                "selected": "selectedRadio",
+                "enabled": "radioEnabled",
+                "required": "radioRequired",
+                "label": "radioLabel"
+              },
+              "options": [
+                {"text": "Fish", "value": "0"},
+                {"text": "Eggs", "value": "1"},
+                {"text": "Milk", "value": "2"}
+              ],
+              "col-md": "6",
+              "col-lg": "4"
+            },
+            {
+              "type": "Pulldown",
+              "label": "Pulldown",
+              "required": true,
+              "selected": "coke",
+              "enabled": true,
+              "options": [
+                {"text": "Big Mac", "value": "bigMac", "group": "food"},
+                {"text": "Whopper", "value": "whopper", "group": "food"},
+                {"text": "Coke", "value": "coke", "group": "drink"},
+                {"text": "Sprite", "value": "sprite", "group": "drink"}
+              ],
+              "states": {
+                "options": "pulldowns",
+                "selected": "selectedPulldown",
+                "enabled": "pulldownEnabled",
+                "required": "pulldownRequired",
+                "label": "pulldownLabel"
+              },
+              "col-md": "6",
+              "col-lg": "4"
+            }
+            ,
+            {
+              "type": "Textfield",
+              "label": "Textfield",
+              "required": true,
+              "value": "",
+              "placeholder": "Placeholder here...",
+              "validation": {
+                "pattern": "hh:mm:ss",
+                "regex": "^[0-9]{1,2}:[0-9]{1,2}:[0-9]{1,2}$",
+                "message": "Please enter valid hour"
+              },
+              "states": {
+                "enabled": "textfieldEnabled",
+                "value": "textfield",
+                "required": "textfieldRequired",
+                "label": "textfieldLabel"
+              },
+              "col-md": "6",
+              "col-lg": "12"
+            },
+            {
+              "type": "Textfield",
+              "label": "Textarea",
+              "required": true,
+              "rows": 10,
+              "placeholder": "Placeholder here...",
+              "col-md": "12"
+            },
+            {
+              "type": "Button",
+              "label": "Button",
+              "enabled": true,
+              "states": {
+                "enabled": "buttonEnabled",
+                "value": "button"
+              },
+              "action": "FindMoviesAction",
+              "col-md": "12"
+            }
           ]
         }
-        ,
-        {
-          "type": "Textfield",
-          "label": "Textfield",
-          "required": true,
-          "value": "Textfield value",
-          "placeholder": "Placeholder here..."
-        },
-        {
-          "type": "Textfield",
-          "label": "Textarea",
-          "required": true,
-          "rows": 10,
-          "value": "Textfield value",
-          "placeholder": "Placeholder here..."
-        },
-        {
-          "type": "Button",
-          "label": "Button"
-        }
-
       ],
       "components2": [
         {
@@ -194,7 +203,7 @@ class InboxView {
                   "value": "war"
                 }
               ],
-              "paging":{
+              "paging": {
                 "size": 10,
                 "page": 0,
               },
@@ -223,8 +232,8 @@ class InboxView {
               "rowId": "id",
               "selectable": true,
               "sort": {
-                  "match": "year",
-                  "order": "asc"
+                "match": "year",
+                "order": "asc"
               },
               "filter": [
                 {
@@ -233,26 +242,26 @@ class InboxView {
                   "value": "comedy"
                 }
               ],
-              "paging":{
+              "paging": {
                 "size": 10,
                 "page": 0,
               },
               "columns": [
                 {
                   "label": "Year",
-                  "key" : "year"
+                  "key": "year"
                 },
                 {
                   "label": "Title",
-                  "key" : "title"
+                  "key": "title"
                 },
                 {
                   "label": "Genre",
-                  "key" : "genres"
+                  "key": "genres"
                 },
                 {
                   "label": "Story",
-                  "key" : "storyline"
+                  "key": "storyline"
                 },
                 {
                   "label": "Released",
@@ -303,7 +312,7 @@ class InboxView {
 
           ]
         }
-        ],
+      ],
       "originals": [
         {
           "type": "Dialog",
@@ -344,22 +353,28 @@ class InboxView {
       ]
     };
   }
-  viewInitialized(formatter){
+
+  viewInitialized(formatter) {
   };
-  viewEnabled(){
+
+  viewEnabled() {
+    this.runSmartflow(new StartAction());
   };
-  viewDisabled(){
+
+  viewDisabled() {
   };
-  stateChanged(state, value){
+
+  stateChanged(state, value) {
   };
-  actionPerformed(action){
+
+  actionPerformed(evt) {
+    console.info("InboxView.actionPerformed: ", evt);
   };
-  componentChanged(evt){
-    //console.info("componentChanged: ", evt);
+
+  componentChanged(evt) {
+    console.info("InboxView.componentChanged: ", evt);
   }
 }
-
-
 
 
 var config = {
@@ -370,22 +385,22 @@ var config = {
 var langNO = {
   "welcome": "Velkommen til {0}",
   "confirmdelete": "Er du sikker på at du vil slette?",
-  "deleted" : "Slettet."
+  "deleted": "Slettet."
 };
 var langEN = {
   "welcome": "Welcome til {0}",
   "confirmdelete": "Are you sure you want to delete?",
-  "deleted" : "Deleted."
+  "deleted": "Deleted."
 };
 
 
-  var app = new Smartflow();
-  app.setConfig(config);
-  app.loadLanguage("no", langNO);
-  app.loadLanguage("en", langEN);
-  app.setDefaultLocale("en");
-  app.addView(new InboxView());
-  app.start();
+var app = new Smartflow();
+app.setConfig(config);
+app.loadLanguage("no", langNO);
+app.loadLanguage("en", langEN);
+app.setDefaultLocale("en");
+app.addView(new InboxView());
+app.start();
 
 
 

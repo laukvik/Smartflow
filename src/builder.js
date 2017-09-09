@@ -8,57 +8,43 @@
  * @constructor
  */
 class ComponentBuilder{
-  constructor(ctrl, formatter){
+  constructor(ctrl, formatter, smartflow){
     this.ctrl = ctrl;
     this.formatter = formatter;
+    this.smartflow = smartflow;
   }
   buildComponents() {
     var ctrlID = this.ctrl.constructor.name;
     var comps = this.ctrl.smartflow.components;
     this.ctrl.smartflow.componentInstances = [];
-    this._buildChildNodes( document.getElementById(ctrlID), comps);
+    var rootNode = document.getElementById(ctrlID);
+    for (var x=0; x<comps.length; x++) {
+      this.buildChildNode(rootNode, comps[x] );
+    }
   };
   buildChildNode(parentNode, comp) {
     var componentInstance = this._buildComponent(comp);
     this.ctrl.smartflow.componentInstances.push(componentInstance);
-    var node = componentInstance.getNode();
+    componentInstance.setStateBinding(comp.states);
+    var node = componentInstance.getElement();
     if (node === undefined) {
-      console.info("Component not found", comp);
+      console.warn("Component not found", comp);
     } else {
-      if (comp.hidden == 'true') {
-        node.style.display = 'none';
-      }
       parentNode.appendChild(node);
     }
+    return componentInstance;
   }
-  _buildChildNodes(parentNode, components){
-    for (var x=0; x<components.length; x++) {
-      var comp = components[x];
-      var componentInstance = this._buildComponent(comp);
-      componentInstance.id = comp.id;
-      this.ctrl.smartflow.componentInstances.push(componentInstance);
-      var node = componentInstance.getNode();
-      if (node === undefined) {
-        console.info("Component not found", comp);
-      } else {
-        if (comp.hidden == 'true') {
-          node.style.display = 'none';
-        }
-        parentNode.appendChild(node);
-      }
-    }
-  };
   _buildComponent(comp){
-    //var func = window[ comp.type ]; // Vanilla
     var func = eval(comp.type); // ES
     if (func){
-      return new func(comp, this.ctrl, this);
+      var f = new func(comp, this.ctrl, this);
+      f.setSmartflow(this.smartflow);
+      return f;
     } else {
       console.info("Component not found: ", comp.type);
       return undefined;
     }
-  };
-
+  }
   buildDialog( dialogID, title, body, buttons ){
     var buttonsHtml = "";
 
