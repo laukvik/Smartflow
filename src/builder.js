@@ -17,41 +17,24 @@ class ComponentBuilder{
     var ctrlID = this.ctrl.constructor.name;
     var comps = this.ctrl.smartflow.components;
     this.ctrl.smartflow.componentInstances = [];
-    this._buildChildNodes( document.getElementById(ctrlID), comps);
+    var rootNode = document.getElementById(ctrlID);
+    for (var x=0; x<comps.length; x++) {
+      this.buildChildNode(rootNode, comps[x] );
+    }
   };
   buildChildNode(parentNode, comp) {
     var componentInstance = this._buildComponent(comp);
     this.ctrl.smartflow.componentInstances.push(componentInstance);
+    componentInstance.setStateBinding(comp.states);
     var node = componentInstance.getElement();
     if (node === undefined) {
-      console.info("Component not found", comp);
+      console.warn("Component not found", comp);
     } else {
-      if (comp.hidden == 'true') {
-        node.style.display = 'none';
-      }
       parentNode.appendChild(node);
     }
     return componentInstance;
   }
-  _buildChildNodes(parentNode, components){
-    for (var x=0; x<components.length; x++) {
-      var comp = components[x];
-      var componentInstance = this._buildComponent(comp);
-      componentInstance.id = comp.id;
-      this.ctrl.smartflow.componentInstances.push(componentInstance);
-      var node = componentInstance.getElement();
-      if (node === undefined) {
-        console.info("Component not found", comp);
-      } else {
-        if (comp.hidden == 'true') {
-          node.style.display = 'none';
-        }
-        parentNode.appendChild(node);
-      }
-    }
-  };
   _buildComponent(comp){
-    //var func = window[ comp.type ]; // Vanilla
     var func = eval(comp.type); // ES
     if (func){
       var f = new func(comp, this.ctrl, this);
@@ -61,8 +44,7 @@ class ComponentBuilder{
       console.info("Component not found: ", comp.type);
       return undefined;
     }
-  };
-
+  }
   buildDialog( dialogID, title, body, buttons ){
     var buttonsHtml = "";
 
