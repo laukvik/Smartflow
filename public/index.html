@@ -7,19 +7,21 @@
   <!--<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">-->
   <!--<title>Smartflow</title>-->
   <!--<link-->
-    <!--rel="stylesheet"-->
-    <!--href="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css">-->
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
+  <!--rel="stylesheet"-->
+  <!--href="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css">-->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css"
+        integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
   <style>
-    body{
+    body {
       background-color: #dddddd;
     }
 
-    .mdc-card{
+    .mdc-card {
       background-color: white;
 
     }
-    .mdc-card__primary{
+
+    .mdc-card__primary {
       background-color: #6d9a77;
     }
   </style>
@@ -29,7 +31,14 @@
       }
     }
   </script>
-  <script src="src/components.js"></script>
+  <script src="src/component.js"></script>
+  <script src="src/components/Button.js"></script>
+  <script src="src/components/Card.js"></script>
+  <script src="src/components/Checkbox.js"></script>
+  <script src="src/components/Layout.js"></script>
+  <script src="src/components/Pulldown.js"></script>
+  <script src="src/components/Radio.js"></script>
+  <script src="src/components/Textfield.js"></script>
   <script src="src/builder.js"></script>
   <script src="src/formatter.js"></script>
   <script src="src/smartflow.js"></script>
@@ -40,52 +49,6 @@
   <div id="InboxView"></div>
 
   <script src="app.js"></script>
-
-
-
-
-
-  <div style="display:none; border: 1px solid black;">
-
-    <h2>Label</h2>
-    <div class="sf-label sf-required"><label>Name</label></div>
-
-    <div class="sf-checkbox">
-      <div class="sf-label">Checkbox</div>
-      <label class="sf-checkbox-option"><input type="checkbox"> Fish</label>
-      <label class="sf-checkbox-option"><input type="checkbox"> Fish</label>
-      <label class="sf-checkbox-option"><input type="checkbox"> Fish</label>
-    </div>
-
-    <div class="sf-radio">
-      <div class="sf-label">Radio</div>
-      <label class="sf-radio-option"><input type="radio"> Radio 1</label>
-      <label class="sf-radio-option"><input type="radio"> Radio 2</label>
-      <label class="sf-radio-option"><input type="radio"> Radio 3</label>
-    </div>
-
-    <div class="sf-pulldown">
-      <div class="sf-label">Pulldown</div>
-      <select class="sf-pulldown-select">
-        <optgroup label="Group">
-          <option>First</option>
-        </optgroup>
-      </select>
-    </div>
-
-    <div class="sf-textfield">
-      <div class="sf-label">Textfield</div>
-      <input placeholder="Email" class="sf-textfield-input"/>
-    </div>
-
-
-
-    <h2>Button</h2>
-    <button class="sf-button">Send</button>
-
-
-  </div>
-
 
 </body>
 </html>
