@@ -15,14 +15,6 @@
  * - date formatting
  * - no dependencies!
  *
- * TODO - documentation tool available
- * TODO - path is not required - go to oneself
- * TODO - get is default method
- * TODO - support number formats
- * TODO - support for application/json;utf-8 etc
- * TODO - Server Action må returnere headere
- *
- *
  * @constructor
  */
 function Smartflow() {
@@ -38,7 +30,6 @@ function Smartflow() {
       "value" : value,
       "view" : view
     };
-    //console.info("Smartflow.fireComponentChanged: ", componentEvent);
     view.componentChanged(componentEvent);
   }
   this.isAction = function(action){
