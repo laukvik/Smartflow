@@ -1,17 +1,39 @@
 class Collections {
-  constructor(component) {
-    if (component.sort) {
-      this.sortMatch = component.sort.match;
-      this.sortOrder = component.sort.order;
+  constructor(properties) {
+    this.setSort(properties.sort);
+    this.setPaging(properties.paging);
+    this.setFilter(properties.filter);
+  }
+
+  setFilter(filter){
+    if (Array.isArray(filter)){
+      this.filter = filter;
+      this.filterEnabled = (filter !== undefined);
+    } else {
+      this.filter = [];
     }
-    this.sortEnabled = this.sortMatch !== undefined;
+  }
 
-    this.pageSize = component.paging.size;
-    this.pageIndex = component.paging.page;
+  setPaging(paging){
+    if (paging === undefined) {
+      this.pageSize = undefined;
+      this.pageIndex = undefined;
+    } else {
+      this.pageSize = paging.size;
+      this.pageIndex = paging.page;
+    }
     this.pageEnabled = this.pageSize !== undefined;
+  }
 
-    this.filter = component.filter;
-    this.filterEnabled = component.filter !== undefined;
+  setSort(sort){
+    if (sort === undefined) {
+      this.sortMatch = undefined;
+      this.sortOrder = undefined;
+    } else {
+      this.sortMatch = sort.match;
+      this.sortOrder = sort.order;
+    }
+    this.sortEnabled = sort === undefined;
   }
 
   find(items) {

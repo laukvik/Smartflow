@@ -1,96 +1,141 @@
-class Table {
+class Table extends SmartflowComponent{
   constructor(comp, ctrl, builder) {
-    this.comp = comp;
-    this.ctrl = ctrl;
-    this.builder = builder;
+    super(comp, ctrl, builder);
+    this.dontUpdate = true;
     this.collections = new Collections(comp);
-    var rootNode = document.createElement("table");
-    rootNode.setAttribute("border", "1");
-    rootNode.setAttribute("class", "mdc-table");
-    var columns = comp.columns;
-    this.headNode = document.createElement("thead");
+    this.selected = [];
+    this.columns = [];
+    this.rows = [];
+    this.inputs = [];
+    // Table
+    var tableNode = document.createElement("table");
+    tableNode.setAttribute("class", "sf-table");
+    // Head
+    var theadNode = document.createElement("thead");
     var headerRowNode = document.createElement("tr");
-    this.headNode.appendChild(headerRowNode);
+    theadNode.appendChild(headerRowNode);
+    tableNode.appendChild(theadNode);
+    this.headerNode = headerRowNode;
+    // Body
+    var bodyNode = document.createElement("tbody");
+    tableNode.appendChild(bodyNode);
+    this.setElement(tableNode);
+    this.setBodyNode(bodyNode);
+    this.setSelectable(comp.selectable);
+    this.setSelected(comp.selected);
+    this.setColumns(comp.columns);
+    this.dontUpdate = false;
+  }
 
-    var thSelectNode = document.createElement("th");
-    headerRowNode.appendChild(thSelectNode);
-
-    for (var x = 0; x < columns.length; x++) {
-      var column = columns[x];
-      var thNode = document.createElement("th");
-      thNode.innerText = column.label;
-      headerRowNode.appendChild(thNode);
+  setSelected(selected){
+    if (Array.isArray(selected)) {
+      this.selected = selected;
+      for (var y = 0; y < this.inputs.length; y++) {
+        var inputSelect = this.inputs[ y ];
+        inputSelect.checked = this.selected.indexOf(inputSelect.getAttribute("id")) > -1;
+      }
+    } else {
+      this.selected = [];
     }
-    this.bodyNode = document.createElement("tbody");
-
-    rootNode.appendChild(this.headNode);
-    rootNode.appendChild(this.bodyNode);
-    this.rootNode = rootNode;
   }
 
-  getNode() {
-    return this.rootNode;
+  getSelected(){
+    return this.selected;
   }
 
-  commandPerformed(command, value) {
-    console.info("commandPerformed: ", command, value);
-    var inputArr = this.bodyNode.getElementsByTagName("input");
-    for (var x = 0; x < inputArr.length; x++) {
-      var inp = inputArr[x];
-      if (command == "selection") {
-        var selectArr = value;
-        var foundMatch = false;
-        for (var y = 0; y < selectArr.length; y++) {
-          var selectIndex = selectArr[y];
-          if (selectIndex == x) {
-            foundMatch = true;
-          }
-        }
-        inp.checked = foundMatch;
+  setColumns(columns){
+    if (Array.isArray(columns)){
+      this.columns = columns;
+      this.removeChildNodes(this.headerNode);
+
+      if (this.selectable) {
+        var thSelectNode = document.createElement("th");
+        this.headerNode.appendChild(thSelectNode);
       }
 
+      for (var x = 0; x < columns.length; x++) {
+        var column = columns[x];
+        var thNode = document.createElement("th");
+        thNode.innerText = column.label;
+        this.headerNode.appendChild(thNode);
+      }
+    } else {
+      this.columns = [];
     }
   }
 
-  stateChanged(state, value) {
-    console.info("Table.stateChanged: ", state, value);
-    if (state === this.comp.state) {
-      this.bodyNode.innerHTML = "";
+  _update(){
+    if (this.dontUpdate === false){
+      this.setRows(this.rows);
+    }
+  }
 
-      var rows = this.collections.find(value);
+  setSelectable(selectable){
+    this.selectable = selectable == true;
+    this.setColumns(this.columns);
+    this._update();
+  }
 
-      //var rows = value;
-      var columns = this.comp.columns;
+  setSort(sort){
+    this.collections.setSort(sort);
+    this._update();
+  }
+
+  setFilter(filter){
+    if (Array.isArray(filter)) {
+      this.collections.setFilter(filter);
+      this._update();
+    } else {
+      this.filter = [];
+    }
+  }
+
+  setPaging(paging){
+    this.collections.setPaging(paging);
+    this._update();
+  }
+
+  _changed(input){
+    var id = input.getAttribute("id");
+    if (input.checked) {
+      this.selected.push( id );
+    } else {
+      var index= this.selected.indexOf( id );
+      this.selected.splice(index, 1);
+    }
+    this.fireComponentChanged("selected", this.getSelected());
+  }
+
+  setRows(rowData){
+    if (Array.isArray(rowData)){
+    var rows = this.collections.find(rowData);
+      this.rows = rows;
+      this.removeChildNodes(this.getBodyNode());
       for (var y = 0; y < rows.length; y++) {
-        var rowData = rows[y];
+        var row = rows[y];
+        var trNode = document.createElement("tr");
+        this.getBodyNode().appendChild(trNode);
 
-        var rowNode = document.createElement("tr");
-        this.bodyNode.appendChild(rowNode);
+        if (this.selectable) {
+          var thSelectNode = document.createElement("td");
+          trNode.appendChild(thSelectNode);
+          var inputSelect = document.createElement("input");
+          var rowKey = row[ this.comp.rowKey ];
+          this.inputs.push(inputSelect);
+          inputSelect.setAttribute("id", rowKey);
+          inputSelect.setAttribute("type", "checkbox");
+          inputSelect.checked = this.selected.indexOf(rowKey) > - 1;
+          thSelectNode.appendChild(inputSelect);
+          inputSelect.addEventListener("click", function (evt) {
+            this._changed(evt.srcElement);
+          }.bind(this), false);
+        }
 
-        var tdSelectNode = document.createElement("td");
-        var checkboxNode = document.createElement("input");
-        tdSelectNode.appendChild(checkboxNode);
-        checkboxNode.setAttribute("type", "checkbox");
-        checkboxNode.setAttribute("data-smartflow-id", rowData["id"]);
-
-        var ctrl = this.ctrl;
-        checkboxNode.addEventListener("click", function () {
-          ctrl.componentChanged(
-            {
-              "component": this,
-              "event": "selection",
-              "value": this.checked,
-              "id": this.getAttribute("data-smartflow-id")
-            }
-          );
-        });
-
-        rowNode.appendChild(tdSelectNode);
-        for (var x = 0; x < columns.length; x++) {
-          var column = columns[x];
-          var cellData = rowData[column.key];
+        for (var x = 0; x < this.columns.length; x++) {
+          var column = this.columns[x];
+          var cellData = row[column.key];
           var tdNode = document.createElement("td");
-          rowNode.appendChild(tdNode);
+          trNode.appendChild(tdNode);
           if (column.format) {
             tdNode.innerText = this.builder.formatter.formatDate(cellData, column.format);
           } else {
@@ -100,4 +145,43 @@ class Table {
       }
     }
   }
+
+  stateChanged(state, value) {
+    if (state == this.comp.states.rows) {
+      this.setRows(value);
+    } else if (state == this.comp.states.selected) {
+      this.setSelected(value);
+    } else if (state == this.comp.states.selectable) {
+      this.setSelectable(value);
+    } else if (state == this.comp.states.columns) {
+      this.setColumns(value);
+    } else if (state == this.comp.states.sort) {
+      this.setSort(value);
+    } else if (state == this.comp.states.filter) {
+      this.setFilter(value);
+    } else if (state == this.comp.states.paging) {
+      this.setPaging(value);
+    }
+  }
+
+  setProperty(name, value){
+    if (name == "rows") {
+      this.setRows(value);
+    } else if (name == "selected") {
+      this.setSelected(value);
+    } else if (name == "columns") {
+      this.setColumns(value);
+    } else if (name == "sort") {
+      this.setSort(value);
+    } else if (name == "filter") {
+      this.setFilter(value);
+    } else if (name == "paging") {
+      this.setPaging(value);
+    }
+  }
+
+  commandPerformed(command, value) {
+    this.setProperty(command, value);
+  }
+
 }

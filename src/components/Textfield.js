@@ -16,7 +16,7 @@ class Textfield extends SmartflowComponent {
     this.input.addEventListener('keyup', function () {
       this._changed();
     }.bind(this), false);
-    this.setText(comp.value);
+    this.setValue(comp.value);
     if (comp.validation) {
       this.setRegex(comp.validation.regex);
       this.validationMessage = comp.validation.message;
@@ -30,7 +30,7 @@ class Textfield extends SmartflowComponent {
   }
 
   isValid() {
-    if (this.getText() === '') {
+    if (this.getValue() === '') {
       if (this.isRequired()) {
         return false;
       }
@@ -72,19 +72,18 @@ class Textfield extends SmartflowComponent {
     return this.input.getAttribute("placeholder");
   }
 
-  setText(text) {
+  setValue(text) {
     this.input.value = text == undefined ? "" : text;
   }
 
-  getText() {
+  getValue() {
     var s = this.input.value;
-    console.info("getText: ", s);
     return s === undefined ? '' : s;
   }
 
   stateChanged(state, value) {
     if (state == this.comp.states.value) {
-      this.setText(value);
+      this.setValue(value);
     } else if (state == this.comp.states.enabled) {
       this.setEnabled(value);
     } else if (state == this.comp.states.label) {

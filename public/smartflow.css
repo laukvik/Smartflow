@@ -92,3 +92,12 @@
   color: #d80009;
 
 }
+
+.sf-table{
+  width: 100%;
+  margin: 0.5em;
+}
+
+.sf-table TR{
+  line-height: 1.5em;
+}

@@ -27,6 +27,9 @@ class SmartflowComponent {
     return this.rootNode;
   }
 
+  setBodyNode(node){
+    this.bodyNode = node;
+  }
   getBodyNode() {
     return this.bodyNode;
   }

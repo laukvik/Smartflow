@@ -41,7 +41,11 @@ function StartAction() {
       "textfieldLabel": "Textfield2",
 
       "button": "Button2",
-      "buttonEnabled": false
+      "buttonEnabled": false,
+
+
+
+
     }
   }
 }
@@ -64,6 +68,43 @@ function FindMoviesAction() {
   };
 }
 
+function FindTableAction() {
+  this.smartflow = {
+    "states": {
+      "tableSelected": [
+        "Uncertain", "Wilson", "Baby-bossen"
+      ],
+      "tableSorted": {
+        "match": "title",
+        "order": "asc"
+      },
+      "tableFilter": [
+        {
+          "match": "year",
+          "type": "contains",
+          "value": "201"
+        }
+      ],
+      "tableColumns": [
+        {
+          "label": "Title",
+          "key": "title"
+        },
+        {
+          "label": "Genre",
+          "key": "genres"
+        },
+        {
+          "label": "Year",
+          "key": "year"
+        },
+      ],
+      "tableSelectable": true,
+
+    }
+  };
+}
+
 class InboxView {
   constructor() {
     this.smartflow = {
@@ -72,6 +113,53 @@ class InboxView {
         {
           "type": "Layout",
           "components": [
+            {
+              "type": "Table",
+              "id": "inboxTable",
+              "class": "table table-striped",
+              "rowKey": "title",
+              "selectable": "false",
+              "col-md": "12",
+              "col-lg": "12",
+              "states": {
+                "rows" : "movies",
+                "selected": "tableSelected",
+                "columns": "tableColumns",
+                "sort": "tableSort",
+                "filter": "tableFilter",
+                "paging": "tablePaging",
+                "selectable": "tableSelectable"
+              },
+              "sort": {
+                "match": "year",
+                "order": "asc"
+              },
+              "filter": [
+                {
+                  "match": "genres",
+                  "type": "contains",
+                  "value": "comedy"
+                }
+              ],
+              "paging": {
+                "size": 10,
+                "page": 0,
+              },
+              "columns": [
+                {
+                  "label": "Year",
+                  "key": "year"
+                },
+                {
+                  "label": "Title",
+                  "key": "title"
+                },
+                {
+                  "label": "Genre",
+                  "key": "genres"
+                }
+              ]
+            },
             {
               "type": "Checkbox",
               "label": "Checkbox",
@@ -225,53 +313,7 @@ class InboxView {
                   "label": "Purto consulatu sea no, ne nam tota verterem explicari, harum invidunt abhorreant ea cum. Ne vel viris labitur reprimique, et sit debet definiebas vituperata, vero quando deserunt mei at."
                 }
               ]
-            },
-            {
-              "type": "Table",
-              "id": "inboxTable",
-              "rowId": "id",
-              "selectable": true,
-              "sort": {
-                "match": "year",
-                "order": "asc"
-              },
-              "filter": [
-                {
-                  "match": "genres",
-                  "type": "contains",
-                  "value": "comedy"
-                }
-              ],
-              "paging": {
-                "size": 10,
-                "page": 0,
-              },
-              "columns": [
-                {
-                  "label": "Year",
-                  "key": "year"
-                },
-                {
-                  "label": "Title",
-                  "key": "title"
-                },
-                {
-                  "label": "Genre",
-                  "key": "genres"
-                },
-                {
-                  "label": "Story",
-                  "key": "storyline"
-                },
-                {
-                  "label": "Released",
-                  "key": "releaseDate",
-                  "formats": "DD.MM.YYYY",
-                  "inputFormat": "YYYY-MM-DD"
-                }
-              ],
-              "state": "movies2"
-            },
+            }
           ],
           "actions": [
             {
@@ -359,6 +401,8 @@ class InboxView {
 
   viewEnabled() {
     this.runSmartflow(new StartAction());
+    this.runSmartflow(new FindMoviesAction());
+    this.runSmartflow(new FindTableAction());
   };
 
   viewDisabled() {
