@@ -1,10 +1,16 @@
 class SmartflowComponent {
-  constructor(comp, ctrl, builder) {
-    this.comp = comp;
+  constructor(properties, ctrl, builder) {
+    this.componentID = properties.id;
+    this.comp = properties;
+    this.properties = properties;
     this.setView(ctrl);
     this.builder = builder;
     this.stateListeners = [];
     this.setValidationMessage("Required");
+  }
+
+  getProperties(){
+    return this.properties;
   }
 
   setView(viewController) {

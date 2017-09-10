@@ -3,7 +3,7 @@ class Button extends SmartflowComponent {
     super(comp, ctrl, builder);
     var buttonNode = document.createElement("button");
     buttonNode.setAttribute("id", comp.id);
-    buttonNode.setAttribute("class", "sf-button");
+    buttonNode.setAttribute("class", "btn btn-default");
     this.action = comp.action;
     this.setElement(buttonNode);
     this.setText(comp.label);

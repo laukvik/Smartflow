@@ -114,6 +114,30 @@ class InboxView {
           "type": "Layout",
           "components": [
             {
+              "type": "Tabs",
+              "tabs": [
+                {
+                  "label": "Inbox",
+                  "components": []
+                },
+                {
+                  "label": "Archive",
+                  "components": [
+                    {
+                      "type": "Textfield",
+                      "label": "Textfield",
+                      "required": true,
+                      "value": ""
+                    }
+                  ]
+                },
+                {
+                  "label": "Trash",
+                  "components": []
+                }
+              ]
+            },
+            {
               "type": "Table",
               "id": "inboxTable",
               "class": "table table-striped",

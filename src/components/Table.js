@@ -1,15 +1,15 @@
 class Table extends SmartflowComponent{
-  constructor(comp, ctrl, builder) {
-    super(comp, ctrl, builder);
+  constructor(properties, ctrl, builder) {
+    super(properties, ctrl, builder);
     this.dontUpdate = true;
-    this.collections = new Collections(comp);
+    this.collections = new Collections(properties);
     this.selected = [];
     this.columns = [];
     this.rows = [];
     this.inputs = [];
     // Table
     var tableNode = document.createElement("table");
-    tableNode.setAttribute("class", "sf-table");
+    tableNode.setAttribute("class", "table");
     // Head
     var theadNode = document.createElement("thead");
     var headerRowNode = document.createElement("tr");
@@ -21,10 +21,15 @@ class Table extends SmartflowComponent{
     tableNode.appendChild(bodyNode);
     this.setElement(tableNode);
     this.setBodyNode(bodyNode);
-    this.setSelectable(comp.selectable);
-    this.setSelected(comp.selected);
-    this.setColumns(comp.columns);
+    this.setRowKey(properties.rowKey)
+    this.setSelectable(properties.selectable);
+    this.setSelected(properties.selected);
+    this.setColumns(properties.columns);
     this.dontUpdate = false;
+  }
+
+  setRowKey(rowKey){
+    this.rowKey = rowKey;
   }
 
   setSelected(selected){
@@ -116,11 +121,11 @@ class Table extends SmartflowComponent{
         var trNode = document.createElement("tr");
         this.getBodyNode().appendChild(trNode);
 
-        if (this.selectable) {
+        if (this.selectable && this.rowKey != undefined) {
           var thSelectNode = document.createElement("td");
           trNode.appendChild(thSelectNode);
           var inputSelect = document.createElement("input");
-          var rowKey = row[ this.comp.rowKey ];
+          var rowKey = row[ this.rowKey ];
           this.inputs.push(inputSelect);
           inputSelect.setAttribute("id", rowKey);
           inputSelect.setAttribute("type", "checkbox");

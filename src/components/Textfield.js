@@ -5,11 +5,11 @@ class Textfield extends SmartflowComponent {
     if (comp.rows) {
       this.input = document.createElement("textarea");
       this.input.setAttribute("rows", comp.rows);
-      this.input.setAttribute("class", "sf-textfield-input");
+      this.input.setAttribute("class", "form-control");
     } else {
       this.input = document.createElement("input");
       this.input.setAttribute("type", "text");
-      this.input.setAttribute("class", "sf-textfield-input");
+      this.input.setAttribute("class", "form-control");
     }
     this.input.setAttribute("placeholder", comp.placeholder);
     this.getBodyNode().appendChild(this.input);

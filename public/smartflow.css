@@ -101,3 +101,19 @@
 .sf-table TR{
   line-height: 1.5em;
 }
+
+.sf-tabs-label{
+  /*border: 1px solid black;
+  padding: 0.25em;*/
+}
+.sf-tabs-label.sf-selected{
+  /*background-color: #6d9a77;*/
+}
+
+.sf-tabs-panel{
+  display: none;
+}
+
+.sf-tabs-panel.active{
+  display: block;
+}
