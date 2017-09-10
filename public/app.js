@@ -126,53 +126,6 @@ class InboxView {
                   "label": "Minimum",
                   "components": [
                     {
-                      "type": "Table",
-                      "id": "inboxTable",
-                      "class": "table table-striped",
-                      "rowKey": "title",
-                      "selectable": "false",
-                      "col-md": "12",
-                      "col-lg": "12",
-                      "states": {
-                        "rows" : "movies",
-                        "selected": "tableSelected",
-                        "columns": "tableColumns",
-                        "sort": "tableSort",
-                        "filter": "tableFilter",
-                        "paging": "tablePaging",
-                        "selectable": "tableSelectable"
-                      },
-                      "sort": {
-                        "match": "year",
-                        "order": "asc"
-                      },
-                      "filter": [
-                        {
-                          "match": "genres",
-                          "type": "contains",
-                          "value": "comedy"
-                        }
-                      ],
-                      "paging": {
-                        "size": 10,
-                        "page": 0,
-                      },
-                      "columns": [
-                        {
-                          "label": "Year",
-                          "key": "year"
-                        },
-                        {
-                          "label": "Title",
-                          "key": "title"
-                        },
-                        {
-                          "label": "Genre",
-                          "key": "genres"
-                        }
-                      ]
-                    },
-                    {
                       "type": "Checkbox",
                       "label": "Checkbox",
                       "required": true,
@@ -283,15 +236,73 @@ class InboxView {
                   "label": "Core",
                   "components": [
                     {
+                      "type": "Toolbar",
+                      "actions": [
+                        {
+                          "type": "Button",
+                          "label": "Find",
+                          "action": "FindMoviesAction"
+                        },
+                        {
+                          "type": "Button",
+                          "label": "Create",
+                          "action": "FindMoviesAction"
+                        }
+                      ]
+                    },
+                    {
                       "type": "Progress",
                       "value": "0",
                       "states": {
+                        "value": "progress"
+                      }
+                    },
+                    {
+                      "type": "Table",
+                      "id": "inboxTable",
+                      "class": "table table-striped",
+                      "rowKey": "title",
+                      "selectable": "false",
+                      "col-md": "12",
+                      "col-lg": "12",
+                      "states": {
                         "rows" : "movies",
+                        "selected": "tableSelected",
+                        "columns": "tableColumns",
                         "sort": "tableSort",
                         "filter": "tableFilter",
                         "paging": "tablePaging",
-                        "value": "progress"
-                      }
+                        "selectable": "tableSelectable"
+                      },
+                      "sort": {
+                        "match": "year",
+                        "order": "asc"
+                      },
+                      "filter": [
+                        {
+                          "match": "genres",
+                          "type": "contains",
+                          "value": "comedy"
+                        }
+                      ],
+                      "paging": {
+                        "size": 10,
+                        "page": 0,
+                      },
+                      "columns": [
+                        {
+                          "label": "Year",
+                          "key": "year"
+                        },
+                        {
+                          "label": "Title",
+                          "key": "title"
+                        },
+                        {
+                          "label": "Genre",
+                          "key": "genres"
+                        }
+                      ]
                     }
                   ]
                 },

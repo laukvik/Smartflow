@@ -102,7 +102,11 @@ class SmartflowComponent {
 
   fireAction(action) {
     var func = eval(action);
-    this.smartflow.runAction(new func(), this.getView());
+    if (func == undefined) {
+      console.warn("Action not found: ", action);
+    } else {
+      this.smartflow.runAction(new func(), this.getView());
+    }
   }
 
   setRequired(isRequired) {
