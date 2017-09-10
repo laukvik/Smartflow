@@ -1,6 +1,9 @@
 function StartAction() {
   this.smartflow = {
     "statess": {
+
+
+
       "checkboxes": [
         {"text": "Fish2", "value": "0"},
         {"text": "Eggs2", "value": "1"},
@@ -101,6 +104,8 @@ function FindTableAction() {
       ],
       "tableSelectable": true,
 
+      "progress": 22,
+
     }
   };
 }
@@ -115,179 +120,186 @@ class InboxView {
           "components": [
             {
               "type": "Tabs",
+              "selectedIndex": 1,
               "tabs": [
                 {
-                  "label": "Inbox",
-                  "components": []
-                },
-                {
-                  "label": "Archive",
+                  "label": "Minimum",
                   "components": [
+                    {
+                      "type": "Table",
+                      "id": "inboxTable",
+                      "class": "table table-striped",
+                      "rowKey": "title",
+                      "selectable": "false",
+                      "col-md": "12",
+                      "col-lg": "12",
+                      "states": {
+                        "rows" : "movies",
+                        "selected": "tableSelected",
+                        "columns": "tableColumns",
+                        "sort": "tableSort",
+                        "filter": "tableFilter",
+                        "paging": "tablePaging",
+                        "selectable": "tableSelectable"
+                      },
+                      "sort": {
+                        "match": "year",
+                        "order": "asc"
+                      },
+                      "filter": [
+                        {
+                          "match": "genres",
+                          "type": "contains",
+                          "value": "comedy"
+                        }
+                      ],
+                      "paging": {
+                        "size": 10,
+                        "page": 0,
+                      },
+                      "columns": [
+                        {
+                          "label": "Year",
+                          "key": "year"
+                        },
+                        {
+                          "label": "Title",
+                          "key": "title"
+                        },
+                        {
+                          "label": "Genre",
+                          "key": "genres"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "Checkbox",
+                      "label": "Checkbox",
+                      "required": true,
+                      "states": {
+                        "options": "checkboxes",
+                        "selected": "selectedCheckboxes",
+                        "enabled": "checkboxEnabled",
+                        "required": "checkboxRequired",
+                        "label": "checkboxLabel"
+                      },
+                      "optionsState": "checkboxes",
+                      "selected": [
+                        "0", "2"
+                      ],
+                      "options": [
+                        {"text": "Fish", "value": "0"},
+                        {"text": "Eggs", "value": "1"},
+                        {"text": "Milk", "value": "2"}
+                      ],
+                      "col-md": "6",
+                      "col-lg": "4"
+                    },
+                    {
+                      "type": "Radio",
+                      "label": "Radio",
+                      "required": true,
+                      "vertical": "false",
+                      "states": {
+                        "options": "radios",
+                        "selected": "selectedRadio",
+                        "enabled": "radioEnabled",
+                        "required": "radioRequired",
+                        "label": "radioLabel"
+                      },
+                      "options": [
+                        {"text": "Fish", "value": "0"},
+                        {"text": "Eggs", "value": "1"},
+                        {"text": "Milk", "value": "2"}
+                      ],
+                      "col-md": "6",
+                      "col-lg": "4"
+                    },
+                    {
+                      "type": "Pulldown",
+                      "label": "Pulldown",
+                      "required": true,
+                      "selected": "coke",
+                      "enabled": true,
+                      "options": [
+                        {"text": "Big Mac", "value": "bigMac", "group": "food"},
+                        {"text": "Whopper", "value": "whopper", "group": "food"},
+                        {"text": "Coke", "value": "coke", "group": "drink"},
+                        {"text": "Sprite", "value": "sprite", "group": "drink"}
+                      ],
+                      "states": {
+                        "options": "pulldowns",
+                        "selected": "selectedPulldown",
+                        "enabled": "pulldownEnabled",
+                        "required": "pulldownRequired",
+                        "label": "pulldownLabel"
+                      },
+                      "col-md": "6",
+                      "col-lg": "4"
+                    }
+                    ,
                     {
                       "type": "Textfield",
                       "label": "Textfield",
                       "required": true,
-                      "value": ""
+                      "value": "",
+                      "placeholder": "Placeholder here...",
+                      "validation": {
+                        "pattern": "hh:mm:ss",
+                        "regex": "^[0-9]{1,2}:[0-9]{1,2}:[0-9]{1,2}$",
+                        "message": "Please enter valid hour"
+                      },
+                      "states": {
+                        "enabled": "textfieldEnabled",
+                        "value": "textfield",
+                        "required": "textfieldRequired",
+                        "label": "textfieldLabel"
+                      },
+                      "col-md": "6",
+                      "col-lg": "12"
+                    },
+                    {
+                      "type": "Textfield",
+                      "label": "Textarea",
+                      "required": true,
+                      "rows": 10,
+                      "placeholder": "Placeholder here...",
+                      "col-md": "12"
+                    },
+                    {
+                      "type": "Button",
+                      "label": "Button",
+                      "enabled": true,
+                      "states": {
+                        "enabled": "buttonEnabled",
+                        "value": "button"
+                      },
+                      "action": "FindMoviesAction",
+                      "col-md": "12"
                     }
                   ]
                 },
                 {
-                  "label": "Trash",
+                  "label": "Core",
+                  "components": [
+                    {
+                      "type": "Progress",
+                      "value": "0",
+                      "states": {
+                        "rows" : "movies",
+                        "sort": "tableSort",
+                        "filter": "tableFilter",
+                        "paging": "tablePaging",
+                        "value": "progress"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "label": "Advanced",
                   "components": []
                 }
               ]
-            },
-            {
-              "type": "Table",
-              "id": "inboxTable",
-              "class": "table table-striped",
-              "rowKey": "title",
-              "selectable": "false",
-              "col-md": "12",
-              "col-lg": "12",
-              "states": {
-                "rows" : "movies",
-                "selected": "tableSelected",
-                "columns": "tableColumns",
-                "sort": "tableSort",
-                "filter": "tableFilter",
-                "paging": "tablePaging",
-                "selectable": "tableSelectable"
-              },
-              "sort": {
-                "match": "year",
-                "order": "asc"
-              },
-              "filter": [
-                {
-                  "match": "genres",
-                  "type": "contains",
-                  "value": "comedy"
-                }
-              ],
-              "paging": {
-                "size": 10,
-                "page": 0,
-              },
-              "columns": [
-                {
-                  "label": "Year",
-                  "key": "year"
-                },
-                {
-                  "label": "Title",
-                  "key": "title"
-                },
-                {
-                  "label": "Genre",
-                  "key": "genres"
-                }
-              ]
-            },
-            {
-              "type": "Checkbox",
-              "label": "Checkbox",
-              "required": true,
-              "states": {
-                "options": "checkboxes",
-                "selected": "selectedCheckboxes",
-                "enabled": "checkboxEnabled",
-                "required": "checkboxRequired",
-                "label": "checkboxLabel"
-              },
-              "optionsState": "checkboxes",
-              "selected": [
-                "0", "2"
-              ],
-              "options": [
-                {"text": "Fish", "value": "0"},
-                {"text": "Eggs", "value": "1"},
-                {"text": "Milk", "value": "2"}
-              ],
-              "col-md": "6",
-              "col-lg": "4"
-            },
-            {
-              "type": "Radio",
-              "label": "Radio",
-              "required": true,
-              "vertical": "false",
-              "states": {
-                "options": "radios",
-                "selected": "selectedRadio",
-                "enabled": "radioEnabled",
-                "required": "radioRequired",
-                "label": "radioLabel"
-              },
-              "options": [
-                {"text": "Fish", "value": "0"},
-                {"text": "Eggs", "value": "1"},
-                {"text": "Milk", "value": "2"}
-              ],
-              "col-md": "6",
-              "col-lg": "4"
-            },
-            {
-              "type": "Pulldown",
-              "label": "Pulldown",
-              "required": true,
-              "selected": "coke",
-              "enabled": true,
-              "options": [
-                {"text": "Big Mac", "value": "bigMac", "group": "food"},
-                {"text": "Whopper", "value": "whopper", "group": "food"},
-                {"text": "Coke", "value": "coke", "group": "drink"},
-                {"text": "Sprite", "value": "sprite", "group": "drink"}
-              ],
-              "states": {
-                "options": "pulldowns",
-                "selected": "selectedPulldown",
-                "enabled": "pulldownEnabled",
-                "required": "pulldownRequired",
-                "label": "pulldownLabel"
-              },
-              "col-md": "6",
-              "col-lg": "4"
-            }
-            ,
-            {
-              "type": "Textfield",
-              "label": "Textfield",
-              "required": true,
-              "value": "",
-              "placeholder": "Placeholder here...",
-              "validation": {
-                "pattern": "hh:mm:ss",
-                "regex": "^[0-9]{1,2}:[0-9]{1,2}:[0-9]{1,2}$",
-                "message": "Please enter valid hour"
-              },
-              "states": {
-                "enabled": "textfieldEnabled",
-                "value": "textfield",
-                "required": "textfieldRequired",
-                "label": "textfieldLabel"
-              },
-              "col-md": "6",
-              "col-lg": "12"
-            },
-            {
-              "type": "Textfield",
-              "label": "Textarea",
-              "required": true,
-              "rows": 10,
-              "placeholder": "Placeholder here...",
-              "col-md": "12"
-            },
-            {
-              "type": "Button",
-              "label": "Button",
-              "enabled": true,
-              "states": {
-                "enabled": "buttonEnabled",
-                "value": "button"
-              },
-              "action": "FindMoviesAction",
-              "col-md": "12"
             }
           ]
         }
@@ -436,7 +448,7 @@ class InboxView {
   };
 
   actionPerformed(evt) {
-    console.info("InboxView.actionPerformed: ", evt);
+    //console.info("InboxView.actionPerformed: ", evt);
   };
 
   componentChanged(evt) {

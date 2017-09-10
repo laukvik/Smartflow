@@ -1,7 +1,7 @@
 class Tabs extends SmartflowComponent {
   constructor(properties, ctrl, builder) {
     super(properties, ctrl, builder);
-    this.buildRoot("");
+    this.buildRoot("sf-tabs");
 
     this.labelsNode = document.createElement("ul");
     this.labelsNode.setAttribute("class", "nav nav-tabs nav-justified");
@@ -14,53 +14,60 @@ class Tabs extends SmartflowComponent {
     this.contents = [];
     this.links = [];
 
-    for (var x=0; x<properties.tabs.length; x++) {
-      var tab = properties.tabs[ x ];
-      var labelNode = document.createElement("li");
-      labelNode.setAttribute("role", "presentation");
-      this.labelsNode.appendChild(labelNode);
-      this.labels.push(labelNode);
+    if (Array.isArray(properties.tabs)) {
+      for (var x = 0; x < properties.tabs.length; x++) {
+        var tab = properties.tabs[x];
+        var labelNode = document.createElement("li");
+        labelNode.setAttribute("role", "presentation");
+        this.labelsNode.appendChild(labelNode);
+        this.labels.push(labelNode);
 
-      var linkNode = document.createElement("a");
-      labelNode.appendChild(linkNode);
-      linkNode.innerText = tab.label;
-      this.links.push(linkNode);
+        var linkNode = document.createElement("a");
+        labelNode.appendChild(linkNode);
+        linkNode.innerText = tab.label;
+        this.links.push(linkNode);
 
-      linkNode.addEventListener("click", function (evt) {
-        this._selected(evt.srcElement);
-      }.bind(this), false);
+        linkNode.addEventListener("click", function (evt) {
+          this._selected(evt.srcElement);
+        }.bind(this), false);
 
-      var contentNode = document.createElement("div");
-      contentNode.setAttribute("class", "sf-tabs-panel");
-      this.contentsNode.appendChild(contentNode);
-      this.contents.push(contentNode);
+        var contentNode = document.createElement("div");
+        contentNode.setAttribute("class", "sf-tabs-panel");
+        this.contentsNode.appendChild(contentNode);
+        this.contents.push(contentNode);
 
-      if (Array.isArray(tab.components)) {
-        var panelComponents = tab.components;
-        for (var n = 0; n < panelComponents.length; n++) {
-          var panelNode = document.createElement("div");
-          var panelComponent = panelComponents[n];
-
-          console.info(n, panelComponent);
-          contentNode.appendChild(panelNode);
-          builder.buildChildNode(panelNode, panelComponent);
+        if (Array.isArray(tab.components)) {
+          var panelComponents = tab.components;
+          for (var n = 0; n < panelComponents.length; n++) {
+            var panelNode = document.createElement("div");
+            var panelComponent = panelComponents[n];
+            contentNode.appendChild(panelNode);
+            builder.buildChildNode(panelNode, panelComponent);
+          }
         }
       }
-    }
 
-    this.setSelectedIndex(0);
+      this.setSelectedIndex(properties.selectedIndex);
+
+
+    }
   }
-  _selected(link){
+
+  _selected(link) {
     var index = this.links.indexOf(link);
     this.setSelectedIndex(index);
   }
 
-  setSelectedIndex(index){
-    for (var x=0; x<this.labels.length; x++) {
-      var css = (x === index ? "active" : "");
-      var li = this.labels[ x ];
-      li.setAttribute("class", css);
-      this.contents[ x ].setAttribute("class", "sf-tabs-panel " + css);
+  setSelectedIndex(index) {
+    if (index >= 0 && index < this.labels.length) {
+      for (var x = 0; x < this.labels.length; x++) {
+        var css = (x === index ? "active" : "");
+        var li = this.labels[x];
+        li.setAttribute("class", css);
+        this.contents[x].setAttribute("class", "sf-tabs-panel " + css);
+      }
+    } else {
+
     }
   }
 
