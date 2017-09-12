@@ -110,6 +110,22 @@ function FindTableAction() {
   };
 }
 
+function ShowDialogAction(){
+  this.smartflow = {
+    "states": {
+      "dialogVisible": true
+    }
+  }
+}
+
+function CloseDialogAction(){
+  this.smartflow = {
+    "states": {
+      "dialogVisible": false
+    }
+  }
+}
+
 class InboxView {
   constructor() {
     this.smartflow = {
@@ -236,12 +252,42 @@ class InboxView {
                   "label": "Core",
                   "components": [
                     {
+                      "type": "Dialog",
+                      "label": "HelloDialog",
+                      "visible": false,
+                      "title": "Dialog",
+                      "states": {
+                        "visible": "dialogVisible"
+                      },
+                      "components": [
+                        {
+                          "type": "Progress",
+                          "value": "0",
+                          "states": {
+                            "value": "progress"
+                          }
+                        }
+                      ],
+                      "actions": [
+                        {
+                          "type": "Button",
+                          "label": "Ok",
+                          "action": "CloseDialogAction"
+                        },
+                        {
+                          "type": "Button",
+                          "label": "Cancel",
+                          "action": "CloseDialogAction"
+                        }
+                      ]
+                    },
+                    {
                       "type": "Toolbar",
                       "actions": [
                         {
                           "type": "Button",
-                          "label": "Find",
-                          "action": "FindMoviesAction"
+                          "label": "Dialog",
+                          "action": "ShowDialogAction"
                         },
                         {
                           "type": "Button",
