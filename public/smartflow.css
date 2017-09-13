@@ -80,12 +80,9 @@
 }
 
 .sf-button{
+  color: #555555;
   padding: 0.25em 2em;
   font-size: 12pt;
-  color: #555555;
-  border: 1px outset;
-  border-radius: 5px;
-  background-color: #ffffff;
 }
 
 .sf-error {
@@ -95,7 +92,7 @@
 
 .sf-table{
   width: 100%;
-  margin: 0.5em;
+  color: #555555;
 }
 
 .sf-table TR{

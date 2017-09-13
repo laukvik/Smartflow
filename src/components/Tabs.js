@@ -1,22 +1,25 @@
-class Tabs extends SmartflowComponent {
-  constructor(properties, ctrl, builder) {
-    super(properties, ctrl, builder);
-    this.buildRoot("sf-tabs");
-
-    this.labelsNode = document.createElement("ul");
-    this.labelsNode.setAttribute("class", "nav nav-tabs nav-justified");
-    this.contentsNode = document.createElement("div");
-    this.contentsNode.setAttribute("class", "sf-tabs-panels");
-    this.getElement().appendChild(this.labelsNode);
-    this.getElement().appendChild(this.contentsNode);
-
+class Tabs extends PresentationComponent {
+  constructor(properties) {
+    super(properties);
     this.labels = [];
     this.contents = [];
     this.links = [];
+  }
 
-    if (Array.isArray(properties.tabs)) {
-      for (var x = 0; x < properties.tabs.length; x++) {
-        var tab = properties.tabs[x];
+  buildComponent(builder){
+    var tabsDiv = document.createElement("ul");
+    if (Array.isArray(this.properties.tabs)) {
+      tabsDiv.setAttribute("class", "sf-tabs");
+
+      this.labelsNode = document.createElement("ul");
+      this.labelsNode.setAttribute("class", "nav nav-tabs nav-justified");
+      this.contentsNode = document.createElement("div");
+      this.contentsNode.setAttribute("class", "sf-tabs-panels");
+      tabsDiv.appendChild(this.labelsNode);
+      tabsDiv.appendChild(this.contentsNode);
+
+      for (var x = 0; x < this.properties.tabs.length; x++) {
+        var tab = this.properties.tabs[x];
         var labelNode = document.createElement("li");
         labelNode.setAttribute("role", "presentation");
         this.labelsNode.appendChild(labelNode);
@@ -39,18 +42,15 @@ class Tabs extends SmartflowComponent {
         if (Array.isArray(tab.components)) {
           var panelComponents = tab.components;
           for (var n = 0; n < panelComponents.length; n++) {
-            var panelNode = document.createElement("div");
             var panelComponent = panelComponents[n];
-            contentNode.appendChild(panelNode);
-            builder.buildChildNode(panelNode, panelComponent);
+            builder.buildChildNode(contentNode, panelComponent);
           }
         }
       }
 
-      this.setSelectedIndex(properties.selectedIndex);
-
-
+      this.setSelectedIndex(this.properties.selectedIndex);
     }
+    return tabsDiv;
   }
 
   _selected(link) {
@@ -66,10 +66,7 @@ class Tabs extends SmartflowComponent {
         li.setAttribute("class", css);
         this.contents[x].setAttribute("class", "sf-tabs-panel " + css);
       }
-    } else {
-
     }
   }
 
 }
-

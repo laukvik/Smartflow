@@ -169,6 +169,7 @@ class InboxView {
                       "label": "Radio",
                       "required": true,
                       "vertical": "false",
+                      "selected": "1",
                       "states": {
                         "options": "radios",
                         "selected": "selectedRadio",

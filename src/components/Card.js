@@ -1,4 +1,4 @@
-class Card extends SmartflowComponent {
+class Card extends InputComponent {
   constructor(comp, ctrl, builder) {
     super(comp, ctrl, builder);
     var rootNode = document.createElement("div");

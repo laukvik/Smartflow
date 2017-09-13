@@ -5,23 +5,23 @@
  * - value
  *
  */
-class Progress extends SmartflowComponent {
+class Progress extends PresentationComponent {
   constructor(properties, ctrl, builder) {
     super(properties, ctrl, builder);
-    this.buildRoot("sf-progress");
+    this.value = 0;
+  }
 
+  buildComponent(){
     var progressNode = document.createElement("div");
     progressNode.setAttribute("class", "progress");
-
-    this.getElement().appendChild(progressNode);
 
     var progressBarNode = document.createElement("div");
     progressBarNode.setAttribute("class", "progress-bar progress-bar-striped");
     progressBarNode.setAttribute("role", "progressbar");
-    this.progressBarNode = progressBarNode;
     progressNode.appendChild(progressBarNode);
-
-    this.setValue( properties.value );
+    this.progressNode = progressNode;
+    this.progressBarNode = progressBarNode;
+    return this.progressNode;
   }
 
   setValue(value){

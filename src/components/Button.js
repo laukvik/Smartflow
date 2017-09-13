@@ -1,40 +1,42 @@
 class Button extends SmartflowComponent {
-  constructor(comp, ctrl, builder) {
-    super(comp, ctrl, builder);
-    var buttonNode = document.createElement("button");
-    buttonNode.setAttribute("id", comp.id);
-    buttonNode.setAttribute("class", "btn btn-default");
-    this.action = comp.action;
-    this.setElement(buttonNode);
-    this.setText(comp.label);
-    var self = this;
-    buttonNode.addEventListener("click", function () {
-      self.fireAction(self.action);
+  constructor(properties) {
+    super(properties);
+  }
+
+  buildComponent(builder, properties){
+    this.buttonNode = document.createElement("button");
+    this.buttonNode.setAttribute("id", properties.id);
+    this.buttonNode.setAttribute("class", "btn btn-default");
+    this.action = properties.action;
+    this.setText(properties.label);
+    this.buttonNode.addEventListener("click", function () {
+      this.fireAction(this.action);
     }.bind(this), false);
+    return this.buttonNode;
   }
 
   setEnabled(isEnabled) {
     if (isEnabled) {
-      this.getElement().removeAttribute("disabled");
+      this.buttonNode.removeAttribute("disabled");
     } else {
-      this.getElement().setAttribute("disabled", "true");
+      this.buttonNode.setAttribute("disabled", "true");
     }
   }
 
   setText(text) {
-    this.getElement().innerText = text;
+    this.buttonNode.innerText = text;
   }
 
   getText() {
-    return this.getElement().innerText;
+    return this.buttonNode.innerText;
   }
 
   stateChanged(state, value) {
-    if (state == this.comp.states.value) {
+    if (state == this.properties.states.value) {
       this.setText(value);
-    } else if (state == this.comp.states.enabled) {
+    } else if (state == this.properties.states.enabled) {
       this.setEnabled(value);
-    } else if (state == this.comp.states.label) {
+    } else if (state == this.properties.states.label) {
       this.setLabel(value);
     }
   }

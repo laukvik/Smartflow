@@ -1,4 +1,4 @@
-class Table extends SmartflowComponent{
+class Table extends InputComponent{
   constructor(properties, ctrl, builder) {
     super(properties, ctrl, builder);
     this.dontUpdate = true;
@@ -7,6 +7,15 @@ class Table extends SmartflowComponent{
     this.columns = [];
     this.rows = [];
     this.inputs = [];
+    this.headerNode = document.createElement("div");
+    this.bodyNode = document.createElement("div");
+    this.setRowKey(properties.rowKey)
+    this.setSelectable(properties.selectable);
+    this.setSelected(properties.selected);
+    this.setColumns(properties.columns);
+  }
+
+  buildComponent(){
     // Table
     var tableNode = document.createElement("table");
     tableNode.setAttribute("class", "table");
@@ -15,17 +24,12 @@ class Table extends SmartflowComponent{
     var headerRowNode = document.createElement("tr");
     theadNode.appendChild(headerRowNode);
     tableNode.appendChild(theadNode);
-    this.headerNode = headerRowNode;
     // Body
     var bodyNode = document.createElement("tbody");
     tableNode.appendChild(bodyNode);
-    this.setElement(tableNode);
-    this.setBodyNode(bodyNode);
-    this.setRowKey(properties.rowKey)
-    this.setSelectable(properties.selectable);
-    this.setSelected(properties.selected);
-    this.setColumns(properties.columns);
-    this.dontUpdate = false;
+    this.headerNode = headerRowNode;
+    this.bodyNode = bodyNode;
+    return tableNode;
   }
 
   setRowKey(rowKey){
@@ -70,9 +74,7 @@ class Table extends SmartflowComponent{
   }
 
   _update(){
-    if (this.dontUpdate === false){
-      this.setRows(this.rows);
-    }
+    this.setRows(this.rows);
   }
 
   setSelectable(selectable){
@@ -115,11 +117,11 @@ class Table extends SmartflowComponent{
     if (Array.isArray(rowData)){
     var rows = this.collections.find(rowData);
       this.rows = rows;
-      this.removeChildNodes(this.getBodyNode());
+      this.removeChildNodes(this.bodyNode);
       for (var y = 0; y < rows.length; y++) {
         var row = rows[y];
         var trNode = document.createElement("tr");
-        this.getBodyNode().appendChild(trNode);
+        this.bodyNode.appendChild(trNode);
 
         if (this.selectable && this.rowKey != undefined) {
           var thSelectNode = document.createElement("td");

@@ -1,16 +1,18 @@
+/**
+ *
+ *
+ */
 class SmartflowComponent {
-  constructor(properties, ctrl, builder) {
-    this.componentID = properties.id;
-    this.comp = properties;
+  constructor(properties){
     this.properties = properties;
-    this.setView(ctrl);
-    this.builder = builder;
     this.stateListeners = [];
-    this.setValidationMessage("Required");
+    this.componentID = properties.id;
   }
 
-  getProperties(){
-    return this.properties;
+  buildComponent(){
+    var div = document.createElement("div");
+    div.innerText = "[Smartflow:"+ this.constructor.name +"]";
+    return div;
   }
 
   setView(viewController) {
@@ -25,21 +27,28 @@ class SmartflowComponent {
     this.smartflow = smartflow;
   }
 
-  setElement(node) {
-    this.rootNode = node;
+  setID(id) {
+    this.componentID = id;
   }
 
-  getElement() {
-    return this.rootNode;
+  getID() {
+    return this.componentID;
   }
 
-  setBodyNode(node){
-    this.bodyNode = node;
+  fireAction(action) {
+    var func = eval(action);
+    if (func == undefined) {
+      console.warn("Action not found: ", action);
+    } else {
+    console.info("FIRE: ", action);
+      this.smartflow.runAction(new func(), this.getView());
+    }
   }
-  getBodyNode() {
-    return this.bodyNode;
+  removeChildNodes(node) {
+    while (node.firstChild) {
+      node.removeChild(node.firstChild);
+    }
   }
-
   setStateBinding(states) {
     var arr = [];
     for (var key in states) {
@@ -52,12 +61,88 @@ class SmartflowComponent {
     return this.stateListeners;
   }
 
-  setID(id) {
-    this.rootNode.setAttribute("id", id);
+  // TODO - enable fireComponentChanged
+  fireComponentChanged(property, value) {
+    //this.smartflow.fireComponentChanged(this, property, value, this.ctrl);
+  }
+}
+
+/**
+ * Component for presentation
+ *
+ *
+ */
+class PresentationComponent extends SmartflowComponent {
+  constructor(properties){
+    super(properties);
+    this.componentRootNode = document.createElement("div");
   }
 
-  getID() {
-    return this.rootNode.getAttribute("id");
+  buildComponent(){
+    var div = document.createElement("div");
+    div.innerText = "[Smartflow:"+ this.constructor.name +"]";
+    return div;
+  }
+}
+
+/**
+ *
+ * Component for user input, validation and error message
+ *
+ * componentNode = hovedNo
+ * containerNode =
+ *
+ */
+class InputComponent extends SmartflowComponent{
+  constructor(properties, ctrl, builder) {
+    super(properties);
+    this.comp = properties;
+    this.builder = builder;
+    this.componentRootNode = document.createElement("div");
+    this.componentRootNode.setAttribute("class", "sf-" + this.constructor.name.toLowerCase());
+    this.labelNode = document.createElement("div");
+    this.labelNode.setAttribute("class", "sf-label");
+    this.errorNode = document.createElement("div");
+    this.errorNode.setAttribute("class", "sf-error");
+    this.setValidationMessage("Required");
+  }
+
+  // Bygger HTML og adder listeners
+  buildComponent(builder, properties) {
+    return this.rootNode;
+  }
+
+  setRootNode(componentNode){
+    this.componentNode = componentNode;
+    this.removeChildNodes(this.componentRootNode);
+    this.componentRootNode.appendChild(this.labelNode);
+    this.componentRootNode.appendChild(componentNode);
+    this.componentRootNode.appendChild(this.errorNode);
+  }
+
+  getRootNode(){
+    return this.componentRootNode;
+  }
+
+  validate(){
+    return true;
+  }
+
+  setRequired(required){
+    this.required = required == true;
+    this.labelNode.setAttribute("class", this.required ? "sf-label sf-required" : "sf-label");
+  }
+
+  isRequired(){
+    return this.required;
+  }
+
+  setElement(node) {
+    this.rootNode = node;
+  }
+
+  getElement() {
+    return this.rootNode;
   }
 
   setLabel(text) {
@@ -74,58 +159,6 @@ class SmartflowComponent {
 
   getError() {
     return this.errorNode.innerText;
-  }
-
-  buildRoot(name) {
-    this.setElement(document.createElement("div"));
-    this.rootNode.setAttribute("class", name);
-  }
-
-  buildRootWithLabel(name) {
-    this.buildRoot(name);
-    // label
-    this.labelNode = document.createElement("div");
-    this.labelNode.innerText = this.comp.label;
-    this.rootNode.appendChild(this.labelNode);
-    // Body
-    this.bodyNode = document.createElement("div");
-    this.getElement().appendChild(this.bodyNode);
-    // Error
-    this.errorNode = document.createElement("div");
-    this.errorNode.setAttribute("class", "sf-error");
-    this.getElement().appendChild(this.errorNode);
-  }
-
-  fireComponentChanged(property, value) {
-    this.smartflow.fireComponentChanged(this, property, value, this.ctrl);
-  }
-
-  fireAction(action) {
-    var func = eval(action);
-    if (func == undefined) {
-      console.warn("Action not found: ", action);
-    } else {
-      this.smartflow.runAction(new func(), this.getView());
-    }
-  }
-
-  setRequired(isRequired) {
-    this.componentRequired = isRequired;
-    this.labelNode.setAttribute("class", "sf-label" + (isRequired ? " sf-required" : ""));
-  }
-
-  isRequired() {
-    return this.componentRequired;
-  }
-
-  removeChildNodes(node) {
-    while (node.firstChild) {
-      node.removeChild(node.firstChild);
-    }
-  }
-
-  isValid() {
-    return true;
   }
 
   validate() {
@@ -145,4 +178,5 @@ class SmartflowComponent {
   getValidationMessage() {
     return this.validationMessage;
   }
+
 }

@@ -1,13 +1,21 @@
-class Checkbox extends SmartflowComponent {
-  constructor(comp, ctrl, builder) {
-    super(comp, ctrl, builder);
-    this.buildRootWithLabel("sf-checkbox", comp.required);
+class Checkbox extends InputComponent {
+  constructor(properties, ctrl, builder) {
+    super(properties, ctrl, builder);
+    this.inputs = [];
     this.optionsNode = document.createElement("div");
-    this.getBodyNode().appendChild(this.optionsNode);
-    this.setOptions(comp.options);
-    this.setSelected(comp.selected);
-    this.setLabel(comp.label);
-    this.setRequired(comp.required);
+    this.optionsNode.setAttribute("class", "sf-checkbox-options")
+  }
+
+  buildComponent(builder, properties){
+    this.setEnabled(properties.enabled);
+    this.setRequired(properties.required);
+    this.setLabel(properties.label);
+    if (properties.validation) {
+      this.setValidationMessage(properties.validation.message);
+    }
+    this.setOptions(properties.options);
+    this.setSelected(properties.selected);
+    return this.optionsNode;
   }
 
   isValid() {
@@ -19,7 +27,7 @@ class Checkbox extends SmartflowComponent {
   }
 
   setVertical(isVertical) {
-    this.vertical = isVertical;
+    this.vertical = isVertical == true;
     this.getElement().setAttribute("class", "sf-checkbox " + (isVertical ? "sf-checkbox-vertical" : "sf-checkbox-horisontal"));
   }
 
@@ -28,27 +36,29 @@ class Checkbox extends SmartflowComponent {
   }
 
   setEnabled(isEnabled) {
-    for (var x = 0; x < this.inputs.length; x++) {
+    for (let x = 0; x < this.inputs.length; x++) {
       this.inputs[x].disabled = isEnabled;
     }
   }
 
   setSelected(selected) {
-    for (var x = 0; x < this.inputs.length; x++) {
-      var inp = this.inputs[x];
-      var found = false;
-      for (var y = 0; y < selected.length; y++) {
-        var val = selected[y];
-        if (inp.value == val) {
-          found = true;
+    if (Array.isArray(selected)){
+      for (let x = 0; x < this.inputs.length; x++) {
+        let inp = this.inputs[x];
+        let found = false;
+        for (let y = 0; y < selected.length; y++) {
+          let selectedValue = selected[y];
+          if (inp.value == selectedValue) {
+            found = true;
+          }
         }
+        inp.checked = found;
       }
-      inp.checked = found;
     }
   }
 
   getSelected() {
-    var s = this.inputs.filter(function (inp) {
+    let s = this.inputs.filter(function (inp) {
       return inp.checked
     }).map(function (inp, index) {
       return index;
@@ -64,19 +74,19 @@ class Checkbox extends SmartflowComponent {
     if (Array.isArray(items)) {
       this.inputs = [];
       this.removeChildNodes(this.optionsNode);
-      for (var x = 0; x < items.length; x++) {
-        var item = items[x];
-        var itemText = item.text;
-        var itemValue = item.value;
-        var span = document.createElement("label");
+      for (let x = 0; x < items.length; x++) {
+        let item = items[x];
+        let itemText = item.text;
+        let itemValue = item.value;
+        let span = document.createElement("label");
         span.setAttribute("class", "sf-checkbox-option");
         this.optionsNode.appendChild(span);
-        var input = document.createElement("input");
+        let input = document.createElement("input");
         this.inputs.push(input);
         span.appendChild(input);
         input.setAttribute("type", "checkbox");
         input.setAttribute("value", itemValue);
-        var text = document.createElement("span");
+        let text = document.createElement("span");
         span.appendChild(text);
         text.setAttribute("class", "sf-checkbox-option-label");
         text.innerText = itemText;

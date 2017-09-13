@@ -1,28 +1,51 @@
-class Textfield extends SmartflowComponent {
-  constructor(comp, ctrl, builder) {
-    super(comp, ctrl, builder);
-    this.buildRootWithLabel("sf-textfield", comp.required);
-    if (comp.rows) {
+class Textfield extends InputComponent {
+  constructor(comp) {
+    super(comp);
+    // this.rootNode = document.createElement("div");
+    // this.rootNode.setAttribute("class", "sf-textfield");
+    // if (comp.rows) {
+    //   this.input = document.createElement("textarea");
+    //   this.input.setAttribute("rows", comp.rows);
+    //   this.input.setAttribute("class", "form-control");
+    // } else {
+    //   this.input = document.createElement("input");
+    //   this.input.setAttribute("type", "text");
+    //   this.input.setAttribute("class", "form-control");
+    // }
+    // this.input.setAttribute("placeholder", comp.placeholder);
+    // this.rootNode.appendChild(this.input);
+    // this.input.addEventListener('keyup', function () {
+    //   this._changed();
+    // }.bind(this), false);
+    // this.setValue(comp.value);
+    // if (comp.validation) {
+    //   this.setRegex(comp.validation.regex);
+    //   this.validationMessage = comp.validation.message;
+    // }
+  }
+
+  buildComponent(builder, properties) {
+    if (properties.rows) {
       this.input = document.createElement("textarea");
-      this.input.setAttribute("rows", comp.rows);
+      this.input.setAttribute("rows", properties.rows);
       this.input.setAttribute("class", "form-control");
     } else {
       this.input = document.createElement("input");
       this.input.setAttribute("type", "text");
       this.input.setAttribute("class", "form-control");
     }
-    this.input.setAttribute("placeholder", comp.placeholder);
-    this.getBodyNode().appendChild(this.input);
+    this.input.setAttribute("placeholder", properties.placeholder);
     this.input.addEventListener('keyup', function () {
       this._changed();
     }.bind(this), false);
-    this.setValue(comp.value);
-    if (comp.validation) {
-      this.setRegex(comp.validation.regex);
-      this.validationMessage = comp.validation.message;
+
+    this.setRequired(properties.required);
+    this.setLabel(properties.label);
+    if (properties.validation){
+      this.setValidationMessage(properties.validation.message);
+      this.setRegex(properties.validation.regex);
     }
-    this.setRequired(comp.required);
-    this.setLabel(comp.label);
+    return this.input;
   }
 
   _changed() {

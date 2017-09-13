@@ -1,29 +1,28 @@
 /**
- * Progress
+ * Toolbar
  *
  * Properties:
- * - value
- *
+ * - visible
+ * - enabled
  */
-class Toolbar extends SmartflowComponent {
-  constructor(properties, ctrl, builder) {
-    super(properties, ctrl, builder);
-    this.buildRoot("sf-toolbar");
+class Toolbar extends InputComponent {
+  constructor(properties) {
+    super(properties);
     this.buttons = [];
+  }
 
+  buildComponent(builder){
     var toolbarNode = document.createElement("div");
     toolbarNode.setAttribute("class", "btn-toolbar");
     toolbarNode.setAttribute("role", "toolbar");
-
-    this.getElement().appendChild(toolbarNode);
 
     var groupNode = document.createElement("div");
     groupNode.setAttribute("class", "btn-group");
     toolbarNode.appendChild(groupNode);
 
-    if (Array.isArray(properties.actions)) {
-      for (var x=0; x<properties.actions.length; x++) {
-        var component = properties.actions[ x ];
+    if (Array.isArray(this.properties.actions)) {
+      for (var x=0; x<this.properties.actions.length; x++) {
+        var component = this.properties.actions[ x ];
 
         var btn = document.createElement("button");
         btn.setAttribute("type", "button");
@@ -38,6 +37,7 @@ class Toolbar extends SmartflowComponent {
 
       }
     }
+    return toolbarNode;
   }
 
   _clicked(btn){
@@ -47,7 +47,10 @@ class Toolbar extends SmartflowComponent {
   }
 
   stateChanged(state, value) {
-    if (state == this.properties.states.value) {
+    if (state == this.properties.states.visible) {
+
+    } else if (state == this.properties.states.enabled) {
+
     }
   }
 }

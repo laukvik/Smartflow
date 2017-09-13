@@ -1,10 +1,17 @@
-class Layout extends SmartflowComponent {
+class Layout extends PresentationComponent {
   constructor(comp, ctrl, builder) {
     super(comp, ctrl, builder);
-    this.buildRoot("container");
-    this.rows = document.createElement("div");
-    this.getElement().appendChild(this.rows);
-    this.rows.setAttribute("class", "row");
+  }
+
+  buildComponent(builder){
+    var div = document.createElement("div");
+    div.setAttribute("class", "container");
+
+    var rows = document.createElement("div");
+    rows.setAttribute("class", "row");
+    div.appendChild(rows);
+
+    var comp = this.properties;
 
     if (Array.isArray(comp.components)) {
       for (var x = 0; x < comp.components.length; x++) {
@@ -21,10 +28,10 @@ class Layout extends SmartflowComponent {
 
         var layoutCell = document.createElement("div");
         layoutCell.setAttribute("class", gridClass);
-        this.rows.appendChild(layoutCell);
-        // Component
+        rows.appendChild(layoutCell);
         builder.buildChildNode(layoutCell, c);
       }
     }
+    return div;
   }
 }

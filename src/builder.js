@@ -20,13 +20,19 @@ class ComponentBuilder {
     for (var x = 0; x < comps.length; x++) {
       this.buildChildNode(rootNode, comps[x]);
     }
-  };
+  }
 
   buildChildNode(parentNode, comp) {
-    var componentInstance = this._buildComponent(comp);
+    let componentInstance = this._buildComponent(comp);
     this.ctrl.smartflow.componentInstances.push(componentInstance);
     componentInstance.setStateBinding(comp.states);
-    var node = componentInstance.getElement();
+    var isInputComponent = componentInstance instanceof InputComponent;
+
+    var node = componentInstance.buildComponent(this, comp);
+    if (isInputComponent) {
+      componentInstance.setRootNode(node); //
+      node = componentInstance.getRootNode();
+    }
     if (node === undefined) {
       console.warn("Component not found", comp);
     } else {
@@ -38,8 +44,9 @@ class ComponentBuilder {
   _buildComponent(comp) {
     var func = eval(comp.type); // ES
     if (func) {
-      var f = new func(comp, this.ctrl, this);
+      var f = new func(comp, this.ctrl, this); // TODO REmove this.ctrl and this from constructor
       f.setSmartflow(this.smartflow);
+      f.setView(this.ctrl);
       return f;
     } else {
       console.info("Component not found: ", comp.type);

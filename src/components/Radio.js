@@ -1,15 +1,19 @@
-class Radio extends SmartflowComponent {
-  constructor(comp, ctrl, builder) {
-    super(comp, ctrl, builder);
-    this.buildRootWithLabel("sf-radio", comp.required);
-    this.optionsNode = document.createElement("div");
-    this.getElement().appendChild(this.optionsNode);
+class Radio extends InputComponent {
+  constructor(properties) {
+    super(properties);
     this.inputs = [];
-    this.setOptions(comp.options);
-    this.setVertical(comp.vertical);
-    this.setSelected(comp.selected);
-    this.setLabel(comp.label);
-    this.setRequired(comp.required);
+    this.optionsNode = document.createElement("div");
+    this.optionsNode.setAttribute("class", "sf-radio");
+  }
+
+  buildComponent(builder, properties){
+    this.setRequired(properties.required);
+    this.setLabel(properties.label);
+    this.setOptions(properties.options);
+    this.setVertical(properties.vertical);
+    this.setSelected(properties.selected);
+    this.setValidationMessage(properties.validation);
+    return this.optionsNode;
   }
 
   isValid() {
@@ -42,8 +46,8 @@ class Radio extends SmartflowComponent {
   }
 
   setVertical(isVertical) {
-    this.vertical = isVertical;
-    this.getElement().setAttribute("class", "sf-radio " + (isVertical ? "sf-radio-vertical" : "sf-radio-horisontal"));
+    this.vertical = isVertical === true;
+    this.optionsNode.setAttribute("class", "sf-radio " + (this.vertical ? "sf-radio-vertical" : "sf-radio-horisontal"));
   }
 
   isVertical() {

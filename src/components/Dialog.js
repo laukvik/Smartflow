@@ -1,88 +1,97 @@
-class Dialog extends SmartflowComponent {
-  constructor(properties, ctrl, builder) {
-    super(properties, ctrl, builder);
-    this.buildRoot("sf-dialog");
+class Dialog extends PresentationComponent {
+  constructor(properties, ctrl) {
+    super(properties, ctrl);
     this.buttons = [];
-    var modalNode = document.createElement("div");
-    modalNode.setAttribute("class", "modal fade in");
-    this.modalNode = modalNode;
+  }
 
-    var modalDialog = document.createElement("div");
-    modalDialog.setAttribute("class", "modal-dialog");
-    modalNode.appendChild(modalDialog);
+  buildComponent(builder, properties){
+    let div = document.createElement("div");
 
-    var modalContent = document.createElement("div");
-    modalContent.setAttribute("class", "modal-content");
+    this.dialogNode = div;
 
-    var modalHeader = document.createElement("div");
-    modalHeader.setAttribute("class", "modal-header");
-    var modalBody = document.createElement("div");
-    modalBody.setAttribute("class", "modal-body");
+    div.setAttribute("tabindex", "-1");
+    div.setAttribute("role", "dialog");
+    div.setAttribute("class", "modal fade in");
 
-    this.modalBody = modalBody;
+    let dialog = document.createElement("div");
+    div.setAttribute("role", "document");
+    dialog.setAttribute("class", "modal-dialog");
 
-    var modalTitle = document.createElement("h4");
-    this.modalTitle = modalTitle;
+    let content = document.createElement("div");
+    content.setAttribute("class", "modal-content");
 
-    modalHeader.appendChild(modalTitle);
+    let contentHeader = document.createElement("div");
+    contentHeader.setAttribute("class", "modal-header");
+
+    let contentBody = document.createElement("div");
+    contentBody.setAttribute("class", "modal-body");
+
+    let modalTitle = document.createElement("h4");
+    contentHeader.appendChild(modalTitle);
+
+    let contentFooter = document.createElement("div");
+    contentFooter.setAttribute("class", "modal-footer");
 
 
-    var modalFooter = document.createElement("div");
-    modalFooter.setAttribute("class", "modal-footer");
-    modalContent.appendChild(modalHeader);
-    modalContent.appendChild(modalBody);
-    modalContent.appendChild(modalFooter);
 
-    modalDialog.appendChild(modalContent);
-    modalNode.appendChild(modalDialog);
-    this.getElement().appendChild(modalNode);
+    div.appendChild(dialog);
+    dialog.appendChild(content);
+    content.appendChild(contentHeader);
+    content.appendChild(contentBody);
+    content.appendChild(contentFooter);
+
 
     if (Array.isArray(properties.components)) {
-      var panelComponents = properties.components;
-      for (var n = 0; n < panelComponents.length; n++) {
-        var panelNode = document.createElement("div");
-        var panelComponent = panelComponents[n];
-        modalBody.appendChild(panelNode);
+      let panelComponents = properties.components;
+      for (let n = 0; n < panelComponents.length; n++) {
+        let panelNode = document.createElement("div");
+        let panelComponent = panelComponents[n];
+        contentBody.appendChild(panelNode);
         builder.buildChildNode(panelNode, panelComponent);
       }
     }
 
-    if (Array.isArray(properties.actions)) {
-      for (var x=0; x<properties.actions.length; x++) {
-        var component = properties.actions[ x ];
 
-        var btn = document.createElement("button");
+    if (Array.isArray(properties.actions)) {
+      for (let x=0; x<properties.actions.length; x++) {
+        let component = properties.actions[ x ];
+        let btn = document.createElement("button");
         btn.setAttribute("type", "button");
         btn.setAttribute("class", "btn btn-default");
         btn.innerText = component.label;
-        modalFooter.appendChild(btn);
+        contentFooter.appendChild(btn);
         this.buttons.push(btn);
-
         btn.addEventListener("click", function (evt) {
           this._clicked(evt.srcElement);
         }.bind(this), false);
-
       }
     }
+
+    this.titleNode = modalTitle;
+
     this.setVisible(properties.visible);
     this.setTitle(properties.title);
+
+    return div;
   }
 
   _clicked(btn){
-    var index = this.buttons.indexOf(btn);
-    var a = this.properties.actions[ index ];
+    let index = this.buttons.indexOf(btn);
+    let a = this.properties.actions[ index ];
     this.fireAction(a.action);
   }
 
   setTitle(title){
-    this.modalTitle.innerText = title;
+    this.titleNode.innerText = title;
   }
 
   setVisible(open){
-    this.modalNode.style.display = open == true ? "block" : "none";
+    this.open = open == true;
+    this.dialogNode.style.display = this.open ? "block" : "none";
   }
 
   stateChanged(state, value) {
+    // TODO State references should be variables
     if (state == this.properties.states.visible) {
       this.setVisible(value);
     } else if (state == this.properties.states.title) {

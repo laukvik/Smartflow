@@ -1,30 +1,19 @@
-class Pulldown extends SmartflowComponent {
+class Pulldown extends InputComponent {
   constructor(comp, ctrl, builder) {
     super(comp, ctrl, builder);
-    this.buildRootWithLabel("sf-pulldown", comp.required);
-
-    this.select = document.createElement("select");
-    this.select.setAttribute("class", "sf-pulldown-select");
-    this.getBodyNode().appendChild(this.select);
-
-    //var self = this;
-    // this.select.addEventListener("change", function (evt) {
-    //   self.fireComponentChanged("selection", {
-    //     "value": evt.srcElement.value,
-    //     "selected": evt.srcElement.selectedIndex
-    //   });
-    // }).bind(this, false);
-
-
-    this.select.addEventListener('change', function () {
+    this.selectNode = document.createElement("select");
+    this.selectNode.setAttribute("class", "sf-pulldown");
+    this.selectNode.addEventListener('change', function () {
       this._changed();
     }.bind(this), false);
+  }
 
-    this.setOptions(comp.options);
-    this.setSelected(comp.selected);
-    this.setEnabled(comp.enabled);
-    this.setRequired(comp.required);
-    this.setLabel(comp.label);
+  buildComponent(builder, properties){
+    this.setOptions(properties.options);
+    this.setSelected(properties.selected);
+    this.setLabel(properties.label);
+    this.setRequired(properties.required);
+    return this.selectNode;
   }
 
   _changed() {
@@ -40,43 +29,42 @@ class Pulldown extends SmartflowComponent {
 
   setEnabled(isEnabled) {
     if (isEnabled) {
-      this.select.removeAttribute("disabled");
+      this.selectNode.removeAttribute("disabled");
     } else {
-      this.select.setAttribute("disabled", "true");
+      this.selectNode.setAttribute("disabled", "true");
     }
   }
 
   isEnabled() {
-    return !this.select.hasAttribute("disabled");
+    return !this.selectNode.hasAttribute("disabled");
   }
 
   setOptions(items) {
-    this.removeChildNodes(this.select);
+    this.removeChildNodes(this.selectNode);
     var optionEmpty = document.createElement("option");
     optionEmpty.value = "";
-    this.select.appendChild(optionEmpty);
-
+    this.selectNode.appendChild(optionEmpty);
     for (var x = 0; x < items.length; x++) {
       var item = items[x];
       var itemText = item.text;
       var itemValue = item.value;
       var option = document.createElement("option");
-      this.select.appendChild(option);
       option.setAttribute("value", itemValue);
       option.innerText = itemText;
+      this.selectNode.appendChild(option);
     }
   }
 
   getSelected() {
-    if (this.select.selectedIndex === 0) {
+    if (this.selectNode.selectedIndex === 0) {
       return undefined;
     }
-    return this.select.options[this.select.selectedIndex].value;
+    return this.selectNode.options[this.selectNode.selectedIndex].value;
   }
 
   setSelected(selected) {
-    for (var x = 0; x < this.select.options.length; x++) {
-      var opt = this.select.options[x];
+    for (var x = 0; x < this.selectNode.options.length; x++) {
+      var opt = this.selectNode.options[x];
       opt.selected = opt.value == selected;
     }
   }
