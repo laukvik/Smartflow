@@ -254,13 +254,13 @@ function Smartflow() {
     if (action.smartflow) {
       if (action.smartflow.request) {
         // Run with request
-        var self = this;
-        var xhr = new XMLHttpRequest();
+        let self = this;
+        let xhr = new XMLHttpRequest();
         xhr.onreadystatechange = function () {
           if (this.readyState === self.READY_STATE_DONE) {
-            var statusCode = parseInt(this.status);
+            let statusCode = parseInt(this.status);
             actionEvent.response.status = statusCode;
-            var contentType = this.getResponseHeader('content-type');
+            let contentType = this.getResponseHeader('content-type');
             actionEvent.response.contentType = contentType;
 
             // TODO - Add support for variants of content types eg application/json;utf-8 etc
@@ -286,7 +286,7 @@ function Smartflow() {
 
             } else if (statusCode >= self.HTTP_STATUS_CODE_REDIRECT && statusCode < self.HTTP_STATUS_CODE_CLIENT_ERROR) {
               // Redirect
-              var errorRedirectMessage = "Error: Server responded " + statusCode + " (" + action.constructor.name + ")";
+              let errorRedirectMessage = "Error: Server responded " + statusCode + " (" + action.constructor.name + ")";
               actionEvent.path = action.smartflow.error.path;
               actionEvent.params = self._findParams(actionEvent.path).param;
               actionEvent.error = errorRedirectMessage;
@@ -295,7 +295,7 @@ function Smartflow() {
 
             } else if (statusCode >= self.HTTP_STATUS_CODE_CLIENT_ERROR && statusCode < self.HTTP_STATUS_CODE_ERROR) {
               // Client error
-              var errorClientMessage = "Error: Server responded " + statusCode + " (" + action.constructor.name + ") ";
+              let errorClientMessage = "Error: Server responded " + statusCode + " (" + action.constructor.name + ") ";
               actionEvent.path = action.smartflow.error.path;
               actionEvent.params = self._findParams(actionEvent.path).param;
               actionEvent.error = errorClientMessage;
@@ -304,7 +304,7 @@ function Smartflow() {
 
             } else if (statusCode >= self.HTTP_STATUS_CODE_ERROR && statusCode < self.HTTP_STATUS_CODE_UNKNOWN) {
               // Server error
-              var errorServerMessage = "Error: Server responded " + statusCode + " (" + action.constructor.name + ")  ";
+              let errorServerMessage = "Error: Server responded " + statusCode + " (" + action.constructor.name + ")  ";
               actionEvent.path = action.smartflow.error.path;
               actionEvent.params = self._findParams(actionEvent.path).param;
               actionEvent.error = errorServerMessage;
@@ -316,15 +316,15 @@ function Smartflow() {
         xhr.timeout = self.REQUEST_TIMEOUT;
         xhr.ontimeout = function () {
           // XMLHttpRequest timed out
-          var errorTimeoutMessage = "Error: Timeout " + self.REQUEST_TIMEOUT + " ms for (" + action.constructor.name + ")";
+          let errorTimeoutMessage = "Error: Timeout " + self.REQUEST_TIMEOUT + " ms for (" + action.constructor.name + ")";
           actionEvent.error = errorTimeoutMessage;
           actionEvent.states[action.smartflow.error.state] = errorTimeoutMessage;
           self._fireActionPerformed(action, actionEvent);
         };
 
-        var url = self.getRequestUrl(action);
+        let url = self.getRequestUrl(action);
         if (url === undefined) {
-          var errorUrlMessage = "Error: URL not specified for (" + action.constructor.name + ")";
+          let errorUrlMessage = "Error: URL not specified for (" + action.constructor.name + ")";
           actionEvent.error = errorUrlMessage;
           actionEvent.states[action.smartflow.error.state] = errorUrlMessage;
           self._fireActionPerformed(action, actionEvent);
@@ -340,10 +340,10 @@ function Smartflow() {
         //
         var dialogID = this._findActionID(action);
 
-        var builder = new ComponentBuilder();
-        var d = action.smartflow.dialog;
-        var html = builder.buildDialog(dialogID, d.title, d.body, d.buttons);
-        var el = document.createElement("div");
+        let builder = new ComponentBuilder();
+        let d = action.smartflow.dialog;
+        let html = builder.buildDialog(dialogID, d.title, d.body, d.buttons);
+        let el = document.createElement("div");
         el.innerHTML = html;
         document.body.appendChild(el);
 
@@ -351,11 +351,11 @@ function Smartflow() {
 
         var stateName = d.state;
 
-        for (var x=0; x<d.buttons.length; x++) {
-          var btn = d.buttons[ x ];
-          var buttonID = dialogID + "__button__" + btn.value;
+        for (let x=0; x<d.buttons.length; x++) {
+          let btn = d.buttons[ x ];
+          let buttonID = dialogID + "__button__" + btn.value;
           document.getElementById(buttonID).addEventListener("click", function(){
-            var evt = self._buildActionEvent(action);
+            let evt = self._buildActionEvent(action);
             evt.states[ stateName ] = btn.value;
             delete evt.request;
             delete evt.response;

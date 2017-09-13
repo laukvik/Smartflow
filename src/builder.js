@@ -44,7 +44,7 @@ class ComponentBuilder {
   _buildComponent(comp) {
     var func = eval(comp.type); // ES
     if (func) {
-      var f = new func(comp, this.ctrl, this); // TODO REmove this.ctrl and this from constructor
+      var f = new func(comp);
       f.setSmartflow(this.smartflow);
       f.setView(this.ctrl);
       return f;

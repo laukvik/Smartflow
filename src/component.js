@@ -36,11 +36,10 @@ class SmartflowComponent {
   }
 
   fireAction(action) {
-    var func = eval(action);
+    let func = eval(action);
     if (func == undefined) {
       console.warn("Action not found: ", action);
     } else {
-    console.info("FIRE: ", action);
       this.smartflow.runAction(new func(), this.getView());
     }
   }
@@ -50,8 +49,8 @@ class SmartflowComponent {
     }
   }
   setStateBinding(states) {
-    var arr = [];
-    for (var key in states) {
+    let arr = [];
+    for (let key in states) {
       arr.push(states[key]);
     }
     this.stateListeners = arr;
@@ -61,9 +60,8 @@ class SmartflowComponent {
     return this.stateListeners;
   }
 
-  // TODO - enable fireComponentChanged
   fireComponentChanged(property, value) {
-    //this.smartflow.fireComponentChanged(this, property, value, this.ctrl);
+    this.smartflow.fireComponentChanged(this, property, value, this.ctrl);
   }
 }
 
@@ -94,10 +92,9 @@ class PresentationComponent extends SmartflowComponent {
  *
  */
 class InputComponent extends SmartflowComponent{
-  constructor(properties, ctrl, builder) {
+  constructor(properties) {
     super(properties);
     this.comp = properties;
-    this.builder = builder;
     this.componentRootNode = document.createElement("div");
     this.componentRootNode.setAttribute("class", "sf-" + this.constructor.name.toLowerCase());
     this.labelNode = document.createElement("div");

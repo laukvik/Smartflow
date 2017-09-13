@@ -219,6 +219,8 @@ class InboxView {
                         "regex": "^[0-9]{1,2}:[0-9]{1,2}:[0-9]{1,2}$",
                         "message": "Please enter valid hour"
                       },
+                      "icon_before": "glyphicon-time",
+                      "icon_after": "glyphicon-calendar",
                       "states": {
                         "enabled": "textfieldEnabled",
                         "value": "textfield",
@@ -262,17 +264,17 @@ class InboxView {
                       },
                       "components": [
                         {
-                          "type": "Progress",
-                          "value": "0",
-                          "states": {
-                            "value": "progress"
-                          }
+                          "type": "Textfield",
+                          "value": "",
+                          "label": "Number",
+                          "required": true,
                         }
                       ],
                       "actions": [
                         {
                           "type": "Button",
                           "label": "Ok",
+                          "validate": true,
                           "action": "CloseDialogAction"
                         },
                         {
@@ -287,13 +289,8 @@ class InboxView {
                       "actions": [
                         {
                           "type": "Button",
-                          "label": "Dialog",
+                          "label": "Open dialog",
                           "action": "ShowDialogAction"
-                        },
-                        {
-                          "type": "Button",
-                          "label": "Create",
-                          "action": "FindMoviesAction"
                         }
                       ]
                     },
