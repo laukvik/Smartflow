@@ -5,14 +5,14 @@ node_js:
 dist: trusty
 sudo: required
 
-addons:
-  sonarcloud:
-    organization: "laukvik"
-    token:
-      secure: ""
-script:
-  - sonar-scanner
-cache:
-  directories:
-    - '$HOME/.sonar/cache'
+#addons:
+#  sonarcloud:
+#    organization: "laukvik"
+#    token:
+#      secure: ""
+#script:
+#  - sonar-scanner
+#cache:
+#  directories:
+#    - '$HOME/.sonar/cache'
 
