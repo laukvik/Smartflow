@@ -10,7 +10,7 @@ addons:
   sonarcloud:
     organization: "smartflow"
     token:
-      secure: "12c915b18d7ba8b079249f31c417978195f6ce16"
+      secure: ""
 script:
   - sonar-scanner
 cache:
