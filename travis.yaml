@@ -1,0 +1,18 @@
+language: node_js
+node_js:
+  - "iojs"
+  - "7"
+
+dist: trusty
+sudo: required
+
+addons:
+  sonarcloud:
+    organization: "smartflow"
+    token:
+      secure: "12c915b18d7ba8b079249f31c417978195f6ce16"
+script:
+  - sonar-scanner
+cache:
+  directories:
+    - '$HOME/.sonar/cache'
