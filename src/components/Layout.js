@@ -1,4 +1,4 @@
-class Layout extends PresentationComponent {
+export default class Layout extends PresentationComponent {
   constructor(comp, ctrl, builder) {
     super(comp, ctrl, builder);
   }

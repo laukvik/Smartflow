@@ -1,4 +1,4 @@
-class GridList {
+export default class GridList {
   constructor(comp, ctrl, builder) {
     this.comp = comp;
     this.collections = new Collections(comp);

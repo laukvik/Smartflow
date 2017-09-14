@@ -1,4 +1,4 @@
-class Button extends SmartflowComponent {
+export default class Button extends SmartflowComponent {
   constructor(properties) {
     super(properties);
   }

@@ -1,3 +1,5 @@
+import Formatter from "./formatter";
+import ComponentBuilder from "./builder";
 
 /**
  * Smartflow features
@@ -17,41 +19,68 @@
  *
  * @constructor
  */
-function Smartflow() {
-  this._controller = undefined;
-  this._controllers = [];
-  this._actionQueue = [];
-  this._locales = [];
-  this._localeDefault = undefined;
-  this.fireComponentChanged = function(component, property, value, view) {
+export default class Smartflow {
+  constructor() {
+    this._controller = undefined;
+    this._controllers = [];
+    this._actionQueue = [];
+    this._locales = [];
+    this._localeDefault = undefined;
+    //--------------------------------- Action runner ---------------------------------
+    this.REQUEST_TIMEOUT = 3000;
+
+    this._formatter = new Formatter({});
+
+    // Status codes
+    const HTTP_STATUS_CODE_INFO = 100;
+    const HTTP_STATUS_CODE_SUCCESS = 200;
+    const HTTP_STATUS_CODE_REDIRECT = 300;
+    const HTTP_STATUS_CODE_CLIENT_ERROR = 400;
+    const HTTP_STATUS_CODE_ERROR = 500;
+    const HTTP_STATUS_CODE_UNKNOWN = 600;
+    // XMLHttpRequest
+    const READY_STATE_UNSENT = 0;
+    const READY_STATE_OPENED = 1;
+    const READY_STATE_HEADERS_RECEIVED = 2;
+    const READY_STATE_LOADING = 3;
+    const READY_STATE_DONE = 4;
+    //
+    this._states = [];
+  }
+
+  fireComponentChanged(component, property, value, view) {
     var componentEvent = {
       "component": component,
-      "property" : property,
-      "value" : value,
-      "view" : view
+      "property": property,
+      "value": value,
+      "view": view
     };
     view.componentChanged(componentEvent);
   }
-  this.isAction = function(action){
+
+  isAction(action) {
     if (action === undefined) {
       return false;
     } else {
       if (action.constructor) {
-        if (action.constructor.name){
+        if (action.constructor.name) {
           return true;
         }
       }
     }
     return false;
-  };
+  }
+
   //--------------------------------- Config ---------------------------------
-  this.setConfig = function (config) {
+  setConfig(config) {
     this._config = config;
-  };
-  this.getConfig = function () {
+  }
+
+  getConfig() {
     return this._config;
-  };
-  this.getRequestUrl = function (action) {
+  }
+
+  getRequestUrl(action) {
     if (!this.isAction(action)) {
       //console.info("Smartflow: not an action", action);
       return undefined;
@@ -67,29 +96,36 @@ function Smartflow() {
     } else {
       return val;
     }
-  };
+  }
+
   //--------------------------------- Locale ---------------------------------
-  this.setDefaultLocale = function (locale) {
+  setDefaultLocale(locale) {
     this._localeDefault = locale;
-  };
-  this.getDefaultLocale = function () {
+  }
+
+  getDefaultLocale() {
     return this._localeDefault;
-  };
-  this.loadLanguage = function (locale, data) {
+  }
+
+  loadLanguage(locale, data) {
     this._locales[locale] = data;
-  };
-  this.setLocale = function (locale) {
+  }
+
+  setLocale(locale) {
     this._locale = locale;
     this._formatter.config = this._locales[this._locale];
-  };
-  this.getLocale = function(){
+  }
+
+  getLocale() {
     return this._locale;
-  };
-  this._autoDetectLocale = function () {
+  }
+
+  _autoDetectLocale() {
     var l = this.findClosestLocale(navigator.languages);
     this.setLocale(l === undefined ? this._localeDefault : l);
   };
-  this.findClosestLocale = function (arr) {
+
+  findClosestLocale(arr) {
     for (var x = 0; x < arr.length; x++) {
       var locale = arr[x];
       var language = locale.indexOf("-") > -1 ? locale : locale.split("-")[0];
@@ -99,8 +135,9 @@ function Smartflow() {
     }
     return undefined;
   };
+
   //--------------------------------- View ----------------------------------------
-  this.isView = function(ctrl){
+  isView(ctrl) {
     if (ctrl === undefined) {
       return false;
     }
@@ -115,23 +152,25 @@ function Smartflow() {
     }
     return true;
   };
-  this.findView = function(name){
-    if (typeof name !== 'string'){
+
+  findView(name) {
+    if (typeof name !== 'string') {
       return undefined;
     }
-    for (var x=0; x<this._controllers.length; x++) {
-      var ctrl = this._controllers[ x ];
-      if (ctrl.constructor.name == name){
+    for (var x = 0; x < this._controllers.length; x++) {
+      var ctrl = this._controllers[x];
+      if (ctrl.constructor.name == name) {
         return ctrl;
       }
     }
     return undefined;
   };
-  this.addView = function (ctrl) {
+
+  addView(ctrl) {
     if (!this.isView(ctrl)) {
       return false;
     }
-    if (this.findView(ctrl.constructor.name)){
+    if (this.findView(ctrl.constructor.name)) {
       return false;
     }
     this._controllers.push(ctrl);
@@ -142,44 +181,30 @@ function Smartflow() {
     this._buildComponents(ctrl);
     return true;
   };
-  this._buildComponents = function(ctrl) {
+
+  _buildComponents(ctrl) {
     // mount components
     if (ctrl.smartflow.components) {
       var builder = new ComponentBuilder(ctrl, this._formatter, this);
       builder.buildComponents();
     }
   };
-  this.removeView = function(ctrl){
+
+  removeView(ctrl) {
     if (!this.isView(ctrl)) {
       return false;
     }
-    for (var x=0; x<this._controllers.length; x++) {
-      var existCtrl = this._controllers[ x ];
+    for (var x = 0; x < this._controllers.length; x++) {
+      var existCtrl = this._controllers[x];
       if (existCtrl.constructor.name === ctrl.constructor.name) {
-        delete this._controllers[ x ];
+        delete this._controllers[x];
         return true;
       }
     }
     return false;
   };
-  //--------------------------------- Action runner ---------------------------------
-  this.REQUEST_TIMEOUT = 3000;
-  // Status codes
-  this.HTTP_STATUS_CODE_INFO = 100;
-  this.HTTP_STATUS_CODE_SUCCESS = 200;
-  this.HTTP_STATUS_CODE_REDIRECT = 300;
-  this.HTTP_STATUS_CODE_CLIENT_ERROR = 400;
-  this.HTTP_STATUS_CODE_ERROR = 500;
-  this.HTTP_STATUS_CODE_UNKNOWN = 600;
-  // XMLHttpRequest
-  this.READY_STATE_UNSENT = 0;
-  this.READY_STATE_OPENED = 1;
-  this.READY_STATE_HEADERS_RECEIVED = 2;
-  this.READY_STATE_LOADING = 3;
-  this.READY_STATE_DONE = 4;
-  //
-  this._states = [];
-  this.start = function () {
+
+  start() {
     this._autoDetectLocale();
     for (var x = 0; x < this._controllers.length; x++) {
       var ctrl = this._controllers[x];
@@ -189,11 +214,12 @@ function Smartflow() {
     var path = anchor.indexOf("#") == 0 ? anchor.substr(1) : "/";
     this.setPath(path);
   };
-  this.runAction = function (action, callerCtrl) {
-    if (!this.isAction(action)){
+
+  runAction(action, callerCtrl) {
+    if (!this.isAction(action)) {
       return false;
     }
-    if (!this.isView(callerCtrl)){
+    if (!this.isView(callerCtrl)) {
       return false;
     }
     action._smartflowCaller = callerCtrl;
@@ -201,10 +227,12 @@ function Smartflow() {
     this._runRemainingActions();
     return true;
   };
-  this._findActionID = function(action){
+
+  _findActionID(action) {
     return action.constructor.name;
   };
-  this._buildActionEvent = function(action){
+
+  _buildActionEvent(action) {
     return {
       "action": {
         "name": this._findActionID(action),
@@ -229,7 +257,8 @@ function Smartflow() {
       "commands": []
     };
   };
-  this._runRemainingActions = function () {
+
+  _runRemainingActions() {
     if (this._action !== undefined) {
       return;
     }
@@ -351,12 +380,12 @@ function Smartflow() {
 
         var stateName = d.state;
 
-        for (let x=0; x<d.buttons.length; x++) {
-          let btn = d.buttons[ x ];
+        for (let x = 0; x < d.buttons.length; x++) {
+          let btn = d.buttons[x];
           let buttonID = dialogID + "__button__" + btn.value;
-          document.getElementById(buttonID).addEventListener("click", function(){
+          document.getElementById(buttonID).addEventListener("click", function () {
             let evt = self._buildActionEvent(action);
-            evt.states[ stateName ] = btn.value;
+            evt.states[stateName] = btn.value;
             delete evt.request;
             delete evt.response;
             delete evt.error;
@@ -387,7 +416,8 @@ function Smartflow() {
       //console.error("App: invalid action ", action);
     }
   };
-  this._fireActionPerformed = function (action, actionEvent) {
+
+  _fireActionPerformed(action, actionEvent) {
     actionEvent.finish = Date.now();
 
     // Appends states to existing collection
@@ -395,11 +425,11 @@ function Smartflow() {
       for (var keyAdd in actionEvent.addStates) {
         var entriesArray = actionEvent.addStates[keyAdd];
         if (Array.isArray(entriesArray)) {
-          for (var x=0; x<entriesArray.length; x++){
-            this._states[ keyAdd ].push( entriesArray[x] );
+          for (var x = 0; x < entriesArray.length; x++) {
+            this._states[keyAdd].push(entriesArray[x]);
           }
           if (actionEvent.states[keyAdd] === undefined) {
-            actionEvent.states[keyAdd] = this._states[ keyAdd ];
+            actionEvent.states[keyAdd] = this._states[keyAdd];
           }
         }
       }
@@ -415,20 +445,20 @@ function Smartflow() {
     }
 
     for (var key in actionEvent.states) {
-      this._states[ key ] = actionEvent.states[key]; // Save new state internally
-      this._fireStateChanged(key, this._states[ key ]); // Push to listeners
+      this._states[key] = actionEvent.states[key]; // Save new state internally
+      this._fireStateChanged(key, this._states[key]); // Push to listeners
     }
-    if (actionEvent.path){
+    if (actionEvent.path) {
       this.setPath(actionEvent.path);
     }
 
     var ctrl = action._smartflowCaller;
 
     if (actionEvent.commands) {
-      for (var y=0; y<ctrl.smartflow.componentInstances.length; y++) {
-        var component = ctrl.smartflow.componentInstances[ y ];
-        for (var z=0; z<actionEvent.commands.length; z++) {
-          var command = actionEvent.commands[ z ];
+      for (var y = 0; y < ctrl.smartflow.componentInstances.length; y++) {
+        var component = ctrl.smartflow.componentInstances[y];
+        for (var z = 0; z < actionEvent.commands.length; z++) {
+          var command = actionEvent.commands[z];
           if (component.id == command.id) {
             component.commandPerformed(command.command, command.value);
           }
@@ -441,7 +471,7 @@ function Smartflow() {
     action._smartflowCaller = undefined;
     this._action = undefined;
 
-    if (action.smartflow.dialog){
+    if (action.smartflow.dialog) {
       var dialogID = this._findActionID(action);
       document.getElementById(dialogID).remove();
     }
@@ -449,31 +479,33 @@ function Smartflow() {
     ctrl.actionPerformed(actionEvent);
 
 
-
     this._runRemainingActions();
   };
-  this._findParams = function(pathString){
+
+  _findParams(pathString) {
     var parameters = pathString.split("/");
     if (parameters[0] == "") {
       parameters.shift();
     }
     var firstElement = "/" + parameters.shift();
     return {
-      "path" : firstElement,
-      "param" : parameters
+      "path": firstElement,
+      "param": parameters
     };
   };
+
   //--------------------------------- Path ----------------------------------------
-  this.findViewByPath = function(path){
+  findViewByPath(path) {
     for (var x = 0; x < this._controllers.length; x++) {
-      var ctrl = this._controllers[ x ];
+      var ctrl = this._controllers[x];
       if (ctrl.smartflow.path === path) {
         return ctrl;
       }
     }
     return undefined;
-  };
-  this.setPath = function (pathString) {
+  }
+
+  setPath(pathString) {
     var p = this._findParams(pathString);
     var firstElement = p.path;
     var parameters = p.param;
@@ -487,7 +519,8 @@ function Smartflow() {
     this._firePathChanged(firstElement, parameters);
     return ctrl != undefined;
   };
-  this._firePathChanged = function (path, parameters) {
+
+  _firePathChanged(path, parameters) {
     var ctrl;
     for (var x = 0; x < this._controllers.length; x++) {
       ctrl = this._controllers[x];
@@ -502,7 +535,7 @@ function Smartflow() {
       ctrl = this._controllers[y];
       if (ctrl.smartflow.path === path) {
         this._controller = ctrl;
-        if (ctrl.viewEnabled){
+        if (ctrl.viewEnabled) {
           ctrl.viewEnabled();
         }
         if (ctrl.pathChanged) {
@@ -512,14 +545,16 @@ function Smartflow() {
       }
     }
   };
-  this._setControllerVisible = function (ctrl, isVisible) {
+
+  _setControllerVisible(ctrl, isVisible) {
     var el = document.getElementById(ctrl.constructor.name);
     if (el) {
       el.style.display = isVisible ? "block" : "none";
     }
   };
+
   //--------------------------------- State ----------------------------------------
-  this._fireStateChanged = function (state, value) {
+  _fireStateChanged(state, value) {
     if (value === undefined || value == null) {
       delete( this._states[state] );
     } else {
@@ -530,7 +565,7 @@ function Smartflow() {
       if (ctrl.stateChanged) {
         ctrl.stateChanged(state, value);
       }
-      for (var y=0; y<ctrl.smartflow.componentInstances.length; y++) {
+      for (var y = 0; y < ctrl.smartflow.componentInstances.length; y++) {
         var compInstance = ctrl.smartflow.componentInstances[y];
 
         var states = compInstance.getStateBinding();
@@ -539,23 +574,27 @@ function Smartflow() {
           compInstance.stateChanged(state, value);
         }
 
-        if (compInstance.comp && compInstance.comp.state === state){
+        if (compInstance.comp && compInstance.comp.state === state) {
         }
       }
     }
   };
+
   //--------------------------------- Formatter ----------------------------------------
-  this._formatter = new Formatter({});
-  this.format = function (key, values) {
+
+  format(key, values) {
     return this._formatter.format(key, values);
   };
-  this.formatJson = function (key, json) {
+
+  formatJson(key, json) {
     return this._formatter.formatJson(key, json);
   };
-  this.formatDate = function (date, format) {
+
+  formatDate(date, format) {
     return this._formatter.formatDate(date, format);
   };
-  this.formatNumber = function (value, format) {
+
+  formatNumber(value, format) {
     return this._formatter.formatNumber(value, format);
   };
 }

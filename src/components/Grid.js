@@ -1,4 +1,4 @@
-class Grid {
+export default class Grid {
   constructor(comp, ctrl, builder) {
     this.comp = comp;
     var node = document.createElement("div");

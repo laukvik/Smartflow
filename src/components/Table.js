@@ -1,4 +1,4 @@
-class Table extends InputComponent{
+export default class Table extends InputComponent{
   constructor(properties, ctrl, builder) {
     super(properties, ctrl, builder);
     this.dontUpdate = true;

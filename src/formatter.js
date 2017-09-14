@@ -4,7 +4,7 @@
  * @param config
  * @constructor
  */
-class Formatter {
+export default class Formatter {
   constructor(config){
     this.config = config;
     this._DATEFORMAT = 'YYYY.MM.DD';

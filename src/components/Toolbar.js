@@ -5,7 +5,7 @@
  * - visible
  * - enabled
  */
-class Toolbar extends InputComponent {
+export default class Toolbar extends InputComponent {
   constructor(properties) {
     super(properties);
     this.buttons = [];

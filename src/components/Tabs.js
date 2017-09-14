@@ -1,4 +1,4 @@
-class Tabs extends PresentationComponent {
+export default class Tabs extends PresentationComponent {
   constructor(properties) {
     super(properties);
     this.labels = [];

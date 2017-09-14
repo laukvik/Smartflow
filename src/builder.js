@@ -5,7 +5,7 @@
  * @param ctrl
  * @constructor
  */
-class ComponentBuilder {
+export default class ComponentBuilder {
   constructor(ctrl, formatter, smartflow) {
     this.ctrl = ctrl;
     this.formatter = formatter;

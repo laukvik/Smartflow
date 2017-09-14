@@ -1,4 +1,4 @@
-class Checkbox extends InputComponent {
+export default class Checkbox extends InputComponent {
   constructor(properties, ctrl, builder) {
     super(properties, ctrl, builder);
     this.inputs = [];

@@ -5,7 +5,7 @@
  * - value
  *
  */
-class Progress extends PresentationComponent {
+export default class Progress extends PresentationComponent {
   constructor(properties, ctrl, builder) {
     super(properties, ctrl, builder);
     this.value = 0;

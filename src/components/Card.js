@@ -1,4 +1,4 @@
-class Card extends InputComponent {
+export default class Card extends InputComponent {
   constructor(comp, ctrl, builder) {
     super(comp, ctrl, builder);
     var rootNode = document.createElement("div");

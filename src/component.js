@@ -177,3 +177,5 @@ class InputComponent extends SmartflowComponent{
   }
 
 }
+
+export {PresentationComponent,InputComponent}

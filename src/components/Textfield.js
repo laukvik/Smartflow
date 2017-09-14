@@ -1,4 +1,4 @@
-class Textfield extends InputComponent {
+export default class Textfield extends InputComponent {
   constructor(comp) {
     super(comp);
     this.rootNode = document.createElement("div");
