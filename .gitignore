@@ -4,4 +4,3 @@ node_modules/
 demo/node_modules
 /demo/build/
 coverage/
-package-lock.json
