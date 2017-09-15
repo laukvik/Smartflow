@@ -21,3 +21,4 @@ cache:
 sonarqube:
     branches :
     - DEV
+    - dev
