@@ -1,5 +1,6 @@
-import Formatter from "./formatter";
-import ComponentBuilder from "./builder";
+import {Formatter} from "./formatter";
+import {ComponentBuilder} from "./Builder";
+
 
 /**
  * Smartflow features
@@ -121,7 +122,7 @@ export default class Smartflow {
   }
 
   _autoDetectLocale() {
-    var l = this.findClosestLocale(navigator.languages);
+    let l = this.findClosestLocale(navigator.languages);
     this.setLocale(l === undefined ? this._localeDefault : l);
   };
 
@@ -213,7 +214,13 @@ export default class Smartflow {
     var anchor = window.location.hash;
     var path = anchor.indexOf("#") == 0 ? anchor.substr(1) : "/";
     this.setPath(path);
-  };
+  }
+
+  runActionByName(name, callerCtrl){
+    console.info("Smartflow.runACtion: ", name);
+    let action = eval(name);
+    this.runAction(action, callerCtrl)
+  }
 
   runAction(action, callerCtrl) {
     if (!this.isAction(action)) {

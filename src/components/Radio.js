@@ -1,4 +1,6 @@
-export default class Radio extends InputComponent {
+import {InputComponent} from "../component";
+
+export class Radio extends InputComponent {
   constructor(properties) {
     super(properties);
     this.inputs = [];

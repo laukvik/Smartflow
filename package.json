@@ -5,7 +5,10 @@
   "main": "src/smartflow.js",
   "scripts": {
     "oldbuild": "node_modules/concat/bin/concat -o ./dist/smartflow.js ./src/smartflow.js ./src/formatter.js ./src/component.js ./src/collections.js ./src/builder.js ./src/components/Button.js ./src/components/Checkbox.js ./src/components/Layout.js ./src/components/Pulldown.js ./src/components/Radio.js ./src/components/Textfield.js",
-    "build": "babel src -d dist",
+    "babel": "babel src -d dist",
+    "build-dev": "webpack-dev-server",
+    "build": "webpack",
+    "pack": "webpack --help",
     "test": "jest src",
     "watch": "jest --watch",
     "www": "npm run start",
@@ -47,6 +50,7 @@
     "jest": "^21.1.0",
     "jest-cli": "^21.1.0",
     "regenerator-runtime": "^0.11.0",
-    "webpack": "^3.5.6"
+    "webpack": "^3.5.6",
+    "webpack-dev-server": "^2.8.2"
   }
 }

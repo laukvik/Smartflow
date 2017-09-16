@@ -1,4 +1,6 @@
-export default class Pulldown extends InputComponent {
+import {InputComponent} from "../component";
+
+export class Pulldown extends InputComponent {
   constructor(comp, ctrl, builder) {
     super(comp, ctrl, builder);
     this.selectNode = document.createElement("select");

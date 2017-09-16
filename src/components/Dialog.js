@@ -1,4 +1,6 @@
-export default class Dialog extends PresentationComponent {
+import {PresentationComponent} from "../component";
+
+export class Dialog extends PresentationComponent {
   constructor(properties, ctrl) {
     super(properties, ctrl);
     this.buttons = [];

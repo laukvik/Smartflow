@@ -1,3 +1,4 @@
+
 function StartAction() {
   this.smartflow = {
     "statess": {
@@ -500,10 +501,11 @@ class InboxView {
   };
 
   stateChanged(state, value) {
+    console.info("InboxView.stateChanged: ", state, value);
   };
 
   actionPerformed(evt) {
-    //console.info("InboxView.actionPerformed: ", evt);
+    console.info("InboxView.actionPerformed: ", evt);
   };
 
   componentChanged(evt) {
@@ -529,7 +531,7 @@ var langEN = {
 };
 
 
-var app = new Smartflow();
+var app = new Smartflow.default();
 app.setConfig(config);
 app.loadLanguage("no", langNO);
 app.loadLanguage("en", langEN);

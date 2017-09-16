@@ -1,4 +1,4 @@
-export default class Collections {
+export class Collections {
   constructor(properties) {
     this.setSort(properties.sort);
     this.setPaging(properties.paging);

@@ -1,32 +1,34 @@
-export default class Layout extends PresentationComponent {
-  constructor(comp, ctrl, builder) {
-    super(comp, ctrl, builder);
+import {PresentationComponent} from "../component";
+
+export class Layout extends PresentationComponent {
+  constructor(properties) {
+    super(properties);
   }
 
   buildComponent(builder){
-    var div = document.createElement("div");
+    let div = document.createElement("div");
     div.setAttribute("class", "container");
 
-    var rows = document.createElement("div");
+    let rows = document.createElement("div");
     rows.setAttribute("class", "row");
     div.appendChild(rows);
 
-    var comp = this.properties;
+    let comp = this.properties;
 
     if (Array.isArray(comp.components)) {
-      for (var x = 0; x < comp.components.length; x++) {
-        var c = comp.components[x];
+      for (let x = 0; x < comp.components.length; x++) {
+        let c = comp.components[x];
         // Grid
 
-        var colsXS = c["col-xs"] === undefined ? "" : " col-xs-" + c["col-xs"];
-        var colsSM = c["col-sm"] === undefined ? "" : " col-sm-" + c["col-sm"];
-        var colsMD = c["col-md"] === undefined ? "" : " col-md-" + c["col-md"];
-        var colsLG = c["col-lg"] === undefined ? "" : " col-lg-" + c["col-lg"];
-        var colsXL = c["col-xl"] === undefined ? "" : " col-xl-" + c["col-xl"];
+        let colsXS = c["col-xs"] === undefined ? "" : " col-xs-" + c["col-xs"];
+        let colsSM = c["col-sm"] === undefined ? "" : " col-sm-" + c["col-sm"];
+        let colsMD = c["col-md"] === undefined ? "" : " col-md-" + c["col-md"];
+        let colsLG = c["col-lg"] === undefined ? "" : " col-lg-" + c["col-lg"];
+        let colsXL = c["col-xl"] === undefined ? "" : " col-xl-" + c["col-xl"];
 
-        var gridClass = (colsXS + colsSM + colsMD + colsLG + colsXL);
+        let gridClass = (colsXS + colsSM + colsMD + colsLG + colsXL);
 
-        var layoutCell = document.createElement("div");
+        let layoutCell = document.createElement("div");
         layoutCell.setAttribute("class", gridClass);
         rows.appendChild(layoutCell);
         builder.buildChildNode(layoutCell, c);

@@ -1,3 +1,6 @@
+import {InputComponent} from "../component";
+
+
 /**
  * Toolbar
  *
@@ -5,7 +8,7 @@
  * - visible
  * - enabled
  */
-export default class Toolbar extends InputComponent {
+export class Toolbar extends InputComponent {
   constructor(properties) {
     super(properties);
     this.buttons = [];
