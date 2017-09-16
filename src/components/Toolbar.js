@@ -12,22 +12,23 @@ export class Toolbar extends InputComponent {
   constructor(properties) {
     super(properties);
     this.buttons = [];
+    this.actions = [];
   }
 
   buildComponent(builder){
-    var toolbarNode = document.createElement("div");
+    let toolbarNode = document.createElement("div");
     toolbarNode.setAttribute("class", "btn-toolbar");
     toolbarNode.setAttribute("role", "toolbar");
 
-    var groupNode = document.createElement("div");
+    let groupNode = document.createElement("div");
     groupNode.setAttribute("class", "btn-group");
     toolbarNode.appendChild(groupNode);
 
     if (Array.isArray(this.properties.actions)) {
-      for (var x=0; x<this.properties.actions.length; x++) {
-        var component = this.properties.actions[ x ];
+      for (let x=0; x<this.properties.actions.length; x++) {
+        let component = this.properties.actions[ x ];
 
-        var btn = document.createElement("button");
+        let btn = document.createElement("button");
         btn.setAttribute("type", "button");
         btn.setAttribute("class", "btn btn-default");
         btn.innerText = component.label;
@@ -35,7 +36,7 @@ export class Toolbar extends InputComponent {
         this.buttons.push(btn);
 
         btn.addEventListener("click", function (evt) {
-          this._clicked(evt.srcElement);
+          this._clicked(component);
         }.bind(this), false);
 
       }
@@ -43,10 +44,8 @@ export class Toolbar extends InputComponent {
     return toolbarNode;
   }
 
-  _clicked(btn){
-    var index = this.buttons.indexOf(btn);
-    var a = this.properties.actions[ index ];
-    this.fireAction(a.action);
+  _clicked(action){
+    this.fireAction(action);
   }
 
   stateChanged(state, value) {

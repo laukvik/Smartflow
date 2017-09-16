@@ -123,7 +123,7 @@ export class InboxView extends View {
                         "enabled": "buttonEnabled",
                         "value": "button"
                       },
-                      "action": "FindMoviesAction",
+                      "action": FindMoviesAction,
                       "col-md": "12"
                     }
                   ]
@@ -177,7 +177,13 @@ export class InboxView extends View {
                       "states": {
                         "value": "progress"
                       }
-                    },
+                    }
+
+                  ]
+                },
+                {
+                  "label": "Table",
+                  "components": [
                     {
                       "type": "Table",
                       "id": "inboxTable",
@@ -226,139 +232,10 @@ export class InboxView extends View {
                       ]
                     }
                   ]
-                },
-                {
-                  "label": "Advanced",
-                  "components": []
                 }
               ]
             }
           ]
-        }
-      ],
-      "components2": [
-        {
-          "type": "Card",
-          "title": "Smartflow",
-          "subtitle": "Application flow API for JavaScript",
-          "components": [
-            {
-              "type": "GridList",
-              "state": "movies",
-              "tooltip": "storyline",
-              "url": "poster",
-              "base": "https://images-na.ssl-images-amazon.com/images/M/",
-              "sort": {
-                "match": "year",
-                "order": "asc"
-              },
-              "filter": [
-                {
-                  "match": "genres",
-                  "type": "contains",
-                  "value": "war"
-                }
-              ],
-              "paging": {
-                "size": 10,
-                "page": 0,
-              },
-            },
-            {
-              "type": "Grid",
-              "hidden": "true",
-              "components": [
-                {
-                  "type": "Label",
-                  "label": "Lorem ipsum dolor sit amet, ex eum veri alterum. Idque latine expetenda sea ad, purto novum evertitur sea ad, in purto possit iracundia quo."
-                },
-                {
-                  "type": "Label",
-                  "label": "Nec atqui oporteat scriptorem ne, est ex odio viderer nostrum. Sea agam graece possit id, ne quando nostro nusquam vis."
-                },
-                {
-                  "type": "Label",
-                  "label": "Purto consulatu sea no, ne nam tota verterem explicari, harum invidunt abhorreant ea cum. Ne vel viris labitur reprimique, et sit debet definiebas vituperata, vero quando deserunt mei at."
-                }
-              ]
-            }
-          ],
-          "actions": [
-            {
-              "type": "Button",
-              "label": "Find",
-              "action": "FindEmailsAction"
-            },
-            {
-              "type": "Button",
-              "label": "Clear",
-              "action": "ClearEmailsAction"
-            },
-            {
-              "type": "Button",
-              "label": "Add",
-              "action": "AddEmailAction"
-            },
-            {
-              "type": "Button",
-              "label": "Select All",
-              "action": "SelectAllAction"
-            },
-            {
-              "type": "Button",
-              "label": "Select None",
-              "action": "SelectNoneAction"
-            },
-            {
-              "type": "Button",
-              "label": "Movies",
-              "action": "FindMoviesAction"
-            },
-            {
-              "type": "Button",
-              "label": "Movies2",
-              "action": "FindMovies2Action"
-            }
-
-          ]
-        }
-      ],
-      "originals": [
-        {
-          "type": "Dialog",
-          "title": "Vil du",
-          "actions": [
-            {
-              "type": "Button",
-              "label": "Ok",
-              "action": "LoginDialogAction",
-              "id": "loginButton"
-            }
-          ]
-        },
-        {
-          "type": "textfield",
-          "label": "To",
-          "value": "Morten",
-          "placeholder": "email"
-        },
-        {
-          "type": "button",
-          "label": "LoginAction",
-          "action": "LoginDialogAction",
-          "id": "loginButton"
-        },
-        {
-          "type": "button",
-          "label": "CloseLoginFailedAction",
-          "action": "CloseLoginFailedAction",
-          "id": "loginFailedButton"
-        },
-        {
-          "type": "label",
-          "label": "",
-          "class": "error",
-          "id": "loginErrorMessage"
         }
       ]
     };
@@ -368,7 +245,7 @@ export class InboxView extends View {
     console.info("InboxView.viewEnabled");
     this.runSmartflow(new StartAction());
     //this.runSmartflow(new FindMoviesAction());
-    //this.runSmartflow(new FindTableAction());
+    this.runSmartflow(new FindTableAction());
   };
 
   componentChanged(evt) {

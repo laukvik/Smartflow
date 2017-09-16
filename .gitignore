@@ -5,3 +5,5 @@ demo/node_modules
 /demo/build/
 coverage/
 example/node_modules/
+/dist/
+/example/dist/

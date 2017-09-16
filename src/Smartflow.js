@@ -48,7 +48,6 @@ export class Smartflow {
 
   //--------------------------------- Config ---------------------------------
   setConfig(config) {
-    console.info("Smartflow.setConfig: ", config);
     this._config = config;
   }
 
@@ -58,11 +57,9 @@ export class Smartflow {
 
   getRequestUrl(action) {
     if (!this.isAction(action)) {
-      //console.info("Smartflow: not an action", action);
       return undefined;
     }
     if (this._config === undefined) {
-      //console.info("Smartflow: Missing configuration!");
       return undefined;
     }
     let key = action.constructor.name;
@@ -117,28 +114,11 @@ export class Smartflow {
     return ctrl instanceof View;
   }
 
-  findView(name) {
-    if (typeof name !== 'string') {
-      return undefined;
-    }
-    for (let x = 0; x < this._controllers.length; x++) {
-      let ctrl = this._controllers[x];
-      console.info("FindView: ", name, ctrl);
-      if (ctrl.constructor.name == name) {
-        return ctrl;
-      }
-    }
-    return undefined;
-  };
-
   addView(ctrl) {
     if (!this.isView(ctrl)) {
       console.warn("Smartflow: Not a view ", ctrl);
       return;
     }
-    // if (this.findView(ctrl.constructor.name)) {
-    //   return false;
-    // }
     this._controllers.push(ctrl);
     ctrl.setSmartflowInstance(this);
     this._buildComponents(ctrl);
@@ -168,7 +148,6 @@ export class Smartflow {
   };
 
   start() {
-    console.info("Smartflow.starting");
     this._autoDetectLocale();
     for (let x = 0; x < this._controllers.length; x++) {
       let ctrl = this._controllers[x];
@@ -177,11 +156,6 @@ export class Smartflow {
     let anchor = window.location.hash;
     let path = anchor.indexOf("#") === 0 ? anchor.substr(1) : "/";
     this.setPath(path);
-  }
-
-  runActionByName(name, callerCtrl){
-    let action = eval(name);
-    this.runAction(action, callerCtrl)
   }
 
   runAction(action, callerCtrl) {
@@ -236,7 +210,6 @@ export class Smartflow {
       return;
     }
     this._action = action;
-    console.info("_runRemainingActions: ", this._action);
 
     // Event object
     let actionEvent = this._buildActionEvent(action);

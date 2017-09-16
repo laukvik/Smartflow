@@ -36,8 +36,9 @@ class SmartflowComponent {
   }
 
   fireAction(action) {
-    this.smartflow.runAction(action, this.getView());
+    this.smartflow.runAction(new action.action(), this.getView());
   }
+
   removeChildNodes(node) {
     while (node.firstChild) {
       node.removeChild(node.firstChild);

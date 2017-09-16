@@ -63,7 +63,7 @@ export class ComponentBuilder {
       f.setView(this.ctrl);
       return f;
     } else {
-      console.info("Component not found: ", comp.type);
+      console.warn("Component not found: ", comp.type);
       return undefined;
     }
   }

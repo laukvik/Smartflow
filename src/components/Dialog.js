@@ -4,6 +4,7 @@ export class Dialog extends PresentationComponent {
   constructor(properties) {
     super(properties);
     this.buttons = [];
+    this.actions = [];
     this.components = [];
   }
 
@@ -73,8 +74,9 @@ export class Dialog extends PresentationComponent {
         btn.innerText = component.label;
         contentFooter.appendChild(btn);
         this.buttons.push(btn);
+        this.actions.push(component);
         btn.addEventListener("click", function (evt) {
-          this._clicked(evt.srcElement);
+          this._clicked(evt.srcElement, component);
         }.bind(this), false);
       }
     }
@@ -89,8 +91,7 @@ export class Dialog extends PresentationComponent {
 
   _clicked(btn){
     let index = this.buttons.indexOf(btn);
-    let a = this.properties.actions[ index ];
-    console.info("Dialog._clicked: ", a);
+    let a = this.actions[ index ];
     if (a.validate === true){
       let invalidCount = 0;
       for (let n=0; n<this.components.length; n++) {
@@ -103,10 +104,10 @@ export class Dialog extends PresentationComponent {
         this._setValid("Invalid dialog")
 
       } else {
-        this.fireAction(a.action);
+        this.fireAction(a);
       }
     } else {
-      this.fireAction(a.action);
+      this.fireAction(a);
     }
   }
 
@@ -126,7 +127,6 @@ export class Dialog extends PresentationComponent {
   }
 
   stateChanged(state, value) {
-    console.info("dialog.stateChagned: ", state, value);
     // TODO State references should be variables
     if (state == this.properties.states.visible) {
       this.setVisible(value);

@@ -12,9 +12,13 @@ export class Button extends SmartflowComponent {
     this.action = properties.action;
     this.setText(properties.label);
     this.buttonNode.addEventListener("click", function () {
-      this.fireAction(this.action);
+      this._clicked(properties);
     }.bind(this), false);
     return this.buttonNode;
+  }
+
+  _clicked(action){
+    this.fireAction(action);
   }
 
   setEnabled(isEnabled) {
