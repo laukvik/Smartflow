@@ -1,8 +1,8 @@
 import {InputComponent} from "../component";
 
 export class Pulldown extends InputComponent {
-  constructor(comp, ctrl, builder) {
-    super(comp, ctrl, builder);
+  constructor(properties) {
+    super(properties);
     this.selectNode = document.createElement("select");
     this.selectNode.setAttribute("class", "sf-pulldown");
     this.selectNode.addEventListener('change', function () {

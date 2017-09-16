@@ -1,8 +1,8 @@
 import {InputComponent} from "../component";
 
 export class Textfield extends InputComponent {
-  constructor(comp) {
-    super(comp);
+  constructor(properties) {
+    super(properties);
     this.rootNode = document.createElement("div");
     this.rootNode.setAttribute("class", "input-group");
   }

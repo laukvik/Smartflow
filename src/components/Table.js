@@ -1,10 +1,9 @@
 import {InputComponent} from "../component";
 import {Collections} from "../collections";
 
-
 export class Table extends InputComponent{
-  constructor(properties, ctrl, builder) {
-    super(properties, ctrl, builder);
+  constructor(properties) {
+    super(properties);
     this.dontUpdate = true;
     this.collections = new Collections(properties);
     this.selected = [];

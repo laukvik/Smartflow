@@ -36,14 +36,7 @@ class SmartflowComponent {
   }
 
   fireAction(action) {
-    console.info("Component.fireAction: ", action);
-    // let func = eval(action);
-    // if (func == undefined) {
-    //   console.warn("Action not found: ", action);
-    // } else {
-    //   this.smartflow.runAction(new func(), this.getView());
-    // }
-    this.smartflow.runActionByName(action, this.getView());
+    this.smartflow.runAction(action, this.getView());
   }
   removeChildNodes(node) {
     while (node.firstChild) {

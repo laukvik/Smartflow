@@ -1,134 +1,10 @@
+import {View} from "../../src/View";
+import {CloseDialogAction,FindMoviesAction,FindTableAction,ShowDialogAction,StartAction} from "./actions";
 
-function StartAction() {
-  this.smartflow = {
-    "statess": {
-
-
-
-      "checkboxes": [
-        {"text": "Fish2", "value": "0"},
-        {"text": "Eggs2", "value": "1"},
-        {"text": "Milk", "value": "2"}
-      ],
-      "checkboxEnabled": false,
-      "selectedCheckboxes": [
-        "1",
-      ],
-      "checkboxRequired": false,
-      "checkboxLabel": "Checkbox2",
-
-      "radios": [
-        {"text": "Big Mac2", "value": "bigMac", "group": "food"},
-        {"text": "Whopper2", "value": "whopper", "group": "food"},
-        {"text": "Coke2", "value": "coke", "group": "drink"},
-        {"text": "Sprite2", "value": "sprite", "group": "drink"}
-      ],
-      "selectedRadio": "whopper",
-      "radioEnabled": false,
-      "radioRequired": false,
-      "radioLabel": "Radio2",
-
-      "pulldowns": [
-        {"text": "Big Mac2", "value": "bigMac", "group": "food"},
-        {"text": "Whopper2", "value": "whopper", "group": "food"},
-        {"text": "Coke2", "value": "coke", "group": "drink"},
-        {"text": "Sprite2", "value": "sprite", "group": "drink"}
-      ],
-      "pulldownEnabled": true,
-      "selectedPulldown": "sprite",
-      "pulldownRequired": false,
-      "pulldownLabel": "Pulldown2",
-
-      "textfield": "",
-      "textfieldEnabled": true,
-      "textfieldRequired": false,
-      "textfieldLabel": "Textfield2",
-
-      "button": "Button2",
-      "buttonEnabled": false,
-
-
-
-
-    }
-  }
-}
-
-function FindMoviesAction() {
-  this.smartflow = {
-    "request": {
-      "url": "movies.json",
-      "method": "get",
-      "type": "json"
-    },
-    "success": {
-      "path": "/",
-      "state": "movies"
-    },
-    "error": {
-      "path": "/",
-      "state": "moviesFailed"
-    }
-  };
-}
-
-function FindTableAction() {
-  this.smartflow = {
-    "states": {
-      "tableSelected": [
-        "Uncertain", "Wilson", "Baby-bossen"
-      ],
-      "tableSorted": {
-        "match": "title",
-        "order": "asc"
-      },
-      "tableFilter": [
-        {
-          "match": "year",
-          "type": "contains",
-          "value": "201"
-        }
-      ],
-      "tableColumns": [
-        {
-          "label": "Title",
-          "key": "title"
-        },
-        {
-          "label": "Genre",
-          "key": "genres"
-        },
-        {
-          "label": "Year",
-          "key": "year"
-        },
-      ],
-      "tableSelectable": true,
-
-      "progress": 22,
-
-    }
-  };
-}
-
-function ShowDialogAction(){
-  this.smartflow = {
-    "states": {
-      "dialogVisible": true
-    }
-  }
-}
-
-function CloseDialogAction(){
-  this.smartflow = {
-    "states": {
-      "dialogVisible": false
-    }
-  }
-}
-
-class InboxView {
+export class InboxView extends View {
   constructor() {
+    super();
+
     this.smartflow = {
       "path": "/",
       "components": [
@@ -276,12 +152,12 @@ class InboxView {
                           "type": "Button",
                           "label": "Ok",
                           "validate": true,
-                          "action": "CloseDialogAction"
+                          "action": CloseDialogAction
                         },
                         {
                           "type": "Button",
                           "label": "Cancel",
-                          "action": "CloseDialogAction"
+                          "action": CloseDialogAction
                         }
                       ]
                     },
@@ -291,7 +167,7 @@ class InboxView {
                         {
                           "type": "Button",
                           "label": "Open dialog",
-                          "action": "ShowDialogAction"
+                          "action": ShowDialogAction
                         }
                       ]
                     },
@@ -488,56 +364,14 @@ class InboxView {
     };
   }
 
-  viewInitialized(formatter) {
-  };
-
   viewEnabled() {
+    console.info("InboxView.viewEnabled");
     this.runSmartflow(new StartAction());
-    this.runSmartflow(new FindMoviesAction());
-    this.runSmartflow(new FindTableAction());
-  };
-
-  viewDisabled() {
-  };
-
-  stateChanged(state, value) {
-    console.info("InboxView.stateChanged: ", state, value);
-  };
-
-  actionPerformed(evt) {
-    console.info("InboxView.actionPerformed: ", evt);
+    //this.runSmartflow(new FindMoviesAction());
+    //this.runSmartflow(new FindTableAction());
   };
 
   componentChanged(evt) {
     console.info("InboxView.componentChanged: ", evt);
   }
 }
-
-
-var config = {
-  "LoginAction": "/api/login",
-  "DeleteAction": "/api/delete"
-};
-
-var langNO = {
-  "welcome": "Velkommen til {0}",
-  "confirmdelete": "Er du sikker på at du vil slette?",
-  "deleted": "Slettet."
-};
-var langEN = {
-  "welcome": "Welcome til {0}",
-  "confirmdelete": "Are you sure you want to delete?",
-  "deleted": "Deleted."
-};
-
-
-var app = new Smartflow.default();
-app.setConfig(config);
-app.loadLanguage("no", langNO);
-app.loadLanguage("en", langEN);
-app.setDefaultLocale("en");
-app.addView(new InboxView());
-app.start();
-
-
-

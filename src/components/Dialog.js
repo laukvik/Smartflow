@@ -1,13 +1,14 @@
 import {PresentationComponent} from "../component";
 
 export class Dialog extends PresentationComponent {
-  constructor(properties, ctrl) {
-    super(properties, ctrl);
+  constructor(properties) {
+    super(properties);
     this.buttons = [];
     this.components = [];
   }
 
   buildComponent(builder, properties){
+    this.properties = properties;
     this.dialogValidatoonNode = document.createElement("div");
     this.dialogValidatoonNode.setAttribute("class", "alert alert-warning alert-dismissible");
     this.dialogValidatoonNode.style.display = "none";
@@ -56,7 +57,7 @@ export class Dialog extends PresentationComponent {
         let panelComponent = panelComponents[n];
 
         contentBody.appendChild(panelNode);
-        var componentInstance = builder.buildChildNode(panelNode, panelComponent);
+        let componentInstance = builder.buildChildNode(panelNode, panelComponent);
 
         this.components.push(componentInstance);
       }
@@ -89,7 +90,8 @@ export class Dialog extends PresentationComponent {
   _clicked(btn){
     let index = this.buttons.indexOf(btn);
     let a = this.properties.actions[ index ];
-    if (a.validate == true){
+    console.info("Dialog._clicked: ", a);
+    if (a.validate === true){
       let invalidCount = 0;
       for (let n=0; n<this.components.length; n++) {
         let c = this.components[ n ];
@@ -124,6 +126,7 @@ export class Dialog extends PresentationComponent {
   }
 
   stateChanged(state, value) {
+    console.info("dialog.stateChagned: ", state, value);
     // TODO State references should be variables
     if (state == this.properties.states.visible) {
       this.setVisible(value);

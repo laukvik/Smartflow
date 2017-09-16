@@ -8,16 +8,16 @@ import {PresentationComponent} from "../component";
  *
  */
 export class Progress extends PresentationComponent {
-  constructor(properties, ctrl, builder) {
-    super(properties, ctrl, builder);
+  constructor(properties) {
+    super(properties);
     this.value = 0;
   }
 
   buildComponent(){
-    var progressNode = document.createElement("div");
+    let progressNode = document.createElement("div");
     progressNode.setAttribute("class", "progress");
 
-    var progressBarNode = document.createElement("div");
+    let progressBarNode = document.createElement("div");
     progressBarNode.setAttribute("class", "progress-bar progress-bar-striped");
     progressBarNode.setAttribute("role", "progressbar");
     progressNode.appendChild(progressBarNode);
