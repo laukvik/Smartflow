@@ -36,7 +36,7 @@ class SmartflowComponent {
   }
 
   fireAction(action) {
-    this.smartflow.runAction(new action.action(), this.getView());
+    this.smartflow.runAction(new action(), this.getView());
   }
 
   removeChildNodes(node) {

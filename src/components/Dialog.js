@@ -104,10 +104,10 @@ export class Dialog extends PresentationComponent {
         this._setValid("Invalid dialog")
 
       } else {
-        this.fireAction(a);
+        this.fireAction(a.action);
       }
     } else {
-      this.fireAction(a);
+      this.fireAction(a.action);
     }
   }
 

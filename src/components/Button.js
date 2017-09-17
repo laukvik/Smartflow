@@ -18,7 +18,7 @@ export class Button extends SmartflowComponent {
   }
 
   _clicked(action){
-    this.fireAction(action);
+    this.fireAction(action.action);
   }
 
   setEnabled(isEnabled) {
