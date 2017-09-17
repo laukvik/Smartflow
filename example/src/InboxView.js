@@ -1,5 +1,5 @@
 import {View} from "../../src/View";
-import {CloseDialogAction,FindMoviesAction,FindTableAction,ShowDialogAction,StartAction} from "./actions";
+import {SearchfieldAction,CloseDialogAction,FindMoviesAction,FindTableAction,ShowDialogAction,StartAction} from "./actions";
 
 export class InboxView extends View {
   constructor() {
@@ -180,6 +180,21 @@ export class InboxView extends View {
                       ]
                     },
                     {
+                      "type": "Searchfield",
+                      "label": "Searchfield",
+                      "states": {
+                        "value": "searchfieldValue",
+                        "rows": "searchfieldRows"
+                      },
+                      "action": SearchfieldAction,
+                      "key": "title",
+                      "presentation": "title",
+                      "sort": {
+                        "match": "title",
+                        "order": "asc"
+                      }
+                    },
+                    {
                       "type": "Toolbar",
                       "actions": [
                         {
@@ -263,13 +278,14 @@ export class InboxView extends View {
   }
 
   viewEnabled() {
-    console.info("InboxView.viewEnabled");
+    //console.info("InboxView.viewEnabled");
     this.runSmartflow(new StartAction());
-    //this.runSmartflow(new FindMoviesAction());
     this.runSmartflow(new FindTableAction());
-  };
+    this.runSmartflow(new FindMoviesAction());
+  }
 
   componentChanged(evt) {
-    console.info("InboxView.componentChanged: ", evt);
+  }
+  actionPerformed(evt){
   }
 }

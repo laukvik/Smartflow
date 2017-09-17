@@ -1,7 +1,6 @@
 import {Action} from "../../src/Action";
 
 export class StartAction extends Action {
-
   getSmartflow() {
     return {
       "states": {
@@ -50,10 +49,9 @@ export class StartAction extends Action {
       }
     }
   }
-};
+}
 
 export class FindMoviesAction extends Action {
-
   getSmartflow() {
     return {
       "request": {
@@ -69,7 +67,7 @@ export class FindMoviesAction extends Action {
         "path": "/",
         "state": "moviesFailed"
       }
-    };
+    }
   }
 }
 
@@ -107,12 +105,10 @@ export class FindTableAction extends Action {
         },
       ],
       "tableSelectable": true,
-
       "progress": 22,
-
     }
     }
-  };
+  }
 }
 
 
@@ -135,3 +131,25 @@ export class CloseDialogAction extends Action {
     }
   }
 }
+
+
+export class SearchfieldAction extends Action {
+  getSmartflow() {
+    return {
+      "request": {
+        "url": "movies.json",
+        "method": "get",
+        "type": "json"
+      },
+      "success": {
+        "path": "/",
+        "state": "searchfieldRows"
+      },
+      "error": {
+        "path": "/",
+        "state": "moviesFailed"
+      }
+    }
+  }
+}
+

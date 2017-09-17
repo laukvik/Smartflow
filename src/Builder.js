@@ -18,6 +18,7 @@ import {Tabs} from "./components/Tabs";
 import {Textfield} from "./components/Textfield";
 import {Toolbar} from "./components/Toolbar";
 import {Alert} from "./components/Alert";
+import {Searchfield} from "./components/Searchfield";
 
 export class ComponentBuilder {
   constructor(ctrl, formatter, smartflow) {
@@ -56,6 +57,8 @@ export class ComponentBuilder {
       f =  new Toolbar(componentProperties);
     } else if (componentType === 'alert') {
       f =  new Alert(componentProperties);
+    } else if (componentType === 'searchfield') {
+      f =  new Searchfield(componentProperties);
     } else {
       console.warn("Component not found: ", componentProperties.type);
       return;

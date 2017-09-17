@@ -3,6 +3,23 @@ import {ComponentBuilder} from "./Builder";
 import {View} from "./View";
 import {Action} from "./Action";
 
+const HTTP_STATUS_CODES = {
+  INFO: 100,
+  SUCCESS: 200,
+  REDIRECT: 300,
+  CLIENT_ERROR: 400,
+  ERROR: 500,
+  UNKNOWN: 600
+};
+
+const READY_STATE = {
+  UNSENT: 0,
+  OPENED: 1,
+  HEADERS_RECEIVED: 2,
+  LOADING: 3,
+  DONE: 4
+};
+
 export class Smartflow {
   constructor() {
     this._controller = undefined;
@@ -12,22 +29,7 @@ export class Smartflow {
     this._localeDefault = undefined;
     //--------------------------------- Action runner ---------------------------------
     this.REQUEST_TIMEOUT = 3000;
-
     this._formatter = new Formatter({});
-
-    // Status codes
-    const HTTP_STATUS_CODE_INFO = 100;
-    const HTTP_STATUS_CODE_SUCCESS = 200;
-    const HTTP_STATUS_CODE_REDIRECT = 300;
-    const HTTP_STATUS_CODE_CLIENT_ERROR = 400;
-    const HTTP_STATUS_CODE_ERROR = 500;
-    const HTTP_STATUS_CODE_UNKNOWN = 600;
-    // XMLHttpRequest
-    const READY_STATE_UNSENT = 0;
-    const READY_STATE_OPENED = 1;
-    const READY_STATE_HEADERS_RECEIVED = 2;
-    const READY_STATE_LOADING = 3;
-    const READY_STATE_DONE = 4;
     //
     this._states = [];
   }
@@ -96,7 +98,7 @@ export class Smartflow {
   _autoDetectLocale() {
     let l = this.findClosestLocale(navigator.languages);
     this.setLocale(l === undefined ? this._localeDefault : l);
-  };
+  }
 
   findClosestLocale(arr) {
     for (let x = 0; x < arr.length; x++) {
@@ -107,7 +109,7 @@ export class Smartflow {
       }
     }
     return undefined;
-  };
+  }
 
   //--------------------------------- View ----------------------------------------
   isView(ctrl) {
@@ -123,7 +125,7 @@ export class Smartflow {
     ctrl.setSmartflowInstance(this);
     this._buildComponents(ctrl);
     return true;
-  };
+  }
 
   _buildComponents(ctrl) {
     // mount components
@@ -131,7 +133,7 @@ export class Smartflow {
       let builder = new ComponentBuilder(ctrl, this._formatter, this);
       builder.buildComponents();
     }
-  };
+  }
 
   removeView(ctrl) {
     if (!this.isView(ctrl)) {
@@ -145,7 +147,7 @@ export class Smartflow {
       }
     }
     return false;
-  };
+  }
 
   start() {
     this._autoDetectLocale();
@@ -162,6 +164,7 @@ export class Smartflow {
     if (!this.isAction(action)) {
       return false;
     }
+
     if (!this.isView(callerCtrl)) {
       return false;
     }
@@ -169,11 +172,11 @@ export class Smartflow {
     this._actionQueue.push(action);
     this._runRemainingActions();
     return true;
-  };
+  }
 
   _findActionID(action) {
     return action.constructor.name;
-  };
+  }
 
   _buildActionEvent(action) {
     return {
@@ -225,9 +228,9 @@ export class Smartflow {
       if (action.getSmartflow().request) {
         // Run with request
         var self = this;
-        let xhr = new XMLHttpRequest();
+        var xhr = new XMLHttpRequest();
         xhr.onreadystatechange = function () {
-          if (this.readyState === self.READY_STATE_DONE) {
+          if (this.readyState === READY_STATE.DONE) {
             let statusCode = parseInt(this.status);
             actionEvent.response.status = statusCode;
             let contentType = this.getResponseHeader('content-type');
@@ -242,10 +245,10 @@ export class Smartflow {
               actionEvent.response.body = this.response;
             }
 
-            if (statusCode >= self.HTTP_STATUS_CODE_INFO && statusCode < self.HTTP_STATUS_CODE_SUCCESS) {
+            if (statusCode >= HTTP_STATUS_CODES.INFO && statusCode < HTTP_STATUS_CODES.SUCCESS) {
               // Information
 
-            } else if (statusCode === self.HTTP_STATUS_CODE_SUCCESS) {
+            } else if (statusCode === HTTP_STATUS_CODES.SUCCESS) {
               // Success
               actionEvent.path = action.getSmartflow().success.path;
               actionEvent.params = self._findParams(actionEvent.path).param;
@@ -254,7 +257,7 @@ export class Smartflow {
 
               self._fireActionPerformed(action, actionEvent);
 
-            } else if (statusCode >= self.HTTP_STATUS_CODE_REDIRECT && statusCode < self.HTTP_STATUS_CODE_CLIENT_ERROR) {
+            } else if (statusCode >= HTTP_STATUS_CODES.REDIRECT && statusCode < HTTP_STATUS_CODES.ERROR) {
               // Redirect
               let errorRedirectMessage = "Error: Server responded " + statusCode + " (" + action.constructor.name + ")";
               actionEvent.path = action.getSmartflow().error.path;
@@ -263,7 +266,7 @@ export class Smartflow {
               actionEvent.states[action.getSmartflow().error.state] = errorRedirectMessage;
               self._fireActionPerformed(action, actionEvent);
 
-            } else if (statusCode >= self.HTTP_STATUS_CODE_CLIENT_ERROR && statusCode < self.HTTP_STATUS_CODE_ERROR) {
+            } else if (statusCode >= HTTP_STATUS_CODES.ERROR && statusCode < HTTP_STATUS_CODES.ERROR) {
               // Client error
               let errorClientMessage = "Error: Server responded " + statusCode + " (" + action.constructor.name + ") ";
               actionEvent.path = action.getSmartflow().error.path;
@@ -272,7 +275,7 @@ export class Smartflow {
               actionEvent.states[action.getSmartflow().error.state] = errorClientMessage;
               self._fireActionPerformed(action, actionEvent);
 
-            } else if (statusCode >= self.HTTP_STATUS_CODE_ERROR && statusCode < self.HTTP_STATUS_CODE_UNKNOWN) {
+            } else if (statusCode >= HTTP_STATUS_CODES.ERROR && statusCode < HTTP_STATUS_CODES.UNKNOWN) {
               // Server error
               let errorServerMessage = "Error: Server responded " + statusCode + " (" + action.constructor.name + ")  ";
               actionEvent.path = action.getSmartflow().error.path;
@@ -331,10 +334,10 @@ export class Smartflow {
 
     // Appends states to existing collection
     if (actionEvent.addStates) {
-      for (var keyAdd in actionEvent.addStates) {
-        var entriesArray = actionEvent.addStates[keyAdd];
+      for (let keyAdd in actionEvent.addStates) {
+        let entriesArray = actionEvent.addStates[keyAdd];
         if (Array.isArray(entriesArray)) {
-          for (var x = 0; x < entriesArray.length; x++) {
+          for (let x = 0; x < entriesArray.length; x++) {
             this._states[keyAdd].push(entriesArray[x]);
           }
           if (actionEvent.states[keyAdd] === undefined) {
@@ -346,14 +349,14 @@ export class Smartflow {
 
     // Remove states from collection
     if (actionEvent.removeStates) {
-      for (var keyRemove in actionEvent.removeStates) {
+      for (let keyRemove in actionEvent.removeStates) {
         // TODO - Remove states
-        var entriesArray = actionEvent.removeStates[keyRemove];
+        let entriesArray = actionEvent.removeStates[keyRemove];
 
       }
     }
 
-    for (var key in actionEvent.states) {
+    for (let key in actionEvent.states) {
       this._states[key] = actionEvent.states[key]; // Save new state internally
       this._fireStateChanged(key, this._states[key]); // Push to listeners
     }
@@ -361,7 +364,7 @@ export class Smartflow {
       this.setPath(actionEvent.path);
     }
 
-    var ctrl = action._smartflowCaller;
+    let ctrl = action._smartflowCaller;
 
     if (actionEvent.commands) {
       for (var y = 0; y < ctrl.smartflow.componentInstances.length; y++) {
@@ -388,7 +391,7 @@ export class Smartflow {
   }
 
   _findParams(pathString) {
-    var parameters = pathString.split("/");
+    let parameters = pathString.split("/");
     if (parameters[0] == "") {
       parameters.shift();
     }
@@ -401,8 +404,8 @@ export class Smartflow {
 
   //--------------------------------- Path ----------------------------------------
   findViewByPath(path) {
-    for (var x = 0; x < this._controllers.length; x++) {
-      var ctrl = this._controllers[x];
+    for (let x = 0; x < this._controllers.length; x++) {
+      let ctrl = this._controllers[x];
       if (ctrl.smartflow.path === path) {
         return ctrl;
       }
@@ -411,23 +414,23 @@ export class Smartflow {
   }
 
   setPath(pathString) {
-    var p = this._findParams(pathString);
-    var firstElement = p.path;
-    var parameters = p.param;
+    let p = this._findParams(pathString);
+    let firstElement = p.path;
+    let parameters = p.param;
     if (this._controller && this._controller.smartflow.path === firstElement) {
       return;
     }
-    var ctrl = this.findViewByPath(firstElement);
+    let ctrl = this.findViewByPath(firstElement);
     this._path = pathString;
     this._controller = undefined;
     window.location.href = "#" + pathString;
     this._firePathChanged(firstElement, parameters);
     return ctrl != undefined;
-  };
+  }
 
   _firePathChanged(path, parameters) {
-    var ctrl;
-    for (var x = 0; x < this._controllers.length; x++) {
+    let ctrl;
+    for (let x = 0; x < this._controllers.length; x++) {
       ctrl = this._controllers[x];
       if (ctrl.smartflow.path !== path) {
         //if (ctrl.viewDisabled) {
@@ -445,16 +448,19 @@ export class Smartflow {
         this._setControllerVisible(ctrl, true);
       }
     }
-  };
+  }
 
   _setControllerVisible(ctrl, isVisible) {
     var el = document.getElementById(ctrl.constructor.name);
     if (el) {
       el.style.display = isVisible ? "block" : "none";
     }
-  };
+  }
 
   //--------------------------------- State ----------------------------------------
+  fireStateChanged(state, value){
+    this._fireStateChanged(state, value);
+  }
   _fireStateChanged(state, value) {
     if (value === undefined || value == null) {
       delete( this._states[state] );
