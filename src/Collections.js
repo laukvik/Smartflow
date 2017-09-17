@@ -8,65 +8,64 @@ export class Collections {
   setFilter(filter){
     if (Array.isArray(filter)){
       this.filter = filter;
-      this.filterEnabled = (filter !== undefined);
+      this.filterEnabled = (filter != undefined);
     } else {
       this.filter = [];
     }
   }
 
   setPaging(paging){
-    if (paging === undefined) {
+    if (paging == undefined) {
       this.pageSize = undefined;
       this.pageIndex = undefined;
     } else {
       this.pageSize = paging.size;
       this.pageIndex = paging.page;
     }
-    this.pageEnabled = this.pageSize !== undefined;
+    this.pageEnabled = this.pageSize != undefined;
   }
 
   setSort(sort){
-    if (sort === undefined) {
+    if (sort == undefined) {
       this.sortMatch = undefined;
       this.sortOrder = undefined;
     } else {
       this.sortMatch = sort.match;
       this.sortOrder = sort.order;
     }
-    this.sortEnabled = sort === undefined;
+    this.sortEnabled = sort == undefined;
   }
 
   find(items) {
-
     // Filter
-    var filter = this.filter;
-    var collectionFilter = function (item) {
-      var count = 0;
-      for (var x = 0; x < filter.length; x++) {
-        var f = filter[x];
-        var filterMatch = f['match'];
-        var filterType = f['type'];
-        var filterValue = f['value'];
-        var value = item[filterMatch];
+    let filter = this.filter;
+    let collectionFilter = function (item) {
+      let count = 0;
+      for (let x = 0; x < filter.length; x++) {
+        let f = filter[x];
+        let filterMatch = f['match'];
+        let filterType = f['type'];
+        let filterValue = f['value'];
+        let value = item[filterMatch];
         if (filterType === 'eq') {
           if (value === filterValue) {
             count++;
           }
         } else if (filterType === 'contains') {
           if (Array.isArray(value)) {
-            var found = false;
-            for (var y = 0; y < value.length; y++) {
+            for (let y = 0; y < value.length; y++) {
               if (value[y].toLowerCase().indexOf(filterValue.toLowerCase()) > -1) {
                 count++;
               }
-            }
-            if (found) {
-              count++;
             }
           } else {
             if (value.toLowerCase().indexOf(filterValue.toLowerCase()) > -1) {
               count++;
             }
+          }
+        } else if (filterType === 'startswith') {
+          if (value.toLowerCase().startsWith(filterValue.toLowerCase())) {
+            count++;
           }
         }
       }
@@ -74,13 +73,13 @@ export class Collections {
     };
 
     // Sorting
-    var matchColumn = this.sortMatch;
-    var negOrder = this.sortOrder === 'asc' ? -1 : 1;
-    var posOrder = this.sortOrder === 'asc' ? 1 : -1;
+    let matchColumn = this.sortMatch;
+    let negOrder = this.sortOrder === 'asc' ? -1 : 1;
+    let posOrder = this.sortOrder === 'asc' ? 1 : -1;
 
-    var collectionSorter = function (a, b) {
-      var nameA = a[matchColumn];
-      var nameB = b[matchColumn];
+    let collectionSorter = function (a, b) {
+      let nameA = a[matchColumn];
+      let nameB = b[matchColumn];
       if (nameA < nameB) {
         return negOrder;
       }
@@ -91,13 +90,13 @@ export class Collections {
     };
 
     // Paging
-    var paging = function (items, page, size) {
-      var startIndex = page * size;
-      var endIndex = startIndex + size;
+    let paging = function (items, page, size) {
+      let startIndex = page * size;
+      let endIndex = startIndex + size;
       return items.slice(startIndex, endIndex);
     };
 
-    var rows = items;
+    let rows = items;
     if (this.filterEnabled) {
       rows = rows.filter(collectionFilter);
     }

@@ -5,39 +5,72 @@ export class Searchfield extends InputComponent {
   constructor(properties) {
     super(properties);
     this.rootNode = document.createElement("div");
-    this.optionsNode = document.createElement("div");
-    this.optionsNode.setAttribute("class", "sf-searchfield-options");
+    this.optionsNode = document.createElement("ul");
+    this.optionsNode.setAttribute("class", "dropdown-menu");
     this.collections = new Collections(properties);
     this.selectedIndex =  -1;
     this.optionsNodes = [];
+    this.rows = [];
+    this.matchKey = properties.key;
+    this.presentationKey = properties.presentation;
     this.setDropdownVisible(false);
+  }
+
+  setRows(rowData){
+    this.removeChildNodes(this.optionsNode);
+    if (Array.isArray(rowData)) {
+      this.optionsNodes = [];
+      this.selectedIndex = 0;
+      this.setDropdownVisible(false);
+      this.collections.setFilter([{
+        "match": this.matchKey,
+        "type": "startswith",
+        "value": this.getValue()
+      }]);
+      this.collections.setSort({
+        "match": this.matchKey,
+        "order": "asc"
+      });
+      let items = this.collections.find(rowData);
+      this.rows = items;
+      for (let x=0; x<items.length; x++) {
+        let item = items[ x ];
+        let node = document.createElement("li");
+        let a = document.createElement("a");
+        a.innerText = item[ this.matchKey ];
+        if (x === 0){
+          node.setAttribute("class", "active");
+        }
+        node.appendChild(a);
+        this.optionsNodes.push(node);
+        this.optionsNode.appendChild(node);
+      }
+      if (items.length > 0){
+        this.setDropdownVisible(true);
+      }
+    }
   }
 
   arrowUp(){
-    if (this.selectedIndex > 0) {
-      this.setSelectedIndex(this.selectedIndex - 1);
-    }
+    this.setSelectedIndex(this.selectedIndex - 1);
   }
 
   arrowDown(){
-    if (this.selectedIndex < this.max) {
-      this.setSelectedIndex(this.selectedIndex + 1);
-    }
+    this.setSelectedIndex(this.selectedIndex + 1);
   }
 
   select(){
+    console.info("Searchfield.select: ", this.selectedIndex, this.rows);
+    this.input.value = this.rows[ this.selectedIndex ].title;
     this.setDropdownVisible(false);
+    this.input.select();
   }
 
   setSelectedIndex(index){
-    if (this.selectedIndex >= 0) {
-      this.optionsNodes[ this.selectedIndex ].setAttribute("class", "sf-searchfield-option");
-    }
-    if (index >=0 && index < this.max){
+    if (index > -1 && index < this.rows.length ){
+      this.optionsNodes[ this.selectedIndex ].setAttribute("class", "");
       this.selectedIndex = index;
-      this.optionsNodes[ index ].setAttribute("class", "sf-searchfield-option sf-searchfield-option-selected");
-    } else {
-      this.selectedIndex = -1;
+      this.optionsNodes[ index ].setAttribute("class", "active");
     }
   }
 
@@ -54,7 +87,7 @@ export class Searchfield extends InputComponent {
 
     this.input.setAttribute("placeholder", properties.placeholder);
     this.input.addEventListener('keyup', function (evt) {
-      //console.info("keyup: ", evt);
+      console.info("keyup: ", evt.key, this.selectedIndex);
       if (evt.key === "ArrowDown") {
         this.arrowDown();
       } else if (evt.key === "ArrowUp") {
@@ -137,35 +170,12 @@ export class Searchfield extends InputComponent {
     return s === undefined ? '' : s;
   }
 
-  setRows(rowData){
-    this.removeChildNodes(this.optionsNode);
-    if (Array.isArray(rowData)) {
-      this.collections.setFilter([{
-        "match": "title",
-        "type": "contains",
-        "value": this.getValue()
-      }]);
-      let items = this.collections.find(rowData);
-      this.max = items.length;
-
-      for (let x=0; x<items.length; x++) {
-        let node = document.createElement("div");
-        node.setAttribute("class", "sf-searchfield-option");
-
-
-
-        this.optionsNodes.push(node);
-
-        let item = items[ x ];
-        node.innerText = item.title;
-        this.optionsNode.appendChild(node);
-      }
-      this.setDropdownVisible(true);
-    }
-  }
-
 
   _changed(value) {
+    if (value === "") {
+      this.setDropdownVisible(false);
+      return;
+    }
     this.fireState(this.comp.states.value, value);
     //this.fireComponentChanged("value", value);
     this.fireAction(this.action);

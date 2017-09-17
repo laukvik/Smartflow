@@ -117,12 +117,4 @@
   overflow-y: scroll;
 }
 
-.sf-searchfield-option{
-  padding: 0.25em;
-  height: 2em;
-}
 
-.sf-searchfield-option-selected{
-  background-color: blue;
-  color: white;
-}
