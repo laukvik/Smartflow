@@ -38,8 +38,10 @@ export class InboxView extends View {
                         {"text": "Eggs", "value": "1"},
                         {"text": "Milk", "value": "2"}
                       ],
-                      "col-md": "6",
-                      "col-lg": "4"
+                      "layout": {
+                        "col-md": "6",
+                        "col-lg": "4"
+                      }
                     },
                     {
                       "type": "Radio",
@@ -59,8 +61,11 @@ export class InboxView extends View {
                         {"text": "Eggs", "value": "1"},
                         {"text": "Milk", "value": "2"}
                       ],
-                      "col-md": "6",
-                      "col-lg": "4"
+                      "layout": {
+                        "col-md": "6",
+                        "col-lg": "4"
+                      },
+
                     },
                     {
                       "type": "Pulldown",
@@ -81,8 +86,10 @@ export class InboxView extends View {
                         "required": "pulldownRequired",
                         "label": "pulldownLabel"
                       },
-                      "col-md": "6",
-                      "col-lg": "4"
+                      "layout": {
+                        "col-md": "6",
+                        "col-lg": "4"
+                      }
                     }
                     ,
                     {
@@ -104,8 +111,11 @@ export class InboxView extends View {
                         "required": "textfieldRequired",
                         "label": "textfieldLabel"
                       },
-                      "col-md": "6",
-                      "col-lg": "12"
+                      "layout":{
+                        "col-md": "6",
+                        "col-lg": "12"
+                      }
+
                     },
                     {
                       "type": "Textfield",
@@ -113,7 +123,9 @@ export class InboxView extends View {
                       "required": true,
                       "rows": 10,
                       "placeholder": "Placeholder here...",
-                      "col-md": "12"
+                      "layout":{
+                        "col-md": "12"
+                      }
                     },
                     {
                       "type": "Button",
@@ -124,7 +136,9 @@ export class InboxView extends View {
                         "value": "button"
                       },
                       "action": FindMoviesAction,
-                      "col-md": "12"
+                      "layout": {
+                        "col-md": "12"
+                      }
                     }
                   ]
                 },
@@ -190,8 +204,11 @@ export class InboxView extends View {
                       "class": "table table-striped",
                       "rowKey": "title",
                       "selectable": "false",
-                      "col-md": "12",
-                      "col-lg": "12",
+                      "layout":{
+                        "col-md": "12",
+                        "col-lg": "12",
+                      },
+
                       "states": {
                         "rows" : "movies",
                         "selected": "tableSelected",

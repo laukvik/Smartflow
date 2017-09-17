@@ -72,11 +72,6 @@
   font-size: 12pt;
   width: 100%;
   color: #555555;
-  border: 1px inset;
-  padding: 0.5em;
-  -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
-  -moz-box-sizing: border-box;    /* Firefox, other Gecko */
-  box-sizing: border-box;         /* Opera/IE 8+ */
 }
 
 .sf-button{

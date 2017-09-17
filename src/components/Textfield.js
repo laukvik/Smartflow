@@ -55,7 +55,7 @@ export class Textfield extends InputComponent {
     if (properties.id){
       this.rootNode.setAttribute("id", properties.id);
     }
-    this.rootNode.setAttribute("class", "sf-textfield" + (properties.class ? " " + properties.class : ""));
+    this.rootNode.setAttribute("class", "sf-textfield input-group" + (properties.class ? " " + properties.class : ""));
 
     return this.rootNode;
   }
