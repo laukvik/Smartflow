@@ -7,7 +7,7 @@ export class View {
   }
 
   pathChanged(path, params) {
-  };
+  }
 
   viewInitialized() {
   }

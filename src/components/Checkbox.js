@@ -1,14 +1,19 @@
 import {InputComponent} from "../component";
 
-export default class Checkbox extends InputComponent {
+export class Checkbox extends InputComponent {
   constructor(properties) {
     super(properties);
     this.inputs = [];
     this.optionsNode = document.createElement("div");
-    this.optionsNode.setAttribute("class", "sf-checkbox-options")
+    this.optionsNode.setAttribute("class", "sf-checkbox-options");
   }
 
   buildComponent(builder, properties){
+    if (properties.id){
+      this.optionsNode.setAttribute("id", properties.id);
+    }
+    this.optionsNode.setAttribute("class", "sf-checkbox-options" + (properties.class ? " " + properties.class : ""));
+
     this.setEnabled(properties.enabled);
     this.setRequired(properties.required);
     this.setLabel(properties.label);

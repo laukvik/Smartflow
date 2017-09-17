@@ -15,6 +15,10 @@ export class Pulldown extends InputComponent {
     this.setSelected(properties.selected);
     this.setLabel(properties.label);
     this.setRequired(properties.required);
+    if (properties.id){
+      this.selectNode.setAttribute("id", properties.id);
+    }
+    this.selectNode.setAttribute("class", "sf-pulldown" + (properties.class ? " " + properties.class : ""));
     return this.selectNode;
   }
 
@@ -43,17 +47,19 @@ export class Pulldown extends InputComponent {
 
   setOptions(items) {
     this.removeChildNodes(this.selectNode);
-    var optionEmpty = document.createElement("option");
-    optionEmpty.value = "";
-    this.selectNode.appendChild(optionEmpty);
-    for (var x = 0; x < items.length; x++) {
-      var item = items[x];
-      var itemText = item.text;
-      var itemValue = item.value;
-      var option = document.createElement("option");
-      option.setAttribute("value", itemValue);
-      option.innerText = itemText;
-      this.selectNode.appendChild(option);
+    if (Array.isArray(items)) {
+      let optionEmpty = document.createElement("option");
+      optionEmpty.value = "";
+      this.selectNode.appendChild(optionEmpty);
+      for (let x = 0; x < items.length; x++) {
+        let item = items[x];
+        let itemText = item.text;
+        let itemValue = item.value;
+        let option = document.createElement("option");
+        option.setAttribute("value", itemValue);
+        option.innerText = itemText;
+        this.selectNode.appendChild(option);
+      }
     }
   }
 

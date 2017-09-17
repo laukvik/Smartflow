@@ -5,9 +5,13 @@ export class Layout extends PresentationComponent {
     super(properties);
   }
 
-  buildComponent(builder){
+  buildComponent(builder, properties){
     let div = document.createElement("div");
-    div.setAttribute("class", "container");
+
+    if (properties.id){
+      div.setAttribute("id", properties.id);
+    }
+    div.setAttribute("class", "sf-layout container" + (properties.class ? " " + properties.class : ""));
 
     let rows = document.createElement("div");
     rows.setAttribute("class", "row");

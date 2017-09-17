@@ -13,9 +13,13 @@ export class Progress extends PresentationComponent {
     this.value = 0;
   }
 
-  buildComponent(){
+  buildComponent(builder, properties){
     let progressNode = document.createElement("div");
     progressNode.setAttribute("class", "progress");
+    if (properties.id){
+      progressNode.setAttribute("id", properties.id);
+    }
+    progressNode.setAttribute("class", "sf-progress" + (properties.class ? " " + properties.class : ""));
 
     let progressBarNode = document.createElement("div");
     progressBarNode.setAttribute("class", "progress-bar progress-bar-striped");

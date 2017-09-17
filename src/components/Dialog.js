@@ -15,6 +15,8 @@ export class Dialog extends PresentationComponent {
     this.dialogValidatoonNode.style.display = "none";
     let div = document.createElement("div");
 
+
+
     this.dialogNode = div;
 
     div.setAttribute("tabindex", "-1");
@@ -85,6 +87,12 @@ export class Dialog extends PresentationComponent {
 
     this.setVisible(properties.visible);
     this.setTitle(properties.title);
+
+    if (properties.id){
+      this.dialogNode.setAttribute("id", properties.id);
+    }
+    this.dialogNode.setAttribute("class", "sf-dialog" + (properties.class ? " " + properties.class : ""));
+
 
     return div;
   }

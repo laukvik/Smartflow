@@ -5,7 +5,6 @@ export class Radio extends InputComponent {
     super(properties);
     this.inputs = [];
     this.optionsNode = document.createElement("div");
-    this.optionsNode.setAttribute("class", "sf-radio");
   }
 
   buildComponent(builder, properties){
@@ -15,6 +14,11 @@ export class Radio extends InputComponent {
     this.setVertical(properties.vertical);
     this.setSelected(properties.selected);
     this.setValidationMessage(properties.validation);
+    if (properties.id){
+      this.optionsNode.setAttribute("id", properties.id);
+    }
+    this.optionsNode.setAttribute("class", "sf-radio" + (properties.class ? " " + properties.class : ""));
+
     return this.optionsNode;
   }
 

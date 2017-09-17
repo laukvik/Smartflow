@@ -8,10 +8,10 @@ export class Tabs extends PresentationComponent {
     this.links = [];
   }
 
-  buildComponent(builder){
+  buildComponent(builder, properties){
     var tabsDiv = document.createElement("ul");
     if (Array.isArray(this.properties.tabs)) {
-      tabsDiv.setAttribute("class", "sf-tabs");
+
 
       this.labelsNode = document.createElement("ul");
       this.labelsNode.setAttribute("class", "nav nav-tabs nav-justified");
@@ -52,6 +52,12 @@ export class Tabs extends PresentationComponent {
 
       this.setSelectedIndex(this.properties.selectedIndex);
     }
+
+    if (properties.id){
+      tabsDiv.setAttribute("id", properties.id);
+    }
+
+    tabsDiv.setAttribute("class", "sf-tabs" + (properties.class ? " " + properties.class : ""));
     return tabsDiv;
   }
 

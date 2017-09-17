@@ -52,7 +52,10 @@ export class Textfield extends InputComponent {
       addonAfter.appendChild(iconAfter);
       this.rootNode.appendChild(addonAfter);
     }
-
+    if (properties.id){
+      this.rootNode.setAttribute("id", properties.id);
+    }
+    this.rootNode.setAttribute("class", "sf-textfield" + (properties.class ? " " + properties.class : ""));
 
     return this.rootNode;
   }

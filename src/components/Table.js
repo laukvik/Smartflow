@@ -18,7 +18,7 @@ export class Table extends InputComponent{
     this.setColumns(properties.columns);
   }
 
-  buildComponent(){
+  buildComponent(builder, properties){
     // Table
     var tableNode = document.createElement("table");
     tableNode.setAttribute("class", "table");
@@ -32,6 +32,11 @@ export class Table extends InputComponent{
     tableNode.appendChild(bodyNode);
     this.headerNode = headerRowNode;
     this.bodyNode = bodyNode;
+    if (properties.id){
+      tableNode.setAttribute("id", properties.id);
+    }
+    tableNode.setAttribute("class", "sf-table" + (properties.class ? " " + properties.class : ""));
+
     return tableNode;
   }
 

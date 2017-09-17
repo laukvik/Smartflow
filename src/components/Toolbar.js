@@ -16,6 +16,8 @@ export class Toolbar extends InputComponent {
   }
 
   buildComponent(builder){
+    this.stateNameVisible = this.properties.states.visible;
+
     let toolbarNode = document.createElement("div");
     toolbarNode.setAttribute("class", "btn-toolbar");
     toolbarNode.setAttribute("role", "toolbar");

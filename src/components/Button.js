@@ -5,10 +5,16 @@ export class Button extends SmartflowComponent {
     super(properties);
   }
 
+  setAttribute(node, name, value){
+    node.setAttribute(name, value);
+  }
+
   buildComponent(builder, properties){
     this.buttonNode = document.createElement("button");
-    this.buttonNode.setAttribute("id", properties.id);
-    this.buttonNode.setAttribute("class", "btn btn-default");
+    if (properties.id){
+      this.buttonNode.setAttribute("id", properties.id);
+    }
+    this.buttonNode.setAttribute("class", "btn btn-default" + (properties.class ? " " + properties.class : ""));
     this.action = properties.action;
     this.setText(properties.label);
     this.buttonNode.addEventListener("click", function () {
