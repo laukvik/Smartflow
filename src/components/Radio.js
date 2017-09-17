@@ -61,9 +61,9 @@ export class Radio extends InputComponent {
   }
 
   setOptions(items) {
+    this.removeChildNodes(this.optionsNode);
+    this.inputs = [];
     if (Array.isArray(items)) {
-      this.inputs = [];
-      this.removeChildNodes(this.optionsNode);
       var gui = "sf-radio-" + Math.round(100000);
       for (var x = 0; x < items.length; x++) {
         var item = items[x];
@@ -95,8 +95,6 @@ export class Radio extends InputComponent {
           });
         });
       }
-    } else {
-      console.warn("Radio.setOptions: ", items);
     }
   }
 

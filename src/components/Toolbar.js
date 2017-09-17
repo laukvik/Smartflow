@@ -34,7 +34,7 @@ export class Toolbar extends InputComponent {
         groupNode.appendChild(btn);
         this.buttons.push(btn);
         btn.addEventListener("click", function () {
-          this._clicked(component.action);
+          this._clicked(properties.actions[ x ].action);
         }.bind(this), false);
       }
     }

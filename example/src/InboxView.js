@@ -19,6 +19,10 @@ export class InboxView extends View {
                   "label": "Minimum",
                   "components": [
                     {
+                      "type": "Alert",
+                      "text": "Here comes the error message"
+                    },
+                    {
                       "type": "Checkbox",
                       "label": "Checkbox",
                       "required": true,

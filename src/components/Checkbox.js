@@ -78,9 +78,9 @@ export class Checkbox extends InputComponent {
   }
 
   setOptions(items) {
+    this.removeChildNodes(this.optionsNode);
     if (Array.isArray(items)) {
       this.inputs = [];
-      this.removeChildNodes(this.optionsNode);
       for (let x = 0; x < items.length; x++) {
         let item = items[x];
         let itemText = item.text;
@@ -97,28 +97,15 @@ export class Checkbox extends InputComponent {
         span.appendChild(text);
         text.setAttribute("class", "sf-checkbox-option-label");
         text.innerText = itemText;
-        // var self = this;
-        // var inputs = this.inputs;
-        // input.addEventListener("change", function (evt) {
-        //   self.fireComponentChanged("selection", {
-        //     "value": evt.srcElement.value,
-        //     "selected": inputs.filter(function(inp){ return inp.checked}).map(function(inp, index){
-        //       return index;
-        //     })
-        //   });
-        // });
-
         input.addEventListener("change", function (evt) {
           this._changed(evt);
         }.bind(this), false);
 
       }
-    } else {
-      console.warn("Checkbox: Not an array: ", items)
     }
   }
 
-  _changed(evt) {
+  _changed() {
     this.validate();
   }
 
