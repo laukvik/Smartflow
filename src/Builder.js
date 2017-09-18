@@ -19,6 +19,7 @@ import {Textfield} from "./components/Textfield";
 import {Toolbar} from "./components/Toolbar";
 import {Alert} from "./components/Alert";
 import {Searchfield} from "./components/Searchfield";
+import {Datepicker} from "./components/Datepicker";
 
 export class ComponentBuilder {
   constructor(ctrl, formatter, smartflow) {
@@ -32,40 +33,42 @@ export class ComponentBuilder {
       return;
     }
     let componentType = componentProperties.type.toLowerCase();
-    let f;
+    let c;
     if (componentType === 'button') {
-      f =  new Button(componentProperties);
+      c =  new Button(componentProperties);
     } else if (componentType === 'checkbox') {
-      f =  new Checkbox(componentProperties);
+      c =  new Checkbox(componentProperties);
     } else if (componentType === 'dialog') {
-      f =  new Dialog(componentProperties);
+      c =  new Dialog(componentProperties);
     } else if (componentType === 'layout') {
-      f =  new Layout(componentProperties);
+      c =  new Layout(componentProperties);
     } else if (componentType === 'progress') {
-      f =  new Progress(componentProperties);
+      c =  new Progress(componentProperties);
     } else if (componentType === 'pulldown') {
-      f =  new Pulldown(componentProperties);
+      c =  new Pulldown(componentProperties);
     } else if (componentType === 'radio') {
-      f =  new Radio(componentProperties);
+      c =  new Radio(componentProperties);
     } else if (componentType === 'table') {
-      f =  new Table(componentProperties);
+      c =  new Table(componentProperties);
     } else if (componentType === 'tabs') {
-      f =  new Tabs(componentProperties);
+      c =  new Tabs(componentProperties);
     } else if (componentType === 'textfield') {
-      f =  new Textfield(componentProperties);
+      c =  new Textfield(componentProperties);
     } else if (componentType === 'toolbar') {
-      f =  new Toolbar(componentProperties);
+      c =  new Toolbar(componentProperties);
     } else if (componentType === 'alert') {
-      f =  new Alert(componentProperties);
+      c =  new Alert(componentProperties);
     } else if (componentType === 'searchfield') {
-      f =  new Searchfield(componentProperties);
+      c =  new Searchfield(componentProperties);
+    } else if (componentType === 'datepicker') {
+      c =  new Datepicker(componentProperties);
     } else {
       console.warn("Component not found: ", componentProperties.type);
       return;
     }
-    f.setSmartflow(this.smartflow);
-    f.setView(this.ctrl);
-    return f;
+    c.setSmartflow(this.smartflow);
+    c.setView(this.ctrl);
+    return c;
   }
 
   buildComponents() {

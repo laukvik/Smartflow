@@ -195,6 +195,15 @@ export class InboxView extends View {
                       }
                     },
                     {
+                      "type": "Datepicker",
+                      "label": "Datepicker",
+                      "required": true,
+                      "states": {
+                        "value": "datepickerValue"
+                      },
+                      "format": "yyyy.mm.dd"
+                    },
+                    {
                       "type": "Toolbar",
                       "actions": [
                         {

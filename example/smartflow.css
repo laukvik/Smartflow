@@ -117,4 +117,34 @@
   overflow-y: scroll;
 }
 
+.sf-datepicker TABLE{
+  border: 1px solid #aaaaaa;
+}
 
+.sf-datepicker THEAD{
+  border-bottom: 1px solid #aaaaaa;
+}
+
+.sf-datepicker TH{
+  text-align: center;
+  height: 2em;
+}
+
+.sf-datepicker TD{
+  width: 3em;
+  height: 2em;
+  text-align: center;
+  cursor: pointer;
+}
+
+.sf-datepicker TD:hover{
+  background-color: aquamarine;
+}
+
+.sf-datepicker .othermonth{
+  opacity: 0.5;
+}
+
+.sf-datepicker .weekend{
+  color: red;
+}
