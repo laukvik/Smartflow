@@ -117,6 +117,7 @@
   overflow-y: scroll;
 }
 
+
 .sf-datepicker TABLE{
   border: 1px solid #aaaaaa;
 }
@@ -147,4 +148,13 @@
 
 .sf-datepicker .weekend{
   color: red;
+}
+
+.sf-datepicker__visible{
+  position: relative;
+  display: block;
+}
+
+.sf-datepicker__hidden{
+  display: none;
 }

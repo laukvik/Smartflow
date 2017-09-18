@@ -458,28 +458,25 @@ export class Smartflow {
   }
 
   //--------------------------------- State ----------------------------------------
-  fireStateChanged(state, value){
-    this._fireStateChanged(state, value);
+  fireStateChanged(state, value, fromComponent){
+    this._fireStateChanged(state, value, fromComponent);
   }
-  _fireStateChanged(state, value) {
+  _fireStateChanged(state, value, fromComponent) {
     if (value === undefined || value == null) {
       delete( this._states[state] );
     } else {
       this._states[state] = value;
     }
-    for (var x = 0; x < this._controllers.length; x++) {
-      var ctrl = this._controllers[x];
+    for (let x = 0; x < this._controllers.length; x++) {
+      let ctrl = this._controllers[x];
       ctrl.stateChanged(state, value);
-      for (var y = 0; y < ctrl.smartflow.componentInstances.length; y++) {
-        var compInstance = ctrl.smartflow.componentInstances[y];
-
-        var states = compInstance.getStateBinding();
-
-        if (Array.isArray(states) && states.indexOf(state) > -1) {
-          compInstance.stateChanged(state, value);
-        }
-
-        if (compInstance.comp && compInstance.comp.state === state) {
+      for (let y = 0; y < ctrl.smartflow.componentInstances.length; y++) {
+        let compInstance = ctrl.smartflow.componentInstances[y];
+        if (compInstance != fromComponent) {
+          let states = compInstance.getStateBinding();
+          if (Array.isArray(states) && states.indexOf(state) > -1) {
+            compInstance.stateChanged(state, value);
+          }
         }
       }
     }
