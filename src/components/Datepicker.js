@@ -9,12 +9,14 @@ export class Datepicker extends InputComponent {
     this.input.setAttribute("type", "text");
     this.input.setAttribute("class", "form-control");
     this.startsWithMonday = true;
+    // TODO - Add i18n for days
     this.dayNames = ["Søndag", "Mandag", "Tirsdag", "Onsdag", "Torsdag", "Fredag", "Lørdag"];
+    // TODO - Add i18n for months
     this.monthNames = ["Januar", "Februar", "Mars", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Desember"];
     this.formatter = new Formatter();
   }
 
-  setPickerVisible(visible){
+  _setPickerVisible(visible){
     this.inputGroup2.setAttribute("class", visible ? "sf-datepicker__visible" : "sf-datepicker__hidden")
   }
 
@@ -113,7 +115,7 @@ export class Datepicker extends InputComponent {
     let formattedValue = this.formatter.formatDate(d, this.dateFormat);
     this.setText(formattedValue);
     this.fireState(this.stateValue, formattedValue);
-    this.setPickerVisible(false);
+    this._setPickerVisible(false);
   }
 
   buildComponent(builder, properties){
@@ -134,7 +136,7 @@ export class Datepicker extends InputComponent {
     iconAfter.setAttribute("class", "glyphicon glyphicon-calendar");
     addonAfter.appendChild(iconAfter);
     addonAfter.addEventListener("click", function () {
-      this.setPickerVisible(true);
+      this._setPickerVisible(true);
     }.bind(this, false));
     this.inputGroup1.appendChild(addonAfter);
     this.setRequired(properties.required);
@@ -143,7 +145,7 @@ export class Datepicker extends InputComponent {
     this.inputGroup2.appendChild(this.buildCalendar(7,2017));
     this.input.setAttribute("placeholder", this.dateFormat);
     this.dateFormat = "DD.MM.YYYY";
-    this.setPickerVisible(false);
+    this._setPickerVisible(false);
     return this.rootNode;
   }
 
