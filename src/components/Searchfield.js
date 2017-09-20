@@ -60,7 +60,6 @@ export class Searchfield extends InputComponent {
   }
 
   select(){
-    console.info("Searchfield.select: ", this.selectedIndex, this.rows);
     this.input.value = this.rows[ this.selectedIndex ].title;
     this.setDropdownVisible(false);
     this.input.select();
@@ -87,7 +86,6 @@ export class Searchfield extends InputComponent {
 
     this.input.setAttribute("placeholder", properties.placeholder);
     this.input.addEventListener('keyup', function (evt) {
-      console.info("keyup: ", evt.key, this.selectedIndex);
       if (evt.key === "ArrowDown") {
         this.arrowDown();
       } else if (evt.key === "ArrowUp") {

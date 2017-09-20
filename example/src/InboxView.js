@@ -201,7 +201,8 @@ export class InboxView extends View {
                       "states": {
                         "value": "datepickerValue"
                       },
-                      "format": "yyyy.mm.dd"
+                      "format": "yyyy.mm.dd",
+                      "value": "2008.10.25"
                     },
                     {
                       "type": "Toolbar",

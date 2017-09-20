@@ -45,7 +45,8 @@ export class StartAction extends Action {
 
         "button": "Button2",
         "buttonEnabled": false,
-        "dialogVisible": false
+        "dialogVisible": false,
+        "datePickerValue": "2010.11.12"
       }
     }
   }

@@ -332,6 +332,14 @@ export class Smartflow {
   _fireActionPerformed(action, actionEvent) {
     actionEvent.finish = Date.now();
 
+
+    // Remove states from collection
+    if (actionEvent.removeStates) {
+      for (let keyRemove in actionEvent.removeStates) {
+        delete this._states[keyRemove];
+      }
+    }
+
     // Appends states to existing collection
     if (actionEvent.addStates) {
       for (let keyAdd in actionEvent.addStates) {
@@ -347,14 +355,6 @@ export class Smartflow {
       }
     }
 
-    // Remove states from collection
-    if (actionEvent.removeStates) {
-      for (let keyRemove in actionEvent.removeStates) {
-        // TODO - Remove states
-        let entriesArray = actionEvent.removeStates[keyRemove];
-
-      }
-    }
 
     for (let key in actionEvent.states) {
       this._states[key] = actionEvent.states[key]; // Save new state internally

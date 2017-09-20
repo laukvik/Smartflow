@@ -126,6 +126,10 @@
   border-bottom: 1px solid #aaaaaa;
 }
 
+.sf-datepicker__month TH{
+  line-height: 3em;
+}
+
 .sf-datepicker TH{
   text-align: center;
   height: 2em;
@@ -139,11 +143,16 @@
 }
 
 .sf-datepicker TD:hover{
-  background-color: aquamarine;
+  background-color: #337ab7;
+  color: white;
+}
+
+.sf-datepicker .active{
+  background-color: #aaaaaa;
 }
 
 .sf-datepicker .othermonth{
-  opacity: 0.5;
+  opacity: 0.1;
 }
 
 .sf-datepicker .weekend{
