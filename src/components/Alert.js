@@ -3,15 +3,15 @@ import {SmartflowComponent} from "../component";
 export class Alert extends SmartflowComponent {
   constructor(properties) {
     super(properties);
-    this.pickerNode = document.createElement("div");
-    this.pickerNode.setAttribute("role", "alert");
+    this.spinnerNode = document.createElement("div");
+    this.spinnerNode.setAttribute("role", "alert");
   }
 
   buildComponent(builder, properties){
     if (properties.id){
-      this.pickerNode.setAttribute("id", properties.id);
+      this.spinnerNode.setAttribute("id", properties.id);
     }
-    this.pickerNode.setAttribute("class", "sf-alert alert alert-danger" + (properties.class ? " " + properties.class : ""));
+    this.spinnerNode.setAttribute("class", "sf-alert alert alert-danger" + (properties.class ? " " + properties.class : ""));
 
 
     this.srNode = document.createElement("span");
@@ -24,20 +24,20 @@ export class Alert extends SmartflowComponent {
 
     this.textNode = document.createTextNode("");
 
-    this.pickerNode.appendChild(this.iconNode);
-    this.pickerNode.appendChild(this.srNode);
-    this.pickerNode.appendChild(this.textNode);
+    this.spinnerNode.appendChild(this.iconNode);
+    this.spinnerNode.appendChild(this.srNode);
+    this.spinnerNode.appendChild(this.textNode);
 
     this.setText(properties.text);
 
-    return this.pickerNode;
+    return this.spinnerNode;
   }
 
   setEnabled(isEnabled) {
     if (isEnabled) {
-      this.pickerNode.removeAttribute("disabled");
+      this.spinnerNode.removeAttribute("disabled");
     } else {
-      this.pickerNode.setAttribute("disabled", "true");
+      this.spinnerNode.setAttribute("disabled", "true");
     }
   }
 

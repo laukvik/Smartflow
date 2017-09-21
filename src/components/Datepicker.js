@@ -224,7 +224,9 @@ export class Datepicker extends InputComponent {
   }
 
   buildComponent(builder, properties){
-    this.stateValue = properties.states.value;
+    if (properties.states) {
+      this.stateValue = properties.states.value;
+    }
     if (properties.id){
       this.rootNode.setAttribute("id", properties.id);
     }
