@@ -36,9 +36,7 @@ export class Datepicker extends InputComponent {
   }
 
   setValue(value) {
-    let date = this.formatter.parse(value, this.dateFormat);
-    console.info("setValue: ", value, date);
-    this.setDate(date);
+    this.setDate(this.formatter.parse(value, this.dateFormat));
   }
 
   setDate(value){
@@ -48,9 +46,6 @@ export class Datepicker extends InputComponent {
     this.selectedDate = value;
     this.month = this.selectedDate.getUTCMonth();
     this.year = this.selectedDate.getUTCFullYear();
-
-    console.info("setDate: ", value, this.month, this.year);
-
     this.input.value = this.formatter.formatDate(this.selectedDate, this.dateFormat);
     this._rebuildCalendar();
   }
@@ -216,7 +211,6 @@ export class Datepicker extends InputComponent {
     let data = day.getAttribute("data-sf-datepicker-millis");
     let d = new Date();
     d.setTime(parseInt(data));
-    console.info("_selectedDay: ", d, data);
     let formattedValue = this.formatter.formatDate(d, this.dateFormat);
     this.setDate(d);
     this.fireState(this.stateValue, formattedValue);
