@@ -6,17 +6,37 @@ let keyset = Data.getMoviesKeys();
 
 describe('Collections', function () {
 
-  describe('keys', function () {
+  describe('filters', function () {
 
-    it('should find by equals filter', function () {
+    it('should find by equals in number array', function () {
       let c = new Collections({});
-      c.addEquals("1927");
-      expect(c.find(keyset).length).toBe(16);
+      c.addAny("genres", ["Drama", "Action"]);
+      expect(c.find(rows).length).toBe(7);
     });
 
-  });
+    it('should find by equals in array', function () {
+      let c = new Collections({});
+      c.addContains("genres", "Action");
+      expect(c.find(rows).length).toBe(7);
+    });
 
-  describe('rowset', function () {
+    it('should find by equals in number array', function () {
+      let c = new Collections({});
+      c.addContains("ratings", 5);
+      expect(c.find(rows).length).toBe(7);
+    });
+
+    it('should find by greater than filter', function () {
+      let c = new Collections({});
+      c.addGreaterThan("imdbRating", 9.4);
+      expect(c.find(rows).length).toBe(1);
+    });
+
+    it('should find by less than filter', function () {
+      let c = new Collections({});
+      c.addLessThan("imdbRating", 5);
+      expect(c.find(rows).length).toBe(11);
+    });
 
     it('should find by equals filter', function () {
       let c = new Collections({});

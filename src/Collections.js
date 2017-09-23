@@ -1,6 +1,19 @@
+/**
+ * Compare
+ *
+ * TODO - String
+ * TODO - Number
+ * TODO - Date
+ *
+ */
 export class Collections {
+
   constructor(properties) {
     this.clearFilter();
+    this.setProperties(properties)
+  }
+
+  setProperties(properties){
     this.setSort(properties.sort);
     this.setPaging(properties.paging);
     this.setFilter(properties._filters);
@@ -10,30 +23,55 @@ export class Collections {
     this._filters = [];
   }
   clearSort(){
+    this._sorting = [];
   }
   clearPaging(){
+    this._paging = {};
   }
 
-  _addFilter(key, value, compareType) {
-    this._filters.push(
-      {
-        "match": key,
-        "type": compareType,
-        "value": value
-      }
-    );
+  _addFilter(key, value, compareType, datePattern) {
+    if (!datePattern) {
+      this._filters.push(
+        {
+          "match": key,
+          "type": compareType,
+          "value": value
+        }
+      );
+    } else {
+      this._filters.push(
+        {
+          "match": key,
+          "type": compareType,
+          "value": value,
+          "pattern": datePattern
+        }
+      );
+    }
   }
 
-  addKey(key, value) {
-    this._addFilter(key, value, "equals");
+  addAny(key, value, datePattern) {
+    this._addFilter(key, value, "any", datePattern);
   }
 
-  addEquals(key, value) {
-    this._addFilter(key, value, "eq");
+  addAll(key, value, datePattern) {
+    this._addFilter(key, value, "all", datePattern);
   }
 
-  addContains(key, value) {
-    this._addFilter(key, value, "contains");
+  addGreaterThan(key, value, datePattern) {
+    this._addFilter(key, value, "gt", datePattern);
+  }
+
+  addLessThan(key, value, datePattern) {
+    this._addFilter(key, value, "lt", datePattern);
+  }
+
+  addEquals(key, value, datePattern) {
+    this._addFilter(key, value, "eq", datePattern);
+  }
+
+  addContains(key, value, datePattern) {
+    this._addFilter(key, value, "contains", datePattern);
   }
 
   addStartsWith(key, value) {
@@ -70,6 +108,10 @@ export class Collections {
     this.sortEnabled = sort == undefined;
   }
 
+  parse(){
+
+  }
+
   find(items) {
     // Filter
     let filter = this._filters;
@@ -82,8 +124,6 @@ export class Collections {
         let filterValue = f['value'];
         let value = item[filterMatch];
 
-        //console.info("Filter: ", this._filters);
-
         if (filterType === 'eq') {
           if (value === filterValue) {
             count++;
@@ -91,7 +131,7 @@ export class Collections {
         } else if (filterType === 'contains') {
           if (Array.isArray(value)) {
             for (let y = 0; y < value.length; y++) {
-              if (value[y].toLowerCase().indexOf(filterValue.toLowerCase()) > -1) {
+              if (value[y].indexOf(filterValue) > -1) {
                 count++;
               }
             }
@@ -104,6 +144,18 @@ export class Collections {
           if (value.toLowerCase().startsWith(filterValue.toLowerCase())) {
             count++;
           }
+        } else if (filterType === 'gt') {
+          if (value > filterValue) {
+            count++;
+          }
+        } else if (filterType === 'lt') {
+          if (value < filterValue) {
+            count++;
+          }
+        } else if (filterType === 'any') {
+
+        } else if (filterType === 'all') {
+
         }
       }
       return count === filter.length;
