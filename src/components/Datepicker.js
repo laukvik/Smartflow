@@ -52,7 +52,8 @@ export class Datepicker extends InputComponent {
 
   _setPickerVisible(visible){
     this.pickerVisible = visible == true;
-    this.inputGroup2.setAttribute("class", this.pickerVisible ? "sf-datepicker__visible" : "sf-datepicker__hidden")
+    this.inputGroup2.setAttribute("class", "dropdown-menu");
+    this.inputGroup2.style.display = this.pickerVisible ? "block" : "none";
   }
 
   static isSameDate(date1, date2){
@@ -211,6 +212,7 @@ export class Datepicker extends InputComponent {
     let data = day.getAttribute("data-sf-datepicker-millis");
     let d = new Date();
     d.setTime(parseInt(data));
+    console.info("_selectedDay: ", d, data);
     let formattedValue = this.formatter.formatDate(d, this.dateFormat);
     this.setDate(d);
     this.fireState(this.stateValue, formattedValue);
