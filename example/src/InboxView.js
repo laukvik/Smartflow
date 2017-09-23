@@ -220,6 +220,10 @@ export class InboxView extends View {
                       "states": {
                         "value": "progress"
                       }
+                    },
+                    {
+                      "type": "Spinner",
+                      "visible": false
                     }
 
                   ]

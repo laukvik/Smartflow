@@ -11,15 +11,18 @@ export class Spinner extends SmartflowComponent {
       this.spinnerNode.setAttribute("id", properties.id);
     }
     this.spinnerNode.setAttribute("class", "sf-spinner" + (properties.class ? " " + properties.class : ""));
-
+    let icon = document.createElement("span");
+    icon.setAttribute("class", "glyphicon glyphicon-repeat sf-spinner-animation");
+    this.spinnerNode.appendChild(icon);
+    this.setVisible(properties.visible);
     return this.spinnerNode;
   }
 
   setVisible(isEnabled) {
-    if (isEnabled) {
-      this.spinnerNode.removeAttribute("disabled");
+    if (isEnabled == true) {
+      this.spinnerNode.style.display = "block";
     } else {
-      this.spinnerNode.setAttribute("disabled", "true");
+      this.spinnerNode.style.display = "none";
     }
   }
 
@@ -27,8 +30,6 @@ export class Spinner extends SmartflowComponent {
   stateChanged(state, value) {
     if (state == this.properties.states.visible) {
       this.setVisible(value);
-    } else if (state == this.properties.states.label) {
-      this.setLabel(value);
     }
   }
 }
