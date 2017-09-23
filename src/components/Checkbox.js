@@ -1,19 +1,15 @@
 import {InputComponent} from "../component";
 
-export class Checkbox extends InputComponent {
+class Checkbox extends InputComponent {
+
   constructor(properties) {
     super(properties);
     this.inputs = [];
-    this.optionsNode = document.createElement("div");
-    this.optionsNode.setAttribute("class", "sf-checkbox-options");
+    this._componentNode = document.createElement("div");
+    this._componentNode.setAttribute("class", "sf-checkbox-options");
   }
 
-  buildComponent(builder, properties){
-    if (properties.id){
-      this.optionsNode.setAttribute("id", properties.id);
-    }
-    this.optionsNode.setAttribute("class", "sf-checkbox-options" + (properties.class ? " " + properties.class : ""));
-
+  setProperties(properties) {
     this.setEnabled(properties.enabled);
     this.setRequired(properties.required);
     this.setLabel(properties.label);
@@ -22,7 +18,11 @@ export class Checkbox extends InputComponent {
     }
     this.setOptions(properties.options);
     this.setSelected(properties.selected);
-    return this.optionsNode;
+  }
+
+  buildComponent(builder, properties) {
+    this._componentNode.setAttribute("class", "sf-checkbox-options" + (properties.class ? " " + properties.class : ""));
+    return this._componentNode;
   }
 
   isValid() {
@@ -49,7 +49,7 @@ export class Checkbox extends InputComponent {
   }
 
   setSelected(selected) {
-    if (Array.isArray(selected)){
+    if (Array.isArray(selected)) {
       for (let x = 0; x < this.inputs.length; x++) {
         let inp = this.inputs[x];
         let found = false;
@@ -78,7 +78,7 @@ export class Checkbox extends InputComponent {
   }
 
   setOptions(items) {
-    this.removeChildNodes(this.optionsNode);
+    this.removeChildNodes(this._componentNode);
     if (Array.isArray(items)) {
       this.inputs = [];
       for (let x = 0; x < items.length; x++) {
@@ -87,7 +87,7 @@ export class Checkbox extends InputComponent {
         let itemValue = item.value;
         let span = document.createElement("label");
         span.setAttribute("class", "sf-checkbox-option");
-        this.optionsNode.appendChild(span);
+        this._componentNode.appendChild(span);
         let input = document.createElement("input");
         this.inputs.push(input);
         span.appendChild(input);
@@ -123,3 +123,5 @@ export class Checkbox extends InputComponent {
     }
   }
 }
+
+export {Checkbox}

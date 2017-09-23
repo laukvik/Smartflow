@@ -1,46 +1,40 @@
 import {SmartflowComponent} from "../component";
 
-export class Button extends SmartflowComponent {
+class Button extends SmartflowComponent {
+
   constructor(properties) {
     super(properties);
+    this._componentNode = document.createElement("button");
   }
 
-  setAttribute(node, name, value){
-    node.setAttribute(name, value);
-  }
-
-  buildComponent(builder, properties){
-    this.buttonNode = document.createElement("button");
-    if (properties.id){
-      this.buttonNode.setAttribute("id", properties.id);
-    }
-    this.buttonNode.setAttribute("class", "btn btn-default" + (properties.class ? " " + properties.class : ""));
+  setProperties(properties) {
+    this.setText(properties.text);
     this.action = properties.action;
-    this.setText(properties.label);
-    this.buttonNode.addEventListener("click", function () {
+    this.setEnabled(properties.enabled);
+  }
+
+  buildComponent(builder, properties) {
+    this._componentNode.setAttribute("class", "btn btn-default" + (properties.class ? " " + properties.class : ""));
+    this._componentNode.addEventListener("click", function () {
       this._clicked(properties);
     }.bind(this), false);
-    return this.buttonNode;
+    return this._componentNode;
   }
 
-  _clicked(action){
+  _clicked(action) {
     this.fireAction(action.action);
   }
 
   setEnabled(isEnabled) {
     if (isEnabled) {
-      this.buttonNode.removeAttribute("disabled");
+      this._componentNode.removeAttribute("disabled");
     } else {
-      this.buttonNode.setAttribute("disabled", "true");
+      this._componentNode.setAttribute("disabled", "true");
     }
   }
 
   setText(text) {
-    this.buttonNode.innerText = text;
-  }
-
-  getText() {
-    return this.buttonNode.innerText;
+    this._componentNode.innerText = text;
   }
 
   stateChanged(state, value) {
@@ -54,3 +48,4 @@ export class Button extends SmartflowComponent {
   }
 }
 
+export {Button}

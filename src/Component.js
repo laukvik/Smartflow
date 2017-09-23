@@ -3,15 +3,22 @@
  *
  */
 class SmartflowComponent {
-  constructor(properties){
+  constructor(properties) {
     this.properties = properties;
-    this.stateListeners = [];
-    this.componentID = properties.id;
+    this._stateListeners = [];
+    this._componentNode = null;
+    //this._componentID = properties.id;
+    //this._componentClass = properties.class;
   }
 
-  buildComponent(){
-    var div = document.createElement("div");
-    div.innerText = "[Smartflow:"+ this.constructor.name +"]";
+  setProperties(properties) {
+    this.setID(properties.id);
+    this.setClass(properties.class);
+  }
+
+  buildComponent() {
+    let div = document.createElement("div");
+    div.innerText = "[Smartflow:" + this.constructor.name + "]";
     return div;
   }
 
@@ -27,19 +34,33 @@ class SmartflowComponent {
     this.smartflow = smartflow;
   }
 
+  setVisible(visible) {
+    this._componentNode.style.display = visible == true ? "block" : "none";
+  }
+
   setID(id) {
-    this.componentID = id;
+    this._componentID = id;
+    this._componentNode.setAttribute("id", id);
   }
 
   getID() {
-    return this.componentID;
+    return this._componentID;
+  }
+
+  setClass(className) {
+    this._componentClass = className;
+    this._componentNode.setAttribute("class", className);
+  }
+
+  getClass() {
+    return this._componentClass;
   }
 
   fireAction(action) {
     this.smartflow.runAction(new action(), this.getView());
   }
 
-  fireState(state, value){
+  fireState(state, value) {
     this.smartflow.fireStateChanged(state, value);
   }
 
@@ -48,16 +69,17 @@ class SmartflowComponent {
       node.removeChild(node.firstChild);
     }
   }
+
   setStateBinding(states) {
     let arr = [];
     for (let key in states) {
       arr.push(states[key]);
     }
-    this.stateListeners = arr;
+    this._stateListeners = arr;
   }
 
   getStateBinding() {
-    return this.stateListeners;
+    return this._stateListeners;
   }
 
   fireComponentChanged(property, value) {
@@ -71,14 +93,14 @@ class SmartflowComponent {
  *
  */
 class PresentationComponent extends SmartflowComponent {
-  constructor(properties){
+  constructor(properties) {
     super(properties);
     this.componentRootNode = document.createElement("div");
   }
 
-  buildComponent(){
-    var div = document.createElement("div");
-    div.innerText = "[Smartflow:"+ this.constructor.name +"]";
+  buildComponent() {
+    let div = document.createElement("div");
+    div.innerText = "[Smartflow:" + this.constructor.name + "]";
     return div;
   }
 }
@@ -91,7 +113,7 @@ class PresentationComponent extends SmartflowComponent {
  * containerNode =
  *
  */
-class InputComponent extends SmartflowComponent{
+class InputComponent extends SmartflowComponent {
   constructor(properties) {
     super(properties);
     this.comp = properties;
@@ -106,10 +128,10 @@ class InputComponent extends SmartflowComponent{
 
   // Bygger HTML og adder listeners
   buildComponent(builder, properties) {
-    return this.rootNode;
+    return this._componentNode;
   }
 
-  setRootNode(componentNode){
+  setRootNode(componentNode) {
     this.componentNode = componentNode;
     this.removeChildNodes(this.componentRootNode);
     this.componentRootNode.appendChild(this.labelNode);
@@ -117,29 +139,29 @@ class InputComponent extends SmartflowComponent{
     this.componentRootNode.appendChild(this.errorNode);
   }
 
-  getRootNode(){
+  getRootNode() {
     return this.componentRootNode;
   }
 
-  validate(){
+  validate() {
     return true;
   }
 
-  setRequired(required){
+  setRequired(required) {
     this.required = required == true;
     this.labelNode.setAttribute("class", this.required ? "sf-label sf-required" : "sf-label");
   }
 
-  isRequired(){
+  isRequired() {
     return this.required;
   }
 
   setElement(node) {
-    this.rootNode = node;
+    this._componentNode = node;
   }
 
   getElement() {
-    return this.rootNode;
+    return this._componentNode;
   }
 
   setLabel(text) {
@@ -178,4 +200,4 @@ class InputComponent extends SmartflowComponent{
 
 }
 
-export {PresentationComponent,InputComponent,SmartflowComponent}
+export {PresentationComponent, InputComponent, SmartflowComponent}

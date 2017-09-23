@@ -1,7 +1,7 @@
 import {InputComponent} from "../component";
 import {Collections} from "../collections";
 
-export class Table extends InputComponent{
+class Table extends InputComponent {
   constructor(properties) {
     super(properties);
     this.dontUpdate = true;
@@ -12,43 +12,43 @@ export class Table extends InputComponent{
     this.inputs = [];
     this.headerNode = document.createElement("div");
     this.bodyNode = document.createElement("div");
-    this.setRowKey(properties.rowKey)
+    this._componentNode = document.createElement("table");
+  }
+
+  setProperties(properties) {
+    this.setRowKey(properties.rowKey);
     this.setSelectable(properties.selectable);
     this.setSelected(properties.selected);
     this.setColumns(properties.columns);
   }
 
-  buildComponent(builder, properties){
+  buildComponent(builder, properties) {
     // Table
-    var tableNode = document.createElement("table");
-    tableNode.setAttribute("class", "table");
+
+    this._componentNode.setAttribute("class", "table");
     // Head
     var theadNode = document.createElement("thead");
     var headerRowNode = document.createElement("tr");
     theadNode.appendChild(headerRowNode);
-    tableNode.appendChild(theadNode);
+    this._componentNode.appendChild(theadNode);
     // Body
     var bodyNode = document.createElement("tbody");
-    tableNode.appendChild(bodyNode);
+    this._componentNode.appendChild(bodyNode);
     this.headerNode = headerRowNode;
     this.bodyNode = bodyNode;
-    if (properties.id){
-      tableNode.setAttribute("id", properties.id);
-    }
-    tableNode.setAttribute("class", "sf-table" + (properties.class ? " " + properties.class : ""));
-
-    return tableNode;
+    this._componentNode.setAttribute("class", "sf-table" + (properties.class ? " " + properties.class : ""));
+    return this._componentNode;
   }
 
-  setRowKey(rowKey){
+  setRowKey(rowKey) {
     this.rowKey = rowKey;
   }
 
-  setSelected(selected){
+  setSelected(selected) {
     if (Array.isArray(selected)) {
       this.selected = selected;
-      for (var y = 0; y < this.inputs.length; y++) {
-        var inputSelect = this.inputs[ y ];
+      for (let y = 0; y < this.inputs.length; y++) {
+        let inputSelect = this.inputs[y];
         inputSelect.checked = this.selected.indexOf(inputSelect.getAttribute("id")) > -1;
       }
     } else {
@@ -56,12 +56,12 @@ export class Table extends InputComponent{
     }
   }
 
-  getSelected(){
+  getSelected() {
     return this.selected;
   }
 
-  setColumns(columns){
-    if (Array.isArray(columns)){
+  setColumns(columns) {
+    if (Array.isArray(columns)) {
       this.columns = columns;
       this.removeChildNodes(this.headerNode);
 
@@ -81,22 +81,22 @@ export class Table extends InputComponent{
     }
   }
 
-  _update(){
+  _update() {
     this.setRows(this.rows);
   }
 
-  setSelectable(selectable){
+  setSelectable(selectable) {
     this.selectable = selectable == true;
     this.setColumns(this.columns);
     this._update();
   }
 
-  setSort(sort){
+  setSort(sort) {
     this.collections.setSort(sort);
     this._update();
   }
 
-  setFilter(filter){
+  setFilter(filter) {
     if (Array.isArray(filter)) {
       this.collections.setFilter(filter);
       this._update();
@@ -105,25 +105,25 @@ export class Table extends InputComponent{
     }
   }
 
-  setPaging(paging){
+  setPaging(paging) {
     this.collections.setPaging(paging);
     this._update();
   }
 
-  _changed(input){
+  _changed(input) {
     var id = input.getAttribute("id");
     if (input.checked) {
-      this.selected.push( id );
+      this.selected.push(id);
     } else {
-      var index= this.selected.indexOf( id );
+      var index = this.selected.indexOf(id);
       this.selected.splice(index, 1);
     }
     this.fireComponentChanged("selected", this.getSelected());
   }
 
-  setRows(rowData){
-    if (Array.isArray(rowData)){
-    var rows = this.collections.find(rowData);
+  setRows(rowData) {
+    if (Array.isArray(rowData)) {
+      var rows = this.collections.find(rowData);
       this.rows = rows;
       this.removeChildNodes(this.bodyNode);
       for (var y = 0; y < rows.length; y++) {
@@ -135,11 +135,11 @@ export class Table extends InputComponent{
           var thSelectNode = document.createElement("td");
           trNode.appendChild(thSelectNode);
           var inputSelect = document.createElement("input");
-          var rowKey = row[ this.rowKey ];
+          var rowKey = row[this.rowKey];
           this.inputs.push(inputSelect);
           inputSelect.setAttribute("id", rowKey);
           inputSelect.setAttribute("type", "checkbox");
-          inputSelect.checked = this.selected.indexOf(rowKey) > - 1;
+          inputSelect.checked = this.selected.indexOf(rowKey) > -1;
           thSelectNode.appendChild(inputSelect);
           inputSelect.addEventListener("click", function (evt) {
             this._changed(evt.srcElement);
@@ -179,7 +179,7 @@ export class Table extends InputComponent{
     }
   }
 
-  setProperty(name, value){
+  setProperty(name, value) {
     if (name == "rows") {
       this.setRows(value);
     } else if (name == "selected") {
@@ -200,3 +200,5 @@ export class Table extends InputComponent{
   }
 
 }
+
+export {Table}

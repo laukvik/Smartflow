@@ -223,7 +223,17 @@ export class InboxView extends View {
                     },
                     {
                       "type": "Spinner",
-                      "visible": false
+                      "visible": true
+                    },
+                    {
+                      "type": "Toolbar",
+                      "actions": [
+                        {
+                          "type": "Button",
+                          "label": "ToolbarKnapp",
+                          "action": ShowDialogAction
+                        }
+                      ]
                     }
 
                   ]
@@ -280,7 +290,7 @@ export class InboxView extends View {
                           "key": "genres"
                         }
                       ]
-                    }
+                    },
                   ]
                 }
               ]

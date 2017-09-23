@@ -1,52 +1,42 @@
 import {SmartflowComponent} from "../component";
 
-export class Alert extends SmartflowComponent {
+class Alert extends SmartflowComponent {
+
   constructor(properties) {
     super(properties);
-    this.spinnerNode = document.createElement("div");
-    this.spinnerNode.setAttribute("role", "alert");
+    this._componentNode = document.createElement("div");
+    this._componentNode.setAttribute("role", "alert");
+  }
+
+  setProperties(properties) {
+    this.setText(properties.text);
   }
 
   buildComponent(builder, properties){
-    if (properties.id){
-      this.spinnerNode.setAttribute("id", properties.id);
-    }
-    this.spinnerNode.setAttribute("class", "sf-alert alert alert-danger" + (properties.class ? " " + properties.class : ""));
-
-
+    this._componentNode.setAttribute("class", "sf-alert alert alert-danger" + (properties.class ? " " + properties.class : ""));
     this.srNode = document.createElement("span");
     this.srNode.setAttribute("class", "sr-only");
     this.srNode.innerText = "Error:";
-
     this.iconNode = document.createElement("span");
     this.iconNode.setAttribute("class", "glyphicon glyphicon-exclamation-sign");
     this.iconNode.setAttribute("aria-hidden", "true");
-
-    this.textNode = document.createTextNode("");
-
-    this.spinnerNode.appendChild(this.iconNode);
-    this.spinnerNode.appendChild(this.srNode);
-    this.spinnerNode.appendChild(this.textNode);
-
-    this.setText(properties.text);
-
-    return this.spinnerNode;
+    this.textNode = document.createElement("span");
+    this._componentNode.appendChild(this.iconNode);
+    this._componentNode.appendChild(this.srNode);
+    this._componentNode.appendChild(this.textNode);
+    return this._componentNode;
   }
 
   setEnabled(isEnabled) {
     if (isEnabled) {
-      this.spinnerNode.removeAttribute("disabled");
+      this._componentNode.removeAttribute("disabled");
     } else {
-      this.spinnerNode.setAttribute("disabled", "true");
+      this._componentNode.setAttribute("disabled", "true");
     }
   }
 
   setText(text) {
-    this.textNode.textContent = text;
-  }
-
-  getText() {
-    return this.textNode.textContent;
+    this.textNode.innerText = text;
   }
 
   stateChanged(state, value) {
@@ -60,3 +50,4 @@ export class Alert extends SmartflowComponent {
   }
 }
 
+export {Alert}

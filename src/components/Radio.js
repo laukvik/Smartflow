@@ -4,22 +4,21 @@ export class Radio extends InputComponent {
   constructor(properties) {
     super(properties);
     this.inputs = [];
-    this.optionsNode = document.createElement("div");
+    this._componentNode = document.createElement("div");
   }
 
-  buildComponent(builder, properties){
+  setProperties(properties){
     this.setRequired(properties.required);
     this.setLabel(properties.label);
     this.setOptions(properties.options);
     this.setVertical(properties.vertical);
     this.setSelected(properties.selected);
     this.setValidationMessage(properties.validation);
-    if (properties.id){
-      this.optionsNode.setAttribute("id", properties.id);
-    }
-    this.optionsNode.setAttribute("class", "sf-radio" + (properties.class ? " " + properties.class : ""));
+  }
 
-    return this.optionsNode;
+  buildComponent(builder, properties){
+    this._componentNode.setAttribute("class", "sf-radio" + (properties.class ? " " + properties.class : ""));
+    return this._componentNode;
   }
 
   isValid() {
@@ -29,15 +28,15 @@ export class Radio extends InputComponent {
     return true;
   }
 
-  setEnabled(isEnabled) {
-    for (var x = 0; x < this.inputs.length; x++) {
-      this.inputs[x].disabled = true;
+  setEnabled(enabled) {
+    for (let x = 0; x < this.inputs.length; x++) {
+      this.inputs[x].disabled = enabled == false;
     }
   }
 
   getSelected() {
-    for (var x = 0; x < this.inputs.length; x++) {
-      var inp = this.inputs[x];
+    for (let x = 0; x < this.inputs.length; x++) {
+      let inp = this.inputs[x];
       if (inp.checked) {
         return inp;
       }
@@ -45,15 +44,15 @@ export class Radio extends InputComponent {
   }
 
   setSelected(selected) {
-    for (var x = 0; x < this.inputs.length; x++) {
-      var inp = this.inputs[x];
+    for (let x = 0; x < this.inputs.length; x++) {
+      let inp = this.inputs[x];
       inp.checked = inp.value == selected;
     }
   }
 
   setVertical(isVertical) {
     this.vertical = isVertical === true;
-    this.optionsNode.setAttribute("class", "sf-radio " + (this.vertical ? "sf-radio-vertical" : "sf-radio-horisontal"));
+    this._componentNode.setAttribute("class", "sf-radio " + (this.vertical ? "sf-radio-vertical" : "sf-radio-horisontal"));
   }
 
   isVertical() {
@@ -61,7 +60,7 @@ export class Radio extends InputComponent {
   }
 
   setOptions(items) {
-    this.removeChildNodes(this.optionsNode);
+    this.removeChildNodes(this._componentNode);
     this.inputs = [];
     if (Array.isArray(items)) {
       var gui = "sf-radio-" + Math.round(100000);
@@ -71,7 +70,7 @@ export class Radio extends InputComponent {
         var itemValue = item.value;
         var span = document.createElement("label");
         span.setAttribute("class", "sf-radio-option");
-        this.optionsNode.appendChild(span);
+        this._componentNode.appendChild(span);
         var input = document.createElement("input");
         this.inputs.push(input);
         span.appendChild(input);

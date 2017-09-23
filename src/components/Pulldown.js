@@ -1,25 +1,26 @@
 import {InputComponent} from "../component";
 
 export class Pulldown extends InputComponent {
+  
   constructor(properties) {
     super(properties);
-    this.selectNode = document.createElement("select");
-    this.selectNode.setAttribute("class", "sf-pulldown");
-    this.selectNode.addEventListener('change', function () {
+    this._componentNode = document.createElement("select");
+    this._componentNode.setAttribute("class", "sf-pulldown");
+    this._componentNode.addEventListener('change', function () {
       this._changed();
     }.bind(this), false);
   }
 
-  buildComponent(builder, properties){
+  setProperties(properties) {
     this.setOptions(properties.options);
     this.setSelected(properties.selected);
     this.setLabel(properties.label);
     this.setRequired(properties.required);
-    if (properties.id){
-      this.selectNode.setAttribute("id", properties.id);
-    }
-    this.selectNode.setAttribute("class", "sf-pulldown" + (properties.class ? " " + properties.class : ""));
-    return this.selectNode;
+  }
+
+  buildComponent(builder, properties) {
+    this._componentNode.setAttribute("class", "sf-pulldown" + (properties.class ? " " + properties.class : ""));
+    return this._componentNode;
   }
 
   _changed() {
@@ -35,22 +36,22 @@ export class Pulldown extends InputComponent {
 
   setEnabled(isEnabled) {
     if (isEnabled) {
-      this.selectNode.removeAttribute("disabled");
+      this._componentNode.removeAttribute("disabled");
     } else {
-      this.selectNode.setAttribute("disabled", "true");
+      this._componentNode.setAttribute("disabled", "true");
     }
   }
 
   isEnabled() {
-    return !this.selectNode.hasAttribute("disabled");
+    return !this._componentNode.hasAttribute("disabled");
   }
 
   setOptions(items) {
-    this.removeChildNodes(this.selectNode);
+    this.removeChildNodes(this._componentNode);
     if (Array.isArray(items)) {
       let optionEmpty = document.createElement("option");
       optionEmpty.value = "";
-      this.selectNode.appendChild(optionEmpty);
+      this._componentNode.appendChild(optionEmpty);
       for (let x = 0; x < items.length; x++) {
         let item = items[x];
         let itemText = item.text;
@@ -58,21 +59,21 @@ export class Pulldown extends InputComponent {
         let option = document.createElement("option");
         option.setAttribute("value", itemValue);
         option.innerText = itemText;
-        this.selectNode.appendChild(option);
+        this._componentNode.appendChild(option);
       }
     }
   }
 
   getSelected() {
-    if (this.selectNode.selectedIndex === 0) {
+    if (this._componentNode.selectedIndex === 0) {
       return undefined;
     }
-    return this.selectNode.options[this.selectNode.selectedIndex].value;
+    return this._componentNode.options[this._componentNode.selectedIndex].value;
   }
 
   setSelected(selected) {
-    for (var x = 0; x < this.selectNode.options.length; x++) {
-      var opt = this.selectNode.options[x];
+    for (var x = 0; x < this._componentNode.options.length; x++) {
+      var opt = this._componentNode.options[x];
       opt.selected = opt.value == selected;
     }
   }

@@ -4,7 +4,7 @@ import {Collections} from "../collections";
 export class Searchfield extends InputComponent {
   constructor(properties) {
     super(properties);
-    this.rootNode = document.createElement("div");
+    this._componentNode = document.createElement("div");
     this.optionsNode = document.createElement("ul");
     this.optionsNode.setAttribute("class", "dropdown-menu");
     this.collections = new Collections(properties);
@@ -14,6 +14,10 @@ export class Searchfield extends InputComponent {
     this.matchKey = properties.key;
     this.presentationKey = properties.presentation;
     this.setDropdownVisible(false);
+  }
+
+  setProperties(properties){
+
   }
 
   setRows(rowData){
@@ -108,23 +112,23 @@ export class Searchfield extends InputComponent {
       let iconBefore = document.createElement("span");
       iconBefore.setAttribute("class", "glyphicon " + properties.icon_before);
       addonBefore.appendChild(iconBefore);
-      this.rootNode.appendChild(addonBefore);
+      this._componentNode.appendChild(addonBefore);
     }
-    this.rootNode.appendChild(this.input);
+    this._componentNode.appendChild(this.input);
     if (properties.icon_after) {
       let addonAfter = document.createElement("span");
       addonAfter.setAttribute("class", "input-group-addon");
       let iconAfter = document.createElement("span");
       iconAfter.setAttribute("class", "glyphicon " + properties.icon_after);
       addonAfter.appendChild(iconAfter);
-      this.rootNode.appendChild(addonAfter);
+      this._componentNode.appendChild(addonAfter);
     }
     if (properties.id){
-      this.rootNode.setAttribute("id", properties.id);
+      this._componentNode.setAttribute("id", properties.id);
     }
-    this.rootNode.setAttribute("class", "sf-searchfield input-group" + (properties.class ? " " + properties.class : ""));
-    this.rootNode.appendChild(this.optionsNode);
-    return this.rootNode;
+    this._componentNode.setAttribute("class", "sf-searchfield input-group" + (properties.class ? " " + properties.class : ""));
+    this._componentNode.appendChild(this.optionsNode);
+    return this._componentNode;
   }
 
 

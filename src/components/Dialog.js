@@ -6,70 +6,55 @@ export class Dialog extends PresentationComponent {
     this.buttons = [];
     this.actions = [];
     this.components = [];
+    this._componentNode = document.createElement("div");
   }
 
-  buildComponent(builder, properties){
+  setProperties(properties) {
+    this.setVisible(properties.visible);
+    this.setTitle(properties.title);
+  }
+
+  buildComponent(builder, properties) {
     this.properties = properties;
     this.dialogValidatoonNode = document.createElement("div");
     this.dialogValidatoonNode.setAttribute("class", "alert alert-warning alert-dismissible");
     this.dialogValidatoonNode.style.display = "none";
-    let div = document.createElement("div");
-
-
-
-    this.dialogNode = div;
-
-    div.setAttribute("tabindex", "-1");
-    div.setAttribute("role", "dialog");
-    div.setAttribute("class", "modal fade in");
-
+    //this.dialogNode = div;
+    this._componentNode.setAttribute("tabindex", "-1");
+    this._componentNode.setAttribute("role", "dialog");
+    this._componentNode.setAttribute("class", "modal fade in");
     let dialog = document.createElement("div");
-    div.setAttribute("role", "document");
+    this._componentNode.setAttribute("role", "document");
     dialog.setAttribute("class", "modal-dialog");
-
     let content = document.createElement("div");
     content.setAttribute("class", "modal-content");
-
     let contentHeader = document.createElement("div");
     contentHeader.setAttribute("class", "modal-header");
-
     let contentBody = document.createElement("div");
     contentBody.setAttribute("class", "modal-body");
-
     let modalTitle = document.createElement("h4");
     contentHeader.appendChild(modalTitle);
-
     let contentFooter = document.createElement("div");
     contentFooter.setAttribute("class", "modal-footer");
-
-
-
-    div.appendChild(dialog);
+    this._componentNode.appendChild(dialog);
     dialog.appendChild(content);
     content.appendChild(contentHeader);
     content.appendChild(contentBody);
     content.appendChild(contentFooter);
-
-
     contentBody.appendChild(this.dialogValidatoonNode);
-
     if (Array.isArray(properties.components)) {
       let panelComponents = properties.components;
       for (let n = 0; n < panelComponents.length; n++) {
         let panelNode = document.createElement("div");
         let panelComponent = panelComponents[n];
-
         contentBody.appendChild(panelNode);
         let componentInstance = builder.buildChildNode(panelNode, panelComponent);
-
         this.components.push(componentInstance);
       }
     }
-
-
     if (Array.isArray(properties.actions)) {
-      for (let x=0; x<properties.actions.length; x++) {
-        let component = properties.actions[ x ];
+      for (let x = 0; x < properties.actions.length; x++) {
+        let component = properties.actions[x];
         let btn = document.createElement("button");
         btn.setAttribute("type", "button");
         btn.setAttribute("class", "btn btn-default");
@@ -82,28 +67,18 @@ export class Dialog extends PresentationComponent {
         }.bind(this), false);
       }
     }
-
     this.titleNode = modalTitle;
-
-    this.setVisible(properties.visible);
-    this.setTitle(properties.title);
-
-    if (properties.id){
-      this.dialogNode.setAttribute("id", properties.id);
-    }
-    this.dialogNode.setAttribute("class", "sf-dialog" + (properties.class ? " " + properties.class : ""));
-
-
-    return div;
+    this._componentNode.setAttribute("class", "sf-dialog" + (properties.class ? " " + properties.class : ""));
+    return this._componentNode;
   }
 
-  _clicked(btn){
+  _clicked(btn) {
     let index = this.buttons.indexOf(btn);
-    let a = this.actions[ index ];
-    if (a.validate === true){
+    let a = this.actions[index];
+    if (a.validate === true) {
       let invalidCount = 0;
-      for (let n=0; n<this.components.length; n++) {
-        let c = this.components[ n ];
+      for (let n = 0; n < this.components.length; n++) {
+        let c = this.components[n];
         if (!c.isValid()) {
           invalidCount++;
         }
@@ -119,18 +94,18 @@ export class Dialog extends PresentationComponent {
     }
   }
 
-  _setValid(validationError){
+  _setValid(validationError) {
     this.dialogValidatoonNode.innerText = validationError;
-    this.dialogValidatoonNode.style.display = validationError ? "block" :"none";
+    this.dialogValidatoonNode.style.display = validationError ? "block" : "none";
   }
 
-  setTitle(title){
+  setTitle(title) {
     this.titleNode.innerText = title;
   }
 
-  setVisible(open){
+  setVisible(open) {
     this.open = open == true;
-    this.dialogNode.style.display = this.open ? "block" : "none";
+    this._componentNode.style.display = this.open ? "block" : "none";
     document.body.setAttribute("class", this.open ? "modal-open" : "");
   }
 

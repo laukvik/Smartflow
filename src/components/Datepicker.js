@@ -1,10 +1,10 @@
 import {InputComponent} from "../component";
 import {Formatter} from "../formatter";
 
-export class Datepicker extends InputComponent {
+class Datepicker extends InputComponent {
   constructor(properties) {
     super(properties);
-    this.rootNode = document.createElement("div");
+    this._componentNode = document.createElement("div");
     this.input = document.createElement("input");
     this.input.setAttribute("type", "text");
     this.input.setAttribute("class", "form-control");
@@ -35,12 +35,17 @@ export class Datepicker extends InputComponent {
     this.pickerVisible = false;
   }
 
+  setProperties(properties) {
+    this.setLabel(properties.label)
+  }
+
   setValue(value) {
     this.setDate(this.formatter.parse(value, this.dateFormat));
   }
 
   setDate(value){
     if (value == undefined){
+      console.warn("Datepicker: value is undefined");
       return;
     }
     this.selectedDate = value;
@@ -223,16 +228,13 @@ export class Datepicker extends InputComponent {
     if (properties.states) {
       this.stateValue = properties.states.value;
     }
-    if (properties.id){
-      this.rootNode.setAttribute("id", properties.id);
-    }
-    this.rootNode.setAttribute("class", "sf-datepicker" + (properties.class ? " " + properties.class : ""));
+    this._componentNode.setAttribute("class", "sf-datepicker" + (properties.class ? " " + properties.class : ""));
     this.inputGroup1 = document.createElement("div");
     this.inputGroup1.appendChild(this.input);
     this.inputGroup1.setAttribute("class", "input-group");
     this.inputGroup2 = document.createElement("div");
-    this.rootNode.appendChild(this.inputGroup1);
-    this.rootNode.appendChild(this.inputGroup2);
+    this._componentNode.appendChild(this.inputGroup1);
+    this._componentNode.appendChild(this.inputGroup2);
     let addonAfter = document.createElement("span");
     addonAfter.setAttribute("class", "input-group-addon btn");
     let iconAfter = document.createElement("span");
@@ -249,7 +251,7 @@ export class Datepicker extends InputComponent {
     this.input.setAttribute("placeholder", this.dateFormat);
     this._setPickerVisible(false);
     this.setValue(properties.value);
-    return this.rootNode;
+    return this._componentNode;
   }
 
   _togglePickerVisible(){
@@ -280,3 +282,4 @@ export class Datepicker extends InputComponent {
   }
 }
 
+export {Datepicker}

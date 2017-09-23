@@ -71,6 +71,8 @@ export class ComponentBuilder {
     }
     c.setSmartflow(this.smartflow);
     c.setView(this.ctrl);
+    c.setID(componentProperties.id);
+    c.setClass(componentProperties.class);
     return c;
   }
 
@@ -89,21 +91,19 @@ export class ComponentBuilder {
     this.ctrl.smartflow.componentInstances.push(componentInstance);
     componentInstance.setStateBinding(comp.states);
     let isInputComponent = componentInstance instanceof InputComponent;
-
     let node = componentInstance.buildComponent(this, comp);
+    componentInstance.setProperties(comp);
     if (isInputComponent) {
       componentInstance.setRootNode(node); //
       node = componentInstance.getRootNode();
     }
     if (node === undefined) {
-      console.warn("Component not found", comp);
+      console.warn("Smartflow.builder: Component not found! ", comp);
     } else {
       parentNode.appendChild(node);
     }
     return componentInstance;
   }
-
-
 
 }
 

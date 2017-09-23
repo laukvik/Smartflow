@@ -3,25 +3,21 @@ import {PresentationComponent} from "../component";
 export class Layout extends PresentationComponent {
   constructor(properties) {
     super(properties);
+    this._componentNode = document.createElement("div");
   }
 
-  buildComponent(builder, properties){
-    let div = document.createElement("div");
+  setProperties(properties) {
 
-    if (properties.id){
-      div.setAttribute("id", properties.id);
-    }
-    div.setAttribute("class", "sf-layout container" + (properties.class ? " " + properties.class : ""));
+  }
 
+  buildComponent(builder, properties) {
+    this._componentNode.setAttribute("class", "sf-layout container" + (properties.class ? " " + properties.class : ""));
     let rows = document.createElement("div");
     rows.setAttribute("class", "row");
-    div.appendChild(rows);
-
-    let comp = this.properties;
-
-    if (Array.isArray(comp.components)) {
-      for (let x = 0; x < comp.components.length; x++) {
-        let c = comp.components[x];
+    this._componentNode.appendChild(rows);
+    if (Array.isArray(properties.components)) {
+      for (let x = 0; x < properties.components.length; x++) {
+        let c = properties.components[x];
         // Grid
         let layoutCell = document.createElement("div");
         if (c.layout) {
@@ -38,6 +34,6 @@ export class Layout extends PresentationComponent {
         builder.buildChildNode(layoutCell, c);
       }
     }
-    return div;
+    return this._componentNode;
   }
 }

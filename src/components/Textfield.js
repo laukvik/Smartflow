@@ -3,8 +3,17 @@ import {InputComponent} from "../component";
 export class Textfield extends InputComponent {
   constructor(properties) {
     super(properties);
-    this.rootNode = document.createElement("div");
-    this.rootNode.setAttribute("class", "input-group");
+    this._componentNode = document.createElement("div");
+    this._componentNode.setAttribute("class", "input-group");
+  }
+
+  setProperties(properties){
+    this.setRequired(properties.required);
+    this.setLabel(properties.label);
+    if (properties.validation){
+      this.setValidationMessage(properties.validation.message);
+      this.setRegex(properties.validation.regex);
+    }
   }
 
   buildComponent(builder, properties) {
@@ -23,41 +32,32 @@ export class Textfield extends InputComponent {
       this._changed();
     }.bind(this), false);
 
-    this.setRequired(properties.required);
-    this.setLabel(properties.label);
-    if (properties.validation){
-      this.setValidationMessage(properties.validation.message);
-      this.setRegex(properties.validation.regex);
-    }
+
 
     if (properties.icon_before) {
-      var addonBefore = document.createElement("span");
+      let addonBefore = document.createElement("span");
       addonBefore.setAttribute("class", "input-group-addon");
       let iconBefore = document.createElement("span");
-      //iconBefore.setAttribute("class", "glyphicon glyphicon-calendar");
       iconBefore.setAttribute("class", "glyphicon " + properties.icon_before);
       addonBefore.appendChild(iconBefore);
-      this.rootNode.appendChild(addonBefore);
+      this._componentNode.appendChild(addonBefore);
     }
 
 
-    this.rootNode.appendChild(this.input);
+    this._componentNode.appendChild(this.input);
 
     if (properties.icon_after) {
-      var addonAfter = document.createElement("span");
+      let addonAfter = document.createElement("span");
       addonAfter.setAttribute("class", "input-group-addon");
       let iconAfter = document.createElement("span");
-      //iconAfter.setAttribute("class", "glyphicon glyphicon-calendar");
       iconAfter.setAttribute("class", "glyphicon " + properties.icon_after);
       addonAfter.appendChild(iconAfter);
-      this.rootNode.appendChild(addonAfter);
+      this._componentNode.appendChild(addonAfter);
     }
-    if (properties.id){
-      this.rootNode.setAttribute("id", properties.id);
-    }
-    this.rootNode.setAttribute("class", "sf-textfield input-group" + (properties.class ? " " + properties.class : ""));
 
-    return this.rootNode;
+    this._componentNode.setAttribute("class", "sf-textfield input-group" + (properties.class ? " " + properties.class : ""));
+
+    return this._componentNode;
   }
 
   _changed() {

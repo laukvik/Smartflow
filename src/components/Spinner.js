@@ -3,26 +3,26 @@ import {SmartflowComponent} from "../component";
 export class Spinner extends SmartflowComponent {
   constructor(properties) {
     super(properties);
-    this.spinnerNode = document.createElement("div");
+    this._componentNode = document.createElement("div");
   }
 
-  buildComponent(builder, properties){
-    if (properties.id){
-      this.spinnerNode.setAttribute("id", properties.id);
-    }
-    this.spinnerNode.setAttribute("class", "sf-spinner" + (properties.class ? " " + properties.class : ""));
+  setProperties(properties) {
+    this.setVisible(properties.visible);
+  }
+
+  buildComponent(builder, properties) {
+    this._componentNode.setAttribute("class", "sf-spinner" + (properties.class ? " " + properties.class : ""));
     let icon = document.createElement("span");
     icon.setAttribute("class", "glyphicon glyphicon-repeat sf-spinner-animation");
-    this.spinnerNode.appendChild(icon);
-    this.setVisible(properties.visible);
-    return this.spinnerNode;
+    this._componentNode.appendChild(icon);
+    return this._componentNode;
   }
 
   setVisible(isEnabled) {
     if (isEnabled == true) {
-      this.spinnerNode.style.display = "block";
+      this._componentNode.style.display = "block";
     } else {
-      this.spinnerNode.style.display = "none";
+      this._componentNode.style.display = "none";
     }
   }
 
