@@ -1,16 +1,50 @@
 export class Collections {
   constructor(properties) {
+    this.clearFilter();
     this.setSort(properties.sort);
     this.setPaging(properties.paging);
-    this.setFilter(properties.filter);
+    this.setFilter(properties._filters);
+  }
+
+  clearFilter(){
+    this._filters = [];
+  }
+  clearSort(){
+  }
+  clearPaging(){
+  }
+
+  _addFilter(key, value, compareType) {
+    this._filters.push(
+      {
+        "match": key,
+        "type": compareType,
+        "value": value
+      }
+    );
+  }
+
+  addKey(key, value) {
+    this._addFilter(key, value, "equals");
+  }
+
+  addEquals(key, value) {
+    this._addFilter(key, value, "eq");
+  }
+
+  addContains(key, value) {
+    this._addFilter(key, value, "contains");
+  }
+
+  addStartsWith(key, value) {
+    this._addFilter(key, value, "startswith");
   }
 
   setFilter(filter){
     if (Array.isArray(filter)){
-      this.filter = filter;
-      this.filterEnabled = (filter != undefined);
+      this._filters = filter;
     } else {
-      this.filter = [];
+      this._filters = [];
     }
   }
 
@@ -38,7 +72,7 @@ export class Collections {
 
   find(items) {
     // Filter
-    let filter = this.filter;
+    let filter = this._filters;
     let collectionFilter = function (item) {
       let count = 0;
       for (let x = 0; x < filter.length; x++) {
@@ -47,6 +81,9 @@ export class Collections {
         let filterType = f['type'];
         let filterValue = f['value'];
         let value = item[filterMatch];
+
+        //console.info("Filter: ", this._filters);
+
         if (filterType === 'eq') {
           if (value === filterValue) {
             count++;
@@ -96,8 +133,12 @@ export class Collections {
       return items.slice(startIndex, endIndex);
     };
 
+
+
+
     let rows = items;
-    if (this.filterEnabled) {
+
+    if (this._filters.length > 0) {
       rows = rows.filter(collectionFilter);
     }
     if (this.sortEnabled) {
