@@ -1,5 +1,6 @@
 import {SmartflowComponent} from "../component";
 
+
 class Button extends SmartflowComponent {
 
   constructor(properties) {
@@ -8,13 +9,31 @@ class Button extends SmartflowComponent {
   }
 
   setProperties(properties) {
-    this.setText(properties.text);
+    this.setText(properties.label);
     this.action = properties.action;
     this.setEnabled(properties.enabled);
+    this.setStyle(properties.style);
+  }
+
+  /**
+   * Sets the style of button. Valid styles are:
+   *
+   * - primary
+   * - secondary
+   * - success
+   * - info
+   * - warning
+   * - danger
+   * - link
+   *
+   */
+  setStyle(style){
+    this._buttonStyle = style;
+    this._componentNode.setAttribute("class", "btn " + ("btn-"+this._buttonStyle) );
   }
 
   buildComponent(builder, properties) {
-    this._componentNode.setAttribute("class", "btn btn-default" + (properties.class ? " " + properties.class : ""));
+    this._componentNode.setAttribute("class", "btn " + ("btn-"+this._buttonStyle)  + + (properties.class ? " " + properties.class : ""));
     this._componentNode.addEventListener("click", function () {
       this._clicked(properties);
     }.bind(this), false);

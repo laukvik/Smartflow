@@ -1,12 +1,25 @@
 import {InputComponent} from "../component";
 
+/**
+ *
+ *
+ * <div class="input-group">
+ *     <span class="input-group-addon">
+ *         <input type="checkbox" aria-label="Checkbox for following text input">
+ *     </span>
+ *     <span class="input-group-addon">$</span>
+ *     <input type="text" class="form-control" aria-label="Text input with checkbox">
+ * </div>
+ *
+ */
 class Checkbox extends InputComponent {
 
   constructor(properties) {
     super(properties);
-    this.inputs = [];
+    this.divNodes = []; // each option
+    this.inputNodes = []; // the input inside each option
     this._componentNode = document.createElement("div");
-    this._componentNode.setAttribute("class", "sf-checkbox-options");
+
   }
 
   setProperties(properties) {
@@ -21,7 +34,6 @@ class Checkbox extends InputComponent {
   }
 
   buildComponent(builder, properties) {
-    this._componentNode.setAttribute("class", "sf-checkbox-options" + (properties.class ? " " + properties.class : ""));
     return this._componentNode;
   }
 
@@ -35,7 +47,6 @@ class Checkbox extends InputComponent {
 
   setVertical(isVertical) {
     this.vertical = isVertical == true;
-    this.getElement().setAttribute("class", "sf-checkbox " + (isVertical ? "sf-checkbox-vertical" : "sf-checkbox-horisontal"));
   }
 
   isVertical() {
@@ -43,15 +54,15 @@ class Checkbox extends InputComponent {
   }
 
   setEnabled(isEnabled) {
-    for (let x = 0; x < this.inputs.length; x++) {
-      this.inputs[x].disabled = isEnabled;
+    for (let x = 0; x < this.inputNodes.length; x++) {
+      this.inputNodes[x].disabled = isEnabled;
     }
   }
 
   setSelected(selected) {
     if (Array.isArray(selected)) {
-      for (let x = 0; x < this.inputs.length; x++) {
-        let inp = this.inputs[x];
+      for (let x = 0; x < this.inputNodes.length; x++) {
+        let inp = this.inputNodes[x];
         let found = false;
         for (let y = 0; y < selected.length; y++) {
           let selectedValue = selected[y];
@@ -65,7 +76,7 @@ class Checkbox extends InputComponent {
   }
 
   getSelected() {
-    let s = this.inputs.filter(function (inp) {
+    let s = this.inputNodes.filter(function (inp) {
       return inp.checked
     }).map(function (inp, index) {
       return index;
@@ -80,22 +91,30 @@ class Checkbox extends InputComponent {
   setOptions(items) {
     this.removeChildNodes(this._componentNode);
     if (Array.isArray(items)) {
-      this.inputs = [];
+      this.inputNodes = [];
       for (let x = 0; x < items.length; x++) {
         let item = items[x];
         let itemText = item.text;
         let itemValue = item.value;
-        let span = document.createElement("label");
-        span.setAttribute("class", "sf-checkbox-option");
-        this._componentNode.appendChild(span);
+
+        let div = document.createElement("div");
+        this.divNodes.push(div);x
+        div.setAttribute("class", "form-check" + this.isVertical() ? "" : " form-check-inline");
+        this._componentNode.appendChild(div);
+
+        let labelNode = document.createElement("label");
+        labelNode.setAttribute("class", "form-check-label");
+        div.appendChild(labelNode);
+
         let input = document.createElement("input");
-        this.inputs.push(input);
-        span.appendChild(input);
+        this.inputNodes.push(input);
+        labelNode.appendChild(input);
         input.setAttribute("type", "checkbox");
         input.setAttribute("value", itemValue);
+        input.setAttribute("class", "form-check-input");
+
         let text = document.createElement("span");
-        span.appendChild(text);
-        text.setAttribute("class", "sf-checkbox-option-label");
+        labelNode.appendChild(text);
         text.innerText = itemText;
         input.addEventListener("change", function (evt) {
           this._changed(evt);

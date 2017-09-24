@@ -5,20 +5,18 @@ class Progress extends PresentationComponent {
     super(properties);
     this.value = 0;
     this._componentNode = document.createElement("div");
+    this.progressBarNode = document.createElement("div");
+    this._componentNode.appendChild(this.progressBarNode);
   }
 
   setProperties(properties) {
-
+    this.setValue(properties.value);
   }
 
   buildComponent(builder, properties) {
-
-    this._componentNode.setAttribute("class", "progress");
-    this._componentNode.setAttribute("class", "sf-progress" + (properties.class ? " " + properties.class : ""));
-    this.progressBarNode = document.createElement("div");
-    this.progressBarNode.setAttribute("class", "progress-bar progress-bar-striped");
+    this.progressBarNode.setAttribute("class", "progress-bar progress-bar-striped progress-bar-animated");
     this.progressBarNode.setAttribute("role", "progressbar");
-    this._componentNode.appendChild(this.progressBarNode);
+
     return this._componentNode;
   }
 

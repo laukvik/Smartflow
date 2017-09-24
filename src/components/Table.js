@@ -9,7 +9,7 @@ class Table extends InputComponent {
     this.selected = [];
     this.columns = [];
     this.rows = [];
-    this.inputs = [];
+    this.inputNodes = [];
     this.headerNode = document.createElement("div");
     this.bodyNode = document.createElement("div");
     this._componentNode = document.createElement("table");
@@ -47,8 +47,8 @@ class Table extends InputComponent {
   setSelected(selected) {
     if (Array.isArray(selected)) {
       this.selected = selected;
-      for (let y = 0; y < this.inputs.length; y++) {
-        let inputSelect = this.inputs[y];
+      for (let y = 0; y < this.inputNodes.length; y++) {
+        let inputSelect = this.inputNodes[y];
         inputSelect.checked = this.selected.indexOf(inputSelect.getAttribute("id")) > -1;
       }
     } else {
@@ -136,7 +136,7 @@ class Table extends InputComponent {
           trNode.appendChild(thSelectNode);
           var inputSelect = document.createElement("input");
           var rowKey = row[this.rowKey];
-          this.inputs.push(inputSelect);
+          this.inputNodes.push(inputSelect);
           inputSelect.setAttribute("id", rowKey);
           inputSelect.setAttribute("type", "checkbox");
           inputSelect.checked = this.selected.indexOf(rowKey) > -1;

@@ -3,7 +3,7 @@ import {InputComponent} from "../component";
 export class Radio extends InputComponent {
   constructor(properties) {
     super(properties);
-    this.inputs = [];
+    this.inputNodes = [];
     this._componentNode = document.createElement("div");
   }
 
@@ -17,7 +17,6 @@ export class Radio extends InputComponent {
   }
 
   buildComponent(builder, properties){
-    this._componentNode.setAttribute("class", "sf-radio" + (properties.class ? " " + properties.class : ""));
     return this._componentNode;
   }
 
@@ -29,14 +28,14 @@ export class Radio extends InputComponent {
   }
 
   setEnabled(enabled) {
-    for (let x = 0; x < this.inputs.length; x++) {
-      this.inputs[x].disabled = enabled == false;
+    for (let x = 0; x < this.inputNodes.length; x++) {
+      this.inputNodes[x].disabled = enabled == false;
     }
   }
 
   getSelected() {
-    for (let x = 0; x < this.inputs.length; x++) {
-      let inp = this.inputs[x];
+    for (let x = 0; x < this.inputNodes.length; x++) {
+      let inp = this.inputNodes[x];
       if (inp.checked) {
         return inp;
       }
@@ -44,15 +43,14 @@ export class Radio extends InputComponent {
   }
 
   setSelected(selected) {
-    for (let x = 0; x < this.inputs.length; x++) {
-      let inp = this.inputs[x];
+    for (let x = 0; x < this.inputNodes.length; x++) {
+      let inp = this.inputNodes[x];
       inp.checked = inp.value == selected;
     }
   }
 
   setVertical(isVertical) {
     this.vertical = isVertical === true;
-    this._componentNode.setAttribute("class", "sf-radio " + (this.vertical ? "sf-radio-vertical" : "sf-radio-horisontal"));
   }
 
   isVertical() {
@@ -61,28 +59,36 @@ export class Radio extends InputComponent {
 
   setOptions(items) {
     this.removeChildNodes(this._componentNode);
-    this.inputs = [];
+    this.inputNodes = [];
     if (Array.isArray(items)) {
-      var gui = "sf-radio-" + Math.round(100000);
-      for (var x = 0; x < items.length; x++) {
-        var item = items[x];
-        var itemText = item.text;
-        var itemValue = item.value;
-        var span = document.createElement("label");
-        span.setAttribute("class", "sf-radio-option");
-        this._componentNode.appendChild(span);
-        var input = document.createElement("input");
-        this.inputs.push(input);
-        span.appendChild(input);
+      let gui = "sf-radio-" + Math.round(100000);
+      for (let x = 0; x < items.length; x++) {
+        let item = items[x];
+        let itemText = item.text;
+        let itemValue = item.value;
+
+        let div = document.createElement("div");
+        div.setAttribute("class", "form-check form-check-inline");
+        this._componentNode.appendChild(div);
+
+        let labelNode = document.createElement("label");
+        labelNode.setAttribute("class", "form-check-label");
+        div.appendChild(labelNode);
+
+        let input = document.createElement("input");
+        this.inputNodes.push(input);
+        labelNode.appendChild(input);
         input.setAttribute("type", "radio");
         input.setAttribute("value", itemValue);
         input.setAttribute("name", gui);
-        var text = document.createElement("span");
-        span.appendChild(text);
-        text.setAttribute("class", "sf-radio-option-label");
+        input.setAttribute("class", "form-check-input");
+
+        let text = document.createElement("span");
+        labelNode.appendChild(text);
         text.innerText = itemText;
-        var inputs = this.inputs;
-        var self = this;
+
+        let inputs = this.inputNodes;
+        let self = this;
         input.addEventListener("change", function (evt) {
           self.fireComponentChanged("selection", {
             "value": evt.srcElement.value,

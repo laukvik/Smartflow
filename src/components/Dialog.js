@@ -57,7 +57,7 @@ export class Dialog extends PresentationComponent {
         let component = properties.actions[x];
         let btn = document.createElement("button");
         btn.setAttribute("type", "button");
-        btn.setAttribute("class", "btn btn-default");
+        btn.setAttribute("class", "btn " + (component.style ? " btn-" + component.style : "btn-default"));
         btn.innerText = component.label;
         contentFooter.appendChild(btn);
         this.buttons.push(btn);

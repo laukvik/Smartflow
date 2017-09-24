@@ -72,6 +72,7 @@ export class ComponentBuilder {
     c.setSmartflow(this.smartflow);
     c.setView(this.ctrl);
     c.setID(componentProperties.id);
+    c.setBaseClass(componentType);
     c.setClass(componentProperties.class);
     return c;
   }
@@ -93,6 +94,7 @@ export class ComponentBuilder {
     let isInputComponent = componentInstance instanceof InputComponent;
     let node = componentInstance.buildComponent(this, comp);
     componentInstance.setProperties(comp);
+
     if (isInputComponent) {
       componentInstance.setRootNode(node); //
       node = componentInstance.getRootNode();

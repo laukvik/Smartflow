@@ -4,7 +4,9 @@ export class Textfield extends InputComponent {
   constructor(properties) {
     super(properties);
     this._componentNode = document.createElement("div");
-    this._componentNode.setAttribute("class", "input-group");
+
+    this._iconBefore = null;
+    this._iconAfter = null;
   }
 
   setProperties(properties){
@@ -14,48 +16,58 @@ export class Textfield extends InputComponent {
       this.setValidationMessage(properties.validation.message);
       this.setRegex(properties.validation.regex);
     }
+    this.setHelp(properties.help);
   }
 
   buildComponent(builder, properties) {
+    this._componentNode.setAttribute("class", "input-group");
     if (properties.rows) {
-      this.input = document.createElement("textarea");
-      this.input.setAttribute("rows", properties.rows);
-      this.input.setAttribute("class", "form-control");
+      this.inputNode = document.createElement("textarea");
+      this.inputNode.setAttribute("rows", properties.rows);
+      this.inputNode.setAttribute("class", "form-control");
     } else {
-      this.input = document.createElement("input");
-      this.input.setAttribute("type", "text");
-      this.input.setAttribute("class", "form-control");
+      this.inputNode = document.createElement("input");
+      this.inputNode.setAttribute("type", "text");
+      this.inputNode.setAttribute("class", "form-control");
     }
 
-    this.input.setAttribute("placeholder", properties.placeholder);
-    this.input.addEventListener('keyup', function () {
+    this.inputNode.setAttribute("placeholder", properties.placeholder);
+    this.inputNode.addEventListener('keyup', function () {
       this._changed();
     }.bind(this), false);
 
 
 
-    if (properties.icon_before) {
+    if (properties.before) {
       let addonBefore = document.createElement("span");
       addonBefore.setAttribute("class", "input-group-addon");
-      let iconBefore = document.createElement("span");
-      iconBefore.setAttribute("class", "glyphicon " + properties.icon_before);
-      addonBefore.appendChild(iconBefore);
+      if (properties.before.text) {
+        addonBefore.innerText = properties.before.text;
+      }
+      if (properties.before.icon){
+        let iconBefore = document.createElement("span");
+        iconBefore.setAttribute("class", "glyphicon " + properties.before.icon);
+        addonBefore.appendChild(iconBefore);
+      }
       this._componentNode.appendChild(addonBefore);
     }
 
 
-    this._componentNode.appendChild(this.input);
+    this._componentNode.appendChild(this.inputNode);
 
-    if (properties.icon_after) {
+    if (properties.after) {
       let addonAfter = document.createElement("span");
       addonAfter.setAttribute("class", "input-group-addon");
-      let iconAfter = document.createElement("span");
-      iconAfter.setAttribute("class", "glyphicon " + properties.icon_after);
-      addonAfter.appendChild(iconAfter);
+      if (properties.after.text){
+        addonAfter.innerText = properties.after.text;
+      }
+      if (properties.after.icon){
+        let iconAfter = document.createElement("span");
+        iconAfter.setAttribute("class", "glyphicon " + properties.icon_after);
+        addonAfter.appendChild(iconAfter);
+      }
       this._componentNode.appendChild(addonAfter);
     }
-
-    this._componentNode.setAttribute("class", "sf-textfield input-group" + (properties.class ? " " + properties.class : ""));
 
     return this._componentNode;
   }
@@ -73,11 +85,11 @@ export class Textfield extends InputComponent {
     if (this.regex === undefined) {
       // No validation
       if (this.isRequired()) {
-        return this.input.value.length > 0;
+        return this.inputNode.value.length > 0;
       }
       return true;
     }
-    return this.regex.test(this.input.value);
+    return this.regex.test(this.inputNode.value);
   }
 
   setRegex(regex) {
@@ -89,30 +101,30 @@ export class Textfield extends InputComponent {
 
   setEnabled(isEnabled) {
     if (isEnabled) {
-      this.input.removeAttribute("disabled");
+      this.inputNode.removeAttribute("disabled");
     } else {
-      this.input.setAttribute("disabled", "true");
+      this.inputNode.setAttribute("disabled", "true");
     }
   }
 
   isEnabled() {
-    return !this.input.hasAttribute("disabled");
+    return !this.inputNode.hasAttribute("disabled");
   }
 
   setPlaceholder(text) {
-    this.input.setAttribute("placeholder", text);
+    this.inputNode.setAttribute("placeholder", text);
   }
 
   getPlaceholder() {
-    return this.input.getAttribute("placeholder");
+    return this.inputNode.getAttribute("placeholder");
   }
 
   setValue(text) {
-    this.input.value = text == undefined ? "" : text;
+    this.inputNode.value = text == undefined ? "" : text;
   }
 
   getValue() {
-    var s = this.input.value;
+    var s = this.inputNode.value;
     return s === undefined ? '' : s;
   }
 

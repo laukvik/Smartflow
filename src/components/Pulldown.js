@@ -1,11 +1,11 @@
 import {InputComponent} from "../component";
 
 export class Pulldown extends InputComponent {
-  
+
   constructor(properties) {
     super(properties);
     this._componentNode = document.createElement("select");
-    this._componentNode.setAttribute("class", "sf-pulldown");
+
     this._componentNode.addEventListener('change', function () {
       this._changed();
     }.bind(this), false);
@@ -19,7 +19,7 @@ export class Pulldown extends InputComponent {
   }
 
   buildComponent(builder, properties) {
-    this._componentNode.setAttribute("class", "sf-pulldown" + (properties.class ? " " + properties.class : ""));
+    this._componentNode.setAttribute("class", "form-control");
     return this._componentNode;
   }
 

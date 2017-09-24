@@ -6,24 +6,34 @@ class Alert extends SmartflowComponent {
     super(properties);
     this._componentNode = document.createElement("div");
     this._componentNode.setAttribute("role", "alert");
+    this._buttonNode = document.createElement("button");
+    this._buttonNode.setAttribute("type", "button");
+    this._buttonNode.setAttribute("class", "close");
+    this._buttonNode.setAttribute("data-dismiss", "alert");
+    this._buttonNode.setAttribute("aria-label", "Close");
+    this._buttonSpanNode = document.createElement("span");
+    this._buttonSpanNode.setAttribute("aria-hidden", "true");
+    this._buttonSpanNode.innerHTML = "&times;";
+    this._textNode = document.createElement("span");
+    this._buttonNode.appendChild(this._buttonSpanNode);
   }
 
   setProperties(properties) {
     this.setText(properties.text);
+    this.setStyle(properties.style);
+    this.setVisible(properties.visible);
+  }
+
+  setStyle(style){
+    this._alertStyle = style;
+    this._componentNode.setAttribute("class", "alert " + ("alert-" + this._alertStyle) );
   }
 
   buildComponent(builder, properties){
-    this._componentNode.setAttribute("class", "sf-alert alert alert-danger" + (properties.class ? " " + properties.class : ""));
-    this.srNode = document.createElement("span");
-    this.srNode.setAttribute("class", "sr-only");
-    this.srNode.innerText = "Error:";
-    this.iconNode = document.createElement("span");
-    this.iconNode.setAttribute("class", "glyphicon glyphicon-exclamation-sign");
-    this.iconNode.setAttribute("aria-hidden", "true");
-    this.textNode = document.createElement("span");
-    this._componentNode.appendChild(this.iconNode);
-    this._componentNode.appendChild(this.srNode);
-    this._componentNode.appendChild(this.textNode);
+    if (properties.closable == true) {
+      this._componentNode.appendChild(this._buttonNode);
+    }
+    this._componentNode.appendChild(this._textNode);
     return this._componentNode;
   }
 
@@ -36,7 +46,7 @@ class Alert extends SmartflowComponent {
   }
 
   setText(text) {
-    this.textNode.innerText = text;
+    this._textNode.innerHTML = text;
   }
 
   stateChanged(state, value) {

@@ -11,6 +11,8 @@ class SmartflowComponent {
     //this._componentClass = properties.class;
   }
 
+
+
   setProperties(properties) {
     this.setID(properties.id);
     this.setClass(properties.class);
@@ -40,16 +42,22 @@ class SmartflowComponent {
 
   setID(id) {
     this._componentID = id;
-    this._componentNode.setAttribute("id", id);
+    if (id != undefined) {
+      this._componentNode.setAttribute("id", id);
+    }
   }
 
   getID() {
     return this._componentID;
   }
 
+  setBaseClass(baseClass){
+    this._componentBaseClass = baseClass;
+  }
+
   setClass(className) {
     this._componentClass = className;
-    this._componentNode.setAttribute("class", className);
+    this._componentNode.setAttribute("class", this._componentBaseClass + (className == undefined ? "" : className));
   }
 
   getClass() {
@@ -118,12 +126,26 @@ class InputComponent extends SmartflowComponent {
     super(properties);
     this.comp = properties;
     this.componentRootNode = document.createElement("div");
-    this.componentRootNode.setAttribute("class", "sf-" + this.constructor.name.toLowerCase());
-    this.labelNode = document.createElement("div");
-    this.labelNode.setAttribute("class", "sf-label");
+    this.componentRootNode.setAttribute("class", "form-group");
+
+    this._labelNode = document.createElement("legend");
+    this._requiredNode = document.createElement("span");
+    this._requiredNode.setAttribute("class", "alert-danger");
+    this._labelNode.appendChild(this._requiredNode);
+
+    this.helpNode = document.createElement("small");
+    this.helpNode.setAttribute("class", "form-text text-muted");
+    this.helpNode.style.display = "none";
+
     this.errorNode = document.createElement("div");
-    this.errorNode.setAttribute("class", "sf-error");
+    this.errorNode.setAttribute("class", "alert alert-danger");
+
     this.setValidationMessage("Required");
+  }
+
+  setHelp(text) {
+    this.helpNode.innerText = text;
+    this.helpNode.style.display = text == undefined ? "none" : "block";
   }
 
   // Bygger HTML og adder listeners
@@ -134,8 +156,9 @@ class InputComponent extends SmartflowComponent {
   setRootNode(componentNode) {
     this.componentNode = componentNode;
     this.removeChildNodes(this.componentRootNode);
-    this.componentRootNode.appendChild(this.labelNode);
+    this.componentRootNode.appendChild(this._labelNode);
     this.componentRootNode.appendChild(componentNode);
+    this.componentRootNode.appendChild(this.helpNode);
     this.componentRootNode.appendChild(this.errorNode);
   }
 
@@ -149,7 +172,7 @@ class InputComponent extends SmartflowComponent {
 
   setRequired(required) {
     this.required = required == true;
-    this.labelNode.setAttribute("class", this.required ? "sf-label sf-required" : "sf-label");
+    this._requiredNode.innerText = this.required ? "*" : "";
   }
 
   isRequired() {
@@ -165,11 +188,14 @@ class InputComponent extends SmartflowComponent {
   }
 
   setLabel(text) {
-    this.labelNode.innerText = text;
+    this._labelNode.innerText = text;
+    this._requiredNode = document.createElement("span");
+    this._requiredNode.setAttribute("class", "alert-danger");
+    this._labelNode.appendChild(this._requiredNode);
   }
 
   getLabel() {
-    return this.labelNode.innerText;
+    return this._labelNode.innerText;
   }
 
   setError(text) {

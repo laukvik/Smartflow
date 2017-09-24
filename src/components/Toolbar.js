@@ -16,7 +16,9 @@ export class Toolbar extends InputComponent {
         let component = properties.actions[x];
         let btn = document.createElement("button");
         btn.setAttribute("type", "button");
-        btn.setAttribute("class", "btn btn-default");
+        btn.setAttribute("class", "btn " + (component.style ? " btn-" + component.style : "btn-default"));
+
+
         btn.innerText = component.label;
         this._groupNode.appendChild(btn);
         this.buttons.push(btn);
@@ -33,7 +35,6 @@ export class Toolbar extends InputComponent {
   }
 
   buildComponent(builder, properties) {
-
     this._componentNode.setAttribute("role", "toolbar");
     let groupNode = document.createElement("div");
     groupNode.setAttribute("class", "btn-group");
