@@ -1,5 +1,5 @@
 import {Smartflow} from "../../src/Smartflow";
-import {InboxView} from "./InboxView";
+import {InboxView} from "./views/InboxView";
 
 let config = {
   "LoginAction": "/api/login",

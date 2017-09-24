@@ -1,5 +1,10 @@
-import {View} from "../../src/View";
-import {SearchfieldAction,CloseDialogAction,FindMoviesAction,FindTableAction,ShowDialogAction,StartAction} from "./actions";
+import {View} from "../../../src/View";
+import {FindMoviesAction} from "../actions/MoviesAction";
+import {StartAction} from "../actions/StartAction";
+import {SearchfieldAction} from "../actions/SearchfieldAction";
+import {CloseDialogAction} from "../actions/CloseDialogAction";
+import {FindTableAction} from "../actions/FindTableAction";
+import {ShowDialogAction} from "../actions/ShowDialogAction";
 
 export class InboxView extends View {
   constructor() {
@@ -13,7 +18,7 @@ export class InboxView extends View {
           "components": [
             {
               "type": "Tabs",
-              "selectedIndex": 1,
+              "selectedIndex": 0,
               "tabs": [
                 {
                   "label": "Minimum",
