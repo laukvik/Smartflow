@@ -14,6 +14,7 @@ export class Textfield extends InputComponent {
       this.setValidationMessage(properties.validation.message);
       this.setRegex(properties.validation.regex);
     }
+    this.setValue(properties.value);
   }
 
   buildComponent(builder, properties) {
@@ -26,7 +27,6 @@ export class Textfield extends InputComponent {
       this.input.setAttribute("type", "text");
       this.input.setAttribute("class", "form-control");
     }
-
     this.input.setAttribute("placeholder", properties.placeholder);
     this.input.addEventListener('keyup', function () {
       this._changed();

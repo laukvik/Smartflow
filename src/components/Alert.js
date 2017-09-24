@@ -14,12 +14,15 @@ class Alert extends SmartflowComponent {
 
   buildComponent(builder, properties){
     this._componentNode.setAttribute("class", "sf-alert alert alert-danger" + (properties.class ? " " + properties.class : ""));
-    this.srNode = document.createElement("span");
-    this.srNode.setAttribute("class", "sr-only");
-    this.srNode.innerText = "Error:";
+
     this.iconNode = document.createElement("span");
     this.iconNode.setAttribute("class", "glyphicon glyphicon-exclamation-sign");
     this.iconNode.setAttribute("aria-hidden", "true");
+
+    this.srNode = document.createElement("span");
+    this.srNode.setAttribute("class", "sr-only");
+    this.srNode.innerText = "Error:";
+
     this.textNode = document.createElement("span");
     this._componentNode.appendChild(this.iconNode);
     this._componentNode.appendChild(this.srNode);

@@ -25,7 +25,8 @@ export class InboxView extends View {
                   "components": [
                     {
                       "type": "Alert",
-                      "text": "Here comes the error message"
+                      "text": "Here comes the error message",
+                      "visible": false
                     },
                     {
                       "type": "Checkbox",
@@ -99,13 +100,12 @@ export class InboxView extends View {
                         "col-md": "6",
                         "col-lg": "4"
                       }
-                    }
-                    ,
+                    },
                     {
                       "type": "Textfield",
                       "label": "Textfield",
                       "required": true,
-                      "value": "",
+                      "value": "{value}",
                       "placeholder": "Placeholder here...",
                       "validation": {
                         "pattern": "hh:mm:ss",
@@ -116,7 +116,7 @@ export class InboxView extends View {
                       "icon_after": "glyphicon-calendar",
                       "states": {
                         "enabled": "textfieldEnabled",
-                        "value": "textfield",
+                        "old_value": "textfield",
                         "required": "textfieldRequired",
                         "label": "textfieldLabel"
                       },
@@ -132,7 +132,7 @@ export class InboxView extends View {
                       "required": true,
                       "rows": 10,
                       "placeholder": "Placeholder here...",
-                      "layout":{
+                      "layout": {
                         "col-md": "12"
                       }
                     },
@@ -140,10 +140,6 @@ export class InboxView extends View {
                       "type": "Button",
                       "label": "Button",
                       "enabled": true,
-                      "states": {
-                        "enabled": "buttonEnabled",
-                        "value": "button"
-                      },
                       "action": FindMoviesAction,
                       "layout": {
                         "col-md": "12"
@@ -308,13 +304,16 @@ export class InboxView extends View {
 
   viewEnabled() {
     //console.info("InboxView.viewEnabled");
-    this.runSmartflow(new StartAction());
-    this.runSmartflow(new FindTableAction());
-    this.runSmartflow(new FindMoviesAction());
+    //this.runSmartflow(new StartAction());
+    //this.runSmartflow(new FindTableAction());
+    //this.runSmartflow(new FindMoviesAction());
   }
 
   componentChanged(evt) {
   }
   actionPerformed(evt){
+  }
+  stateChanged(evt){
+    console.info("stateChange: ", evt);
   }
 }

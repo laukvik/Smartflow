@@ -86,13 +86,51 @@ export class ComponentBuilder {
     }
   }
 
+  findScopeVariable(name, value, view) {
+    if (typeof value === 'string') {
+      if (value.startsWith("{") && value.endsWith("}")) {
+        let inner = value.substr(1, value.length-2);
+        if (inner.startsWith("global")) {
+          return {
+            "scope": "global",
+            "state": inner.substr("global".length),
+            "name" : name,
+            "value": this.smartflow.getState(inner)
+          }
+        } else {
+          return {
+            "scope" : "view",
+            "state": inner,
+            "name" : name,
+            "value": this.smartflow.getState(inner, view)
+          }
+        }
+      }
+    }
+    return {
+      "scope": "component",
+      "name" : name,
+      "value": value
+    }
+  }
+
   buildChildNode(parentNode, comp) {
     let componentInstance = this._buildComponent(comp);
     this.ctrl.smartflow.componentInstances.push(componentInstance);
     componentInstance.setStateBinding(comp.states);
     let isInputComponent = componentInstance instanceof InputComponent;
     let node = componentInstance.buildComponent(this, comp);
+    // Sets the properties
+    for (let key in comp) {
+      let value = comp[ key ];
+      if (value != undefined){
+        let variable = this.findScopeVariable(key, value, this.ctrl);
+        console.info("Prop: ", value, variable.value);
+        comp[ key ] = variable.value;
+      }
+    }
     componentInstance.setProperties(comp);
+    //
     if (isInputComponent) {
       componentInstance.setRootNode(node); //
       node = componentInstance.getRootNode();
