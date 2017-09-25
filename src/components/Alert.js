@@ -11,6 +11,9 @@ class Alert extends SmartflowComponent {
     this._buttonNode.setAttribute("class", "close");
     this._buttonNode.setAttribute("data-dismiss", "alert");
     this._buttonNode.setAttribute("aria-label", "Close");
+    this._buttonNode.addEventListener("click",function () {
+      this.setVisible(false);
+    }.bind(this), false);
     this._buttonSpanNode = document.createElement("span");
     this._buttonSpanNode.setAttribute("aria-hidden", "true");
     this._buttonSpanNode.innerHTML = "&times;";
