@@ -8,8 +8,8 @@ export class Radio extends InputComponent {
   }
 
   setProperties(properties){
-    this.setRequired(properties.required);
     this.setLabel(properties.label);
+    this.setRequired(properties.required);
     this.setOptions(properties.options);
     this.setVertical(properties.vertical);
     this.setSelected(properties.selected);

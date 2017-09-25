@@ -17,7 +17,8 @@ export class Searchfield extends InputComponent {
   }
 
   setProperties(properties){
-
+    this.setLabel(properties.label);
+    this.setRequired(properties.required);
   }
 
   setRows(rowData){

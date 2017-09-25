@@ -195,6 +195,7 @@ export class InboxView extends View {
                 {
                   "type": "Searchfield",
                   "label": "Searchfield",
+                  "required": true,
                   "states": {
                     "value": "searchfieldValue",
                     "rows": "searchfieldRows"

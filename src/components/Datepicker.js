@@ -36,7 +36,8 @@ class Datepicker extends InputComponent {
   }
 
   setProperties(properties) {
-    this.setLabel(properties.label)
+    this.setLabel(properties.label);
+    this.setRequired(properties.required);
   }
 
   setValue(value) {

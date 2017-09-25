@@ -24,8 +24,8 @@ class Checkbox extends InputComponent {
 
   setProperties(properties) {
     this.setEnabled(properties.enabled);
-    this.setRequired(properties.required);
     this.setLabel(properties.label);
+    this.setRequired(properties.required);
     if (properties.validation) {
       this.setValidationMessage(properties.validation.message);
     }

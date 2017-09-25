@@ -130,7 +130,7 @@ class InputComponent extends SmartflowComponent {
 
     this._labelNode = document.createElement("legend");
     this._requiredNode = document.createElement("span");
-    this._requiredNode.setAttribute("class", "alert-danger");
+    this._requiredNode.setAttribute("class", "text-danger");
     this._labelNode.appendChild(this._requiredNode);
 
     this.helpNode = document.createElement("small");
@@ -138,7 +138,7 @@ class InputComponent extends SmartflowComponent {
     this.helpNode.style.display = "none";
 
     this.errorNode = document.createElement("div");
-    this.errorNode.setAttribute("class", "alert alert-danger");
+    this.errorNode.setAttribute("class", "text-danger");
 
     this.setValidationMessage("Required");
   }
@@ -190,7 +190,7 @@ class InputComponent extends SmartflowComponent {
   setLabel(text) {
     this._labelNode.innerText = text;
     this._requiredNode = document.createElement("span");
-    this._requiredNode.setAttribute("class", "alert-danger");
+    this._requiredNode.setAttribute("class", "text-danger");
     this._labelNode.appendChild(this._requiredNode);
   }
 

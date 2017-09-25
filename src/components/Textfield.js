@@ -10,8 +10,8 @@ export class Textfield extends InputComponent {
   }
 
   setProperties(properties){
-    this.setRequired(properties.required);
     this.setLabel(properties.label);
+    this.setRequired(properties.required);
     if (properties.validation){
       this.setValidationMessage(properties.validation.message);
       this.setRegex(properties.validation.regex);
