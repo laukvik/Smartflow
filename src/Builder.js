@@ -21,6 +21,7 @@ import {Alert} from "./components/Alert";
 import {Searchfield} from "./components/Searchfield";
 import {Datepicker} from "./components/Datepicker";
 import {Spinner} from "./components/Spinner";
+import {Card} from "./components/Card";
 
 export class ComponentBuilder {
   constructor(ctrl, formatter, smartflow) {
@@ -65,6 +66,8 @@ export class ComponentBuilder {
       c =  new Datepicker(componentProperties);
     } else if (componentType === 'spinner') {
       c =  new Spinner(componentProperties);
+    } else if (componentType === 'card') {
+      c =  new Card(componentProperties);
     } else {
       console.warn("Component not found: ", componentProperties.type);
       return;

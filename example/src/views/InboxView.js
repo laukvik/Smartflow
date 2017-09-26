@@ -260,6 +260,16 @@ export class InboxView extends View {
               "label": "Table",
               "components": [
                 {
+                  "type": "Card",
+                  "title": "Card title",
+                  "src": "sunset.jpg",
+                  "visible": true,
+                  "description": "Some quick example text to build on the card title and make up the bulk of the card's content.",
+                  "button": "Go somewhere",
+                  "style": "primary",
+                  "action": FindMoviesAction
+                },
+                {
                   "type": "Table",
                   "id": "inboxTable",
                   "class": "table table-striped",
