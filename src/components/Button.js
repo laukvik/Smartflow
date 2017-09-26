@@ -6,6 +6,13 @@ class Button extends SmartflowComponent {
   constructor(properties) {
     super(properties);
     this._componentNode = document.createElement("button");
+    this._textNode = document.createTextNode("");
+
+    this._badgeNode = document.createElement("span");
+    this._badgeNode.setAttribute("class", "badge");
+
+    this._componentNode.appendChild(this._textNode);
+    this._componentNode.appendChild(this._badgeNode);
   }
 
   setProperties(properties) {
@@ -13,6 +20,15 @@ class Button extends SmartflowComponent {
     this.action = properties.action;
     this.setEnabled(properties.enabled);
     this.setStyle(properties.style);
+    this.setBadge(properties.badge);
+  }
+
+  setText(text) {
+    this._textNode.nodeValue =  text;
+  }
+
+  setBadge(badge){
+    this._badgeNode.innerText = badge;
   }
 
   /**
@@ -52,9 +68,7 @@ class Button extends SmartflowComponent {
     }
   }
 
-  setText(text) {
-    this._componentNode.innerText = text;
-  }
+
 
   stateChanged(state, value) {
     if (state == this.properties.states.value) {

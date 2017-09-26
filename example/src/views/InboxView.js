@@ -139,7 +139,7 @@ export class InboxView extends View {
                   "type": "Textfield",
                   "label": "Textarea",
                   "required": true,
-                  "rows": 10,
+                  "rows": 4,
                   "placeholder": "Placeholder here...",
                   "layout":{
                     "col-md": "12"
@@ -147,9 +147,10 @@ export class InboxView extends View {
                 },
                 {
                   "type": "Button",
-                  "label": "Button",
+                  "label": "Inbox",
                   "enabled": true,
-                  "style": "success",
+                  "style": "primary",
+                  "badge": 5,
                   "action": FindMoviesAction,
                   "layout": {
                     "col-md": "12"
