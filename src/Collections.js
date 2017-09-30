@@ -8,9 +8,10 @@
  */
 export class Collections {
 
-  constructor(properties) {
+  constructor() {
     this.clearFilter();
-    this.setProperties(properties)
+    this.clearSort();
+    this.clearPaging();
   }
 
   setProperties(properties){
@@ -87,25 +88,30 @@ export class Collections {
   }
 
   setPaging(paging){
-    if (paging == undefined) {
+    if (paging === undefined) {
       this.pageSize = undefined;
       this.pageIndex = undefined;
     } else {
       this.pageSize = paging.size;
       this.pageIndex = paging.page;
     }
-    this.pageEnabled = this.pageSize != undefined;
+    this.pageEnabled = this.pageSize !== undefined;
   }
 
+  addSort(key, order) {
+    this._sorting.push({"key": key, "order": order});
+  }
+
+  /**
+   * TODO - Replace use of this method with addSort
+   * @param sort
+   */
   setSort(sort){
-    if (sort == undefined) {
-      this.sortMatch = undefined;
-      this.sortOrder = undefined;
+    if (sort === undefined) {
+      this._sorting = [];
     } else {
-      this.sortMatch = sort.match;
-      this.sortOrder = sort.order;
+      this.addSort(sort.match, sort.order);
     }
-    this.sortEnabled = sort == undefined;
   }
 
   parse(){
@@ -130,7 +136,7 @@ export class Collections {
           }
         } else if (filterType === 'contains') {
           if (Array.isArray(value)) {
-            for (let y = 0; y < value.length; y++) {
+            for (let y in value) {
               if (value[y].indexOf(filterValue) > -1) {
                 count++;
               }
@@ -162,9 +168,15 @@ export class Collections {
     };
 
     // Sorting
-    let matchColumn = this.sortMatch;
-    let negOrder = this.sortOrder === 'asc' ? -1 : 1;
-    let posOrder = this.sortOrder === 'asc' ? 1 : -1;
+    let matchColumn;
+    let negOrder;
+    let posOrder;
+
+    if (this._sorting.length > 0) {
+      matchColumn = this._sorting[0].key;
+      negOrder = this._sorting[0].order === 'asc' ? -1 : 1;
+      posOrder = this._sorting[0].order === 'asc' ? 1 : -1;
+    }
 
     let collectionSorter = function (a, b) {
       let nameA = a[matchColumn];
@@ -193,7 +205,7 @@ export class Collections {
     if (this._filters.length > 0) {
       rows = rows.filter(collectionFilter);
     }
-    if (this.sortEnabled) {
+    if (this._sorting.length > 0) {
       rows = rows.sort(collectionSorter);
     }
     if (this.pageEnabled) {

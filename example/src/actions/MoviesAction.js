@@ -10,7 +10,7 @@ export class FindMoviesAction extends Action {
       },
       "success": {
         "path": "/",
-        "state": "movies"
+        "state": "movies",
       },
       "error": {
         "path": "/",

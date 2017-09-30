@@ -8,6 +8,12 @@ export class Toolbar extends InputComponent {
     this._componentNode = document.createElement("div");
   }
 
+  setProperty(name, value) {
+    if (name === "visible") {
+      this.setVisible(value);
+    }
+  }
+
   setProperties(properties) {
     this.removeChildNodes(this._groupNode);
     this._componentNode.setAttribute("class", "sf-toolbar btn-toolbar" + (properties.class ? " " + properties.class : ""));
@@ -30,7 +36,7 @@ export class Toolbar extends InputComponent {
   }
 
   setVisible(visible) {
-    this._componentVisible = visible == true;
+    this._componentVisible = visible === true;
     this._componentNode.style.display = this._componentVisible ? "block" : "none";
   }
 
@@ -45,12 +51,6 @@ export class Toolbar extends InputComponent {
 
   _clicked(action) {
     this.fireAction(action);
-  }
-
-  stateChanged(state, value) {
-    if (state == this.properties.states.visible) {
-      this.setVisible(value);
-    }
   }
 }
 

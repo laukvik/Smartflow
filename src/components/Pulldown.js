@@ -1,21 +1,69 @@
 import {InputComponent} from "../component";
+import {Collections} from "../collections";
 
 export class Pulldown extends InputComponent {
 
   constructor(properties) {
     super(properties);
+    this.collections = new Collections();
     this._componentNode = document.createElement("select");
-
     this._componentNode.addEventListener('change', function () {
       this._changed();
     }.bind(this), false);
+    this._itemKey = "value";
+    this._itemLabel = "text";
   }
 
-  setProperties(properties) {
-    this.setOptions(properties.options);
-    this.setSelected(properties.selected);
-    this.setLabel(properties.label);
-    this.setRequired(properties.required);
+  setProperty(name, value) {
+    if (name === "selected") {
+      this.setSelected(value);
+    } else if (name === "items") {
+      this.setItems(value);
+    } else if (name === "enabled") {
+      this.setEnabled(value);
+    } else if (name === "label") {
+      this.setLabel(value);
+    } else if (name === "required") {
+      this.setRequired(value);
+    } else if (name === "vertical") {
+      this.setVertical(value);
+    } else if (name === "validation") {
+      this.setValidationMessage(value);
+    } else if (name === "itemKey") {
+      this.setItemKey(value);
+    } else if (name === "itemLabel") {
+      this.setItemLabel(value);
+    } else if (name === "sort") {
+      this.setSort(value);
+    } else if (name === "filter") {
+      this.setFilter(value);
+    }
+  }
+
+  _update() {
+    this.setItems(this._items);
+  }
+
+  setSort(sort) {
+    this.collections.setSort(sort);
+    this._update();
+  }
+
+  setFilter(filter) {
+    if (Array.isArray(filter)) {
+      this.collections.setFilter(filter);
+      this._update();
+    } else {
+      this.filter = [];
+    }
+  }
+
+  setItemKey(itemKey){
+    this._itemKey = itemKey;
+  }
+
+  setItemLabel(itemLabel){
+    this._itemLabel = itemLabel;
   }
 
   buildComponent(builder, properties) {
@@ -46,16 +94,18 @@ export class Pulldown extends InputComponent {
     return !this._componentNode.hasAttribute("disabled");
   }
 
-  setOptions(items) {
+  setItems(rowData) {
     this.removeChildNodes(this._componentNode);
-    if (Array.isArray(items)) {
+    if (Array.isArray(rowData)) {
+      this._items = rowData;
+      let items = this.collections.find(rowData);
       let optionEmpty = document.createElement("option");
       optionEmpty.value = "";
       this._componentNode.appendChild(optionEmpty);
       for (let x = 0; x < items.length; x++) {
         let item = items[x];
-        let itemText = item.text;
-        let itemValue = item.value;
+        let itemText = item[ this._itemLabel ];
+        let itemValue = item[ this._itemKey ];
         let option = document.createElement("option");
         option.setAttribute("value", itemValue);
         option.innerText = itemText;
@@ -78,18 +128,5 @@ export class Pulldown extends InputComponent {
     }
   }
 
-  stateChanged(state, value) {
-    if (state == this.comp.states.selected) {
-      this.setSelected(value);
-    } else if (state == this.comp.states.options) {
-      this.setOptions(value);
-    } else if (state == this.comp.states.enabled) {
-      this.setEnabled(value);
-    } else if (state == this.comp.states.label) {
-      this.setLabel(value);
-    } else if (state == this.comp.states.required) {
-      this.setRequired(value);
-    }
-  }
 }
 

@@ -20,6 +20,12 @@ const READY_STATE = {
   DONE: 4
 };
 
+export const SCOPES = {
+  NONE: "NONE",
+  VIEW: "VIEW",
+  GLOBAL: "GLOBAL"
+};
+
 export class Smartflow {
   constructor() {
     this._controller = undefined;
@@ -32,6 +38,14 @@ export class Smartflow {
     this._formatter = new Formatter({});
     //
     this._states = [];
+  }
+
+  fireViewPropertyChanged(component, viewController, property, value) {
+
+  }
+
+  fireGlobalPropertyChanged(component, property, value){
+
   }
 
   fireComponentChanged(component, property, value, view) {
@@ -123,14 +137,15 @@ export class Smartflow {
     }
     this._controllers.push(ctrl);
     ctrl.setSmartflowInstance(this);
+    ctrl._states = {};
     this._buildComponents(ctrl);
     return true;
   }
 
-  _buildComponents(ctrl) {
+  _buildComponents(viewController) {
     // mount components
-    if (ctrl.smartflow.components) {
-      let builder = new ComponentBuilder(ctrl, this._formatter, this);
+    if (viewController.smartflow.components) {
+      let builder = new ComponentBuilder(viewController, this._formatter, this);
       builder.buildComponents();
     }
   }
@@ -185,6 +200,7 @@ export class Smartflow {
         "value": action.getSmartflow()
       },
       "states": {},
+      "global": {},
       "error": undefined,
       "request": {
         "method": undefined,
@@ -204,6 +220,11 @@ export class Smartflow {
     };
   }
 
+  /**
+   * Runs the remaining actions in the queue - in serial.
+   *
+   * @private
+   */
   _runRemainingActions() {
     if (this._action !== undefined) {
       return;
@@ -227,8 +248,8 @@ export class Smartflow {
     action._smartflowStarted = new Date();
       if (action.getSmartflow().request) {
         // Run with request
-        var self = this;
-        var xhr = new XMLHttpRequest();
+        let self = this;
+        let xhr = new XMLHttpRequest();
         xhr.onreadystatechange = function () {
           if (this.readyState === READY_STATE.DONE) {
             let statusCode = parseInt(this.status);
@@ -253,6 +274,9 @@ export class Smartflow {
               actionEvent.path = action.getSmartflow().success.path;
               actionEvent.params = self._findParams(actionEvent.path).param;
               actionEvent.states[action.getSmartflow().success.state] = actionEvent.response.body;
+
+              actionEvent.global[action.getSmartflow().success.global] = actionEvent.response.body;
+
               delete (actionEvent.error);
 
               self._fireActionPerformed(action, actionEvent);
@@ -324,69 +348,87 @@ export class Smartflow {
         actionEvent.addStates = action.getSmartflow().addStates === undefined ? {} : action.getSmartflow().addStates;
         actionEvent.removeStates = action.getSmartflow().removeStates === undefined ? {} : action.getSmartflow().removeStates;
 
+        actionEvent.global = action.getSmartflow().global === undefined ? {} : action.getSmartflow().global;
         this._fireActionPerformed(action, actionEvent);
       }
 
   }
 
+  /**
+   * Informs all controllers about global state changes and only informs the current controller
+   * about the private states.
+   *
+   * @param action
+   * @param actionEvent
+   * @private
+   */
   _fireActionPerformed(action, actionEvent) {
     actionEvent.finish = Date.now();
 
+    // Find the "from" view controller
+    let viewController = action._smartflowCaller;
 
-    // Remove states from collection
-    if (actionEvent.removeStates) {
-      for (let keyRemove in actionEvent.removeStates) {
-        delete this._states[keyRemove];
-      }
-    }
+    // // Remove states from collection
+    // if (actionEvent.removeStates) {
+    //   for (let keyRemove in actionEvent.removeStates) {
+    //     delete this._states[keyRemove];
+    //   }
+    // }
+    //
+    // // Appends states to existing collection
+    // if (actionEvent.addStates) {
+    //   for (let keyAdd in actionEvent.addStates) {
+    //     let entriesArray = actionEvent.addStates[keyAdd];
+    //     if (Array.isArray(entriesArray)) {
+    //       for (let x = 0; x < entriesArray.length; x++) {
+    //         this._states[keyAdd].push(entriesArray[x]);
+    //       }
+    //       if (actionEvent.states[keyAdd] === undefined) {
+    //         actionEvent.states[keyAdd] = this._states[keyAdd];
+    //       }
+    //     }
+    //   }
+    // }
 
-    // Appends states to existing collection
-    if (actionEvent.addStates) {
-      for (let keyAdd in actionEvent.addStates) {
-        let entriesArray = actionEvent.addStates[keyAdd];
-        if (Array.isArray(entriesArray)) {
-          for (let x = 0; x < entriesArray.length; x++) {
-            this._states[keyAdd].push(entriesArray[x]);
-          }
-          if (actionEvent.states[keyAdd] === undefined) {
-            actionEvent.states[keyAdd] = this._states[keyAdd];
-          }
-        }
-      }
-    }
-
-
+    // View state
     for (let key in actionEvent.states) {
-      this._states[key] = actionEvent.states[key]; // Save new state internally
-      this._fireStateChanged(key, this._states[key]); // Push to listeners
+      viewController._states[key] = actionEvent.states[key]; //
+      this._firePrivateStateChanged(key, viewController._states[key], viewController); // Push to listeners
     }
+
+    // Global state
+    for (let key in actionEvent.global) {
+      this._states[key] = actionEvent.global[key]; // Save new state internally
+      this._fireGlobalStateChanged(key, this._states[key]); // Push to listeners
+    }
+
+
     if (actionEvent.path) {
       this.setPath(actionEvent.path);
     }
 
-    let ctrl = action._smartflowCaller;
-
-    if (actionEvent.commands) {
-      for (var y = 0; y < ctrl.smartflow.componentInstances.length; y++) {
-        var component = ctrl.smartflow.componentInstances[y];
-        for (var z = 0; z < actionEvent.commands.length; z++) {
-          var command = actionEvent.commands[z];
-          if (component.id == command.id) {
-            component.commandPerformed(command.command, command.value);
-          }
-        }
-      }
-    }
+    // // Set values in components
+    // if (actionEvent.commands) {
+    //   for (let y = 0; y < viewController.smartflow.componentInstances.length; y++) {
+    //     let component = viewController.smartflow.componentInstances[y];
+    //     for (let z = 0; z < actionEvent.commands.length; z++) {
+    //       let command = actionEvent.commands[z];
+    //       if (component.id == command.id) {
+    //         component.commandPerformed(command.command, command.value);
+    //       }
+    //     }
+    //   }
+    // }
 
     action._smartflowStarted = undefined;
-
     action._smartflowCaller = undefined;
+
+    // Remove injected variables
+    delete (action._smartflowStarted);
+    delete (action._smartflowCaller);
+
     this._action = undefined;
-
-
-    ctrl.actionPerformed(actionEvent);
-
-
+    viewController.actionPerformed(actionEvent);
     this._runRemainingActions();
   }
 
@@ -439,7 +481,7 @@ export class Smartflow {
         this._setControllerVisible(ctrl, false);
       }
     }
-    for (var y = 0; y < this._controllers.length; y++) {
+    for (let y = 0; y < this._controllers.length; y++) {
       ctrl = this._controllers[y];
       if (ctrl.smartflow.path === path) {
         this._controller = ctrl;
@@ -451,53 +493,52 @@ export class Smartflow {
   }
 
   _setControllerVisible(ctrl, isVisible) {
-    var el = document.getElementById(ctrl.constructor.name);
+    let el = document.getElementById(ctrl.constructor.name);
     if (el) {
       el.style.display = isVisible ? "block" : "none";
     }
   }
 
   //--------------------------------- State ----------------------------------------
-  fireStateChanged(state, value, fromComponent){
-    this._fireStateChanged(state, value, fromComponent);
+  // fireStateChanged(state, value, fromComponent){
+  //   this._fireStateChanged(state, value, fromComponent);
+  // }
+  _fireGlobalStateChanged(state, value) {
+    for (let x = 0; x < this._controllers.length; x++) {
+      let viewController = this._controllers[x];
+
+      // Loop each component in view
+      for (let index in viewController.smartflow.componentInstances) {
+        let componentInstance = viewController.smartflow.componentInstances[ index ];
+        let binding = componentInstance.getBindingByState(state, SCOPES.GLOBAL);
+        if (binding) {
+          componentInstance.setProperty(binding.property, value);
+        }
+      }
+
+      // Notify controller
+      viewController.globalChanged(state, value);
+    }
   }
-  _fireStateChanged(state, value, fromComponent) {
+
+  _firePrivateStateChanged(state, value, viewController) {
     if (value === undefined || value == null) {
       delete( this._states[state] );
     } else {
       this._states[state] = value;
     }
-    for (let x = 0; x < this._controllers.length; x++) {
-      let ctrl = this._controllers[x];
-      ctrl.stateChanged(state, value);
-      for (let y = 0; y < ctrl.smartflow.componentInstances.length; y++) {
-        let compInstance = ctrl.smartflow.componentInstances[y];
-        if (compInstance != fromComponent) {
-          let states = compInstance.getStateBinding();
-          if (Array.isArray(states) && states.indexOf(state) > -1) {
-            compInstance.stateChanged(state, value);
-          }
-        }
+
+    // Loop each component in view
+    for (let index in viewController.smartflow.componentInstances) {
+      let componentInstance = viewController.smartflow.componentInstances[ index ];
+      let binding = componentInstance.getBindingByState(state, SCOPES.VIEW);
+      if (binding) {
+        componentInstance.setProperty(binding.property, value);
       }
     }
-  };
 
-  //--------------------------------- Formatter ----------------------------------------
-
-  format(key, values) {
-    return this._formatter.format(key, values);
-  };
-
-  formatJson(key, json) {
-    return this._formatter.formatJson(key, json);
-  };
-
-  formatDate(date, format) {
-    return this._formatter.formatDate(date, format);
-  };
-
-  formatNumber(value, format) {
-    return this._formatter.formatNumber(value, format);
-  };
+    // Inform view controller
+    viewController.stateChanged(state, value);
+  }
 }
 

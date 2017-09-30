@@ -6,8 +6,10 @@ export class Spinner extends SmartflowComponent {
     this._componentNode = document.createElement("div");
   }
 
-  setProperties(properties) {
-    this.setVisible(properties.visible);
+  setProperty(name, value) {
+    if (name === "visible") {
+      this.setVisible(value);
+    }
   }
 
   buildComponent(builder, properties) {
@@ -19,18 +21,12 @@ export class Spinner extends SmartflowComponent {
   }
 
   setVisible(isEnabled) {
-    if (isEnabled == true) {
+    if (isEnabled === true) {
       this._componentNode.style.display = "block";
     } else {
       this._componentNode.style.display = "none";
     }
   }
 
-
-  stateChanged(state, value) {
-    if (state == this.properties.states.visible) {
-      this.setVisible(value);
-    }
-  }
 }
 

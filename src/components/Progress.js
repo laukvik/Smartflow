@@ -9,8 +9,12 @@ class Progress extends PresentationComponent {
     this._componentNode.appendChild(this.progressBarNode);
   }
 
-  setProperties(properties) {
-    this.setValue(properties.value);
+  setProperty(name, value) {
+    if (name === "value") {
+      this.setValue(value);
+    } else if (name === "visible") {
+      this.setVisible(value);
+    }
   }
 
   buildComponent(builder, properties) {

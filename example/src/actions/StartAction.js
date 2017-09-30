@@ -5,9 +5,10 @@ export class StartAction extends Action {
   getSmartflow() {
     return {
       "global": {
-
+        "tekst": "Denne kommer fra global!!!"
       },
       "states": {
+        "tekst": "Denne kommer fra private!!!",
         "checkboxes": [
           {"text": "Fish2", "value": "0"},
           {"text": "Eggs2", "value": "1"},

@@ -21,10 +21,16 @@ class Alert extends SmartflowComponent {
     this._buttonNode.appendChild(this._buttonSpanNode);
   }
 
-  setProperties(properties) {
-    this.setText(properties.text);
-    this.setStyle(properties.style);
-    this.setVisible(properties.visible);
+  setProperty(name, value) {
+    if (name === "enabled") {
+      this.setEnabled(value);
+    } else if (name === "text") {
+      this.setText(value);
+    } else if (name === "style") {
+      this.setStyle(value);
+    } else if (name === "visible") {
+      this.setVisible(value);
+    }
   }
 
   setStyle(style){
@@ -52,15 +58,6 @@ class Alert extends SmartflowComponent {
     this._textNode.innerHTML = text;
   }
 
-  stateChanged(state, value) {
-    if (state == this.properties.states.value) {
-      this.setText(value);
-    } else if (state == this.properties.states.enabled) {
-      this.setEnabled(value);
-    } else if (state == this.properties.states.label) {
-      this.setLabel(value);
-    }
-  }
 }
 
 export {Alert}

@@ -1,6 +1,6 @@
 import {Action} from "../../../src/Action";
 
-export class SearchfieldAction extends Action {
+export class FindGlobalMovies extends Action {
   getSmartflow() {
     return {
       "request": {
@@ -10,11 +10,11 @@ export class SearchfieldAction extends Action {
       },
       "success": {
         "path": "/",
-        "state": "searchfieldRows"
+        "global": "movies",
       },
       "error": {
         "path": "/",
-        "state": "searchfieldRowsFailed"
+        "global": "moviesFailed"
       }
     }
   }
