@@ -122,6 +122,7 @@ export class Smartflow {
       return;
     }
     this._controllers.push(ctrl);
+    ctrl._states = {}; // initialize states array on view. Important
     ctrl.setSmartflowInstance(this);
     this._buildComponents(ctrl);
     return true;
@@ -185,6 +186,7 @@ export class Smartflow {
         "value": action.getSmartflow()
       },
       "states": {},
+      "global": {},
       "error": undefined,
       "request": {
         "method": undefined,
@@ -226,9 +228,10 @@ export class Smartflow {
     //
     action._smartflowStarted = new Date();
       if (action.getSmartflow().request) {
+        delete (actionEvent.global);
         // Run with request
-        var self = this;
-        var xhr = new XMLHttpRequest();
+        let self = this;
+        let xhr = new XMLHttpRequest();
         xhr.onreadystatechange = function () {
           if (this.readyState === READY_STATE.DONE) {
             let statusCode = parseInt(this.status);
@@ -457,10 +460,31 @@ export class Smartflow {
     }
   }
 
-  //--------------------------------- State ----------------------------------------
+  //
+  //
+  // --------------------------------- State ----------------------------------------
+  //
+  //
+  getState(state, view) {
+    if (state == undefined) {
+      return;
+    }
+    if (view == undefined) {
+      // global
+      return this._states[state];
+    } else {
+      // local
+      if (this.isView(view)) {
+        // TODO - implement local state
+        return view._states[state];
+      }
+    }
+  }
+
   fireStateChanged(state, value, fromComponent){
     this._fireStateChanged(state, value, fromComponent);
   }
+
   _fireStateChanged(state, value, fromComponent) {
     if (value === undefined || value == null) {
       delete( this._states[state] );
@@ -480,21 +504,26 @@ export class Smartflow {
         }
       }
     }
-  };
+  }
 
+  //
+  //
   //--------------------------------- Formatter ----------------------------------------
+  //
+  //
+  //
 
   format(key, values) {
     return this._formatter.format(key, values);
-  };
+  }
 
   formatJson(key, json) {
     return this._formatter.formatJson(key, json);
-  };
+  }
 
   formatDate(date, format) {
     return this._formatter.formatDate(date, format);
-  };
+  }
 
   formatNumber(value, format) {
     return this._formatter.formatNumber(value, format);

@@ -153,6 +153,7 @@ class InputComponent extends SmartflowComponent {
     return this._componentNode;
   }
 
+  // TODO - Is Root node in use?
   setRootNode(componentNode) {
     this.componentNode = componentNode;
     this.removeChildNodes(this.componentRootNode);

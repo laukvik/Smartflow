@@ -4,7 +4,6 @@ import {Action} from "../../../src/Action";
 export class FindTableAction extends Action {
   getSmartflow() {
     return {
-
       "states": {
         "tableSelected": [
           "Uncertain", "Wilson", "Baby-bossen"
