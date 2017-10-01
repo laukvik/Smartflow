@@ -35,48 +35,58 @@ class ComponentBuilder {
     if (!componentProperties.type) {
       return;
     }
-    let componentType = componentProperties.type.toLowerCase();
+
     let c;
-    if (componentType === 'button') {
-      c =  new Button(componentProperties);
-    } else if (componentType === 'checkbox') {
-      c =  new Checkbox(componentProperties);
-    } else if (componentType === 'dialog') {
-      c =  new Dialog(componentProperties);
-    } else if (componentType === 'layout') {
-      c =  new Layout(componentProperties);
-    } else if (componentType === 'progress') {
-      c =  new Progress(componentProperties);
-    } else if (componentType === 'pulldown') {
-      c =  new Pulldown(componentProperties);
-    } else if (componentType === 'radio') {
-      c =  new Radio(componentProperties);
-    } else if (componentType === 'table') {
-      c =  new Table(componentProperties);
-    } else if (componentType === 'tabs') {
-      c =  new Tabs(componentProperties);
-    } else if (componentType === 'textfield') {
-      c =  new Textfield(componentProperties);
-    } else if (componentType === 'toolbar') {
-      c =  new Toolbar(componentProperties);
-    } else if (componentType === 'alert') {
-      c =  new Alert(componentProperties);
-    } else if (componentType === 'searchfield') {
-      c =  new Searchfield(componentProperties);
-    } else if (componentType === 'datepicker') {
-      c =  new Datepicker(componentProperties);
-    } else if (componentType === 'spinner') {
-      c =  new Spinner(componentProperties);
-    } else if (componentType === 'card') {
-      c =  new Card(componentProperties);
+
+    if (typeof componentProperties.type === 'string') {
+      let componentType = componentProperties.type.toLowerCase();
+
+      if (componentType === 'button') {
+        c =  new Button(componentProperties);
+      } else if (componentType === 'checkbox') {
+        c =  new Checkbox(componentProperties);
+      } else if (componentType === 'dialog') {
+        c =  new Dialog(componentProperties);
+      } else if (componentType === 'layout') {
+        c =  new Layout(componentProperties);
+      } else if (componentType === 'progress') {
+        c =  new Progress(componentProperties);
+      } else if (componentType === 'pulldown') {
+        c =  new Pulldown(componentProperties);
+      } else if (componentType === 'radio') {
+        c =  new Radio(componentProperties);
+      } else if (componentType === 'table') {
+        c =  new Table(componentProperties);
+      } else if (componentType === 'tabs') {
+        c =  new Tabs(componentProperties);
+      } else if (componentType === 'textfield') {
+        c =  new Textfield(componentProperties);
+      } else if (componentType === 'toolbar') {
+        c =  new Toolbar(componentProperties);
+      } else if (componentType === 'alert') {
+        c =  new Alert(componentProperties);
+      } else if (componentType === 'searchfield') {
+        c =  new Searchfield(componentProperties);
+      } else if (componentType === 'datepicker') {
+        c =  new Datepicker(componentProperties);
+      } else if (componentType === 'spinner') {
+        c =  new Spinner(componentProperties);
+      } else if (componentType === 'card') {
+        c =  new Card(componentProperties);
+      } else {
+        console.warn("Component not found: ", componentProperties.type);
+        return;
+      }
+      c.setBaseClass(componentType);
     } else {
-      console.warn("Component not found: ", componentProperties.type);
-      return;
+      console.info("TYPE: ", componentProperties.type);
+      c = new componentProperties.type();
     }
+
     c.setSmartflow(this.smartflow);
     c.setView(this.ctrl);
     c.setID(componentProperties.id);
-    c.setBaseClass(componentType);
+
     c.setClass(componentProperties.class);
     return c;
   }

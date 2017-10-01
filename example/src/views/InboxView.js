@@ -8,6 +8,8 @@ import {CloseDialogAction} from "../actions/CloseDialogAction";
 import {FindTableAction} from "../actions/FindTableAction";
 import {FindPostersAction} from "../actions/FindPostersAction";
 
+import {Text} from "../../../src/components/Text";
+
 export class InboxView extends View {
 
   constructor() {
@@ -16,6 +18,11 @@ export class InboxView extends View {
     this.smartflow = {
       "path": "/",
       "components": [
+        {
+          "type": Text,
+          "heading": "Showcase",
+          "text": "Lorem ipsum"
+        },
         {
           "type": "Tabs",
           "selectedIndex": 2,
