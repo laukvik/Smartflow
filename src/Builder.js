@@ -35,12 +35,9 @@ class ComponentBuilder {
     if (!componentProperties.type) {
       return;
     }
-
     let c;
-
     if (typeof componentProperties.type === 'string') {
       let componentType = componentProperties.type.toLowerCase();
-
       if (componentType === 'button') {
         c =  new Button(componentProperties);
       } else if (componentType === 'checkbox') {
@@ -79,14 +76,11 @@ class ComponentBuilder {
       }
       c.setBaseClass(componentType);
     } else {
-      console.info("TYPE: ", componentProperties.type);
       c = new componentProperties.type();
     }
-
     c.setSmartflow(this.smartflow);
     c.setView(this.ctrl);
     c.setID(componentProperties.id);
-
     c.setClass(componentProperties.class);
     return c;
   }

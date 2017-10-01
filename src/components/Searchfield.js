@@ -122,7 +122,7 @@ export class Searchfield extends InputComponent {
     this.input.setAttribute("type", "text");
     this.input.setAttribute("class", "form-control");
 
-    this.input.setAttribute("placeholder", properties.placeholder);
+
     this.input.addEventListener('keyup', function (evt) {
       if (evt.key === "ArrowDown") {
         this.arrowDown();

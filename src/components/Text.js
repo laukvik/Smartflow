@@ -28,11 +28,11 @@ class Text extends SmartflowComponent {
   }
 
   setHeading(heading) {
-    this._headingNode.innerHTML = heading;
+    this._headingNode.innerText = heading;
   }
 
   setText(text) {
-    this._textNode.innerHTML = text;
+    this._textNode.innerText = text;
   }
 
 }
