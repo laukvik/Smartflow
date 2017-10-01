@@ -35,9 +35,14 @@ class Datepicker extends InputComponent {
     this.pickerVisible = false;
   }
 
-  setProperties(properties) {
-    this.setLabel(properties.label);
-    this.setRequired(properties.required);
+  setProperty(name, value) {
+    if (name === "label") {
+      this.setLabel(value);
+    } else if (name === "items") {
+      this.setRequired(value);
+    } else if (name === "enabled") {
+      this.setEnabled(value);
+    }
   }
 
   setValue(value) {
@@ -140,7 +145,6 @@ class Datepicker extends InputComponent {
         let v = d.getUTCDate();
         let td = document.createElement("td");
         td.innerText = "" + v;
-
         td.setAttribute("data-sf-datepicker-millis", d.getTime() + "");
         td.addEventListener("click", function () {
           this._selectedDay(td)
@@ -272,15 +276,6 @@ class Datepicker extends InputComponent {
     }
   }
 
-  stateChanged(state, value) {
-    if (state == this.properties.states.value) {
-      this.setValue(value);
-    } else if (state == this.properties.states.enabled) {
-      this.setEnabled(value);
-    } else if (state == this.properties.states.label) {
-      this.setLabel(value);
-    }
-  }
 }
 
 export {Datepicker}

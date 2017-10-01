@@ -9,9 +9,12 @@ export class Dialog extends PresentationComponent {
     this._componentNode = document.createElement("div");
   }
 
-  setProperties(properties) {
-    this.setVisible(properties.visible);
-    this.setTitle(properties.title);
+  setProperty(name, value) {
+    if (name === "visible") {
+      this.setVisible(value);
+    } else if (name === "title") {
+      this.setTitle(value);
+    }
   }
 
   buildComponent(builder, properties) {
@@ -109,12 +112,4 @@ export class Dialog extends PresentationComponent {
     document.body.setAttribute("class", this.open ? "modal-open" : "");
   }
 
-  stateChanged(state, value) {
-    // TODO State references should be variables
-    if (state == this.properties.states.visible) {
-      this.setVisible(value);
-    } else if (state == this.properties.states.title) {
-      this.setTitle(value);
-    }
-  }
 }

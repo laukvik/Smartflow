@@ -10,10 +10,14 @@ export class Card extends PresentationComponent {
     this._componentNode.setAttribute("class", "card");
   }
 
-  setProperties(properties) {
-    // this.setVisible(properties.visible);
-    // this.setTitle(properties.title);
-    // this.setDescription(properties.description);
+  setProperty(name, value) {
+    if (name === "visible") {
+      this.setVisible(value);
+    } else if (name === "title") {
+      this.setTitle(value);
+    } else if (name === "description") {
+      this.setDescription(value);
+    }
   }
 
   setTitle(title) {
@@ -25,7 +29,6 @@ export class Card extends PresentationComponent {
   }
 
   buildComponent(builder, properties) {
-
     let cardImgTop = document.createElement("img");
     cardImgTop.setAttribute("class", "card-img-top");
     cardImgTop.setAttribute("src", properties.src);
@@ -61,16 +64,8 @@ export class Card extends PresentationComponent {
     this.fireAction(this._action);
   }
 
-
-  setVisible(open) {
-    this._componentNode.style.display = this.open ? "block" : "none";
+  setVisible(isVisible) {
+    this._componentNode.style.display = isVisible === true ? "block" : "none";
   }
 
-  stateChanged(state, value) {
-    if (state == this.properties.states.visible) {
-      this.setVisible(value);
-    } else if (state == this.properties.states.title) {
-      this.setTitle(value);
-    }
-  }
 }

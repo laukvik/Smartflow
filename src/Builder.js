@@ -5,6 +5,7 @@
  * @param ctrl
  * @constructor
  */
+import {SCOPES} from "./Smartflow";
 import {InputComponent} from "./component";
 import {Layout} from "./components/Layout";
 import {Button} from "./components/Button";
@@ -23,7 +24,7 @@ import {Datepicker} from "./components/Datepicker";
 import {Spinner} from "./components/Spinner";
 import {Card} from "./components/Card";
 
-export class ComponentBuilder {
+class ComponentBuilder {
   constructor(ctrl, formatter, smartflow) {
     this.ctrl = ctrl;
     this.formatter = formatter;
@@ -89,16 +90,54 @@ export class ComponentBuilder {
       this.buildChildNode(rootNode, comps[x]);
     }
   }
+  parseScope(value){
+    let isString = typeof value === 'string';
+    if (!isString) {
+      return {
+        "scope": SCOPES.NONE,
+        "value": value
+      };
+    }
+    if (value.indexOf("{") === 0 && value.lastIndexOf("}") === value.length-1) {
+      let innerValue = value.substring(1, value.length-1);
+      if (innerValue.toUpperCase().startsWith(SCOPES.GLOBAL)) {
+        return {
+          "scope": SCOPES.GLOBAL,
+          "value": innerValue.substring(7)
+        }
+      } else {
+        return {
+          "scope": SCOPES.VIEW,
+          "value": innerValue
+        }
+      }
+    }
+    return {
+      "scope": SCOPES.NONE,
+      "value": value
+    };
+  }
 
   buildChildNode(parentNode, comp) {
     let componentInstance = this._buildComponent(comp);
     this.ctrl.smartflow.componentInstances.push(componentInstance);
     componentInstance.setStateBinding(comp.states);
-    let isInputComponent = componentInstance instanceof InputComponent;
-    let node = componentInstance.buildComponent(this, comp);
-    componentInstance.setProperties(comp);
 
-    if (isInputComponent) {
+    let node = componentInstance.buildComponent(this, comp);
+
+    for (let key in comp) {
+      if (key !== "type") { // Type is reserved
+        let value = comp[ key ];
+        let bind = this.parseScope(value);
+        if (bind.scope === SCOPES.NONE) {
+          componentInstance.setProperty(key, bind.value);
+        } else {
+          componentInstance.setBinding(key, bind.value, bind.scope);
+        }
+      }
+    }
+
+    if (componentInstance instanceof InputComponent) {
       componentInstance.setRootNode(node); //
       node = componentInstance.getRootNode();
     }
@@ -112,3 +151,4 @@ export class ComponentBuilder {
 
 }
 
+export {ComponentBuilder};

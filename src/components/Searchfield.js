@@ -7,51 +7,83 @@ export class Searchfield extends InputComponent {
     this._componentNode = document.createElement("div");
     this.optionsNode = document.createElement("ul");
     this.optionsNode.setAttribute("class", "dropdown-menu");
-    this.collections = new Collections(properties);
+    this.collections = new Collections();
     this.selectedIndex =  -1;
     this.optionsNodes = [];
-    this.rows = [];
-    this.matchKey = properties.key;
-    this.presentationKey = properties.presentation;
-    this.setDropdownVisible(false);
+    this._unfilteredItems = [];
+    this._items = [];
+    this._itemKey = "title";
+    this._itemLabel = "title";
+    this._itemsEmpty = "No results";
   }
 
-  setProperties(properties){
-    this.setLabel(properties.label);
-    this.setRequired(properties.required);
+  setProperty(name, value) {
+    if (name === "enabled") {
+      this.setEnabled(value);
+    } else if (name === "label") {
+      this.setLabel(value);
+    } else if (name === "required") {
+      this.setRequired(value);
+    } else if (name === "items") {
+      this._unfilteredItems = value;
+      this.setItems(value);
+    } else if (name === "value") {
+      this.setValue(value);
+    } else if (name === "sort") {
+      this.setSort(value);
+    } else if (name === "filter") {
+      this.setFilter(value);
+    } else if (name === "itemKey") {
+      this.setItemKey(value);
+    } else if (name === "itemLabel") {
+      this.setItemLabel(value);
+    } else if (name === "itemsEmpty") {
+      this.setItemsEmpty(value);
+    } else if (name === "placeholder") {
+      this.setPlaceholder(value);
+    } else if (name === "help") {
+      this.setHelp(value);
+    }
   }
 
-  setRows(rowData){
+  setItemsEmpty(itemsEmpty){
+    this._itemsEmpty = itemsEmpty;
+  }
+
+  setItemKey(itemKey){
+    this._itemKey = itemKey;
+  }
+
+  setItemLabel(itemLabel){
+    this._itemLabel = itemLabel;
+  }
+
+  setItems(rowData){
     this.removeChildNodes(this.optionsNode);
     if (Array.isArray(rowData)) {
       this.optionsNodes = [];
       this.selectedIndex = 0;
-      this.setDropdownVisible(false);
-      this.collections.setFilter([{
-        "match": this.matchKey,
-        "type": "startswith",
-        "value": this.getValue()
-      }]);
-      this.collections.setSort({
-        "match": this.matchKey,
-        "order": "asc"
-      });
+
+      this.collections.clearFilter();
+      this.collections.addStartsWith(this._itemKey, this.getValue() );
+
       let items = this.collections.find(rowData);
-      this.rows = items;
+      this._items = items;
+
       for (let x=0; x<items.length; x++) {
         let item = items[ x ];
-        let node = document.createElement("li");
-        let a = document.createElement("a");
-        a.innerText = item[ this.matchKey ];
-        if (x === 0){
-          node.setAttribute("class", "active");
-        }
-        node.appendChild(a);
+        let node = document.createElement("a");
+        node.setAttribute("class", "dropdown-item " + (this.selectedIndex === x ? "active" : ""));
+        node.innerText = item[ this._itemLabel ];
         this.optionsNodes.push(node);
         this.optionsNode.appendChild(node);
       }
-      if (items.length > 0){
-        this.setDropdownVisible(true);
+
+      if (items.length === 0) {
+        let node = document.createElement("small");
+        node.setAttribute("class", "dropdown-item disabled");
+        node.innerText = this._itemsEmpty;
+        this.optionsNode.appendChild(node);
       }
     }
   }
@@ -65,16 +97,17 @@ export class Searchfield extends InputComponent {
   }
 
   select(){
-    this.input.value = this.rows[ this.selectedIndex ].title;
+    this.input.value = this._items[ this.selectedIndex ].title;
     this.setDropdownVisible(false);
     this.input.select();
+    this.firePropertyChanged("selected", this.input.value );
   }
 
   setSelectedIndex(index){
-    if (index > -1 && index < this.rows.length ){
-      this.optionsNodes[ this.selectedIndex ].setAttribute("class", "");
+    if (index > -1 && index < this._items.length ){
+      this.optionsNodes[ this.selectedIndex ].setAttribute("class", "dropdown-item");
       this.selectedIndex = index;
-      this.optionsNodes[ index ].setAttribute("class", "active");
+      this.optionsNodes[ index ].setAttribute("class", "dropdown-item active");
     }
   }
 
@@ -124,9 +157,9 @@ export class Searchfield extends InputComponent {
       addonAfter.appendChild(iconAfter);
       this._componentNode.appendChild(addonAfter);
     }
-    if (properties.id){
-      this._componentNode.setAttribute("id", properties.id);
-    }
+    // if (properties.id){
+    //   this._componentNode.setAttribute("id", properties.id);
+    // }
     this._componentNode.setAttribute("class", "sf-searchfield input-group" + (properties.class ? " " + properties.class : ""));
     this._componentNode.appendChild(this.optionsNode);
     return this._componentNode;
@@ -157,7 +190,7 @@ export class Searchfield extends InputComponent {
   }
 
   setPlaceholder(text) {
-    this.input.setAttribute("placeholder", text);
+    this.input.setAttribute("placeholder", text === undefined ? "" : text);
   }
 
   getPlaceholder() {
@@ -165,7 +198,7 @@ export class Searchfield extends InputComponent {
   }
 
   setValue(text) {
-    this.input.value = text == undefined ? "" : text;
+    this.input.value = text === undefined ? "" : text;
   }
 
   getValue() {
@@ -173,30 +206,39 @@ export class Searchfield extends InputComponent {
     return s === undefined ? '' : s;
   }
 
-
   _changed(value) {
-    if (value === "") {
-      this.setDropdownVisible(false);
-      return;
+    this.firePropertyChanged("value", value );
+    if (this.action === undefined) {
+      this.setItems(this._unfilteredItems);
+    } else {
+      this.fireAction(this.action);
     }
-    this.fireState(this.comp.states.value, value);
-    //this.fireComponentChanged("value", value);
-    this.fireAction(this.action);
+    this.setDropdownVisible(value !== "");
+
   }
 
-  stateChanged(state, value) {
-    if (state == this.comp.states.value) {
-      this.setValue(value);
+  setSort(sort) {
+    this.collections.setSort(sort);
+    this._update();
+  }
 
-    } else if (state == this.comp.states.rows) {
-      this.setRows(value);
-
-    } else if (state == this.comp.states.enabled) {
-      this.setEnabled(value);
-    } else if (state == this.comp.states.label) {
-      this.setLabel(value);
-    } else if (state == this.comp.states.required) {
-      this.setRequired(value);
+  setFilter(filter) {
+    if (Array.isArray(filter)) {
+      this.collections.setFilter(filter);
+      this._update();
+    } else {
+      this.filter = [];
     }
   }
+
+  setPaging(paging) {
+    this.collections.setPaging(paging);
+    this._update();
+  }
+
+
+  _update() {
+    this.setItems(this._items);
+  }
+
 }

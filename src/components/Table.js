@@ -4,22 +4,32 @@ import {Collections} from "../collections";
 class Table extends InputComponent {
   constructor(properties) {
     super(properties);
-    this.dontUpdate = true;
-    this.collections = new Collections(properties);
+    this.collections = new Collections();
     this.selected = [];
     this.columns = [];
-    this.rows = [];
+    this._items = [];
     this.inputNodes = [];
     this.headerNode = document.createElement("div");
     this.bodyNode = document.createElement("div");
     this._componentNode = document.createElement("table");
   }
 
-  setProperties(properties) {
-    this.setRowKey(properties.rowKey);
-    this.setSelectable(properties.selectable);
-    this.setSelected(properties.selected);
-    this.setColumns(properties.columns);
+  setProperty(name, value) {
+    if (name === "items") {
+      this.setItems(value);
+    } else if (name === "rowKey") {
+      this.setRowKey(value);
+    } else if (name === "columns") {
+      this.setColumns(value);
+    } else if (name === "selected") {
+      this.setSelected(value);
+    } else if (name === "sort") {
+      this.setSort(value);
+    } else if (name === "filter") {
+      this.setFilter(value);
+    } else if (name === "paging") {
+      this.setPaging(value);
+    }
   }
 
   buildComponent(builder, properties) {
@@ -82,7 +92,7 @@ class Table extends InputComponent {
   }
 
   _update() {
-    this.setRows(this.rows);
+    this.setItems(this._items);
   }
 
   setSelectable(selectable) {
@@ -121,14 +131,14 @@ class Table extends InputComponent {
     this.fireComponentChanged("selected", this.getSelected());
   }
 
-  setRows(rowData) {
+  setItems(rowData) {
     if (Array.isArray(rowData)) {
       var rows = this.collections.find(rowData);
-      this.rows = rows;
+      this._items = rows;
       this.removeChildNodes(this.bodyNode);
       for (var y = 0; y < rows.length; y++) {
-        var row = rows[y];
-        var trNode = document.createElement("tr");
+        let row = rows[y];
+        let trNode = document.createElement("tr");
         this.bodyNode.appendChild(trNode);
 
         if (this.selectable && this.rowKey != undefined) {
@@ -159,44 +169,6 @@ class Table extends InputComponent {
         }
       }
     }
-  }
-
-  stateChanged(state, value) {
-    if (state == this.comp.states.rows) {
-      this.setRows(value);
-    } else if (state == this.comp.states.selected) {
-      this.setSelected(value);
-    } else if (state == this.comp.states.selectable) {
-      this.setSelectable(value);
-    } else if (state == this.comp.states.columns) {
-      this.setColumns(value);
-    } else if (state == this.comp.states.sort) {
-      this.setSort(value);
-    } else if (state == this.comp.states.filter) {
-      this.setFilter(value);
-    } else if (state == this.comp.states.paging) {
-      this.setPaging(value);
-    }
-  }
-
-  setProperty(name, value) {
-    if (name == "rows") {
-      this.setRows(value);
-    } else if (name == "selected") {
-      this.setSelected(value);
-    } else if (name == "columns") {
-      this.setColumns(value);
-    } else if (name == "sort") {
-      this.setSort(value);
-    } else if (name == "filter") {
-      this.setFilter(value);
-    } else if (name == "paging") {
-      this.setPaging(value);
-    }
-  }
-
-  commandPerformed(command, value) {
-    this.setProperty(command, value);
   }
 
 }

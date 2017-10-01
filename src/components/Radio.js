@@ -1,19 +1,72 @@
 import {InputComponent} from "../component";
+import {Collections} from "../collections";
 
 export class Radio extends InputComponent {
   constructor(properties) {
     super(properties);
     this.inputNodes = [];
+    this._items = [];
+    this.collections = new Collections();
     this._componentNode = document.createElement("div");
+    this._itemKey = "value";
+    this._itemLabel = "text";
   }
 
-  setProperties(properties){
-    this.setLabel(properties.label);
-    this.setRequired(properties.required);
-    this.setOptions(properties.options);
-    this.setVertical(properties.vertical);
-    this.setSelected(properties.selected);
-    this.setValidationMessage(properties.validation);
+  setProperty(name, value) {
+    if (name === "selected") {
+      this.setSelected(value);
+    } else if (name === "items") {
+      this.setItems(value);
+    } else if (name === "enabled") {
+      this.setEnabled(value);
+    } else if (name === "label") {
+      this.setLabel(value);
+    } else if (name === "required") {
+      this.setRequired(value);
+    } else if (name === "vertical") {
+      this.setVertical(value);
+    } else if (name === "validation") {
+      this.setValidationMessage(value);
+    } else if (name === "itemKey") {
+      this.setItemKey(value);
+    } else if (name === "itemLabel") {
+      this.setItemLabel(value);
+    } else if (name === "sort") {
+      this.setSort(value);
+    } else if (name === "filter") {
+      this.setFilter(value);
+    }
+  }
+
+  _update() {
+    this.setItems(this._items);
+  }
+
+  setItemKey(itemKey){
+    this._itemKey = itemKey;
+  }
+
+  setItemLabel(itemLabel){
+    this._itemLabel = itemLabel;
+  }
+
+  setSort(sort) {
+    this.collections.setSort(sort);
+    this._update();
+  }
+
+  setFilter(filter) {
+    if (Array.isArray(filter)) {
+      this.collections.setFilter(filter);
+      this._update();
+    } else {
+      this.filter = [];
+    }
+  }
+
+  setPaging(paging) {
+    this.collections.setPaging(paging);
+    this._update();
   }
 
   buildComponent(builder, properties){
@@ -57,15 +110,18 @@ export class Radio extends InputComponent {
     return this.vertical;
   }
 
-  setOptions(items) {
+  setItems(rowData) {
     this.removeChildNodes(this._componentNode);
     this.inputNodes = [];
-    if (Array.isArray(items)) {
+    if (Array.isArray(rowData)) {
+      let items = this.collections.find(rowData);
+      this._items = rowData;
+
       let gui = "sf-radio-" + Math.round(100000);
       for (let x = 0; x < items.length; x++) {
         let item = items[x];
-        let itemText = item.text;
-        let itemValue = item.value;
+        let itemText = item[ this._itemLabel ];
+        let itemValue = item[ this._itemKey ];
 
         let div = document.createElement("div");
         div.setAttribute("class", "form-check form-check-inline");
@@ -89,32 +145,14 @@ export class Radio extends InputComponent {
 
         let inputs = this.inputNodes;
         let self = this;
-        input.addEventListener("change", function (evt) {
-          self.fireComponentChanged("selection", {
-            "value": evt.srcElement.value,
-            "selected": inputs.filter(function (inp) {
-              return inp.checked
-            }).map(function (inp, index) {
-              return index;
-            })
-          });
+        input.addEventListener("change", function () {
+          self.firePropertyChanged("selected", inputs.filter(function (inp) {
+            return inp.checked
+          }));
         });
       }
     }
   }
 
-  stateChanged(state, value) {
-    if (state == this.comp.states.selected) {
-      this.setSelected(value);
-    } else if (state == this.comp.states.options) {
-      this.setOptions(value);
-    } else if (state == this.comp.states.enabled) {
-      this.setEnabled(value);
-    } else if (state == this.comp.states.label) {
-      this.setLabel(value);
-    } else if (state == this.comp.states.required) {
-      this.setRequired(value);
-    }
-  }
 }
 

@@ -9,14 +9,22 @@ export class Textfield extends InputComponent {
     this._iconAfter = null;
   }
 
-  setProperties(properties){
-    this.setLabel(properties.label);
-    this.setRequired(properties.required);
-    if (properties.validation){
-      this.setValidationMessage(properties.validation.message);
-      this.setRegex(properties.validation.regex);
+  setProperty(name, value) {
+    if (name === "enabled") {
+      this.setEnabled(value);
+    } else if (name === "value") {
+      this.setValue(value);
+    } else if (name === "label") {
+      this.setLabel(value);
+    } else if (name === "required") {
+      this.setRequired(value);
+    } else if (name === "help") {
+      this.setHelp(value);
+    } else if (name === "regex") {
+      this.setRegex(value);
+    } else if (name === "validation") {
+      this.setValidationMessage(value);
     }
-    this.setHelp(properties.help);
   }
 
   buildComponent(builder, properties) {
@@ -128,15 +136,4 @@ export class Textfield extends InputComponent {
     return s === undefined ? '' : s;
   }
 
-  stateChanged(state, value) {
-    if (state == this.comp.states.value) {
-      this.setValue(value);
-    } else if (state == this.comp.states.enabled) {
-      this.setEnabled(value);
-    } else if (state == this.comp.states.label) {
-      this.setLabel(value);
-    } else if (state == this.comp.states.required) {
-      this.setRequired(value);
-    }
-  }
 }

@@ -1,3 +1,5 @@
+import {SCOPES} from "./Smartflow";
+
 /**
  *
  *
@@ -7,11 +9,76 @@ class SmartflowComponent {
     this.properties = properties;
     this._stateListeners = [];
     this._componentNode = null;
-    //this._componentID = properties.id;
-    //this._componentClass = properties.class;
+    this._valueBindings = {};
   }
 
+  /**
+   * Sets the value for a named property
+   *
+   * @param name
+   * @param value
+   */
+  setProperty(name, value) {
 
+  }
+
+  /**
+   * Informs Smartflow that the value of the property changed. This method
+   * should only be called from the component when the component changed its
+   * properties.
+   *
+   * @param name
+   * @param value
+   * @private
+   */
+  firePropertyChanged(name, value) {
+    let binding = this._valueBindings[ name ];
+    if (binding === undefined) {
+      console.warn("SmartflowComponent: invalid property ", name);
+      return;
+    }
+    if (binding === SCOPES.VIEW) {
+      this.smartflow.fireViewPropertyChanged(this, this.getView(), name, value);
+
+    } else if (binding === SCOPES.GLOBAL) {
+      this.smartflow.fireGlobalPropertyChanged(this, name, value);
+
+    }
+  }
+
+  /**
+   * Binds a variable name to a scope
+   *
+   * @param name
+   * @param scope
+   */
+  setBinding(name, value, scope) {
+    if (name === undefined) {
+      return;
+    }
+    if (scope === undefined) {
+      delete this._valueBindings[ name ];
+      return;
+    }
+    if (scope === SCOPES.NONE || scope === SCOPES.VIEW || scope === SCOPES.GLOBAL) {
+      this._valueBindings[ name ] = {
+        "state" : value,
+        "property" : name,
+        "scope": scope
+      };
+    } else {
+      console.warn("SmartflowComponent: invalid scope ", scope);
+    }
+  }
+
+  getBindingByState(state, scope) {
+    for (let propertyName in this._valueBindings) {
+      let b = this._valueBindings[ propertyName ];
+      if (b.scope == scope && b.state == state){
+        return b;
+      }
+    }
+  }
 
   setProperties(properties) {
     this.setID(properties.id);
@@ -69,7 +136,7 @@ class SmartflowComponent {
   }
 
   fireState(state, value) {
-    this.smartflow.fireStateChanged(state, value);
+    //this.smartflow.fireStateChanged(state, value);
   }
 
   removeChildNodes(node) {
@@ -78,6 +145,10 @@ class SmartflowComponent {
     }
   }
 
+  /**
+   * TODO - Remove this when global and private states are completed
+   * @param states
+   */
   setStateBinding(states) {
     let arr = [];
     for (let key in states) {
@@ -86,12 +157,13 @@ class SmartflowComponent {
     this._stateListeners = arr;
   }
 
-  getStateBinding() {
-    return this._stateListeners;
-  }
-
+  /**
+   * TODO - Remove this when global and private states are completed
+   * @param states
+   */
   fireComponentChanged(property, value) {
-    this.smartflow.fireComponentChanged(this, property, value, this.ctrl);
+    //this.smartflow.fireComponentChanged(this, property, value, this.ctrl);
+    this.firePropertyChanged(property, value);
   }
 }
 
@@ -158,9 +230,9 @@ class InputComponent extends SmartflowComponent {
     this.componentNode = componentNode;
     this.removeChildNodes(this.componentRootNode);
     this.componentRootNode.appendChild(this._labelNode);
+    this.componentRootNode.appendChild(this.errorNode);
     this.componentRootNode.appendChild(componentNode);
     this.componentRootNode.appendChild(this.helpNode);
-    this.componentRootNode.appendChild(this.errorNode);
   }
 
   getRootNode() {
