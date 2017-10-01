@@ -6,6 +6,7 @@ import {ShowDialogAction} from "../actions/ShowDialogAction";
 import {StartAction} from "../actions/StartAction";
 import {CloseDialogAction} from "../actions/CloseDialogAction";
 import {FindTableAction} from "../actions/FindTableAction";
+import {FindPostersAction} from "../actions/FindPostersAction";
 
 export class InboxView extends View {
 
@@ -17,15 +18,67 @@ export class InboxView extends View {
       "components": [
         {
           "type": "Tabs",
-          "selectedIndex": 0,
+          "selectedIndex": 2,
           "tabs": [
             {
-              "label": "Min",
-              "components": []
+              "label": "Comedy",
+              "components": [
+                {
+                  "type": "Card",
+                  "title": "Card title",
+                  "src": "sunset.jpg",
+                  "visible": true,
+                  "description": "Some quick example text to build on the card title and make up the bulk of the card's content.",
+                  "button": "Go somewhere",
+                  "style": "primary",
+                  "items": "{posters}",
+                  "itemTitle": "title",
+                  "itemDescription": "storyline",
+                  "itemPhoto": "posterurl",
+                  "action": FindMoviesAction,
+                  "sort": {
+                    "match": "title",
+                    "order": "asc"
+                  },
+                  "filter": [
+                    {
+                      "match": "genres",
+                      "type": "contains",
+                      "value": "Comedy"
+                    }
+                  ],
+                }
+              ]
             },
             {
-              "label": "Med",
-              "components": []
+              "label": "Action",
+              "components": [
+                {
+                  "type": "Card",
+                  "title": "Card title",
+                  "src": "sunset.jpg",
+                  "visible": true,
+                  "description": "Some quick example text to build on the card title and make up the bulk of the card's content.",
+                  "button": "Go somewhere",
+                  "style": "primary",
+                  "items": "{posters}",
+                  "itemTitle": "title",
+                  "itemDescription": "storyline",
+                  "itemPhoto": "posterurl",
+                  "action": FindMoviesAction,
+                  "sort": {
+                    "match": "title",
+                    "order": "asc"
+                  },
+                  "filter": [
+                    {
+                      "match": "genres",
+                      "type": "contains",
+                      "value": "Action"
+                    }
+                  ],
+                }
+              ]
             },
             {
               "label": "Max",
@@ -41,16 +94,7 @@ export class InboxView extends View {
           "type": "Progress",
           "value": 30
         },
-        {
-          "type": "Card",
-          "title": "Card title",
-          "src": "sunset.jpg",
-          "visible": true,
-          "description": "Some quick example text to build on the card title and make up the bulk of the card's content.",
-          "button": "Go somewhere",
-          "style": "primary",
-          "action": FindMoviesAction
-        },
+
         {
           "type": "Searchfield",
           "label": "Searchfield",
@@ -282,6 +326,7 @@ export class InboxView extends View {
     //this.runSmartflow(new FindTableAction());
     this.runSmartflow(new FindMoviesAction());
     this.runSmartflow(new FindGlobalMovies());
+    this.runSmartflow(new FindPostersAction());
   }
 
   componentChanged(evt) {
