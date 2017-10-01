@@ -1,21 +1,101 @@
-export default class Checkbox extends InputComponent {
-  constructor(properties, ctrl, builder) {
-    super(properties, ctrl, builder);
-    this.inputs = [];
-    this.optionsNode = document.createElement("div");
-    this.optionsNode.setAttribute("class", "sf-checkbox-options")
+import {InputComponent} from "../component";
+import {Collections} from "../collections";
+
+/**
+ *
+ *
+ * <div class="input-group">
+ *     <span class="input-group-addon">
+ *         <input type="checkbox" aria-label="Checkbox for following text input">
+ *     </span>
+ *     <span class="input-group-addon">$</span>
+ *     <input type="text" class="form-control" aria-label="Text input with checkbox">
+ * </div>
+ *
+ */
+class Checkbox extends InputComponent {
+
+  constructor(properties) {
+    super(properties);
+    this.collections = new Collections();
+    this._items = [];
+    this.divNodes = []; // each option
+    this.inputNodes = []; // the input inside each option
+    this._componentNode = document.createElement("div");
+    this._itemKey = "value";
+    this._itemLabel = "text";
   }
 
-  buildComponent(builder, properties){
+  setProperty(name, value) {
+    if (name === "selected") {
+      this.setSelected(value);
+    } else if (name === "items") {
+      this.setItems(value);
+    } else if (name === "enabled") {
+      this.setEnabled(value);
+    } else if (name === "label") {
+      this.setLabel(value);
+    } else if (name === "required") {
+      this.setRequired(value);
+    } else if (name === "vertical") {
+      this.setVertical(value);
+    } else if (name === "validation") {
+      this.setValidationMessage(value);
+    } else if (name === "itemKey") {
+      this.setItemKey(value);
+    } else if (name === "itemLabel") {
+      this.setItemLabel(value);
+    } else if (name === "sort") {
+      this.setSort(value);
+    } else if (name === "filter") {
+      this.setFilter(value);
+    }
+  }
+
+  _update() {
+    this.setItems(this._items);
+  }
+
+  setSort(sort) {
+    this.collections.setSort(sort);
+    this._update();
+  }
+
+  setFilter(filter) {
+    if (Array.isArray(filter)) {
+      this.collections.setFilter(filter);
+      this._update();
+    } else {
+      this.filter = [];
+    }
+  }
+
+  setPaging(paging) {
+    this.collections.setPaging(paging);
+    this._update();
+  }
+
+  setItemKey(itemKey){
+    this._itemKey = itemKey;
+  }
+
+  setItemLabel(itemLabel){
+    this._itemLabel = itemLabel;
+  }
+
+  setProperties(properties) {
     this.setEnabled(properties.enabled);
-    this.setRequired(properties.required);
     this.setLabel(properties.label);
+    this.setRequired(properties.required);
     if (properties.validation) {
       this.setValidationMessage(properties.validation.message);
     }
-    this.setOptions(properties.options);
+    this.setItems(properties.options);
     this.setSelected(properties.selected);
-    return this.optionsNode;
+  }
+
+  buildComponent(builder, properties) {
+    return this._componentNode;
   }
 
   isValid() {
@@ -28,7 +108,6 @@ export default class Checkbox extends InputComponent {
 
   setVertical(isVertical) {
     this.vertical = isVertical == true;
-    this.getElement().setAttribute("class", "sf-checkbox " + (isVertical ? "sf-checkbox-vertical" : "sf-checkbox-horisontal"));
   }
 
   isVertical() {
@@ -36,15 +115,15 @@ export default class Checkbox extends InputComponent {
   }
 
   setEnabled(isEnabled) {
-    for (let x = 0; x < this.inputs.length; x++) {
-      this.inputs[x].disabled = isEnabled;
+    for (let x = 0; x < this.inputNodes.length; x++) {
+      this.inputNodes[x].disabled = isEnabled;
     }
   }
 
   setSelected(selected) {
-    if (Array.isArray(selected)){
-      for (let x = 0; x < this.inputs.length; x++) {
-        let inp = this.inputs[x];
+    if (Array.isArray(selected)) {
+      for (let x = 0; x < this.inputNodes.length; x++) {
+        let inp = this.inputNodes[x];
         let found = false;
         for (let y = 0; y < selected.length; y++) {
           let selectedValue = selected[y];
@@ -58,7 +137,7 @@ export default class Checkbox extends InputComponent {
   }
 
   getSelected() {
-    let s = this.inputs.filter(function (inp) {
+    let s = this.inputNodes.filter(function (inp) {
       return inp.checked
     }).map(function (inp, index) {
       return index;
@@ -70,62 +149,48 @@ export default class Checkbox extends InputComponent {
     }
   }
 
-  setOptions(items) {
-    if (Array.isArray(items)) {
-      this.inputs = [];
-      this.removeChildNodes(this.optionsNode);
+  setItems(rowData) {
+    this.removeChildNodes(this._componentNode);
+    if (Array.isArray(rowData)) {
+      this._items = rowData;
+      let items = this.collections.find(rowData);
+      this.inputNodes = [];
       for (let x = 0; x < items.length; x++) {
         let item = items[x];
-        let itemText = item.text;
-        let itemValue = item.value;
-        let span = document.createElement("label");
-        span.setAttribute("class", "sf-checkbox-option");
-        this.optionsNode.appendChild(span);
+        let itemText = item[ this._itemLabel ];
+        let itemValue = item[ this._itemKey ];
+
+        let div = document.createElement("div");
+        this.divNodes.push(div);x
+        div.setAttribute("class", "form-check" + this.isVertical() ? "" : " form-check-inline");
+        this._componentNode.appendChild(div);
+
+        let labelNode = document.createElement("label");
+        labelNode.setAttribute("class", "form-check-label");
+        div.appendChild(labelNode);
+
         let input = document.createElement("input");
-        this.inputs.push(input);
-        span.appendChild(input);
+        this.inputNodes.push(input);
+        labelNode.appendChild(input);
         input.setAttribute("type", "checkbox");
         input.setAttribute("value", itemValue);
-        let text = document.createElement("span");
-        span.appendChild(text);
-        text.setAttribute("class", "sf-checkbox-option-label");
-        text.innerText = itemText;
-        // var self = this;
-        // var inputs = this.inputs;
-        // input.addEventListener("change", function (evt) {
-        //   self.fireComponentChanged("selection", {
-        //     "value": evt.srcElement.value,
-        //     "selected": inputs.filter(function(inp){ return inp.checked}).map(function(inp, index){
-        //       return index;
-        //     })
-        //   });
-        // });
+        input.setAttribute("class", "form-check-input");
 
+        let text = document.createElement("span");
+        labelNode.appendChild(text);
+        text.innerText = itemText;
         input.addEventListener("change", function (evt) {
           this._changed(evt);
         }.bind(this), false);
 
       }
-    } else {
-      console.warn("Checkbox: Not an array: ", items)
     }
   }
 
-  _changed(evt) {
+  _changed() {
     this.validate();
   }
 
-  stateChanged(state, value) {
-    if (state == this.comp.states.selected) {
-      this.setSelected(value);
-    } else if (state == this.comp.states.options) {
-      this.setOptions(value);
-    } else if (state == this.comp.states.enabled) {
-      this.setEnabled(value);
-    } else if (state == this.comp.states.label) {
-      this.setLabel(value);
-    } else if (state == this.comp.states.required) {
-      this.setRequired(value);
-    }
-  }
 }
+
+export {Checkbox}

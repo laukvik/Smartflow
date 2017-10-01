@@ -5,14 +5,18 @@ node_js:
 dist: trusty
 sudo: required
 
-#addons:
-#  sonarcloud:
-#    organization: "laukvik"
-#    token:
-#      secure: ""
-#script:
-#  - sonar-scanner
-#cache:
-#  directories:
-#    - '$HOME/.sonar/cache'
+addons:
+  sonarcloud:
+    organization: "laukvik-github"
+    token:
+      secure: "q/eSohSzfIpu5A9r0vgg6IZHIpSQDD0nB001E/ewxJOTbRDBXu8OAd0gDjKB0bjNzjfBrbWQbmKybKPNElZ1X0BLspH6iyIkXFP7FynflnJsstzuRBE73TxG/tH2XKZHmlh2Pa2n7di9DfzoxnBsLjas/hQljWEjRsIDvF+IEEjRO49vEAwhBVrXoiJQu5iJf1H6HnaMQCBCbONQ40QjM1B1mDGNhbqwPLyy6dkxMtAR2gDAUNjOxnV0/LB4zP0fHdVPcpsW1dKMMifXyDC91ODdrgUW58ZEuKm1Be17TnY2NkuYdDe6DPunSElSiu+Rab3ok2R2RMrdDomgK3GwHCLKrOnGncxK4Nrk2RZJ6hwLQNpfrU5g62y9XNY60FYb2Soe/OrpNvYs4Cr3ICKXt0Q6xuJqF3kKgKXGSv8ZR3HrabbLrhgaUtWtMVJCRz3/LbSNbQqmUIDbp7xN0U9NVdAi+o2cL1naASdNdcRNmOXhs/EzjYRxey8SzWB4UYcADJ19MD/eu+hOOhc6arOQSMoFqRQfNlXaJLZ+bMw+r3V+R3IjxVSWfFklEpXqnxfWjgNmUoxXBZ1IqmOqeZf3N5zR0X5/ov1vW7jcFPKIM+HZDs893JHgp3LaMnmsDMU9PgcZDzLPAimTDdg2HphvSAmIFEC4DGdQvYpcMIhzTs8="
+    branches :
+    - dev
 
+jdk:
+  - oraclejdk8
+script:
+  - sonar-scanner
+cache:
+  directories:
+    - '$HOME/.sonar/cache'

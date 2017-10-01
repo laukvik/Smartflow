@@ -1,58 +1,83 @@
-export default class Textfield extends InputComponent {
-  constructor(comp) {
-    super(comp);
-    this.rootNode = document.createElement("div");
-    this.rootNode.setAttribute("class", "input-group");
+import {InputComponent} from "../component";
+
+export class Textfield extends InputComponent {
+  constructor(properties) {
+    super(properties);
+    this._componentNode = document.createElement("div");
+
+    this._iconBefore = null;
+    this._iconAfter = null;
+  }
+
+  setProperty(name, value) {
+    if (name === "enabled") {
+      this.setEnabled(value);
+    } else if (name === "value") {
+      this.setValue(value);
+    } else if (name === "label") {
+      this.setLabel(value);
+    } else if (name === "required") {
+      this.setRequired(value);
+    } else if (name === "help") {
+      this.setHelp(value);
+    } else if (name === "regex") {
+      this.setRegex(value);
+    } else if (name === "validation") {
+      this.setValidationMessage(value);
+    }
   }
 
   buildComponent(builder, properties) {
+    this._componentNode.setAttribute("class", "input-group");
     if (properties.rows) {
-      this.input = document.createElement("textarea");
-      this.input.setAttribute("rows", properties.rows);
-      this.input.setAttribute("class", "form-control");
+      this.inputNode = document.createElement("textarea");
+      this.inputNode.setAttribute("rows", properties.rows);
+      this.inputNode.setAttribute("class", "form-control");
     } else {
-      this.input = document.createElement("input");
-      this.input.setAttribute("type", "text");
-      this.input.setAttribute("class", "form-control");
+      this.inputNode = document.createElement("input");
+      this.inputNode.setAttribute("type", "text");
+      this.inputNode.setAttribute("class", "form-control");
     }
 
-    this.input.setAttribute("placeholder", properties.placeholder);
-    this.input.addEventListener('keyup', function () {
+    this.inputNode.setAttribute("placeholder", properties.placeholder);
+    this.inputNode.addEventListener('keyup', function () {
       this._changed();
     }.bind(this), false);
 
-    this.setRequired(properties.required);
-    this.setLabel(properties.label);
-    if (properties.validation){
-      this.setValidationMessage(properties.validation.message);
-      this.setRegex(properties.validation.regex);
-    }
 
-    if (properties.icon_before) {
-      var addonBefore = document.createElement("span");
+
+    if (properties.before) {
+      let addonBefore = document.createElement("span");
       addonBefore.setAttribute("class", "input-group-addon");
-      let iconBefore = document.createElement("span");
-      //iconBefore.setAttribute("class", "glyphicon glyphicon-calendar");
-      iconBefore.setAttribute("class", "glyphicon " + properties.icon_before);
-      addonBefore.appendChild(iconBefore);
-      this.rootNode.appendChild(addonBefore);
+      if (properties.before.text) {
+        addonBefore.innerText = properties.before.text;
+      }
+      if (properties.before.icon){
+        let iconBefore = document.createElement("span");
+        iconBefore.setAttribute("class", "glyphicon " + properties.before.icon);
+        addonBefore.appendChild(iconBefore);
+      }
+      this._componentNode.appendChild(addonBefore);
     }
 
 
-    this.rootNode.appendChild(this.input);
+    this._componentNode.appendChild(this.inputNode);
 
-    if (properties.icon_after) {
-      var addonAfter = document.createElement("span");
+    if (properties.after) {
+      let addonAfter = document.createElement("span");
       addonAfter.setAttribute("class", "input-group-addon");
-      let iconAfter = document.createElement("span");
-      //iconAfter.setAttribute("class", "glyphicon glyphicon-calendar");
-      iconAfter.setAttribute("class", "glyphicon " + properties.icon_after);
-      addonAfter.appendChild(iconAfter);
-      this.rootNode.appendChild(addonAfter);
+      if (properties.after.text){
+        addonAfter.innerText = properties.after.text;
+      }
+      if (properties.after.icon){
+        let iconAfter = document.createElement("span");
+        iconAfter.setAttribute("class", "glyphicon " + properties.icon_after);
+        addonAfter.appendChild(iconAfter);
+      }
+      this._componentNode.appendChild(addonAfter);
     }
 
-
-    return this.rootNode;
+    return this._componentNode;
   }
 
   _changed() {
@@ -68,11 +93,11 @@ export default class Textfield extends InputComponent {
     if (this.regex === undefined) {
       // No validation
       if (this.isRequired()) {
-        return this.input.value.length > 0;
+        return this.inputNode.value.length > 0;
       }
       return true;
     }
-    return this.regex.test(this.input.value);
+    return this.regex.test(this.inputNode.value);
   }
 
   setRegex(regex) {
@@ -84,42 +109,31 @@ export default class Textfield extends InputComponent {
 
   setEnabled(isEnabled) {
     if (isEnabled) {
-      this.input.removeAttribute("disabled");
+      this.inputNode.removeAttribute("disabled");
     } else {
-      this.input.setAttribute("disabled", "true");
+      this.inputNode.setAttribute("disabled", "true");
     }
   }
 
   isEnabled() {
-    return !this.input.hasAttribute("disabled");
+    return !this.inputNode.hasAttribute("disabled");
   }
 
   setPlaceholder(text) {
-    this.input.setAttribute("placeholder", text);
+    this.inputNode.setAttribute("placeholder", text);
   }
 
   getPlaceholder() {
-    return this.input.getAttribute("placeholder");
+    return this.inputNode.getAttribute("placeholder");
   }
 
   setValue(text) {
-    this.input.value = text == undefined ? "" : text;
+    this.inputNode.value = text == undefined ? "" : text;
   }
 
   getValue() {
-    var s = this.input.value;
+    var s = this.inputNode.value;
     return s === undefined ? '' : s;
   }
 
-  stateChanged(state, value) {
-    if (state == this.comp.states.value) {
-      this.setValue(value);
-    } else if (state == this.comp.states.enabled) {
-      this.setEnabled(value);
-    } else if (state == this.comp.states.label) {
-      this.setLabel(value);
-    } else if (state == this.comp.states.required) {
-      this.setRequired(value);
-    }
-  }
 }

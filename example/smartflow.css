@@ -1,3 +1,17 @@
+.sf-spinner-animation {
+  position: absolute;
+  display: block;
+  -webkit-animation:spin 4s linear infinite;
+  -moz-animation:spin 4s linear infinite;
+  animation:spin 4s linear infinite;
+}
+@-moz-keyframes spin { 100% { -moz-transform: rotate(360deg); } }
+@-webkit-keyframes spin { 100% { -webkit-transform: rotate(360deg); } }
+@keyframes spin { 100% { -webkit-transform: rotate(360deg); transform:rotate(360deg); } }
+
+.sf-spinner{
+
+}
 
 .sf-label{
   font-size: 12pt;
@@ -72,11 +86,6 @@
   font-size: 12pt;
   width: 100%;
   color: #555555;
-  border: 1px inset;
-  padding: 0.5em;
-  -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
-  -moz-box-sizing: border-box;    /* Firefox, other Gecko */
-  box-sizing: border-box;         /* Opera/IE 8+ */
 }
 
 .sf-button{
@@ -113,4 +122,61 @@
 
 .sf-tabs-panel.active{
   display: block;
+}
+
+.sf-searchfield-options{
+  margin-top: 0.2em;
+  border: 1px solid  #aaaaaa;
+  height: 10em;
+  overflow-y: scroll;
+}
+
+
+.sf-datepicker TABLE{
+}
+
+.sf-datepicker THEAD{
+  border-bottom: 1px solid #aaaaaa;
+}
+
+.sf-datepicker__month TH{
+  line-height: 3em;
+}
+
+.sf-datepicker TH{
+  text-align: center;
+  height: 2em;
+}
+
+.sf-datepicker TD{
+  width: 3em;
+  height: 2em;
+  text-align: center;
+  cursor: pointer;
+}
+
+.sf-datepicker TD:hover{
+  background-color: #337ab7;
+  color: white;
+}
+
+.sf-datepicker .active{
+  background-color: #aaaaaa;
+}
+
+.sf-datepicker .othermonth{
+  opacity: 0.1;
+}
+
+.sf-datepicker .weekend{
+  color: red;
+}
+
+.sf-datepicker__visible{
+  position: relative;
+  display: block;
+}
+
+.sf-datepicker__hidden{
+  display: none;
 }

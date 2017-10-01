@@ -1,16 +1,11 @@
-var webpack = require('webpack');
 var path = require('path');
-var libraryName = 'smartflow';
-var outputFile = libraryName + '.js';
 
-var config = {
-  entry: __dirname + '/src/smartflow.js',
-  devtool: 'source-map',
+module.exports = {
+  entry: './src/smartflow.js',
   output: {
-    path: __dirname + '/dist',
-    filename: outputFile,
-    library: libraryName
+    path: path.resolve(__dirname, 'dist'),
+    filename: 'smartflow.js',
+    library: 'Smartflow',
+    libraryTarget: 'var'
   }
 };
-
-module.exports = config;

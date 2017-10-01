@@ -1,50 +1,71 @@
-export default class Card extends InputComponent {
-  constructor(comp, ctrl, builder) {
-    super(comp, ctrl, builder);
-    var rootNode = document.createElement("div");
-    rootNode.setAttribute("class", "mdc-card");
-    this.setElement(rootNode);
+import {PresentationComponent} from "../component";
 
-    var headerNode = document.createElement("section");
-    headerNode.setAttribute("class", "mdc-card__primary");
+export class Card extends PresentationComponent {
+  constructor(properties) {
+    super(properties);
+    this.buttons = [];
+    this.actions = [];
+    this.components = [];
+    this._componentNode = document.createElement("div");
+    this._componentNode.setAttribute("class", "card");
+  }
 
-    var h1Node = document.createElement("h1");
-    h1Node.setAttribute("class", "mdc-card__title mdc-card__title--large");
-    h1Node.innerText = comp.title;
-
-    var h2Node = document.createElement("h2");
-    h2Node.setAttribute("class", "mdc-card__subtitle");
-    h2Node.innerText = comp.subtitle;
-
-    var textNode = document.createElement("section");
-    textNode.setAttribute("class", "mdc-card__supporting-text");
-
-    var bodyNode = document.createElement("section");
-
-    builder._buildChildNodes(bodyNode, comp.components);
-
-    var footerNode = document.createElement("section");
-    footerNode.setAttribute("class", "mdc-card__actions");
-
-    if (Array.isArray(comp.actions)) {
-      builder._buildChildNodes(footerNode, comp.actions);
+  setProperty(name, value) {
+    if (name === "visible") {
+      this.setVisible(value);
+    } else if (name === "title") {
+      this.setTitle(value);
+    } else if (name === "description") {
+      this.setDescription(value);
     }
-
-
-    rootNode.appendChild(headerNode);
-    headerNode.appendChild(h1Node);
-    headerNode.appendChild(h2Node);
-    rootNode.appendChild(bodyNode);
-    rootNode.appendChild(footerNode);
-
-    this.rootNode = rootNode;
   }
 
-  getNode() {
-    return this.rootNode;
+  setTitle(title) {
+    this.titleNode.innerText = title;
   }
 
-  stateChanged(stateEvent) {
-    console.info("Card.stateChanged: ", stateEvent);
+  setDescription(description) {
+    this.descriptionNode.innerText = description;
   }
+
+  buildComponent(builder, properties) {
+    let cardImgTop = document.createElement("img");
+    cardImgTop.setAttribute("class", "card-img-top");
+    cardImgTop.setAttribute("src", properties.src);
+    let cardBlock = document.createElement("div");
+    cardBlock.setAttribute("class", "card-block");
+    let cardTitle = document.createElement("h4");
+    cardTitle.innerText = properties.title;
+    cardTitle.setAttribute("class", "card-title");
+    let cardText = document.createElement("p");
+    cardText.setAttribute("class", "card-text");
+    cardText.innerText = properties.description;
+    let a = document.createElement("button");
+    a.setAttribute("class", "btn " + (properties.style ? " btn-" + properties.style : "btn-default"));
+    a.innerText = properties.button;
+    a.addEventListener("click", function () {
+      this._clicked();
+    }.bind(this), false);
+
+    this._action = properties.action;
+    this._componentNode.appendChild(cardImgTop);
+    this._componentNode.appendChild(cardBlock);
+    cardBlock.appendChild(cardTitle);
+    cardBlock.appendChild(cardText);
+    cardBlock.appendChild(a);
+
+    this.titleNode = cardTitle;
+    this.descriptionNode = cardText;
+
+    return this._componentNode;
+  }
+
+  _clicked(){
+    this.fireAction(this._action);
+  }
+
+  setVisible(isVisible) {
+    this._componentNode.style.display = isVisible === true ? "block" : "none";
+  }
+
 }

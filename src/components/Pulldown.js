@@ -1,19 +1,74 @@
-export default class Pulldown extends InputComponent {
-  constructor(comp, ctrl, builder) {
-    super(comp, ctrl, builder);
-    this.selectNode = document.createElement("select");
-    this.selectNode.setAttribute("class", "sf-pulldown");
-    this.selectNode.addEventListener('change', function () {
+import {InputComponent} from "../component";
+import {Collections} from "../collections";
+
+export class Pulldown extends InputComponent {
+
+  constructor(properties) {
+    super(properties);
+    this.collections = new Collections();
+    this._componentNode = document.createElement("select");
+    this._componentNode.addEventListener('change', function () {
       this._changed();
     }.bind(this), false);
+    this._itemKey = "value";
+    this._itemLabel = "text";
   }
 
-  buildComponent(builder, properties){
-    this.setOptions(properties.options);
-    this.setSelected(properties.selected);
-    this.setLabel(properties.label);
-    this.setRequired(properties.required);
-    return this.selectNode;
+  setProperty(name, value) {
+    if (name === "selected") {
+      this.setSelected(value);
+    } else if (name === "items") {
+      this.setItems(value);
+    } else if (name === "enabled") {
+      this.setEnabled(value);
+    } else if (name === "label") {
+      this.setLabel(value);
+    } else if (name === "required") {
+      this.setRequired(value);
+    } else if (name === "vertical") {
+      this.setVertical(value);
+    } else if (name === "validation") {
+      this.setValidationMessage(value);
+    } else if (name === "itemKey") {
+      this.setItemKey(value);
+    } else if (name === "itemLabel") {
+      this.setItemLabel(value);
+    } else if (name === "sort") {
+      this.setSort(value);
+    } else if (name === "filter") {
+      this.setFilter(value);
+    }
+  }
+
+  _update() {
+    this.setItems(this._items);
+  }
+
+  setSort(sort) {
+    this.collections.setSort(sort);
+    this._update();
+  }
+
+  setFilter(filter) {
+    if (Array.isArray(filter)) {
+      this.collections.setFilter(filter);
+      this._update();
+    } else {
+      this.filter = [];
+    }
+  }
+
+  setItemKey(itemKey){
+    this._itemKey = itemKey;
+  }
+
+  setItemLabel(itemLabel){
+    this._itemLabel = itemLabel;
+  }
+
+  buildComponent(builder, properties) {
+    this._componentNode.setAttribute("class", "form-control");
+    return this._componentNode;
   }
 
   _changed() {
@@ -29,58 +84,49 @@ export default class Pulldown extends InputComponent {
 
   setEnabled(isEnabled) {
     if (isEnabled) {
-      this.selectNode.removeAttribute("disabled");
+      this._componentNode.removeAttribute("disabled");
     } else {
-      this.selectNode.setAttribute("disabled", "true");
+      this._componentNode.setAttribute("disabled", "true");
     }
   }
 
   isEnabled() {
-    return !this.selectNode.hasAttribute("disabled");
+    return !this._componentNode.hasAttribute("disabled");
   }
 
-  setOptions(items) {
-    this.removeChildNodes(this.selectNode);
-    var optionEmpty = document.createElement("option");
-    optionEmpty.value = "";
-    this.selectNode.appendChild(optionEmpty);
-    for (var x = 0; x < items.length; x++) {
-      var item = items[x];
-      var itemText = item.text;
-      var itemValue = item.value;
-      var option = document.createElement("option");
-      option.setAttribute("value", itemValue);
-      option.innerText = itemText;
-      this.selectNode.appendChild(option);
+  setItems(rowData) {
+    this.removeChildNodes(this._componentNode);
+    if (Array.isArray(rowData)) {
+      this._items = rowData;
+      let items = this.collections.find(rowData);
+      let optionEmpty = document.createElement("option");
+      optionEmpty.value = "";
+      this._componentNode.appendChild(optionEmpty);
+      for (let x = 0; x < items.length; x++) {
+        let item = items[x];
+        let itemText = item[ this._itemLabel ];
+        let itemValue = item[ this._itemKey ];
+        let option = document.createElement("option");
+        option.setAttribute("value", itemValue);
+        option.innerText = itemText;
+        this._componentNode.appendChild(option);
+      }
     }
   }
 
   getSelected() {
-    if (this.selectNode.selectedIndex === 0) {
+    if (this._componentNode.selectedIndex === 0) {
       return undefined;
     }
-    return this.selectNode.options[this.selectNode.selectedIndex].value;
+    return this._componentNode.options[this._componentNode.selectedIndex].value;
   }
 
   setSelected(selected) {
-    for (var x = 0; x < this.selectNode.options.length; x++) {
-      var opt = this.selectNode.options[x];
+    for (var x = 0; x < this._componentNode.options.length; x++) {
+      var opt = this._componentNode.options[x];
       opt.selected = opt.value == selected;
     }
   }
 
-  stateChanged(state, value) {
-    if (state == this.comp.states.selected) {
-      this.setSelected(value);
-    } else if (state == this.comp.states.options) {
-      this.setOptions(value);
-    } else if (state == this.comp.states.enabled) {
-      this.setEnabled(value);
-    } else if (state == this.comp.states.label) {
-      this.setLabel(value);
-    } else if (state == this.comp.states.required) {
-      this.setRequired(value);
-    }
-  }
 }
 

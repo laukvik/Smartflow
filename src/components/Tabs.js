@@ -1,48 +1,53 @@
-export default class Tabs extends PresentationComponent {
+import {PresentationComponent} from "../component";
+
+class Tabs extends PresentationComponent {
   constructor(properties) {
     super(properties);
     this.labels = [];
     this.contents = [];
     this.links = [];
+    this._componentNode = document.createElement("div");
   }
 
-  buildComponent(builder){
-    var tabsDiv = document.createElement("ul");
-    if (Array.isArray(this.properties.tabs)) {
-      tabsDiv.setAttribute("class", "sf-tabs");
+  setProperties(properties) {
+  }
 
+  buildComponent(builder, properties) {
+    if (Array.isArray(this.properties.tabs)) {
       this.labelsNode = document.createElement("ul");
-      this.labelsNode.setAttribute("class", "nav nav-tabs nav-justified");
+      this.labelsNode.setAttribute("class", "nav nav-pills nav-justified");
       this.contentsNode = document.createElement("div");
       this.contentsNode.setAttribute("class", "sf-tabs-panels");
-      tabsDiv.appendChild(this.labelsNode);
-      tabsDiv.appendChild(this.contentsNode);
+      this._componentNode.appendChild(this.labelsNode);
+      this._componentNode.appendChild(this.contentsNode);
 
-      for (var x = 0; x < this.properties.tabs.length; x++) {
-        var tab = this.properties.tabs[x];
-        var labelNode = document.createElement("li");
-        labelNode.setAttribute("role", "presentation");
-        this.labelsNode.appendChild(labelNode);
-        this.labels.push(labelNode);
+      for (let x = 0; x < this.properties.tabs.length; x++) {
+        let tab = this.properties.tabs[x];
+        let liNode = document.createElement("li");
+        liNode.setAttribute("class", "nav-item");
+        liNode.setAttribute("role", "presentation");
+        this.labelsNode.appendChild(liNode);
+        this.labels.push(liNode);
 
-        var linkNode = document.createElement("a");
-        labelNode.appendChild(linkNode);
-        linkNode.innerText = tab.label;
-        this.links.push(linkNode);
+        let aNode = document.createElement("a");
+        aNode.setAttribute("class", "nav-link");
+        aNode.innerText = tab.label;
+        liNode.appendChild(aNode);
+        this.links.push(aNode);
 
-        linkNode.addEventListener("click", function (evt) {
+        aNode.addEventListener("click", function (evt) {
           this._selected(evt.srcElement);
         }.bind(this), false);
 
-        var contentNode = document.createElement("div");
+        let contentNode = document.createElement("div");
         contentNode.setAttribute("class", "sf-tabs-panel");
         this.contentsNode.appendChild(contentNode);
         this.contents.push(contentNode);
 
         if (Array.isArray(tab.components)) {
-          var panelComponents = tab.components;
-          for (var n = 0; n < panelComponents.length; n++) {
-            var panelComponent = panelComponents[n];
+          let panelComponents = tab.components;
+          for (let n = 0; n < panelComponents.length; n++) {
+            let panelComponent = panelComponents[n];
             builder.buildChildNode(contentNode, panelComponent);
           }
         }
@@ -50,23 +55,28 @@ export default class Tabs extends PresentationComponent {
 
       this.setSelectedIndex(this.properties.selectedIndex);
     }
-    return tabsDiv;
+
+    //this._componentNode.setAttribute("class", "sf-tabs" + (properties.class ? " " + properties.class : ""));
+    return this._componentNode;
   }
 
   _selected(link) {
-    var index = this.links.indexOf(link);
+    let index = this.links.indexOf(link);
     this.setSelectedIndex(index);
   }
 
   setSelectedIndex(index) {
     if (index >= 0 && index < this.labels.length) {
-      for (var x = 0; x < this.labels.length; x++) {
-        var css = (x === index ? "active" : "");
-        var li = this.labels[x];
+      for (let x = 0; x < this.labels.length; x++) {
+        let isActive = x === index;
+        let css = (isActive ? "nav-link active" : "nav-link");
+        let li = this.links[x];
         li.setAttribute("class", css);
-        this.contents[x].setAttribute("class", "sf-tabs-panel " + css);
+        this.contents[x].style.display = isActive ? "block" : "none";
       }
     }
   }
 
 }
+
+export {Tabs};

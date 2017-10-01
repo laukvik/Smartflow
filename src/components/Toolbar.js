@@ -1,57 +1,56 @@
-/**
- * Toolbar
- *
- * Properties:
- * - visible
- * - enabled
- */
-export default class Toolbar extends InputComponent {
+import {InputComponent} from "../component";
+
+export class Toolbar extends InputComponent {
   constructor(properties) {
     super(properties);
     this.buttons = [];
+    this.actions = [];
+    this._componentNode = document.createElement("div");
   }
 
-  buildComponent(builder){
-    var toolbarNode = document.createElement("div");
-    toolbarNode.setAttribute("class", "btn-toolbar");
-    toolbarNode.setAttribute("role", "toolbar");
+  setProperty(name, value) {
+    if (name === "visible") {
+      this.setVisible(value);
+    }
+  }
 
-    var groupNode = document.createElement("div");
-    groupNode.setAttribute("class", "btn-group");
-    toolbarNode.appendChild(groupNode);
-
-    if (Array.isArray(this.properties.actions)) {
-      for (var x=0; x<this.properties.actions.length; x++) {
-        var component = this.properties.actions[ x ];
-
-        var btn = document.createElement("button");
+  setProperties(properties) {
+    this.removeChildNodes(this._groupNode);
+    this._componentNode.setAttribute("class", "sf-toolbar btn-toolbar" + (properties.class ? " " + properties.class : ""));
+    if (Array.isArray(properties.actions)) {
+      for (let x = 0; x < properties.actions.length; x++) {
+        let component = properties.actions[x];
+        let btn = document.createElement("button");
         btn.setAttribute("type", "button");
-        btn.setAttribute("class", "btn btn-default");
+        btn.setAttribute("class", "btn " + (component.style ? " btn-" + component.style : "btn-default"));
+
+
         btn.innerText = component.label;
-        groupNode.appendChild(btn);
+        this._groupNode.appendChild(btn);
         this.buttons.push(btn);
-
-        btn.addEventListener("click", function (evt) {
-          this._clicked(evt.srcElement);
+        btn.addEventListener("click", function () {
+          this._clicked(properties.actions[x].action);
         }.bind(this), false);
-
       }
     }
-    return toolbarNode;
   }
 
-  _clicked(btn){
-    var index = this.buttons.indexOf(btn);
-    var a = this.properties.actions[ index ];
-    this.fireAction(a.action);
+  setVisible(visible) {
+    this._componentVisible = visible === true;
+    this._componentNode.style.display = this._componentVisible ? "block" : "none";
   }
 
-  stateChanged(state, value) {
-    if (state == this.properties.states.visible) {
+  buildComponent(builder, properties) {
+    this._componentNode.setAttribute("role", "toolbar");
+    let groupNode = document.createElement("div");
+    groupNode.setAttribute("class", "btn-group");
+    this._componentNode.appendChild(groupNode);
+    this._groupNode = groupNode;
+    return this._componentNode;
+  }
 
-    } else if (state == this.properties.states.enabled) {
-
-    }
+  _clicked(action) {
+    this.fireAction(action);
   }
 }
 

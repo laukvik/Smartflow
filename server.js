@@ -63,10 +63,19 @@ const server = http.createServer((req, res) => {
       html(res, data);
     });
 
-  } else if (path === '/smartflow.js') {
-    fs.readFile('./dist/smartflow.js', (err, data) => {
-      html(res, data);
+  } else if (path.startsWith('/dist')) {
+    const contentType = findMimeType(path);
+
+    fs.readFile('.' + path, (err, data) => {
+      console.info(path);
+      out(res, contentType, data);
     });
+
+
+  // } else if (path === '/smartflow.js') {
+  //   fs.readFile('./dist/smartflow.js', (err, data) => {
+  //     html(res, data);
+  //   });
 
   } else if (path === '/app.js') {
     fs.readFile('./public/app.js', (err, data) => {
@@ -94,12 +103,6 @@ const server = http.createServer((req, res) => {
       out(res, contentType, data);
     });
 
-  } else if (path.startsWith('/src')) {
-    const contentType = findMimeType(path);
-
-    fs.readFile('./' + path, (err, data) => {
-      out(res, contentType, data);
-    });
 
   } else if (path.endsWith(".json")) {
     const contentType = TYPE_JSON;

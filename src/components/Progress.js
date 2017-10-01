@@ -1,40 +1,36 @@
-/**
- * Progress
- *
- * Properties:
- * - value
- *
- */
-export default class Progress extends PresentationComponent {
-  constructor(properties, ctrl, builder) {
-    super(properties, ctrl, builder);
+import {PresentationComponent} from "../component";
+
+class Progress extends PresentationComponent {
+  constructor(properties) {
+    super(properties);
     this.value = 0;
+    this._componentNode = document.createElement("div");
+    this.progressBarNode = document.createElement("div");
+    this._componentNode.appendChild(this.progressBarNode);
   }
 
-  buildComponent(){
-    var progressNode = document.createElement("div");
-    progressNode.setAttribute("class", "progress");
-
-    var progressBarNode = document.createElement("div");
-    progressBarNode.setAttribute("class", "progress-bar progress-bar-striped");
-    progressBarNode.setAttribute("role", "progressbar");
-    progressNode.appendChild(progressBarNode);
-    this.progressNode = progressNode;
-    this.progressBarNode = progressBarNode;
-    return this.progressNode;
+  setProperty(name, value) {
+    if (name === "value") {
+      this.setValue(value);
+    } else if (name === "visible") {
+      this.setVisible(value);
+    }
   }
 
-  setValue(value){
+  buildComponent(builder, properties) {
+    this.progressBarNode.setAttribute("class", "progress-bar progress-bar-striped progress-bar-animated");
+    this.progressBarNode.setAttribute("role", "progressbar");
+
+    return this._componentNode;
+  }
+
+  setValue(value) {
     if (value >= 0 && value <= 100) {
       this.value = value;
     } else {
       this.value = 0;
     }
     this.progressBarNode.setAttribute("style", "width: " + value + "%");
-  }
-
-  getValue(){
-    return this.value;
   }
 
   stateChanged(state, value) {
@@ -44,3 +40,4 @@ export default class Progress extends PresentationComponent {
   }
 }
 
+export {Progress}
