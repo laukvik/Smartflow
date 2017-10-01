@@ -24,6 +24,8 @@ export class Textfield extends InputComponent {
       this.setRegex(value);
     } else if (name === "validation") {
       this.setValidationMessage(value);
+    } else if (name === "placeholder") {
+      this.setPlaceholder(value);
     }
   }
 
@@ -39,7 +41,6 @@ export class Textfield extends InputComponent {
       this.inputNode.setAttribute("class", "form-control");
     }
 
-    this.inputNode.setAttribute("placeholder", properties.placeholder);
     this.inputNode.addEventListener('keyup', function () {
       this._changed();
     }.bind(this), false);
@@ -120,7 +121,7 @@ export class Textfield extends InputComponent {
   }
 
   setPlaceholder(text) {
-    this.inputNode.setAttribute("placeholder", text);
+    this.inputNode.setAttribute("placeholder", text === undefined ? "" : text);
   }
 
   getPlaceholder() {
@@ -128,7 +129,7 @@ export class Textfield extends InputComponent {
   }
 
   setValue(text) {
-    this.inputNode.value = text == undefined ? "" : text;
+    this.inputNode.value = text === undefined ? "" : text;
   }
 
   getValue() {
