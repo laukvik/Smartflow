@@ -25,6 +25,7 @@ import {Spinner} from "./components/Spinner";
 import {Card} from "./components/Card";
 import {List} from "./components/List";
 import {Navbar} from "./components/Navbar";
+import {Media} from "./components/Media";
 
 class ComponentBuilder {
   constructor(ctrl, formatter, smartflow) {
@@ -76,6 +77,8 @@ class ComponentBuilder {
         c =  new List(componentProperties);
       } else if (componentType === 'navbar') {
         c =  new Navbar(componentProperties);
+      } else if (componentType === 'media') {
+        c =  new Media(componentProperties);
       } else {
         console.warn("Component not found: ", componentProperties.type);
         return;

@@ -23,6 +23,31 @@ export class InboxView extends View {
           "heading": "Showcase",
           "text": "Lorem ipsum"
         },
+
+        {
+          "type": "Media",
+          "items": "{posters}",
+          "itemTitle": "title",
+          "itemDescription": "storyline",
+          "itemPhoto": "posterurl",
+          "action": FindMoviesAction,
+          "sort": {
+            "match": "title",
+            "order": "asc"
+          },
+          "filter": [
+            {
+              "match": "genres",
+              "type": "contains",
+              "value": "Comedy"
+            }
+          ],
+          "layout": {
+            "col-md" : "3"
+          }
+        },
+
+
         {
           "type": "Tabs",
           "selectedIndex": 2,
@@ -32,12 +57,6 @@ export class InboxView extends View {
               "components": [
                 {
                   "type": "Card",
-                  "title": "Card title",
-                  "src": "sunset.jpg",
-                  "visible": true,
-                  "description": "Some quick example text to build on the card title and make up the bulk of the card's content.",
-                  "button": "Go somewhere",
-                  "style": "primary",
                   "items": "{posters}",
                   "itemTitle": "title",
                   "itemDescription": "storyline",
@@ -54,6 +73,9 @@ export class InboxView extends View {
                       "value": "Comedy"
                     }
                   ],
+                  "layout": {
+                    "col-md" : "3"
+                  }
                 }
               ]
             },
@@ -97,11 +119,25 @@ export class InboxView extends View {
           "type": "Spinner",
           "visible": true
         },
+
         {
           "type": "Progress",
           "value": 30
         },
-
+        {
+          "type": "List",
+          "items": "{posters}",
+          "itemLabel": "title",
+          "itemBadge": "genres",
+          "sort": {
+            "match": "title",
+            "order": "asc"
+          },
+          "paging": {
+            "size": 5,
+            "page": 0,
+          }
+        },
         {
           "type": "Searchfield",
           "label": "Searchfield",
@@ -129,9 +165,6 @@ export class InboxView extends View {
           "type": "Datepicker",
           "label": "Datepicker",
           "required": true,
-          "states": {
-            "value": "datepickerValue"
-          },
           "format": "yyyy.mm.dd",
           "value": "2008.10.25"
         },
@@ -145,13 +178,6 @@ export class InboxView extends View {
               "action": ShowDialogAction
             }
           ]
-        },
-        {
-          "type": "Progress",
-          "value": "50",
-          "states": {
-            "value": "progress"
-          }
         },
         {
           "type": "Spinner",
@@ -247,6 +273,7 @@ export class InboxView extends View {
           "itemLabel": "title",
           "items": "{movies}",
           "required": true,
+          "placeholder": "Please select",
           "sort": {
             "match": "year",
             "order": "asc"
@@ -328,9 +355,8 @@ export class InboxView extends View {
   }
 
   viewEnabled() {
-    //console.info("InboxView.viewEnabled");
-    //this.runSmartflow(new StartAction());
-    //this.runSmartflow(new FindTableAction());
+    this.runSmartflow(new StartAction());
+    this.runSmartflow(new FindTableAction());
     this.runSmartflow(new FindMoviesAction());
     this.runSmartflow(new FindGlobalMovies());
     this.runSmartflow(new FindPostersAction());
@@ -338,14 +364,13 @@ export class InboxView extends View {
 
   componentChanged(evt) {
   }
+
   actionPerformed(evt){
   }
 
   stateChanged(state, value){
-    //console.info("StateChange: ", state, value);
   }
 
   globalChanged(state, value){
-    //console.info("globalChanged: ", state, value);
   }
 }
