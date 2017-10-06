@@ -13,7 +13,8 @@
     "watch": "jest --watch",
     "www": "npm run start",
     "coverage": "jest ./src/  --coverage",
-    "eslint": "eslint ./src/*.js"
+    "eslint": "eslint ./src/*.js",
+    "docs": "jsdoc -P ./package.json -r -d ./docs ./src/*.js"
   },
   "watch": {
     "test": "{src}/*.js"
@@ -49,6 +50,7 @@
     "eslint-config-google": "^0.8.0",
     "jest": "^21.1.0",
     "jest-cli": "^21.1.0",
+    "jsdoc": "^3.5.5",
     "regenerator-runtime": "^0.11.0",
     "webpack": "^3.5.6",
     "webpack-dev-server": "^2.8.2"

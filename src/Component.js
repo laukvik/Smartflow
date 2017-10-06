@@ -19,7 +19,6 @@ class SmartflowComponent {
    * @param value
    */
   setProperty(name, value) {
-
   }
 
   /**
@@ -37,13 +36,7 @@ class SmartflowComponent {
       console.warn("SmartflowComponent: invalid property ", name);
       return;
     }
-    if (binding === SCOPES.VIEW) {
-      this.smartflow.fireViewPropertyChanged(this, this.getView(), name, value);
-
-    } else if (binding === SCOPES.GLOBAL) {
-      this.smartflow.fireGlobalPropertyChanged(this, name, value);
-
-    }
+    this.smartflow.firePropertyChanged(this, binding, value);
   }
 
   /**
@@ -52,7 +45,7 @@ class SmartflowComponent {
    * @param name
    * @param scope
    */
-  setBinding(name, value, scope) {
+  setBinding(name, value, scope, path) {
     if (name === undefined) {
       return;
     }
@@ -64,7 +57,8 @@ class SmartflowComponent {
       this._valueBindings[ name ] = {
         "state" : value,
         "property" : name,
-        "scope": scope
+        "scope": scope,
+        "path": path
       };
     } else {
       console.warn("SmartflowComponent: invalid scope ", scope);
@@ -80,9 +74,38 @@ class SmartflowComponent {
     }
   }
 
+  parseScope(value){
+    let isString = typeof value === 'string';
+    if (!isString) {
+      return {
+        "scope": SCOPES.NONE,
+        "value": value
+      };
+    }
+    if (value.indexOf("{") === 0 && value.lastIndexOf("}") === value.length-1) {
+      let innerValue = value.substring(1, value.length-1);
+      if (innerValue.toUpperCase().startsWith(SCOPES.GLOBAL)) {
+        return {
+          "scope": SCOPES.GLOBAL,
+          "value": innerValue.substring(7)
+        }
+      } else {
+        return {
+          "scope": SCOPES.VIEW,
+          "value": innerValue
+        }
+      }
+    }
+    return {
+      "scope": SCOPES.NONE,
+      "value": value
+    };
+  }
+
   setProperties(properties) {
     this.setID(properties.id);
     this.setClass(properties.class);
+    this._properties = properties;
   }
 
   buildComponent() {
@@ -135,36 +158,12 @@ class SmartflowComponent {
     this.smartflow.runAction(new action(), this.getView());
   }
 
-  fireState(state, value) {
-    //this.smartflow.fireStateChanged(state, value);
-  }
-
   removeChildNodes(node) {
     while (node.firstChild) {
       node.removeChild(node.firstChild);
     }
   }
 
-  /**
-   * TODO - Remove this when global and private states are completed
-   * @param states
-   */
-  setStateBinding(states) {
-    let arr = [];
-    for (let key in states) {
-      arr.push(states[key]);
-    }
-    this._stateListeners = arr;
-  }
-
-  /**
-   * TODO - Remove this when global and private states are completed
-   * @param states
-   */
-  fireComponentChanged(property, value) {
-    //this.smartflow.fireComponentChanged(this, property, value, this.ctrl);
-    this.firePropertyChanged(property, value);
-  }
 }
 
 /**
