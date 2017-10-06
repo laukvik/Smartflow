@@ -24,6 +24,7 @@ import {Datepicker} from "./components/Datepicker";
 import {Spinner} from "./components/Spinner";
 import {Card} from "./components/Card";
 import {List} from "./components/List";
+import {Navbar} from "./components/Navbar";
 
 class ComponentBuilder {
   constructor(ctrl, formatter, smartflow) {
@@ -73,6 +74,8 @@ class ComponentBuilder {
         c =  new Card(componentProperties);
       } else if (componentType === 'list') {
         c =  new List(componentProperties);
+      } else if (componentType === 'navbar') {
+        c =  new Navbar(componentProperties);
       } else {
         console.warn("Component not found: ", componentProperties.type);
         return;

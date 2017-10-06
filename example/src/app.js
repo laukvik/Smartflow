@@ -1,4 +1,5 @@
 import {Smartflow} from "../../src/Smartflow";
+import {MainView} from "./views/MainView";
 import {InboxView} from "./views/InboxView";
 
 let config = {
@@ -23,5 +24,6 @@ app.setConfig(config);
 app.loadLanguage("no", langNO);
 app.loadLanguage("en", langEN);
 app.setDefaultLocale("en");
+app.addView(new MainView());
 app.addView(new InboxView());
 app.start();
