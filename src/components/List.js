@@ -1,4 +1,4 @@
-import {PresentationComponent} from "../Component";
+import {PresentationComponent} from "../PresentationComponent";
 import {Collections} from "../Collections";
 
 class List extends PresentationComponent {

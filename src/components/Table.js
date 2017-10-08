@@ -1,4 +1,4 @@
-import {InputComponent} from "../Component";
+import {InputComponent} from "../InputComponent";
 import {Collections} from "../Collections";
 
 class Table extends InputComponent {

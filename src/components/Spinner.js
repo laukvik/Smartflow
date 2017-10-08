@@ -1,6 +1,6 @@
-import {SmartflowComponent} from "../Component";
+import {Component} from "../Component";
 
-export class Spinner extends SmartflowComponent {
+export class Spinner extends Component {
   constructor(properties) {
     super(properties);
     this._componentNode = document.createElement("div");

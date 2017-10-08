@@ -1,6 +1,6 @@
-import {SmartflowComponent} from "../Component";
+import {Component} from "../Component";
 
-class Alert extends SmartflowComponent {
+class Alert extends Component {
 
   constructor(properties) {
     super(properties);

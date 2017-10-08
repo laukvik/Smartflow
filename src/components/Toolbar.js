@@ -1,4 +1,4 @@
-import {InputComponent} from "../Component";
+import {InputComponent} from "../InputComponent";
 
 export class Toolbar extends InputComponent {
   constructor(properties) {
