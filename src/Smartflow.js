@@ -26,6 +26,10 @@ export const SCOPES = {
   GLOBAL: "GLOBAL"
 };
 
+/**
+ * Smartflow
+ *
+ */
 export class Smartflow {
   constructor() {
     this._controller = undefined;
@@ -40,12 +44,12 @@ export class Smartflow {
     this._states = [];
   }
 
-  fireViewPropertyChanged(component, viewController, property, value) {
-
-  }
-
-  fireGlobalPropertyChanged(component, property, value){
-
+  firePropertyChanged(component, binding, value) {
+    if (binding.scope === SCOPES.VIEW) {
+      this._firePrivateStateChanged(binding.state, value, component.getView(), component);
+    } else if (binding.scope === SCOPES.GLOBAL) {
+      this._fireGlobalStateChanged(binding.state, value);
+    }
   }
 
   fireComponentChanged(component, property, value, view) {
@@ -368,28 +372,6 @@ export class Smartflow {
     // Find the "from" view controller
     let viewController = action._smartflowCaller;
 
-    // // Remove states from collection
-    // if (actionEvent.removeStates) {
-    //   for (let keyRemove in actionEvent.removeStates) {
-    //     delete this._states[keyRemove];
-    //   }
-    // }
-    //
-    // // Appends states to existing collection
-    // if (actionEvent.addStates) {
-    //   for (let keyAdd in actionEvent.addStates) {
-    //     let entriesArray = actionEvent.addStates[keyAdd];
-    //     if (Array.isArray(entriesArray)) {
-    //       for (let x = 0; x < entriesArray.length; x++) {
-    //         this._states[keyAdd].push(entriesArray[x]);
-    //       }
-    //       if (actionEvent.states[keyAdd] === undefined) {
-    //         actionEvent.states[keyAdd] = this._states[keyAdd];
-    //       }
-    //     }
-    //   }
-    // }
-
     // View state
     for (let key in actionEvent.states) {
       viewController._states[key] = actionEvent.states[key]; //
@@ -406,19 +388,6 @@ export class Smartflow {
     if (actionEvent.path) {
       this.setPath(actionEvent.path);
     }
-
-    // // Set values in components
-    // if (actionEvent.commands) {
-    //   for (let y = 0; y < viewController.smartflow.componentInstances.length; y++) {
-    //     let component = viewController.smartflow.componentInstances[y];
-    //     for (let z = 0; z < actionEvent.commands.length; z++) {
-    //       let command = actionEvent.commands[z];
-    //       if (component.id == command.id) {
-    //         component.commandPerformed(command.command, command.value);
-    //       }
-    //     }
-    //   }
-    // }
 
     action._smartflowStarted = undefined;
     action._smartflowCaller = undefined;
@@ -500,9 +469,6 @@ export class Smartflow {
   }
 
   //--------------------------------- State ----------------------------------------
-  // fireStateChanged(state, value, fromComponent){
-  //   this._fireStateChanged(state, value, fromComponent);
-  // }
   _fireGlobalStateChanged(state, value) {
     for (let x = 0; x < this._controllers.length; x++) {
       let viewController = this._controllers[x];
@@ -521,8 +487,8 @@ export class Smartflow {
     }
   }
 
-  _firePrivateStateChanged(state, value, viewController) {
-    if (value === undefined || value == null) {
+  _firePrivateStateChanged(state, value, viewController, fromComponent) {
+    if (value === undefined || value === null) {
       delete( this._states[state] );
     } else {
       this._states[state] = value;
@@ -531,9 +497,11 @@ export class Smartflow {
     // Loop each component in view
     for (let index in viewController.smartflow.componentInstances) {
       let componentInstance = viewController.smartflow.componentInstances[ index ];
-      let binding = componentInstance.getBindingByState(state, SCOPES.VIEW);
-      if (binding) {
-        componentInstance.setProperty(binding.property, value);
+      if (componentInstance !== fromComponent) {
+        let binding = componentInstance.getBindingByState(state, SCOPES.VIEW);
+        if (binding) {
+          componentInstance.setProperty(binding.property, value, binding.path);
+        }
       }
     }
 
