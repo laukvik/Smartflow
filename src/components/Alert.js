@@ -1,6 +1,11 @@
-import {SmartflowComponent} from "../component";
+import {Component} from "../Component";
 
-class Alert extends SmartflowComponent {
+/**
+ * Alert
+ *
+ * @private
+ */
+export class Alert extends Component {
 
   constructor(properties) {
     super(properties);
@@ -11,7 +16,7 @@ class Alert extends SmartflowComponent {
     this._buttonNode.setAttribute("class", "close");
     this._buttonNode.setAttribute("data-dismiss", "alert");
     this._buttonNode.setAttribute("aria-label", "Close");
-    this._buttonNode.addEventListener("click",function () {
+    this._buttonNode.addEventListener("click", function () {
       this.setVisible(false);
     }.bind(this), false);
     this._buttonSpanNode = document.createElement("span");
@@ -33,12 +38,12 @@ class Alert extends SmartflowComponent {
     }
   }
 
-  setStyle(style){
+  setStyle(style) {
     this._alertStyle = style;
-    this._componentNode.setAttribute("class", "alert " + ("alert-" + this._alertStyle) );
+    this._componentNode.setAttribute("class", "alert " + ("alert-" + this._alertStyle));
   }
 
-  buildComponent(builder, properties){
+  buildComponent(builder, properties) {
     if (properties.closable == true) {
       this._componentNode.appendChild(this._buttonNode);
     }
@@ -59,5 +64,3 @@ class Alert extends SmartflowComponent {
   }
 
 }
-
-export {Alert}

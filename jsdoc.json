@@ -1,0 +1,24 @@
+{
+  "plugins": [],
+  "source": {
+    "include": ["./src"],
+    "includePattern": ".+\\.js(doc|x)?$"
+  },
+  "sourceType": "module",
+  "tags": {
+    "allowUnknownTags": true,
+    "dictionaries": ["jsdoc"]
+  },
+  "templates": {
+    "cleverLinks": false,
+    "monospaceLinks": false
+  },
+  "opts": {
+    "template": "templates/default",
+    "encoding": "utf8",
+    "destination": "./docs",
+
+    "recurse": true,
+    "tutorials": "tutorial"
+  }
+}

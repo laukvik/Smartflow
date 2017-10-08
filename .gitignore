@@ -7,3 +7,4 @@ coverage/
 example/node_modules/
 /dist/
 /example/dist/
+/docs/

@@ -5,8 +5,8 @@
  * @param ctrl
  * @constructor
  */
-import {SCOPES} from "./Smartflow";
-import {InputComponent} from "./component";
+import {SCOPES} from "./Application";
+import {InputComponent} from "./InputComponent";
 import {Layout} from "./components/Layout";
 import {Button} from "./components/Button";
 import {Checkbox} from "./components/Checkbox";
@@ -23,8 +23,13 @@ import {Searchfield} from "./components/Searchfield";
 import {Datepicker} from "./components/Datepicker";
 import {Spinner} from "./components/Spinner";
 import {Card} from "./components/Card";
+import {List} from "./components/List";
+import {Navbar} from "./components/Navbar";
+import {Media} from "./components/Media";
+import {Text} from "./components/Text";
 
-class ComponentBuilder {
+export class Builder {
+
   constructor(ctrl, formatter, smartflow) {
     this.ctrl = ctrl;
     this.formatter = formatter;
@@ -35,48 +40,60 @@ class ComponentBuilder {
     if (!componentProperties.type) {
       return;
     }
-    let componentType = componentProperties.type.toLowerCase();
     let c;
-    if (componentType === 'button') {
-      c =  new Button(componentProperties);
-    } else if (componentType === 'checkbox') {
-      c =  new Checkbox(componentProperties);
-    } else if (componentType === 'dialog') {
-      c =  new Dialog(componentProperties);
-    } else if (componentType === 'layout') {
-      c =  new Layout(componentProperties);
-    } else if (componentType === 'progress') {
-      c =  new Progress(componentProperties);
-    } else if (componentType === 'pulldown') {
-      c =  new Pulldown(componentProperties);
-    } else if (componentType === 'radio') {
-      c =  new Radio(componentProperties);
-    } else if (componentType === 'table') {
-      c =  new Table(componentProperties);
-    } else if (componentType === 'tabs') {
-      c =  new Tabs(componentProperties);
-    } else if (componentType === 'textfield') {
-      c =  new Textfield(componentProperties);
-    } else if (componentType === 'toolbar') {
-      c =  new Toolbar(componentProperties);
-    } else if (componentType === 'alert') {
-      c =  new Alert(componentProperties);
-    } else if (componentType === 'searchfield') {
-      c =  new Searchfield(componentProperties);
-    } else if (componentType === 'datepicker') {
-      c =  new Datepicker(componentProperties);
-    } else if (componentType === 'spinner') {
-      c =  new Spinner(componentProperties);
-    } else if (componentType === 'card') {
-      c =  new Card(componentProperties);
+    if (typeof componentProperties.type === 'string') {
+      let componentType = componentProperties.type.toLowerCase();
+      if (componentType === 'button') {
+        c = new Button(componentProperties);
+      } else if (componentType === 'checkbox') {
+        c = new Checkbox(componentProperties);
+      } else if (componentType === 'dialog') {
+        c = new Dialog(componentProperties);
+      } else if (componentType === 'layout') {
+        c = new Layout(componentProperties);
+      } else if (componentType === 'progress') {
+        c = new Progress(componentProperties);
+      } else if (componentType === 'pulldown') {
+        c = new Pulldown(componentProperties);
+      } else if (componentType === 'radio') {
+        c = new Radio(componentProperties);
+      } else if (componentType === 'table') {
+        c = new Table(componentProperties);
+      } else if (componentType === 'tabs') {
+        c = new Tabs(componentProperties);
+      } else if (componentType === 'textfield') {
+        c = new Textfield(componentProperties);
+      } else if (componentType === 'toolbar') {
+        c = new Toolbar(componentProperties);
+      } else if (componentType === 'alert') {
+        c = new Alert(componentProperties);
+      } else if (componentType === 'searchfield') {
+        c = new Searchfield(componentProperties);
+      } else if (componentType === 'datepicker') {
+        c = new Datepicker(componentProperties);
+      } else if (componentType === 'spinner') {
+        c = new Spinner(componentProperties);
+      } else if (componentType === 'card') {
+        c = new Card(componentProperties);
+      } else if (componentType === 'list') {
+        c = new List(componentProperties);
+      } else if (componentType === 'navbar') {
+        c = new Navbar(componentProperties);
+      } else if (componentType === 'media') {
+        c = new Media(componentProperties);
+      } else if (componentType === 'text') {
+        c = new Text(componentProperties);
+      } else {
+        console.warn("Component not found: ", componentProperties.type);
+        return;
+      }
+      c.setBaseClass(componentType);
     } else {
-      console.warn("Component not found: ", componentProperties.type);
-      return;
+      c = new componentProperties.type();
     }
     c.setSmartflow(this.smartflow);
     c.setView(this.ctrl);
     c.setID(componentProperties.id);
-    c.setBaseClass(componentType);
     c.setClass(componentProperties.class);
     return c;
   }
@@ -90,7 +107,8 @@ class ComponentBuilder {
       this.buildChildNode(rootNode, comps[x]);
     }
   }
-  parseScope(value){
+
+  parseScope(value) {
     let isString = typeof value === 'string';
     if (!isString) {
       return {
@@ -98,8 +116,8 @@ class ComponentBuilder {
         "value": value
       };
     }
-    if (value.indexOf("{") === 0 && value.lastIndexOf("}") === value.length-1) {
-      let innerValue = value.substring(1, value.length-1);
+    if (value.indexOf("{") === 0 && value.lastIndexOf("}") === value.length - 1) {
+      let innerValue = value.substring(1, value.length - 1);
       if (innerValue.toUpperCase().startsWith(SCOPES.GLOBAL)) {
         return {
           "scope": SCOPES.GLOBAL,
@@ -118,25 +136,41 @@ class ComponentBuilder {
     };
   }
 
-  buildChildNode(parentNode, comp) {
-    let componentInstance = this._buildComponent(comp);
-    this.ctrl.smartflow.componentInstances.push(componentInstance);
-    componentInstance.setStateBinding(comp.states);
-
-    let node = componentInstance.buildComponent(this, comp);
-
-    for (let key in comp) {
-      if (key !== "type") { // Type is reserved
-        let value = comp[ key ];
-        let bind = this.parseScope(value);
-        if (bind.scope === SCOPES.NONE) {
-          componentInstance.setProperty(key, bind.value);
-        } else {
-          componentInstance.setBinding(key, bind.value, bind.scope);
+  /**
+   * Recursively iterates all properties and binds properties to states
+   *
+   * @param componentInstance
+   * @param comp
+   * @param path
+   */
+  applyBindings(componentInstance, comp, path) {
+    if (comp === undefined) {
+      return;
+    }
+    if (typeof comp === "object") {
+      for (let key in comp) {
+        if (key !== "type") { // Type is reserved
+          let value = comp[key];
+          path.push(key);
+          let bind = this.parseScope(value);
+          if (bind.scope === SCOPES.NONE) {
+            componentInstance.setProperty(key, bind.value);
+            this.applyBindings(componentInstance, value, path);
+            path.pop();
+          } else {
+            componentInstance.setBinding(key, bind.value, bind.scope, path.shift());
+          }
         }
       }
     }
+  }
 
+  buildChildNode(parentNode, comp) {
+    let componentInstance = this._buildComponent(comp);
+    this.ctrl.smartflow.componentInstances.push(componentInstance);
+    let node = componentInstance.buildComponent(this, comp);
+    this.applyBindings(componentInstance, comp, []);
+    componentInstance.setProperties(comp);
     if (componentInstance instanceof InputComponent) {
       componentInstance.setRootNode(node); //
       node = componentInstance.getRootNode();
@@ -151,4 +185,3 @@ class ComponentBuilder {
 
 }
 
-export {ComponentBuilder};

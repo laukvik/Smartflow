@@ -1,5 +1,5 @@
-import {InputComponent} from "../component";
-import {Collections} from "../collections";
+import {InputComponent} from "../InputComponent";
+import {Collection} from "../Collection";
 
 export class Searchfield extends InputComponent {
   constructor(properties) {
@@ -7,7 +7,7 @@ export class Searchfield extends InputComponent {
     this._componentNode = document.createElement("div");
     this.optionsNode = document.createElement("ul");
     this.optionsNode.setAttribute("class", "dropdown-menu");
-    this.collections = new Collections();
+    this.collections = new Collection();
     this.selectedIndex =  -1;
     this.optionsNodes = [];
     this._unfilteredItems = [];
@@ -122,7 +122,7 @@ export class Searchfield extends InputComponent {
     this.input.setAttribute("type", "text");
     this.input.setAttribute("class", "form-control");
 
-    this.input.setAttribute("placeholder", properties.placeholder);
+
     this.input.addEventListener('keyup', function (evt) {
       if (evt.key === "ArrowDown") {
         this.arrowDown();

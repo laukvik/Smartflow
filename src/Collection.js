@@ -5,8 +5,10 @@
  * TODO - Number
  * TODO - Date
  *
+ * @private
+ *
  */
-export class Collections {
+export class Collection {
 
   constructor() {
     this.clearFilter();

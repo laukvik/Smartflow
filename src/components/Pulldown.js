@@ -1,11 +1,11 @@
-import {InputComponent} from "../component";
-import {Collections} from "../collections";
+import {InputComponent} from "../InputComponent";
+import {Collection} from "../Collection";
 
 export class Pulldown extends InputComponent {
 
   constructor(properties) {
     super(properties);
-    this.collections = new Collections();
+    this.collections = new Collection();
     this._componentNode = document.createElement("select");
     this._componentNode.addEventListener('change', function () {
       this._changed();

@@ -1,5 +1,7 @@
 # Smartflow
 
+**Continuous Integration:** [![Build Status](https://travis-ci.org/laukvik/Smartflow.svg?branch=dev)](https://travis-ci.org/laukvik/Smartflow)
+
 Smartflow is an application flow library for JavaScript.
 
 The purpose of the API is to solve the repetitive JavaScript development tasks. How to keep application flow and states 

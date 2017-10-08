@@ -5,26 +5,30 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <link rel="stylesheet" HREF="./node_modules/bootstrap/dist/css/bootstrap.min.css">
-  <link rel="stylesheet" HREF="./node_modules/bootstrap/dist/css/bootstrap-grid.min.css">
-  <link rel="stylesheet" HREF="./node_modules/bootstrap/dist/css/bootstrap-reboot.min.css">
+  <style>
+    .card-block{
+      padding: 1.25rem;
+    }
+    .media img{
+      height: 100px;
+      margin-right: 1em;
+      margin-bottom: 1em;
+    }
+  </style>
+
 </head>
 <body>
 
-<style>
-.card-block{
-  padding: 1.25rem;
-}
-</style>
+
+<div id="MainView"></div>
 
 <div class="container">
   <div class="row">
-    <div id="InboxView" class="col-md-12"></div>
+    <div id="InboxView" class="col-12"></div>
   </div>
 </div>
 
 <script src="./dist/bundle.js"></script>
-
-
 
 </body>
 </html>

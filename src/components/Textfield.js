@@ -1,12 +1,12 @@
-import {InputComponent} from "../component";
+import {InputComponent} from "../InputComponent";
 
 export class Textfield extends InputComponent {
   constructor(properties) {
     super(properties);
     this._componentNode = document.createElement("div");
-
     this._iconBefore = null;
     this._iconAfter = null;
+    this._value = "";
   }
 
   setProperty(name, value) {
@@ -24,10 +24,13 @@ export class Textfield extends InputComponent {
       this.setRegex(value);
     } else if (name === "validation") {
       this.setValidationMessage(value);
+    } else if (name === "placeholder") {
+      this.setPlaceholder(value);
     }
   }
 
   buildComponent(builder, properties) {
+    this._properties = properties;
     this._componentNode.setAttribute("class", "input-group");
     if (properties.rows) {
       this.inputNode = document.createElement("textarea");
@@ -39,9 +42,8 @@ export class Textfield extends InputComponent {
       this.inputNode.setAttribute("class", "form-control");
     }
 
-    this.inputNode.setAttribute("placeholder", properties.placeholder);
     this.inputNode.addEventListener('keyup', function () {
-      this._changed();
+      this._valueChanged();
     }.bind(this), false);
 
 
@@ -80,7 +82,12 @@ export class Textfield extends InputComponent {
     return this._componentNode;
   }
 
-  _changed() {
+  _valueChanged() {
+    if (this._value === this.getValue()) {
+      return;
+    }
+    this._value = this.getValue();
+    this.firePropertyChanged("value", this._value);
     this.validate();
   }
 
@@ -120,7 +127,7 @@ export class Textfield extends InputComponent {
   }
 
   setPlaceholder(text) {
-    this.inputNode.setAttribute("placeholder", text);
+    this.inputNode.setAttribute("placeholder", text === undefined ? "" : text);
   }
 
   getPlaceholder() {
@@ -128,11 +135,11 @@ export class Textfield extends InputComponent {
   }
 
   setValue(text) {
-    this.inputNode.value = text == undefined ? "" : text;
+    this.inputNode.value = text === undefined ? "" : text;
   }
 
   getValue() {
-    var s = this.inputNode.value;
+    let s = this.inputNode.value;
     return s === undefined ? '' : s;
   }
 

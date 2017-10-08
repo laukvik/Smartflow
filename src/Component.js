@@ -1,10 +1,12 @@
-import {SCOPES} from "./Smartflow";
+import {SCOPES} from "./Application";
 
 /**
  *
  *
+ * @private
  */
-class SmartflowComponent {
+export class Component {
+
   constructor(properties) {
     this.properties = properties;
     this._stateListeners = [];
@@ -19,7 +21,6 @@ class SmartflowComponent {
    * @param value
    */
   setProperty(name, value) {
-
   }
 
   /**
@@ -37,13 +38,7 @@ class SmartflowComponent {
       console.warn("SmartflowComponent: invalid property ", name);
       return;
     }
-    if (binding === SCOPES.VIEW) {
-      this.smartflow.fireViewPropertyChanged(this, this.getView(), name, value);
-
-    } else if (binding === SCOPES.GLOBAL) {
-      this.smartflow.fireGlobalPropertyChanged(this, name, value);
-
-    }
+    this.smartflow.firePropertyChanged(this, binding, value);
   }
 
   /**
@@ -52,7 +47,7 @@ class SmartflowComponent {
    * @param name
    * @param scope
    */
-  setBinding(name, value, scope) {
+  setBinding(name, value, scope, path) {
     if (name === undefined) {
       return;
     }
@@ -64,7 +59,8 @@ class SmartflowComponent {
       this._valueBindings[ name ] = {
         "state" : value,
         "property" : name,
-        "scope": scope
+        "scope": scope,
+        "path": path
       };
     } else {
       console.warn("SmartflowComponent: invalid scope ", scope);
@@ -80,9 +76,38 @@ class SmartflowComponent {
     }
   }
 
+  parseScope(value){
+    let isString = typeof value === 'string';
+    if (!isString) {
+      return {
+        "scope": SCOPES.NONE,
+        "value": value
+      };
+    }
+    if (value.indexOf("{") === 0 && value.lastIndexOf("}") === value.length-1) {
+      let innerValue = value.substring(1, value.length-1);
+      if (innerValue.toUpperCase().startsWith(SCOPES.GLOBAL)) {
+        return {
+          "scope": SCOPES.GLOBAL,
+          "value": innerValue.substring(7)
+        }
+      } else {
+        return {
+          "scope": SCOPES.VIEW,
+          "value": innerValue
+        }
+      }
+    }
+    return {
+      "scope": SCOPES.NONE,
+      "value": value
+    };
+  }
+
   setProperties(properties) {
     this.setID(properties.id);
     this.setClass(properties.class);
+    this._properties = properties;
   }
 
   buildComponent() {
@@ -135,167 +160,11 @@ class SmartflowComponent {
     this.smartflow.runAction(new action(), this.getView());
   }
 
-  fireState(state, value) {
-    //this.smartflow.fireStateChanged(state, value);
-  }
-
   removeChildNodes(node) {
     while (node.firstChild) {
       node.removeChild(node.firstChild);
     }
   }
 
-  /**
-   * TODO - Remove this when global and private states are completed
-   * @param states
-   */
-  setStateBinding(states) {
-    let arr = [];
-    for (let key in states) {
-      arr.push(states[key]);
-    }
-    this._stateListeners = arr;
-  }
-
-  /**
-   * TODO - Remove this when global and private states are completed
-   * @param states
-   */
-  fireComponentChanged(property, value) {
-    //this.smartflow.fireComponentChanged(this, property, value, this.ctrl);
-    this.firePropertyChanged(property, value);
-  }
 }
 
-/**
- * Component for presentation
- *
- *
- */
-class PresentationComponent extends SmartflowComponent {
-  constructor(properties) {
-    super(properties);
-    this.componentRootNode = document.createElement("div");
-  }
-
-  buildComponent() {
-    let div = document.createElement("div");
-    div.innerText = "[Smartflow:" + this.constructor.name + "]";
-    return div;
-  }
-}
-
-/**
- *
- * Component for user input, validation and error message
- *
- * componentNode = hovedNo
- * containerNode =
- *
- */
-class InputComponent extends SmartflowComponent {
-  constructor(properties) {
-    super(properties);
-    this.comp = properties;
-    this.componentRootNode = document.createElement("div");
-    this.componentRootNode.setAttribute("class", "form-group");
-
-    this._labelNode = document.createElement("legend");
-    this._requiredNode = document.createElement("span");
-    this._requiredNode.setAttribute("class", "text-danger");
-    this._labelNode.appendChild(this._requiredNode);
-
-    this.helpNode = document.createElement("small");
-    this.helpNode.setAttribute("class", "form-text text-muted");
-    this.helpNode.style.display = "none";
-
-    this.errorNode = document.createElement("div");
-    this.errorNode.setAttribute("class", "text-danger");
-
-    this.setValidationMessage("Required");
-  }
-
-  setHelp(text) {
-    this.helpNode.innerText = text;
-    this.helpNode.style.display = text == undefined ? "none" : "block";
-  }
-
-  // Bygger HTML og adder listeners
-  buildComponent(builder, properties) {
-    return this._componentNode;
-  }
-
-  setRootNode(componentNode) {
-    this.componentNode = componentNode;
-    this.removeChildNodes(this.componentRootNode);
-    this.componentRootNode.appendChild(this._labelNode);
-    this.componentRootNode.appendChild(this.errorNode);
-    this.componentRootNode.appendChild(componentNode);
-    this.componentRootNode.appendChild(this.helpNode);
-  }
-
-  getRootNode() {
-    return this.componentRootNode;
-  }
-
-  validate() {
-    return true;
-  }
-
-  setRequired(required) {
-    this.required = required == true;
-    this._requiredNode.innerText = this.required ? "*" : "";
-  }
-
-  isRequired() {
-    return this.required;
-  }
-
-  setElement(node) {
-    this._componentNode = node;
-  }
-
-  getElement() {
-    return this._componentNode;
-  }
-
-  setLabel(text) {
-    this._labelNode.innerText = text;
-    this._requiredNode = document.createElement("span");
-    this._requiredNode.setAttribute("class", "text-danger");
-    this._labelNode.appendChild(this._requiredNode);
-  }
-
-  getLabel() {
-    return this._labelNode.innerText;
-  }
-
-  setError(text) {
-    this.errorNode.innerText = text;
-  }
-
-  getError() {
-    return this.errorNode.innerText;
-  }
-
-  validate() {
-    if (this.isValid()) {
-      this.setError("");
-      return true;
-    } else {
-      this.setError(this.validationMessage);
-      return false;
-    }
-  }
-
-  setValidationMessage(message) {
-    this.validationMessage = message;
-  }
-
-  getValidationMessage() {
-    return this.validationMessage;
-  }
-
-}
-
-export {PresentationComponent, InputComponent, SmartflowComponent}

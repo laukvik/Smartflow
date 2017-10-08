@@ -1,5 +1,5 @@
-import {Formatter} from "./formatter";
-import {ComponentBuilder} from "./Builder";
+import {Formatter} from "./Formatter";
+import {Builder} from "./Builder";
 import {View} from "./View";
 import {Action} from "./Action";
 
@@ -26,7 +26,21 @@ export const SCOPES = {
   GLOBAL: "GLOBAL"
 };
 
-export class Smartflow {
+/**
+ * Application
+ *
+ * @example <caption>Starting an application two views</caption>
+ *
+ * let app = new Application();
+ * app.addView(new MainView());
+ * app.addView(new InboxView());
+ * app.start();
+ *
+ * @author Morten Laukvik
+ *
+ */
+export class Application {
+
   constructor() {
     this._controller = undefined;
     this._controllers = [];
@@ -40,12 +54,12 @@ export class Smartflow {
     this._states = [];
   }
 
-  fireViewPropertyChanged(component, viewController, property, value) {
-
-  }
-
-  fireGlobalPropertyChanged(component, property, value){
-
+  firePropertyChanged(component, binding, value) {
+    if (binding.scope === SCOPES.VIEW) {
+      this._firePrivateStateChanged(binding.state, value, component.getView(), component);
+    } else if (binding.scope === SCOPES.GLOBAL) {
+      this._fireGlobalStateChanged(binding.state, value);
+    }
   }
 
   fireComponentChanged(component, property, value, view) {
@@ -58,6 +72,11 @@ export class Smartflow {
     view.componentChanged(componentEvent);
   }
 
+  /**
+   * Returns true if the action is an Action instance
+   * @param {Action} action the action
+   * @returns {boolean}
+   */
   isAction(action) {
     return action instanceof Action;
   }
@@ -126,44 +145,61 @@ export class Smartflow {
   }
 
   //--------------------------------- View ----------------------------------------
-  isView(ctrl) {
-    return ctrl instanceof View;
+  /**
+   * Returns true if the view is an instance of View
+   * @param {View} view
+   * @returns {boolean}
+   */
+  isView(view) {
+    return view instanceof View;
   }
 
-  addView(ctrl) {
-    if (!this.isView(ctrl)) {
-      console.warn("Smartflow: Not a view ", ctrl);
+  /**
+   * Adds the view
+   *
+   * @param {View} view the view
+   *
+   */
+  addView(view) {
+    if (!this.isView(view)) {
+      console.warn("Smartflow: Not a view ", view);
       return;
     }
-    this._controllers.push(ctrl);
-    ctrl.setSmartflowInstance(this);
-    ctrl._states = {};
-    this._buildComponents(ctrl);
-    return true;
+    this._controllers.push(view);
+    view.setSmartflowInstance(this);
+    view._states = {};
+    this._buildComponents(view);
   }
 
-  _buildComponents(viewController) {
-    // mount components
-    if (viewController.smartflow.components) {
-      let builder = new ComponentBuilder(viewController, this._formatter, this);
+  _buildComponents(view) {
+    if (view.smartflow.components) {
+      let builder = new Builder(view, this._formatter, this);
       builder.buildComponents();
     }
   }
 
-  removeView(ctrl) {
-    if (!this.isView(ctrl)) {
-      return false;
+  /**
+   * Removes the view
+   *
+   * @param {View} view the view
+   */
+  removeView(view) {
+    if (!this.isView(view)) {
+      return;
     }
     for (let x = 0; x < this._controllers.length; x++) {
       let existCtrl = this._controllers[x];
-      if (existCtrl.constructor.name === ctrl.constructor.name) {
+      if (existCtrl.constructor.name === view.constructor.name) {
         delete this._controllers[x];
         return true;
       }
     }
-    return false;
   }
 
+  /**
+   * Starts the application.
+   *
+   */
   start() {
     this._autoDetectLocale();
     for (let x = 0; x < this._controllers.length; x++) {
@@ -358,7 +394,7 @@ export class Smartflow {
    * Informs all controllers about global state changes and only informs the current controller
    * about the private states.
    *
-   * @param action
+   * @param {Action} action the action
    * @param actionEvent
    * @private
    */
@@ -367,28 +403,6 @@ export class Smartflow {
 
     // Find the "from" view controller
     let viewController = action._smartflowCaller;
-
-    // // Remove states from collection
-    // if (actionEvent.removeStates) {
-    //   for (let keyRemove in actionEvent.removeStates) {
-    //     delete this._states[keyRemove];
-    //   }
-    // }
-    //
-    // // Appends states to existing collection
-    // if (actionEvent.addStates) {
-    //   for (let keyAdd in actionEvent.addStates) {
-    //     let entriesArray = actionEvent.addStates[keyAdd];
-    //     if (Array.isArray(entriesArray)) {
-    //       for (let x = 0; x < entriesArray.length; x++) {
-    //         this._states[keyAdd].push(entriesArray[x]);
-    //       }
-    //       if (actionEvent.states[keyAdd] === undefined) {
-    //         actionEvent.states[keyAdd] = this._states[keyAdd];
-    //       }
-    //     }
-    //   }
-    // }
 
     // View state
     for (let key in actionEvent.states) {
@@ -406,19 +420,6 @@ export class Smartflow {
     if (actionEvent.path) {
       this.setPath(actionEvent.path);
     }
-
-    // // Set values in components
-    // if (actionEvent.commands) {
-    //   for (let y = 0; y < viewController.smartflow.componentInstances.length; y++) {
-    //     let component = viewController.smartflow.componentInstances[y];
-    //     for (let z = 0; z < actionEvent.commands.length; z++) {
-    //       let command = actionEvent.commands[z];
-    //       if (component.id == command.id) {
-    //         component.commandPerformed(command.command, command.value);
-    //       }
-    //     }
-    //   }
-    // }
 
     action._smartflowStarted = undefined;
     action._smartflowCaller = undefined;
@@ -500,9 +501,6 @@ export class Smartflow {
   }
 
   //--------------------------------- State ----------------------------------------
-  // fireStateChanged(state, value, fromComponent){
-  //   this._fireStateChanged(state, value, fromComponent);
-  // }
   _fireGlobalStateChanged(state, value) {
     for (let x = 0; x < this._controllers.length; x++) {
       let viewController = this._controllers[x];
@@ -521,8 +519,8 @@ export class Smartflow {
     }
   }
 
-  _firePrivateStateChanged(state, value, viewController) {
-    if (value === undefined || value == null) {
+  _firePrivateStateChanged(state, value, viewController, fromComponent) {
+    if (value === undefined || value === null) {
       delete( this._states[state] );
     } else {
       this._states[state] = value;
@@ -531,9 +529,11 @@ export class Smartflow {
     // Loop each component in view
     for (let index in viewController.smartflow.componentInstances) {
       let componentInstance = viewController.smartflow.componentInstances[ index ];
-      let binding = componentInstance.getBindingByState(state, SCOPES.VIEW);
-      if (binding) {
-        componentInstance.setProperty(binding.property, value);
+      if (componentInstance !== fromComponent) {
+        let binding = componentInstance.getBindingByState(state, SCOPES.VIEW);
+        if (binding) {
+          componentInstance.setProperty(binding.property, value, binding.path);
+        }
       }
     }
 
