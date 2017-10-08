@@ -1,11 +1,11 @@
 import {PresentationComponent} from "../PresentationComponent";
-import {Collections} from "../Collections";
+import {Collection} from "../Collection";
 
 class List extends PresentationComponent {
   constructor(properties) {
     super(properties);
     this._items = [];
-    this.collections = new Collections();
+    this.collections = new Collection();
     this._componentNode = document.createElement("ul");
     this._itemKey = "value";
     this._itemLabel = "text";

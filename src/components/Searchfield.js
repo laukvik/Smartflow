@@ -1,5 +1,5 @@
 import {InputComponent} from "../InputComponent";
-import {Collections} from "../Collections";
+import {Collection} from "../Collection";
 
 export class Searchfield extends InputComponent {
   constructor(properties) {
@@ -7,7 +7,7 @@ export class Searchfield extends InputComponent {
     this._componentNode = document.createElement("div");
     this.optionsNode = document.createElement("ul");
     this.optionsNode.setAttribute("class", "dropdown-menu");
-    this.collections = new Collections();
+    this.collections = new Collection();
     this.selectedIndex =  -1;
     this.optionsNodes = [];
     this._unfilteredItems = [];

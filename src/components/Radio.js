@@ -1,12 +1,12 @@
 import {InputComponent} from "../InputComponent";
-import {Collections} from "../Collections";
+import {Collection} from "../Collection";
 
 export class Radio extends InputComponent {
   constructor(properties) {
     super(properties);
     this.inputNodes = [];
     this._items = [];
-    this.collections = new Collections();
+    this.collections = new Collection();
     this._componentNode = document.createElement("div");
     this._itemKey = "value";
     this._itemLabel = "text";

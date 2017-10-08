@@ -10,6 +10,7 @@ import {Component} from "./Component";
  *
  */
 export class InputComponent extends Component {
+
   constructor(properties) {
     super(properties);
     this.comp = properties;

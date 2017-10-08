@@ -1,10 +1,10 @@
 import {PresentationComponent} from "../PresentationComponent";
-import {Collections} from "../Collections";
+import {Collection} from "../Collection";
 
 export class Media extends PresentationComponent {
   constructor(properties) {
     super(properties);
-    this.collections = new Collections();
+    this.collections = new Collection();
     this.buttons = [];
     this.actions = [];
     this.components = [];

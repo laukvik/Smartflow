@@ -1,5 +1,5 @@
 import {InputComponent} from "../InputComponent";
-import {Collections} from "../Collections";
+import {Collection} from "../Collection";
 
 /**
  *
@@ -17,7 +17,7 @@ class Checkbox extends InputComponent {
 
   constructor(properties) {
     super(properties);
-    this.collections = new Collections();
+    this.collections = new Collection();
     this._items = [];
     this.divNodes = []; // each option
     this.inputNodes = []; // the input inside each option

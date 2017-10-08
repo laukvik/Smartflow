@@ -1,5 +1,5 @@
 import {PresentationComponent} from "../PresentationComponent";
-import {Collections} from "../Collections";
+import {Collection} from "../Collection";
 
 /**
  * Card
@@ -17,7 +17,7 @@ export class Card extends PresentationComponent {
   constructor(properties) {
     super(properties);
     this._componentNode = document.createElement("div");
-    this.collections = new Collections();
+    this.collections = new Collection();
     this.buttons = [];
     this.actions = [];
     this.components = [];

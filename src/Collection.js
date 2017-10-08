@@ -6,7 +6,7 @@
  * TODO - Date
  *
  */
-export class Collections {
+export class Collection {
 
   constructor() {
     this.clearFilter();

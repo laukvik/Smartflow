@@ -1,3 +1,8 @@
+/**
+ *
+ *
+ *
+ */
 export class View {
   setSmartflowInstance(smartflow){
     this.__smartflowInstance = smartflow;
