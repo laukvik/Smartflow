@@ -1,4 +1,4 @@
-import {Smartflow} from "../../src/Smartflow";
+import {Application} from "../../src/Application";
 import {MainView} from "./views/MainView";
 import {InboxView} from "./views/InboxView";
 
@@ -19,7 +19,7 @@ let langEN = {
 };
 
 
-let app = new Smartflow();
+let app = new Application();
 app.setConfig(config);
 app.loadLanguage("no", langNO);
 app.loadLanguage("en", langEN);

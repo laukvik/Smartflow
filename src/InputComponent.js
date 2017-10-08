@@ -2,11 +2,7 @@ import {Component} from "./Component";
 
 
 /**
- *
- * Component for user input, validation and error message
- *
- * componentNode = hovedNo
- * containerNode =
+ * InputComponent allows for user input, validation and error message.
  *
  */
 export class InputComponent extends Component {

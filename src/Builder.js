@@ -5,7 +5,7 @@
  * @param ctrl
  * @constructor
  */
-import {SCOPES} from "./Smartflow";
+import {SCOPES} from "./Application";
 import {InputComponent} from "./InputComponent";
 import {Layout} from "./components/Layout";
 import {Button} from "./components/Button";
@@ -28,7 +28,8 @@ import {Navbar} from "./components/Navbar";
 import {Media} from "./components/Media";
 import {Text} from "./components/Text";
 
-class ComponentBuilder {
+export class Builder {
+
   constructor(ctrl, formatter, smartflow) {
     this.ctrl = ctrl;
     this.formatter = formatter;
@@ -43,45 +44,45 @@ class ComponentBuilder {
     if (typeof componentProperties.type === 'string') {
       let componentType = componentProperties.type.toLowerCase();
       if (componentType === 'button') {
-        c =  new Button(componentProperties);
+        c = new Button(componentProperties);
       } else if (componentType === 'checkbox') {
-        c =  new Checkbox(componentProperties);
+        c = new Checkbox(componentProperties);
       } else if (componentType === 'dialog') {
-        c =  new Dialog(componentProperties);
+        c = new Dialog(componentProperties);
       } else if (componentType === 'layout') {
-        c =  new Layout(componentProperties);
+        c = new Layout(componentProperties);
       } else if (componentType === 'progress') {
-        c =  new Progress(componentProperties);
+        c = new Progress(componentProperties);
       } else if (componentType === 'pulldown') {
-        c =  new Pulldown(componentProperties);
+        c = new Pulldown(componentProperties);
       } else if (componentType === 'radio') {
-        c =  new Radio(componentProperties);
+        c = new Radio(componentProperties);
       } else if (componentType === 'table') {
-        c =  new Table(componentProperties);
+        c = new Table(componentProperties);
       } else if (componentType === 'tabs') {
-        c =  new Tabs(componentProperties);
+        c = new Tabs(componentProperties);
       } else if (componentType === 'textfield') {
-        c =  new Textfield(componentProperties);
+        c = new Textfield(componentProperties);
       } else if (componentType === 'toolbar') {
-        c =  new Toolbar(componentProperties);
+        c = new Toolbar(componentProperties);
       } else if (componentType === 'alert') {
-        c =  new Alert(componentProperties);
+        c = new Alert(componentProperties);
       } else if (componentType === 'searchfield') {
-        c =  new Searchfield(componentProperties);
+        c = new Searchfield(componentProperties);
       } else if (componentType === 'datepicker') {
-        c =  new Datepicker(componentProperties);
+        c = new Datepicker(componentProperties);
       } else if (componentType === 'spinner') {
-        c =  new Spinner(componentProperties);
+        c = new Spinner(componentProperties);
       } else if (componentType === 'card') {
-        c =  new Card(componentProperties);
+        c = new Card(componentProperties);
       } else if (componentType === 'list') {
-        c =  new List(componentProperties);
+        c = new List(componentProperties);
       } else if (componentType === 'navbar') {
-        c =  new Navbar(componentProperties);
+        c = new Navbar(componentProperties);
       } else if (componentType === 'media') {
-        c =  new Media(componentProperties);
+        c = new Media(componentProperties);
       } else if (componentType === 'text') {
-        c =  new Text(componentProperties);
+        c = new Text(componentProperties);
       } else {
         console.warn("Component not found: ", componentProperties.type);
         return;
@@ -106,7 +107,8 @@ class ComponentBuilder {
       this.buildChildNode(rootNode, comps[x]);
     }
   }
-  parseScope(value){
+
+  parseScope(value) {
     let isString = typeof value === 'string';
     if (!isString) {
       return {
@@ -114,8 +116,8 @@ class ComponentBuilder {
         "value": value
       };
     }
-    if (value.indexOf("{") === 0 && value.lastIndexOf("}") === value.length-1) {
-      let innerValue = value.substring(1, value.length-1);
+    if (value.indexOf("{") === 0 && value.lastIndexOf("}") === value.length - 1) {
+      let innerValue = value.substring(1, value.length - 1);
       if (innerValue.toUpperCase().startsWith(SCOPES.GLOBAL)) {
         return {
           "scope": SCOPES.GLOBAL,
@@ -145,10 +147,10 @@ class ComponentBuilder {
     if (comp === undefined) {
       return;
     }
-    if (typeof comp === "object"){
+    if (typeof comp === "object") {
       for (let key in comp) {
         if (key !== "type") { // Type is reserved
-          let value = comp[ key ];
+          let value = comp[key];
           path.push(key);
           let bind = this.parseScope(value);
           if (bind.scope === SCOPES.NONE) {
@@ -183,4 +185,3 @@ class ComponentBuilder {
 
 }
 
-export {ComponentBuilder};

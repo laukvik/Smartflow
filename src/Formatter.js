@@ -3,6 +3,7 @@
  *
  * @param config
  * @constructor
+ * @private
  */
 export class Formatter {
   constructor(config){

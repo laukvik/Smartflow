@@ -5,6 +5,8 @@
  * TODO - Number
  * TODO - Date
  *
+ * @private
+ *
  */
 export class Collection {
 

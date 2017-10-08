@@ -1,5 +1,5 @@
 import {Formatter} from "./Formatter";
-import {ComponentBuilder} from "./Builder";
+import {Builder} from "./Builder";
 import {View} from "./View";
 import {Action} from "./Action";
 
@@ -27,10 +27,13 @@ export const SCOPES = {
 };
 
 /**
- * Smartflow
+ * Application
+ *
+ * @author Morten Laukvik
  *
  */
-export class Smartflow {
+export class Application {
+
   constructor() {
     this._controller = undefined;
     this._controllers = [];
@@ -62,6 +65,11 @@ export class Smartflow {
     view.componentChanged(componentEvent);
   }
 
+  /**
+   * Returns true if the action is an Action instance
+   * @param {Action} action the action
+   * @returns {boolean}
+   */
   isAction(action) {
     return action instanceof Action;
   }
@@ -130,44 +138,61 @@ export class Smartflow {
   }
 
   //--------------------------------- View ----------------------------------------
-  isView(ctrl) {
-    return ctrl instanceof View;
+  /**
+   * Returns true if the view is an instance of View
+   * @param {View} view
+   * @returns {boolean}
+   */
+  isView(view) {
+    return view instanceof View;
   }
 
-  addView(ctrl) {
-    if (!this.isView(ctrl)) {
-      console.warn("Smartflow: Not a view ", ctrl);
+  /**
+   * Adds the view
+   *
+   * @param {View} view the view
+   *
+   */
+  addView(view) {
+    if (!this.isView(view)) {
+      console.warn("Smartflow: Not a view ", view);
       return;
     }
-    this._controllers.push(ctrl);
-    ctrl.setSmartflowInstance(this);
-    ctrl._states = {};
-    this._buildComponents(ctrl);
-    return true;
+    this._controllers.push(view);
+    view.setSmartflowInstance(this);
+    view._states = {};
+    this._buildComponents(view);
   }
 
-  _buildComponents(viewController) {
-    // mount components
-    if (viewController.smartflow.components) {
-      let builder = new ComponentBuilder(viewController, this._formatter, this);
+  _buildComponents(view) {
+    if (view.smartflow.components) {
+      let builder = new Builder(view, this._formatter, this);
       builder.buildComponents();
     }
   }
 
-  removeView(ctrl) {
-    if (!this.isView(ctrl)) {
-      return false;
+  /**
+   * Removes the view
+   *
+   * @param {View} view the view
+   */
+  removeView(view) {
+    if (!this.isView(view)) {
+      return;
     }
     for (let x = 0; x < this._controllers.length; x++) {
       let existCtrl = this._controllers[x];
-      if (existCtrl.constructor.name === ctrl.constructor.name) {
+      if (existCtrl.constructor.name === view.constructor.name) {
         delete this._controllers[x];
         return true;
       }
     }
-    return false;
   }
 
+  /**
+   * Starts the application.
+   *
+   */
   start() {
     this._autoDetectLocale();
     for (let x = 0; x < this._controllers.length; x++) {
@@ -362,7 +387,7 @@ export class Smartflow {
    * Informs all controllers about global state changes and only informs the current controller
    * about the private states.
    *
-   * @param action
+   * @param {Action} action the action
    * @param actionEvent
    * @private
    */

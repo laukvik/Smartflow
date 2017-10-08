@@ -1,8 +1,9 @@
-import {SCOPES} from "./Smartflow";
+import {SCOPES} from "./Application";
 
 /**
  *
  *
+ * @private
  */
 export class Component {
 

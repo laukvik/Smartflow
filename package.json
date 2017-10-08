@@ -1,8 +1,8 @@
 {
-  "name": "smartflow",
+  "name": "Smartflow",
   "version": "0.1.2",
   "description": "Easy to use application flow management.",
-  "main": "src/Smartflow.js",
+  "main": "src/Application.js",
   "scripts": {
     "babel": "babel src -d dist",
     "build-dev": "webpack-dev-server",
@@ -13,7 +13,8 @@
     "www": "npm run start",
     "coverage": "jest ./src/  --coverage",
     "eslint": "eslint ./src/*.js",
-    "docs": "jsdoc -P ./package.json -r -d ./docs ./src/*.js"
+    "docsold": "jsdoc -P ./package.json -d ./docs -r ./src/*.js",
+    "docs": "jsdoc -c jsdoc.json "
   },
   "watch": {
     "test": "{src}/*.js"

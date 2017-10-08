@@ -1,13 +1,14 @@
 /**
- *
- *
+ * View is
  *
  */
 export class View {
-  setSmartflowInstance(smartflow){
+
+  setSmartflowInstance(smartflow) {
     this.__smartflowInstance = smartflow;
   }
-  runSmartflow(action){
+
+  runSmartflow(action) {
     this.__smartflowInstance.runAction(action, this);
   }
 
