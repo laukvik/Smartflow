@@ -1,5 +1,5 @@
-import {PresentationComponent} from "../component";
-import {Collections} from "../collections";
+import {PresentationComponent} from "../Component";
+import {Collections} from "../Collections";
 
 class List extends PresentationComponent {
   constructor(properties) {

@@ -1,4 +1,4 @@
-import {InputComponent} from "../component";
+import {InputComponent} from "../Component";
 
 export class Textfield extends InputComponent {
   constructor(properties) {

@@ -6,7 +6,7 @@
  * @constructor
  */
 import {SCOPES} from "./Smartflow";
-import {InputComponent} from "./component";
+import {InputComponent} from "./Component";
 import {Layout} from "./components/Layout";
 import {Button} from "./components/Button";
 import {Checkbox} from "./components/Checkbox";

@@ -1,4 +1,4 @@
-import {SmartflowComponent} from "../component";
+import {SmartflowComponent} from "../Component";
 
 class Text extends SmartflowComponent {
 

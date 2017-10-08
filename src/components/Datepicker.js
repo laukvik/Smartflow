@@ -1,5 +1,5 @@
-import {InputComponent} from "../component";
-import {Formatter} from "../formatter";
+import {InputComponent} from "../Component";
+import {Formatter} from "../Formatter";
 
 class Datepicker extends InputComponent {
   constructor(properties) {

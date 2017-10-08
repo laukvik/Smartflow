@@ -1,4 +1,4 @@
-import {SmartflowComponent} from "../component";
+import {SmartflowComponent} from "../Component";
 
 export class Spinner extends SmartflowComponent {
   constructor(properties) {

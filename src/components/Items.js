@@ -1,5 +1,5 @@
-import {PresentationComponent} from "../component";
-import {Collections} from "../collections";
+import {PresentationComponent} from "../Component";
+import {Collections} from "../Collections";
 
 export class Items extends PresentationComponent {
   constructor(properties) {

@@ -1,7 +1,7 @@
 var path = require('path');
 
 module.exports = {
-  entry: './src/smartflow.js',
+  entry: './src/Smartflow.js',
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: 'smartflow.js',

@@ -1,4 +1,3 @@
-import {Builder} from '../../Builder';
 import {Button} from '../Button';
 
 describe('properties', function () {

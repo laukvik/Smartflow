@@ -1,4 +1,4 @@
-import {PresentationComponent} from "../component";
+import {PresentationComponent} from "../Component";
 
 export class Navbar extends PresentationComponent {
   constructor(properties) {

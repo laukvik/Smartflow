@@ -1,4 +1,4 @@
-import {PresentationComponent} from "../component";
+import {PresentationComponent} from "../Component";
 
 class Tabs extends PresentationComponent {
   constructor(properties) {

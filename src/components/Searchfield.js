@@ -1,5 +1,5 @@
-import {InputComponent} from "../component";
-import {Collections} from "../collections";
+import {InputComponent} from "../Component";
+import {Collections} from "../Collections";
 
 export class Searchfield extends InputComponent {
   constructor(properties) {

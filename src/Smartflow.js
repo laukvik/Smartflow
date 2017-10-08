@@ -1,4 +1,4 @@
-import {Formatter} from "./formatter";
+import {Formatter} from "./Formatter";
 import {ComponentBuilder} from "./Builder";
 import {View} from "./View";
 import {Action} from "./Action";

@@ -1,4 +1,4 @@
-import {PresentationComponent} from "../component";
+import {PresentationComponent} from "../Component";
 
 class Progress extends PresentationComponent {
   constructor(properties) {
