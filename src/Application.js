@@ -29,6 +29,13 @@ export const SCOPES = {
 /**
  * Application
  *
+ * @example <caption>Starting an application two views</caption>
+ *
+ * let app = new Application();
+ * app.addView(new MainView());
+ * app.addView(new InboxView());
+ * app.start();
+ *
  * @author Morten Laukvik
  *
  */

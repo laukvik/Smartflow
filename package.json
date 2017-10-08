@@ -13,8 +13,7 @@
     "www": "npm run start",
     "coverage": "jest ./src/  --coverage",
     "eslint": "eslint ./src/*.js",
-    "docsold": "jsdoc -P ./package.json -d ./docs -r ./src/*.js",
-    "docs": "jsdoc -c jsdoc.json "
+    "docs": "jsdoc -c jsdoc.json"
   },
   "watch": {
     "test": "{src}/*.js"

@@ -3,6 +3,7 @@ import {Component} from "../Component";
 /**
  * Alert
  *
+ * @private
  */
 export class Alert extends Component {
 

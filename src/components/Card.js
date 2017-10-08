@@ -12,6 +12,8 @@ import {Collection} from "../Collection";
  *          <a href="#" class="btn btn-primary">Go somewhere</a>
  *      </div>
  * </div>
+ *
+ * @private
  */
 export class Card extends PresentationComponent {
   constructor(properties) {

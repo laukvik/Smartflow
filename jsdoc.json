@@ -7,15 +7,18 @@
   "sourceType": "module",
   "tags": {
     "allowUnknownTags": true,
-    "dictionaries": ["jsdoc","closure"]
+    "dictionaries": ["jsdoc"]
   },
   "templates": {
     "cleverLinks": false,
     "monospaceLinks": false
   },
   "opts": {
+    "template": "templates/default",
     "encoding": "utf8",
     "destination": "./docs",
-    "recurse": true
+
+    "recurse": true,
+    "tutorials": "tutorial"
   }
 }

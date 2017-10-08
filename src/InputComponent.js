@@ -4,6 +4,7 @@ import {Component} from "./Component";
 /**
  * InputComponent allows for user input, validation and error message.
  *
+ * @private
  */
 export class InputComponent extends Component {
 

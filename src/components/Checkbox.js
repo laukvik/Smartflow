@@ -12,6 +12,7 @@ import {Collection} from "../Collection";
  *     <input type="text" class="form-control" aria-label="Text input with checkbox">
  * </div>
  *
+ * @private
  */
 class Checkbox extends InputComponent {
 

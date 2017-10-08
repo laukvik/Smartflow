@@ -3,7 +3,7 @@ import {Component} from "./Component";
 /**
  * Component for presentation
  *
- *
+ * @private
  */
 export class PresentationComponent extends Component {
 
