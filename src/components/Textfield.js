@@ -1,8 +1,32 @@
 import {InputComponent} from "../InputComponent";
 
+/**
+ *
+ * @typedef {ComponentProperties} Properties
+ * @property {string} type - always Textfield
+ * @property {string} label - the label
+ * @property {boolean} required - indicates whether the value is required
+ * @property {string} value - the value of the Textfield
+ * @property {string} placeholder - the placeholder for the Textfield
+ *
+ */
+
+/**
+ *
+ *
+ *
+ */
 export class Textfield extends InputComponent {
-  constructor(properties) {
-    super(properties);
+
+
+
+  /**
+   * Constructor for Textfield
+   *
+   * @param {ComponentProperties} props the properties for the component
+   */
+  constructor(props) {
+    super(props);
     this._componentNode = document.createElement("div");
     this._iconBefore = null;
     this._iconAfter = null;
