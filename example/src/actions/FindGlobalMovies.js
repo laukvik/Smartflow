@@ -1,6 +1,6 @@
-import {Action} from "../../../src/Action";
+import {ServerAction} from "../../../src/ServerAction";
 
-export class FindGlobalMovies extends Action {
+export class FindGlobalMovies extends ServerAction {
   getSmartflow() {
     return {
       "request": {

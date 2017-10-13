@@ -1,6 +1,6 @@
-import {Action} from "../../../src/Action";
+import {ClientAction} from "../../../src/ClientAction";
 
-export class CloseDialogAction extends Action {
+export class CloseDialogAction extends ClientAction {
 
   getSmartflow() {
     return {

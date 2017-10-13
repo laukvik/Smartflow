@@ -1,7 +1,7 @@
-import {Action} from "../../../src/Action";
+import {ClientAction} from "../../../src/ClientAction";
 
 
-export class FindTableAction extends Action {
+export class FindTableAction extends ClientAction {
   getSmartflow() {
     return {
       "states": {

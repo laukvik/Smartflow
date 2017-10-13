@@ -1,7 +1,7 @@
-import {Action} from "../../../src/Action";
+import {ClientAction} from "../../../src/ClientAction";
 
 
-export class StartAction extends Action {
+export class StartAction extends ClientAction {
   getSmartflow() {
     return {
       "global": {

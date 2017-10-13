@@ -1,6 +1,6 @@
-import {Action} from "../../../src/Action";
+import {ServerAction} from "../../../src/ServerAction";
 
-export class SearchfieldAction extends Action {
+export class SearchfieldAction extends ServerAction {
   getSmartflow() {
     return {
       "request": {

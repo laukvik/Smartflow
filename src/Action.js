@@ -1,46 +1,25 @@
 /**
  * An action is a super class that all actions needs to extend
- * in order to be run by the Application class. asqew
- * export class ShowDialogAction extends Action {}
+ * in order to be run by the Application class.
  *
- * @example <caption>Client side action</caption>
- * export class ShowDialogAction extends Action {
- *   getSmartflow() {
- *     return {
- *       "states": {
- *         "dialogVisible" : true
- *       }
- *     }
- *   }
- * }
- *
- * @example <caption>Server side action</caption>
- *
- * export class FindGlobalMovies extends Action {
- *  getSmartflow() {
- *    return {
- *      "request": {
- *        "url": "movies.json",
- *        "method": "get",
- *        "type": "json"
- *      },
- *      "success": {
- *        "path": "/",
- *        "global": "movies",
- *      },
- *      "error": {
- *        "path": "/",
- *        "global": "moviesFailed"
- *      }
- *    }
- *  }
+ * @private
  */
 export class Action {
 
-  constructor() {
+  /**
+   * Constructor for Action
+   *
+   * @param {ServerActionProperties} props the properties for the action
+   */
+  constructor(props) {
     this.smartflow = {};
   }
 
+  /**
+   * Returns the instructions for the action
+   *
+   * @returns {{}|*}
+   */
   getSmartflow() {
     return this.smartflow;
   }

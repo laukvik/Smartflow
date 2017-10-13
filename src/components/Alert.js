@@ -1,12 +1,26 @@
 import {Component} from "../Component";
 
 /**
+ *
+ * @typedef {Object} AlertProperties
+ * @property {text} text - the message
+ * @property {style} style - the style of alert (info, success, warning, error)
+ * @property {visible} components - an array of components
+ *
+ */
+
+/**
  * Alert
  *
- * @private
+ *
  */
 export class Alert extends Component {
 
+  /**
+   * Constructor for Alert
+   *
+   * @param {AlertProperties} properties the properties for the component
+   */
   constructor(properties) {
     super(properties);
     this._componentNode = document.createElement("div");

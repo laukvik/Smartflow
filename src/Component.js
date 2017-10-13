@@ -14,6 +14,15 @@ export class Component {
     this._valueBindings = {};
   }
 
+  setProperties(properties){
+    if (typeof properties === "object") {
+      for (let key in properties) {
+        let value = properties[ key ];
+        this.setProperty(key, value);
+      }
+    }
+  }
+
   /**
    * Sets the value for a named property
    *

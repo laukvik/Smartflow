@@ -1,7 +1,8 @@
 import {Formatter} from "./Formatter";
 import {Builder} from "./Builder";
 import {View} from "./View";
-import {Action} from "./Action";
+import {ServerAction} from "./ServerAction";
+import {ClientAction} from "./ClientAction";
 
 const HTTP_STATUS_CODES = {
   INFO: 100,
@@ -78,7 +79,7 @@ export class Application {
    * @returns {boolean}
    */
   isAction(action) {
-    return action instanceof Action;
+    return Object.getPrototypeOf(action) instanceof ClientAction || Object.getPrototypeOf(action) instanceof ServerAction;
   }
 
   //--------------------------------- Config ---------------------------------
@@ -107,6 +108,11 @@ export class Application {
   }
 
   //--------------------------------- Locale ---------------------------------
+  /**
+   * Sets the default locale
+   *
+   * @param locale
+   */
   setDefaultLocale(locale) {
     this._localeDefault = locale;
   }
