@@ -1,6 +1,10 @@
 import {Application} from "../../src/Application";
-import {MainView} from "./views/MainView";
-import {InboxView} from "./views/InboxView";
+import {NavigationView} from "./views/NavigationView";
+import {NotFoundView} from "./views/NotFoundView";
+import {SearchView} from "./views/SearchView";
+import {CatalogView} from "./views/CatalogView";
+import {EditView} from "./views/EditView";
+import {DetailsView} from "./views/DetailsView";
 
 let config = {
   "LoginAction": "/api/login",
@@ -24,6 +28,10 @@ app.setConfig(config);
 app.loadLanguage("no", langNO);
 app.loadLanguage("en", langEN);
 app.setDefaultLocale("en");
-app.addView(new MainView());
-app.addView(new InboxView());
+app.addView(new SearchView());
+app.addView(new CatalogView());
+app.addView(new DetailsView());
+app.addView(new EditView());
+app.addView(new NotFoundView());
+app.addView(new NavigationView());
 app.start();

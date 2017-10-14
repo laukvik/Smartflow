@@ -1,14 +1,4 @@
 import {View} from "../../../src/View";
-import {FindMoviesAction} from "../actions/MoviesAction";
-import {FindGlobalMovies} from "../actions/FindGlobalMovies";
-import {SearchfieldAction} from "../actions/SearchfieldAction";
-import {ShowDialogAction} from "../actions/ShowDialogAction";
-import {StartAction} from "../actions/StartAction";
-import {CloseDialogAction} from "../actions/CloseDialogAction";
-import {FindTableAction} from "../actions/FindTableAction";
-import {FindPostersAction} from "../actions/FindPostersAction";
-
-import {Text} from "../../../src/components/Text";
 import {Items} from "../../../src/components/Items";
 
 export class InboxView extends View {
@@ -17,7 +7,7 @@ export class InboxView extends View {
     super();
 
     this.smartflow = {
-      "path": "/",
+      "path": "/inbox",
       "components": [
         {
           "type": "Textfield",
@@ -25,6 +15,18 @@ export class InboxView extends View {
           "required": true,
           "value": "{filter}",
           "placeholder": "Search...",
+          "dust": "fjomp"
+        },
+        {
+          "type": "Card",
+          "title": "Første",
+          "description": "{filter}",
+          "_photo": "posterurl"
+        },
+        {
+          "type": "Alert",
+          "text": "{filter}",
+          "style": "info"
         },
         {
           "type": Items,
@@ -56,11 +58,11 @@ export class InboxView extends View {
   }
 
   viewEnabled() {
-    // this.runSmartflow(new StartAction());
-    // this.runSmartflow(new FindTableAction());
-    // this.runSmartflow(new FindMoviesAction());
-    // this.runSmartflow(new FindGlobalMovies());
-    this.runSmartflow(new FindPostersAction());
+    // this.runAction(new StartAction());
+    // this.runAction(new FindTableAction());
+    // this.runAction(new FindMoviesAction());
+    // this.runAction(new FindGlobalMovies());
+    this.runAction(new FindPostersAction());
   }
 
   componentChanged(evt) {

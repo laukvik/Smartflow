@@ -1,6 +1,7 @@
 import {ServerAction} from "../../../src/ServerAction";
 
-export class FindGlobalMovies extends ServerAction {
+export class FindMoviesAction extends ServerAction {
+
   getSmartflow() {
     return {
       "request": {
@@ -9,11 +10,9 @@ export class FindGlobalMovies extends ServerAction {
         "type": "json"
       },
       "success": {
-        "path": "/",
         "global": "movies",
       },
       "error": {
-        "path": "/",
         "global": "moviesFailed"
       }
     }
