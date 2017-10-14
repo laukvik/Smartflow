@@ -53,7 +53,6 @@ export class Searchfield extends InputComponent {
     } else if (name === "required") {
       this.setRequired(value);
     } else if (name === "items") {
-      console.info("Searchfield: items: ", value);
       this._unfilteredItems = value;
       this.setItems(value);
     } else if (name === "value") {
@@ -72,7 +71,13 @@ export class Searchfield extends InputComponent {
       this.setPlaceholder(value);
     } else if (name === "help") {
       this.setHelp(value);
+    } else if (name === "selectAction") {
+      this.setSelectAction(value);
     }
+  }
+
+  setSelectAction(action) {
+    this.selectAction = action;
   }
 
   setItemsEmpty(itemsEmpty) {
@@ -130,6 +135,9 @@ export class Searchfield extends InputComponent {
     this.setDropdownVisible(false);
     this.input.select();
     this.firePropertyChanged("selected", this.input.value);
+    if (this.selectAction !== undefined) {
+      this.fireAction(this.selectAction);
+    }
   }
 
   setSelectedIndex(index) {
@@ -153,6 +161,7 @@ export class Searchfield extends InputComponent {
 
 
     this.input.addEventListener('keyup', function (evt) {
+      this.setDropdownVisible(true);
       if (evt.key === "ArrowDown") {
         this.arrowDown();
       } else if (evt.key === "ArrowUp") {
@@ -191,6 +200,7 @@ export class Searchfield extends InputComponent {
     // }
     this._componentNode.setAttribute("class", "sf-searchfield input-group" + (properties.class ? " " + properties.class : ""));
     this._componentNode.appendChild(this.optionsNode);
+    this._componentNode.setAttribute("class", "card");
     return this._componentNode;
   }
 

@@ -4,7 +4,7 @@ export class GotoCatalogAction extends ClientAction {
 
   getSmartflow() {
     return {
-      "path": "/"
+      "path": "/catalog"
     }
   }
 }

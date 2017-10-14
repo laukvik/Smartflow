@@ -5,7 +5,7 @@ export class FindMoviesAction extends ServerAction {
   getSmartflow() {
     return {
       "request": {
-        "url": "movies.json",
+        "url": "posters.json",
         "method": "get",
         "type": "json"
       },

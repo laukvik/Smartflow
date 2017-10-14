@@ -159,7 +159,7 @@ export class Component {
 
   setClass(className) {
     this._componentClass = className;
-    this._componentNode.setAttribute("class", this._componentBaseClass + (className == undefined ? "" : className));
+  //  this._componentNode.setAttribute("class", this._componentBaseClass + (className == undefined ? "" : className));
   }
 
   getClass() {

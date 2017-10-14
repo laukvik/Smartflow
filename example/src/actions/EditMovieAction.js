@@ -4,9 +4,7 @@ export class EditMovieAction extends ClientAction {
 
   getSmartflow() {
     return {
-      "states": {
-        "dialogVisible" : true
-      }
+      "path": "/catalog/{id}"
     }
   }
 }

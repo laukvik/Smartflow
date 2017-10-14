@@ -1,7 +1,32 @@
 import {InputComponent} from "../InputComponent";
 import {Collection} from "../Collection";
 
+/**
+ *
+ * @typedef {Object} TableProperties
+ * @property {string} type - always Table
+ * @property {string} items - the items
+ * @property {string} rowKey - the rowKey
+ * @property {string} columns - the columns
+ * @property {string} selected - the selected
+ * @property {string} sort - the sort
+ * @property {string} filter - the filter
+ * @property {string} paging - the paging
+ *
+ */
+
+/**
+ *
+ *
+ *
+ */
 class Table extends InputComponent {
+
+  /**
+   * Constructor for Table
+   *
+   * @param {TableProperties} props the properties for the component
+   */
   constructor(properties) {
     super(properties);
     this.collections = new Collection();
@@ -29,20 +54,23 @@ class Table extends InputComponent {
       this.setFilter(value);
     } else if (name === "paging") {
       this.setPaging(value);
+    } else {
+      console.warn("Table: Unkown property ", name);
     }
   }
 
   buildComponent(builder, properties) {
+    this.builder = builder;
     // Table
 
     this._componentNode.setAttribute("class", "table");
     // Head
-    var theadNode = document.createElement("thead");
-    var headerRowNode = document.createElement("tr");
+    let theadNode = document.createElement("thead");
+    let headerRowNode = document.createElement("tr");
     theadNode.appendChild(headerRowNode);
     this._componentNode.appendChild(theadNode);
     // Body
-    var bodyNode = document.createElement("tbody");
+    let bodyNode = document.createElement("tbody");
     this._componentNode.appendChild(bodyNode);
     this.headerNode = headerRowNode;
     this.bodyNode = bodyNode;
@@ -76,13 +104,13 @@ class Table extends InputComponent {
       this.removeChildNodes(this.headerNode);
 
       if (this.selectable) {
-        var thSelectNode = document.createElement("th");
+        let thSelectNode = document.createElement("th");
         this.headerNode.appendChild(thSelectNode);
       }
 
-      for (var x = 0; x < columns.length; x++) {
-        var column = columns[x];
-        var thNode = document.createElement("th");
+      for (let x = 0; x < columns.length; x++) {
+        let column = columns[x];
+        let thNode = document.createElement("th");
         thNode.innerText = column.label;
         this.headerNode.appendChild(thNode);
       }
@@ -121,11 +149,11 @@ class Table extends InputComponent {
   }
 
   _changed(input) {
-    var id = input.getAttribute("id");
+    let id = input.getAttribute("id");
     if (input.checked) {
       this.selected.push(id);
     } else {
-      var index = this.selected.indexOf(id);
+      let index = this.selected.indexOf(id);
       this.selected.splice(index, 1);
     }
     this.fireComponentChanged("selected", this.getSelected());
@@ -133,19 +161,20 @@ class Table extends InputComponent {
 
   setItems(rowData) {
     if (Array.isArray(rowData)) {
-      var rows = this.collections.find(rowData);
+      let rows = this.collections.find(rowData);
       this._items = rows;
+
       this.removeChildNodes(this.bodyNode);
-      for (var y = 0; y < rows.length; y++) {
+      for (let y = 0; y < rows.length; y++) {
         let row = rows[y];
         let trNode = document.createElement("tr");
         this.bodyNode.appendChild(trNode);
 
-        if (this.selectable && this.rowKey != undefined) {
-          var thSelectNode = document.createElement("td");
+        if (this.selectable && this.rowKey !== undefined) {
+          let thSelectNode = document.createElement("td");
           trNode.appendChild(thSelectNode);
-          var inputSelect = document.createElement("input");
-          var rowKey = row[this.rowKey];
+          let inputSelect = document.createElement("input");
+          let rowKey = row[this.rowKey];
           this.inputNodes.push(inputSelect);
           inputSelect.setAttribute("id", rowKey);
           inputSelect.setAttribute("type", "checkbox");
@@ -156,10 +185,11 @@ class Table extends InputComponent {
           }.bind(this), false);
         }
 
-        for (var x = 0; x < this.columns.length; x++) {
-          var column = this.columns[x];
-          var cellData = row[column.key];
-          var tdNode = document.createElement("td");
+
+        for (let x = 0; x < this.columns.length; x++) {
+          let column = this.columns[x];
+          let cellData = row[column.key];
+          let tdNode = document.createElement("td");
           trNode.appendChild(tdNode);
           if (column.format) {
             tdNode.innerText = this.builder.formatter.formatDate(cellData, column.format);

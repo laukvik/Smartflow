@@ -159,7 +159,7 @@ export class Builder {
           let bind = this.parseScope(value);
           if (bind.scope === SCOPES.NONE) {
             componentInstance.setProperty(key, bind.value);
-            this.applyBindings(componentInstance, value, path);
+            this.applyBindings(componentInstance, value, path); // TODO - FIX THIS
             path.pop();
           } else {
             componentInstance.setBinding(key, bind.value, bind.scope, path.shift());

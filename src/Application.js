@@ -425,7 +425,9 @@ export class Application {
 
 
     if (actionEvent.path) {
-      this.setPath(actionEvent.path);
+      //
+      //this.setPath(actionEvent.path);
+      this.setPath(this.replacePathWithScopeVariables(actionEvent.path));
     }
 
     action._smartflowStarted = undefined;
@@ -440,17 +442,9 @@ export class Application {
     this._runRemainingActions();
   }
 
-  // _findParams(pathString) {
-  //   let parameters = pathString.split("/");
-  //   if (parameters[0] == "") {
-  //     parameters.shift();
-  //   }
-  //   var firstElement = "/" + parameters.shift();
-  //   return {
-  //     "path": firstElement,
-  //     "param": parameters
-  //   }
-  // }
+  replacePathWithScopeVariables(path){
+    return path.replace("{global:selectedMovie}", "12");
+  }
 
   //--------------------------------- Path ----------------------------------------
   findViewByPath(path) {
@@ -483,8 +477,8 @@ export class Application {
     let ctrl;
     for (let x = 0; x < this._controllers.length; x++) {
       ctrl = this._controllers[x];
-      if (ctrl.smartflow.path !== path) {
-          ctrl.viewDisabled();
+      if (ctrl.smartflow.path !== undefined && ctrl.smartflow.path !== path) {
+        ctrl.viewDisabled();
         this._setViewVisible(ctrl, false);
       }
     }

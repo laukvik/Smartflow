@@ -17,7 +17,6 @@ export class Path {
    * @param path the path
    */
   matches(path) {
-    console.info("Path: ", path);
     let arr = Path._parse(path);
     if (arr.length !== this.params.length){
       return false;

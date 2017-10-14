@@ -6,6 +6,7 @@
 import {View} from "../../../src/View";
 import {Items} from "../../../src/components/Items";
 import {Text} from "../../../src/components/Text";
+import {Table} from "../../../src/components/Table";
 
 /**
  * Table view with details of all movies in catalog.
@@ -24,11 +25,31 @@ export class CatalogView extends View {
         {
           "type": Text,
           "heading": "Catalog",
-          "text": "Shows all movies in catalog"
+          "text": "All movies"
         },
+
+        {
+          "type": Table,
+          "columns": [
+            {
+              "label": "Title",
+              "key": "title"
+            },
+            {
+              "label": "Genre",
+              "key": "genres"
+            },
+            {
+              "label": "Year",
+              "key": "year"
+            },
+          ],
+          "items": "{global:movies}"
+        },
+
         {
           "type": Items,
-          "items": "{posters}",
+          "items": "{global:movies}",
           "component": {
             "type": "Card",
             "title": "title",
