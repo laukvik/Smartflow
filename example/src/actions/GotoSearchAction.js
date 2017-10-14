@@ -1,6 +1,6 @@
 import {ClientAction} from "../../../src/ClientAction";
 
-export class GotoIndexAction extends ClientAction {
+export class GotoSearchAction extends ClientAction {
 
   getSmartflow() {
     return {

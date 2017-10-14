@@ -3,7 +3,7 @@
  *
  */
 import {View} from "../../../src/View";
-import {GotoIndexAction} from "../actions/GotoIndexAction";
+import {GotoSearchAction} from "../actions/GotoSearchAction";
 import {GotoCatalogAction} from "../actions/GotoCatalogAction";
 import {GotoNewMovieAction} from "../actions/GotoNewMovieAction";
 
@@ -13,7 +13,6 @@ export class NavigationView extends View {
     super();
 
     this.smartflow = {
-      "path": "/",
       "components": [
         {
           "type": "Navbar",
@@ -21,7 +20,7 @@ export class NavigationView extends View {
           "buttons": [
             {
               "label": "Search",
-              "action": GotoIndexAction
+              "action": GotoSearchAction
             },
             {
               "label": "Catalog",

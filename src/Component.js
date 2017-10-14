@@ -44,7 +44,8 @@ export class Component {
   firePropertyChanged(name, value) {
     let binding = this._valueBindings[ name ];
     if (binding === undefined) {
-      console.warn("SmartflowComponent: invalid property ", name);
+      let a = this;
+      console.info(a.constructor.name, " invalid property ", name);
       return;
     }
     this.smartflow.firePropertyChanged(this, binding, value);

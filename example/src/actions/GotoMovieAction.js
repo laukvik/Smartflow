@@ -4,7 +4,7 @@ export class GotoMovieAction extends ClientAction {
 
   getSmartflow() {
     return {
-      "path": "/catalog/12"
+      "path": "/catalog/{global:selectedMovie}"
     }
   }
 }

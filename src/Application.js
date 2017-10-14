@@ -1,8 +1,22 @@
+/**
+ * Application
+ *
+ * @example <caption>Starting an application two views</caption>
+ *
+ * let app = new Application();
+ * app.addView(new MainView());
+ * app.addView(new InboxView());
+ * app.start();
+ *
+ * @author Morten Laukvik
+ *
+ */
 import {Formatter} from "./Formatter";
 import {Builder} from "./Builder";
 import {View} from "./View";
 import {ServerAction} from "./ServerAction";
 import {ClientAction} from "./ClientAction";
+import {Path} from "./Path";
 
 const HTTP_STATUS_CODES = {
   INFO: 100,
@@ -27,19 +41,6 @@ export const SCOPES = {
   GLOBAL: "GLOBAL"
 };
 
-/**
- * Application
- *
- * @example <caption>Starting an application two views</caption>
- *
- * let app = new Application();
- * app.addView(new MainView());
- * app.addView(new InboxView());
- * app.start();
- *
- * @author Morten Laukvik
- *
- */
 export class Application {
 
   constructor() {
@@ -314,7 +315,7 @@ export class Application {
             } else if (statusCode === HTTP_STATUS_CODES.SUCCESS) {
               // Success
               actionEvent.path = action.getSmartflow().success.path;
-              actionEvent.params = self._findParams(actionEvent.path).param;
+              //actionEvent.params = self._findParams(actionEvent.path).param;
               actionEvent.states[action.getSmartflow().success.state] = actionEvent.response.body;
 
               actionEvent.global[action.getSmartflow().success.global] = actionEvent.response.body;
@@ -327,7 +328,7 @@ export class Application {
               // Redirect
               let errorRedirectMessage = "Error: Server responded " + statusCode + " (" + action.constructor.name + ")";
               actionEvent.path = action.getSmartflow().error.path;
-              actionEvent.params = self._findParams(actionEvent.path).param;
+              //actionEvent.params = self._findParams(actionEvent.path).param;
               actionEvent.error = errorRedirectMessage;
               actionEvent.states[action.getSmartflow().error.state] = errorRedirectMessage;
               self._fireActionPerformed(action, actionEvent);
@@ -336,7 +337,7 @@ export class Application {
               // Client error
               let errorClientMessage = "Error: Server responded " + statusCode + " (" + action.constructor.name + ") ";
               actionEvent.path = action.getSmartflow().error.path;
-              actionEvent.params = self._findParams(actionEvent.path).param;
+              //actionEvent.params = self._findParams(actionEvent.path).param;
               actionEvent.error = errorClientMessage;
               actionEvent.states[action.getSmartflow().error.state] = errorClientMessage;
               self._fireActionPerformed(action, actionEvent);
@@ -345,7 +346,7 @@ export class Application {
               // Server error
               let errorServerMessage = "Error: Server responded " + statusCode + " (" + action.constructor.name + ")  ";
               actionEvent.path = action.getSmartflow().error.path;
-              actionEvent.params = self._findParams(actionEvent.path).param;
+              //actionEvent.params = self._findParams(actionEvent.path).param;
               actionEvent.error = errorServerMessage;
               actionEvent.states[action.getSmartflow().error.state] = errorServerMessage;
               self._fireActionPerformed(action, actionEvent);
@@ -381,9 +382,9 @@ export class Application {
           action.runAction();
         }
         actionEvent.path = action.getSmartflow().path;
-        if (actionEvent.path) {
-          actionEvent.params = this._findParams(actionEvent.path).param;
-        }
+        // if (actionEvent.path) {
+        //   actionEvent.params = this._findParams(actionEvent.path).param;
+        // }
         delete (actionEvent.request);
         delete (actionEvent.response);
         actionEvent.states = action.getSmartflow().states === undefined ? {} : action.getSmartflow().states;
@@ -439,53 +440,52 @@ export class Application {
     this._runRemainingActions();
   }
 
-  _findParams(pathString) {
-    let parameters = pathString.split("/");
-    if (parameters[0] == "") {
-      parameters.shift();
-    }
-    var firstElement = "/" + parameters.shift();
-    return {
-      "path": firstElement,
-      "param": parameters
-    }
-  }
+  // _findParams(pathString) {
+  //   let parameters = pathString.split("/");
+  //   if (parameters[0] == "") {
+  //     parameters.shift();
+  //   }
+  //   var firstElement = "/" + parameters.shift();
+  //   return {
+  //     "path": firstElement,
+  //     "param": parameters
+  //   }
+  // }
 
   //--------------------------------- Path ----------------------------------------
   findViewByPath(path) {
     for (let x = 0; x < this._controllers.length; x++) {
-      let ctrl = this._controllers[x];
-      if (ctrl.smartflow.path === path) {
-        return ctrl;
+      let view = this._controllers[x];
+      let p = new Path(view.smartflow.path);
+      if (p.matches(path)) {
+        return view;
       }
     }
     return undefined;
   }
 
   setPath(pathString) {
-    let p = this._findParams(pathString);
-    let firstElement = p.path;
-    let parameters = p.param;
-    if (this._controller && this._controller.smartflow.path === firstElement) {
-      return;
-    }
-    let ctrl = this.findViewByPath(firstElement);
+    let view = this.findViewByPath(pathString);
+    let p = new Path(view.smartflow.path);
+    let map = p.parse(pathString);
     this._path = pathString;
-    this._controller = undefined;
+    this._controller = view;
     window.location.href = "#" + pathString;
-    this._firePathChanged(firstElement, parameters);
-    return ctrl != undefined;
+    this._firePathChanged(pathString, map);
+    return view !== undefined;
   }
 
-  _firePathChanged(path, parameters) {
+  getView(){
+    return this._controller;
+  }
+
+  _firePathChanged(path, map) {
     let ctrl;
     for (let x = 0; x < this._controllers.length; x++) {
       ctrl = this._controllers[x];
       if (ctrl.smartflow.path !== path) {
-        //if (ctrl.viewDisabled) {
           ctrl.viewDisabled();
-        //}
-        this._setControllerVisible(ctrl, false);
+        this._setViewVisible(ctrl, false);
       }
     }
     for (let y = 0; y < this._controllers.length; y++) {
@@ -493,13 +493,13 @@ export class Application {
       if (ctrl.smartflow.path === path) {
         this._controller = ctrl;
         ctrl.viewEnabled();
-        ctrl.pathChanged(path, parameters);
-        this._setControllerVisible(ctrl, true);
+        ctrl.pathChanged(path, map);
+        this._setViewVisible(ctrl, true);
       }
     }
   }
 
-  _setControllerVisible(ctrl, isVisible) {
+  _setViewVisible(ctrl, isVisible) {
     let el = document.getElementById(ctrl.constructor.name);
     if (el) {
       el.style.display = isVisible ? "block" : "none";
@@ -510,7 +510,6 @@ export class Application {
   _fireGlobalStateChanged(state, value) {
     for (let x = 0; x < this._controllers.length; x++) {
       let viewController = this._controllers[x];
-
       // Loop each component in view
       for (let index in viewController.smartflow.componentInstances) {
         let componentInstance = viewController.smartflow.componentInstances[ index ];
@@ -519,7 +518,6 @@ export class Application {
           componentInstance.setProperty(binding.property, value);
         }
       }
-
       // Notify controller
       viewController.globalChanged(state, value);
     }

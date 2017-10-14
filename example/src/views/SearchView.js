@@ -26,7 +26,7 @@ export class SearchView extends View {
           "itemKey": "title",
           "itemLabel": "title",
           "itemsEmpty": "No movies found",
-          "action": GotoMovieAction
+          "selectAction": GotoMovieAction
         }
       ]
     };

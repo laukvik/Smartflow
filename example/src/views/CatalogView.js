@@ -23,8 +23,8 @@ export class CatalogView extends View {
       "components": [
         {
           "type": Text,
-          "Heading": "Catalog",
-          "value": "Shows all movies in catalog"
+          "heading": "Catalog",
+          "text": "Shows all movies in catalog"
         },
         {
           "type": Items,
