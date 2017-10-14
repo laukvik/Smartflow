@@ -15,7 +15,7 @@ export class EditView extends View {
     super();
 
     this.smartflow = {
-      "path": "/catalog/{id}/edit",
+      "path": "/edit",
       "components": [
         {
           "type": Text,

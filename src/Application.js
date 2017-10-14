@@ -427,7 +427,7 @@ export class Application {
     if (actionEvent.path) {
       //
       //this.setPath(actionEvent.path);
-      this.setPath(this.replacePathWithScopeVariables(actionEvent.path));
+      this.setPath(this.replacePathWithScopeVariables(actionEvent.path, viewController));
     }
 
     action._smartflowStarted = undefined;
@@ -442,7 +442,8 @@ export class Application {
     this._runRemainingActions();
   }
 
-  replacePathWithScopeVariables(path){
+  replacePathWithScopeVariables(path, view) {
+
     return path.replace("{global:selectedMovie}", "12");
   }
 
