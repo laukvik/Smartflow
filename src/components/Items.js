@@ -1,7 +1,29 @@
 import {PresentationComponent} from "../PresentationComponent";
 import {Collection} from "../Collection";
 
+/**
+ *
+ * @typedef {Object} ItemsProperties
+ * @property {string} type - always Items
+ * @property {string} items - the items
+ * @property {string} itemKey - the itemKey
+ * @property {string} itemLabel - the itemLabel
+ * @property {string} filter - the filter
+ * @property {string} sort - the sort
+ *
+ */
+
+
+/**
+ *
+ */
 export class Items extends PresentationComponent {
+
+  /**
+   * Constructor for Items
+   *
+   * @param {ItemsProperties} properties the properties for the component
+   */
   constructor(properties) {
     super(properties);
     this._componentNode = document.createElement("div");

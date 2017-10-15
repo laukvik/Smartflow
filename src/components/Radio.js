@@ -1,7 +1,33 @@
 import {InputComponent} from "../InputComponent";
 import {Collection} from "../Collection";
 
+/**
+ *
+ * @typedef {Object} RadioProperties
+ * @property {string} type - always Radio
+ * @property {string} label - the label
+ * @property {boolean} required - indicates whether the value is required
+ * @property {string} items - the items
+ * @property {string} itemKey - the itemKey
+ * @property {string} itemLabel - the itemLabel
+ * @property {string} sort - the sort
+ * @property {string} filter - the filter
+ * @property {boolean} vertical - the direction
+ *
+ */
+
+/**
+ *
+ *
+ *
+ */
 export class Radio extends InputComponent {
+
+  /**
+   * Constructor for Radio
+   *
+   * @param {RadioProperties} properties the properties for the component
+   */
   constructor(properties) {
     super(properties);
     this.inputNodes = [];

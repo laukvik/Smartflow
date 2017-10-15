@@ -4,7 +4,10 @@ export class GotoCatalogAction extends ClientAction {
 
   getSmartflow() {
     return {
-      "path": "/catalog"
+      "path": "/catalog",
+      "global": {
+        "listView": "true"
+      }
     }
   }
 }
