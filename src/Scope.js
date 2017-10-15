@@ -3,13 +3,15 @@
  */
 export class Scope {
 
+
+
   parseScope(value) {
     let isString = typeof value === 'string';
     if (!isString) {
       return {
         "scope": SCOPES.NONE,
         "value": value
-      };
+      }
     }
     if (value.indexOf("{") === 0 && value.lastIndexOf("}") === value.length - 1) {
       let innerValue = value.substring(1, value.length - 1);
@@ -28,7 +30,7 @@ export class Scope {
     return {
       "scope": SCOPES.NONE,
       "value": value
-    };
+    }
   }
 
 }
