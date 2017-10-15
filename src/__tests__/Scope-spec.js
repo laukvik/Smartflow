@@ -14,13 +14,23 @@ describe('Scope', () => {
       expect(s2.value).toBe("id");
     });
 
-    it('should handle error', () => {
+    it('should handle incorrect syntax gracefully', () => {
       let scopes = Scope.findScopes("/category/{{selectedMovie}");
       expect(scopes.length).toBe(1);
       console.info(scopes);
       let s1 = scopes[0];
       expect(s1.scope).toBe(SCOPES.VIEW);
       expect(s1.value).toBe("selectedMovie");
+    });
+
+    it('should handle error1', () => {
+      let scopes = Scope.findScopes("/category/selectedMovie}");
+      expect(scopes.length).toBe(0);
+    });
+
+    it('should handle error2', () => {
+      let scopes = Scope.findScopes("/category/{selectedMovie");
+      expect(scopes.length).toBe(0);
     });
   });
 

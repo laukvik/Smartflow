@@ -19,6 +19,7 @@ export class Scope {
       if (c === '{') {
         if (afterStart) {
           variable = "{";
+          console.warn("Scope: ");
         }
         afterStart = true;
         variable = "{";
@@ -40,7 +41,8 @@ export class Scope {
     if (!isString) {
       return {
         "scope": SCOPES.NONE,
-        "value": value
+        "value": value,
+        "original": value
       }
     }
     if (value.indexOf("{") === 0 && value.lastIndexOf("}") === value.length - 1) {
@@ -48,18 +50,21 @@ export class Scope {
       if (innerValue.toUpperCase().startsWith(SCOPES.GLOBAL)) {
         return {
           "scope": SCOPES.GLOBAL,
-          "value": innerValue.substring(7)
+          "value": innerValue.substring(7),
+          "original": value
         }
       } else {
         return {
           "scope": SCOPES.VIEW,
-          "value": innerValue
+          "value": innerValue,
+          "original": value
         }
       }
     }
     return {
       "scope": SCOPES.NONE,
-      "value": value
+      "value": value,
+      "original": value
     }
   }
 

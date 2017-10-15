@@ -17,6 +17,7 @@ import {View} from "./View";
 import {ServerAction} from "./ServerAction";
 import {ClientAction} from "./ClientAction";
 import {Path} from "./Path";
+import {Scope, SCOPES as Scopes} from "./Scope";
 
 const HTTP_STATUS_CODES = {
   INFO: 100,
@@ -425,9 +426,8 @@ export class Application {
 
 
     if (actionEvent.path) {
-      //
-      //this.setPath(actionEvent.path);
-      this.setPath(this.replacePathWithScopeVariables(actionEvent.path, viewController));
+      this.setPath(this.translateScopeVariables(actionEvent.path, viewController));
+      // this.setPath(actionEvent.path);
     }
 
     action._smartflowStarted = undefined;
@@ -442,9 +442,25 @@ export class Application {
     this._runRemainingActions();
   }
 
-  replacePathWithScopeVariables(path, view) {
-
-    return path.replace("{global:selectedMovie}", "12");
+  /**
+   * Searches a string for references to state variables and converts them
+   * into real values.
+   *
+   * @param path the string to translate
+   * @param view the active view
+   * @returns {*}
+   */
+  translateScopeVariables(path, view) {
+    let scopesArr = Scope.findScopes(path);
+    let value = path;
+    for (let s in scopesArr) {
+      if (s.scope === Scopes.GLOBAL) {
+        value = value.replaceAll( s.original, this._states[ s.value ] );
+      } else if (s.scope === Scopes.VIEW) {
+        value = value.replaceAll( s.original, view._states[key] );
+      }
+    }
+    return value;
   }
 
   //--------------------------------- Path ----------------------------------------
