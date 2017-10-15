@@ -72,7 +72,8 @@ export class CatalogView extends View {
           "component": {
             "type": "Card",
             "title": "title",
-            "description": "storyline"
+            "description": "storyline",
+            "photo": "poster"
           },
           "sort": {
             "match": "title",
