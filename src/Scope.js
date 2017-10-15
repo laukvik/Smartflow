@@ -4,13 +4,22 @@
 export class Scope {
 
   /**
+   * Replaces all occurrences of the scope with the value
+   *
+   * @param scope the scope
+   * @param value the value to replace
+   */
+  static replace(scope, value, replacer) {
+    return value.replace(scope.original, replacer);
+  }
+
+  /**
    * Returns an array of all scopes in the string
    *
    * @param value
    * @returns {string}
    */
   static findScopes(value){
-    let newValue = "";
     let afterStart = false;
     let variable = "";
     let scopesArr = [];
@@ -27,10 +36,9 @@ export class Scope {
         variable += c;
         scopesArr.push(Scope.parseScope(variable));
         variable = "";
+        afterStart = false;
       } else if (afterStart) {
         variable += c;
-      } else {
-        newValue += c;
       }
     }
     return scopesArr;

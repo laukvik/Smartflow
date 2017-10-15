@@ -43,6 +43,7 @@ export class Searchfield extends InputComponent {
     this._itemKey = "title";
     this._itemLabel = "title";
     this._itemsEmpty = "No results";
+    this._selected = undefined; // the selected value
   }
 
   setProperty(name, value) {
@@ -73,7 +74,15 @@ export class Searchfield extends InputComponent {
       this.setHelp(value);
     } else if (name === "selectAction") {
       this.setSelectAction(value);
+    } else if (name === "selectedItem") {
+      this.setSelected(value);
+    } else {
+      //console.debug("Searchfield: Unknown property ", name);
     }
+  }
+
+  setSelected(value){
+    this._selected = value;
   }
 
   setSelectAction(action) {
@@ -131,10 +140,16 @@ export class Searchfield extends InputComponent {
   }
 
   select() {
-    this.input.value = this._items[this.selectedIndex].title;
+    let selected = this._items[this.selectedIndex];
+
+    this.input.value = selected.title;
     this.setDropdownVisible(false);
     this.input.select();
-    this.firePropertyChanged("selected", this.input.value);
+    this.firePropertyChanged("value", this.input.value);
+
+    this._selected = selected[ this._itemKey ];
+
+    this.firePropertyChanged("selected", this._selected);
     if (this.selectAction !== undefined) {
       this.fireAction(this.selectAction);
     }

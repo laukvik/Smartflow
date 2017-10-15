@@ -5,7 +5,7 @@
  * @param ctrl
  * @constructor
  */
-import {SCOPES} from "./Application";
+import {SCOPES} from "./Scope";
 import {InputComponent} from "./InputComponent";
 import {Layout} from "./components/Layout";
 import {Button} from "./components/Button";

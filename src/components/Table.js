@@ -55,7 +55,7 @@ class Table extends InputComponent {
     } else if (name === "paging") {
       this.setPaging(value);
     } else {
-      console.warn("Table: Unkown property ", name);
+      //console.warn("Table: Unkown property ", name);
     }
   }
 

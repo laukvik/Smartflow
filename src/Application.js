@@ -17,7 +17,7 @@ import {View} from "./View";
 import {ServerAction} from "./ServerAction";
 import {ClientAction} from "./ClientAction";
 import {Path} from "./Path";
-import {Scope, SCOPES as Scopes} from "./Scope";
+import {Scope, SCOPES} from "./Scope";
 
 const HTTP_STATUS_CODES = {
   INFO: 100,
@@ -34,12 +34,6 @@ const READY_STATE = {
   HEADERS_RECEIVED: 2,
   LOADING: 3,
   DONE: 4
-};
-
-export const SCOPES = {
-  NONE: "NONE",
-  VIEW: "VIEW",
-  GLOBAL: "GLOBAL"
 };
 
 export class Application {
@@ -59,8 +53,10 @@ export class Application {
 
   firePropertyChanged(component, binding, value) {
     if (binding.scope === SCOPES.VIEW) {
+      component.getView()._states[ binding.state ] = value;
       this._firePrivateStateChanged(binding.state, value, component.getView(), component);
     } else if (binding.scope === SCOPES.GLOBAL) {
+      this._states[ binding.state ] = value;
       this._fireGlobalStateChanged(binding.state, value);
     }
   }
@@ -383,9 +379,6 @@ export class Application {
           action.runAction();
         }
         actionEvent.path = action.getSmartflow().path;
-        // if (actionEvent.path) {
-        //   actionEvent.params = this._findParams(actionEvent.path).param;
-        // }
         delete (actionEvent.request);
         delete (actionEvent.response);
         actionEvent.states = action.getSmartflow().states === undefined ? {} : action.getSmartflow().states;
@@ -424,10 +417,8 @@ export class Application {
       this._fireGlobalStateChanged(key, this._states[key]); // Push to listeners
     }
 
-
-    if (actionEvent.path) {
+    if (actionEvent.path !== undefined) {
       this.setPath(this.translateScopeVariables(actionEvent.path, viewController));
-      // this.setPath(actionEvent.path);
     }
 
     action._smartflowStarted = undefined;
@@ -453,11 +444,12 @@ export class Application {
   translateScopeVariables(path, view) {
     let scopesArr = Scope.findScopes(path);
     let value = path;
-    for (let s in scopesArr) {
-      if (s.scope === Scopes.GLOBAL) {
-        value = value.replaceAll( s.original, this._states[ s.value ] );
-      } else if (s.scope === Scopes.VIEW) {
-        value = value.replaceAll( s.original, view._states[key] );
+    for (let x=0; x<scopesArr.length; x++) {
+      let s = scopesArr[ x ];
+      if (s.scope === SCOPES.GLOBAL) {
+        value = Scope.replace(s, value, this._states[ s.value ]);
+      } else if (s.scope === SCOPES.VIEW) {
+        value = Scope.replace(s, value, view._states[ s.value]);
       }
     }
     return value;
@@ -483,7 +475,6 @@ export class Application {
     this._controller = view;
     window.location.href = "#" + pathString;
     this._firePathChanged(pathString, map);
-    return view !== undefined;
   }
 
   getView(){
@@ -494,18 +485,24 @@ export class Application {
     let ctrl;
     for (let x = 0; x < this._controllers.length; x++) {
       ctrl = this._controllers[x];
-      if (ctrl.smartflow.path !== undefined && ctrl.smartflow.path !== path) {
-        ctrl.viewDisabled();
-        this._setViewVisible(ctrl, false);
+      if (ctrl.smartflow.path !== undefined) {
+        let p = new Path(ctrl.smartflow.path);
+        if (ctrl.smartflow.path !== undefined && !p.matches(path)) {
+          ctrl.viewDisabled();
+          this._setViewVisible(ctrl, false);
+        }
       }
     }
     for (let y = 0; y < this._controllers.length; y++) {
       ctrl = this._controllers[y];
-      if (ctrl.smartflow.path === path) {
-        this._controller = ctrl;
-        ctrl.viewEnabled();
-        ctrl.pathChanged(path, map);
-        this._setViewVisible(ctrl, true);
+      if (ctrl.smartflow.path !== undefined) {
+        let p = new Path(ctrl.smartflow.path);
+        if (p.matches(path)) {
+          this._controller = ctrl;
+          ctrl.viewEnabled();
+          ctrl.pathChanged(path, map);
+          this._setViewVisible(ctrl, true);
+        }
       }
     }
   }

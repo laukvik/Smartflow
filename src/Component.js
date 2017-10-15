@@ -1,4 +1,4 @@
-import {SCOPES} from "./Application";
+import {SCOPES} from "./Scope";
 
 /**
  *
@@ -45,7 +45,7 @@ export class Component {
     let binding = this._valueBindings[ name ];
     if (binding === undefined) {
       let a = this;
-      console.info(a.constructor.name, " invalid property ", name);
+      console.warn(a.constructor.name + ": invalid property ", name);
       return;
     }
     this.smartflow.firePropertyChanged(this, binding, value);

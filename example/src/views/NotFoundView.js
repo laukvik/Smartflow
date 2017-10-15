@@ -9,7 +9,7 @@ export class NotFoundView extends View {
     super();
 
     this.smartflow = {
-      "path": "404",
+      "path": "/404",
       "components": [
         {
           "type": "Card",

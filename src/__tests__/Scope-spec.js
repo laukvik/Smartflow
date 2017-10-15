@@ -2,6 +2,24 @@ import {Scope,SCOPES} from '../Scope';
 
 describe('Scope', () => {
 
+  describe('replace', () => {
+    it('should replace all scopes', () => {
+      let value = "/category/{global:selectedMovie}/{id}";
+      let scopes = Scope.findScopes(value);
+      let s1 = scopes[0];
+      let s2 = scopes[1];
+
+      let replaced = value;
+
+      replaced = Scope.replace(s1, replaced, "Star Wars");
+      expect(replaced).toBe("/category/Star Wars/{id}");
+
+      replaced = Scope.replace(s2, replaced, "55");
+      expect(replaced).toBe("/category/Star Wars/55");
+    });
+
+  });
+
   describe('findScopes', () => {
     it('should find all scopes', () => {
       let scopes = Scope.findScopes("/category/{global:selectedMovie}/{id}");
