@@ -116,7 +116,7 @@ export class Component {
   }
 
   setVisible(visible) {
-    this._componentNode.style.display = visible == true ? "block" : "none";
+    this._componentNode.style.display = (visible == 'true' || visible == true) ? "block" : "none";
   }
 
   setID(id) {
