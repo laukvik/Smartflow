@@ -5,7 +5,7 @@
  * @param ctrl
  * @constructor
  */
-import {SCOPES} from "./Scope";
+import {Scope, SCOPES} from "./Scope";
 import {InputComponent} from "./InputComponent";
 import {Layout} from "./components/Layout";
 import {Button} from "./components/Button";
@@ -112,33 +112,33 @@ export class Builder {
     }
   }
 
-  parseScope(value) {
-    let isString = typeof value === 'string';
-    if (!isString) {
-      return {
-        "scope": SCOPES.NONE,
-        "value": value
-      };
-    }
-    if (value.indexOf("{") === 0 && value.lastIndexOf("}") === value.length - 1) {
-      let innerValue = value.substring(1, value.length - 1);
-      if (innerValue.toUpperCase().startsWith(SCOPES.GLOBAL)) {
-        return {
-          "scope": SCOPES.GLOBAL,
-          "value": innerValue.substring(7)
-        }
-      } else {
-        return {
-          "scope": SCOPES.VIEW,
-          "value": innerValue
-        }
-      }
-    }
-    return {
-      "scope": SCOPES.NONE,
-      "value": value
-    };
-  }
+  // parseScope(value) {
+  //   let isString = typeof value === 'string';
+  //   if (!isString) {
+  //     return {
+  //       "scope": SCOPES.NONE,
+  //       "value": value
+  //     };
+  //   }
+  //   if (value.indexOf("{") === 0 && value.lastIndexOf("}") === value.length - 1) {
+  //     let innerValue = value.substring(1, value.length - 1);
+  //     if (innerValue.toUpperCase().startsWith(SCOPES.GLOBAL)) {
+  //       return {
+  //         "scope": SCOPES.GLOBAL,
+  //         "value": innerValue.substring(7)
+  //       }
+  //     } else {
+  //       return {
+  //         "scope": SCOPES.VIEW,
+  //         "value": innerValue
+  //       }
+  //     }
+  //   }
+  //   return {
+  //     "scope": SCOPES.NONE,
+  //     "value": value
+  //   };
+  // }
 
   /**
    * Recursively iterates all properties and binds properties to states
@@ -156,7 +156,8 @@ export class Builder {
         if (key !== "type") { // Type is reserved
           let value = comp[key];
           path.push(key);
-          let bind = this.parseScope(value);
+          let bind = Scope.parseScope(value);
+          //let bind = this.parseScope(value);
           if (bind.scope === SCOPES.NONE) {
             componentInstance.setProperty(key, bind.value);
             this.applyBindings(componentInstance, value, path); // TODO - FIX THIS

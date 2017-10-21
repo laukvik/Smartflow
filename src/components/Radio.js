@@ -1,5 +1,6 @@
 import {InputComponent} from "../InputComponent";
 import {Collection} from "../Collection";
+import {Scope} from "../Scope";
 
 /**
  *
@@ -39,6 +40,7 @@ export class Radio extends InputComponent {
   }
 
   setProperty(name, value) {
+    console.info("setProperty: ", name, value);
     if (name === "selected") {
       this.setSelected(value);
     } else if (name === "items") {
@@ -61,6 +63,8 @@ export class Radio extends InputComponent {
       this.setSort(value);
     } else if (name === "filter") {
       this.setFilter(value);
+    } else if (name === "visible") {
+      this.setVisible(value);
     }
   }
 
@@ -128,6 +132,13 @@ export class Radio extends InputComponent {
     }
   }
 
+  setSelectedIndex(index){
+    for (let x = 0; x < this.inputNodes.length; x++) {
+      let inp = this.inputNodes[x];
+      inp.checked = x === index;
+    }
+  }
+
   setVertical(isVertical) {
     this.vertical = isVertical === true;
   }
@@ -169,12 +180,12 @@ export class Radio extends InputComponent {
         labelNode.appendChild(text);
         text.innerText = itemText;
 
-        let inputs = this.inputNodes;
         let self = this;
         input.addEventListener("change", function () {
-          self.firePropertyChanged("selected", inputs.filter(function (inp) {
-            return inp.checked
-          }));
+          console.info("Radio: ", x);
+
+          self.setSelectedIndex(x);
+          self.firePropertyChanged("selected", itemValue);
         });
       }
     }

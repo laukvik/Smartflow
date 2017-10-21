@@ -41,6 +41,10 @@ class Table extends InputComponent {
     this._componentNode = document.createElement("table");
   }
 
+  setVisible2(){
+
+  }
+
   setProperty(name, value) {
     if (name === "items") {
       this.setItems(value);
@@ -56,6 +60,8 @@ class Table extends InputComponent {
       this.setFilter(value);
     } else if (name === "paging") {
       this.setPaging(value);
+    } else if (name === "visible") {
+      this.setVisible(value);
     } else {
       //console.warn("Table: Unkown property ", name);
     }

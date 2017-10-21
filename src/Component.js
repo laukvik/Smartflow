@@ -42,6 +42,7 @@ export class Component {
    * @private
    */
   firePropertyChanged(name, value) {
+    console.info("firePropertyChanged: ", name, value);
     let binding = this._valueBindings[ name ];
     if (binding === undefined) {
       let a = this;
@@ -65,7 +66,7 @@ export class Component {
       delete this._valueBindings[ name ];
       return;
     }
-    if (scope === SCOPES.NONE || scope === SCOPES.VIEW || scope === SCOPES.GLOBAL) {
+    if (scope === SCOPES.NONE || scope === SCOPES.VIEW || scope === SCOPES.GLOBAL  || scope === SCOPES.COMPONENT) {
       this._valueBindings[ name ] = {
         "state" : value,
         "property" : name,
@@ -80,38 +81,10 @@ export class Component {
   getBindingByState(state, scope) {
     for (let propertyName in this._valueBindings) {
       let b = this._valueBindings[ propertyName ];
-      if (b.scope == scope && b.state == state){
+      if (b.scope === scope && b.state === state){
         return b;
       }
     }
-  }
-
-  parseScope(value){
-    let isString = typeof value === 'string';
-    if (!isString) {
-      return {
-        "scope": SCOPES.NONE,
-        "value": value
-      };
-    }
-    if (value.indexOf("{") === 0 && value.lastIndexOf("}") === value.length-1) {
-      let innerValue = value.substring(1, value.length-1);
-      if (innerValue.toUpperCase().startsWith(SCOPES.GLOBAL)) {
-        return {
-          "scope": SCOPES.GLOBAL,
-          "value": innerValue.substring(7)
-        }
-      } else {
-        return {
-          "scope": SCOPES.VIEW,
-          "value": innerValue
-        }
-      }
-    }
-    return {
-      "scope": SCOPES.NONE,
-      "value": value
-    };
   }
 
   setProperties(properties) {

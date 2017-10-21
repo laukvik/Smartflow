@@ -1,4 +1,11 @@
 /**
+ * Specifies what scope to find data.
+ *
+ * Global Scope     value: "{global:stateName}"
+ * View Scope       value: "{view:stateName}"
+ * Component Scope  value: "{stateName}"
+ * No scope         value: ""
+ *
  *
  */
 export class Scope {
@@ -55,20 +62,26 @@ export class Scope {
     }
     if (value.indexOf("{") === 0 && value.lastIndexOf("}") === value.length - 1) {
       let innerValue = value.substring(1, value.length - 1);
-      if (innerValue.toUpperCase().startsWith(SCOPES.GLOBAL)) {
-        return {
-          "scope": SCOPES.GLOBAL,
-          "value": innerValue.substring(7),
-          "original": value
-        }
-      } else {
-        return {
-          "scope": SCOPES.VIEW,
-          "value": innerValue,
-          "original": value
+      let index = innerValue.indexOf(":");
+      if (index > -1) {
+        let scopeName = innerValue.substring(0, index );
+        for (let s in SCOPES) {
+          if (s === scopeName.toUpperCase()) {
+            return {
+              "scope": s,
+              "value": innerValue.substring(index+1),
+              "original": value
+            }
+          }
         }
       }
+      return {
+        "scope": SCOPES.COMPONENT,
+        "value": innerValue,
+        "original": value
+      }
     }
+
     return {
       "scope": SCOPES.NONE,
       "value": value,
@@ -81,6 +94,7 @@ export class Scope {
 
 export const SCOPES = {
   NONE: "NONE",
+  COMPONENT: "COMPONENT",
   VIEW: "VIEW",
   GLOBAL: "GLOBAL"
 };

@@ -516,6 +516,7 @@ export class Application {
 
   //--------------------------------- State ----------------------------------------
   _fireGlobalStateChanged(state, value) {
+    console.info("GlobalState: ", state, value);
     for (let x = 0; x < this._controllers.length; x++) {
       let viewController = this._controllers[x];
       // Loop each component in view
@@ -532,6 +533,7 @@ export class Application {
   }
 
   _firePrivateStateChanged(state, value, viewController, fromComponent) {
+    console.info("ViewState: ", state, value);
     if (value === undefined || value === null) {
       delete( this._states[state] );
     } else {

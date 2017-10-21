@@ -28,16 +28,15 @@ describe('Scope', () => {
       expect(s1.scope).toBe(SCOPES.GLOBAL);
       expect(s1.value).toBe("selectedMovie");
       let s2 = scopes[1];
-      expect(s2.scope).toBe(SCOPES.VIEW);
+      expect(s2.scope).toBe(SCOPES.COMPONENT);
       expect(s2.value).toBe("id");
     });
 
     it('should handle incorrect syntax gracefully', () => {
       let scopes = Scope.findScopes("/category/{{selectedMovie}");
       expect(scopes.length).toBe(1);
-      console.info(scopes);
       let s1 = scopes[0];
-      expect(s1.scope).toBe(SCOPES.VIEW);
+      expect(s1.scope).toBe(SCOPES.COMPONENT);
       expect(s1.value).toBe("selectedMovie");
     });
 
@@ -59,8 +58,13 @@ describe('Scope', () => {
       expect(v.value).toBe("selectedMovie");
     });
     it('should find view', () => {
-      let v = Scope.parseScope("{selectedMovie}");
+      let v = Scope.parseScope("{view:selectedMovie}");
       expect(v.scope).toBe(SCOPES.VIEW);
+      expect(v.value).toBe("selectedMovie");
+    });
+    it('should find component', () => {
+      let v = Scope.parseScope("{selectedMovie}");
+      expect(v.scope).toBe(SCOPES.COMPONENT);
       expect(v.value).toBe("selectedMovie");
     });
     it('should find none', () => {

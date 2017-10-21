@@ -33,7 +33,7 @@ export class CatalogView extends View {
         {
           "type": Radio,
           "label": "View",
-          "selected": "{global:listView}",
+          "selected": "{view:isListView}",
           "itemKey": "key",
           "itemLabel": "label",
           "items": [
@@ -49,7 +49,7 @@ export class CatalogView extends View {
         },
         {
           "type": Table,
-          "visible": "{global:listView}",
+          "visible": "{view:isListView}",
           "columns": [
             {
               "label": "Poster",
@@ -72,13 +72,17 @@ export class CatalogView extends View {
               "key": "year"
             }
           ],
-          "items": "{global:movies}"
+          "items": "{global:movies}",
+          "sort": {
+            "match": "title",
+            "order": "asc"
+          },
         },
 
         {
           "type": Items,
           "items": "{global:movies}",
-          "visible": "{global:listView}",
+          "visible": "{view:isListView}",
           "component": {
             "type": Card,
             "title": "title",
