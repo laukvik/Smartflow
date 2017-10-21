@@ -1,19 +1,18 @@
-import {Action} from "../../../src/Action";
+import {ServerAction} from "../../../src/ServerAction";
 
-export class FindGlobalMovies extends Action {
+export class FindMoviesAction extends ServerAction {
+
   getSmartflow() {
     return {
       "request": {
-        "url": "movies.json",
+        "url": "posters.json",
         "method": "get",
         "type": "json"
       },
       "success": {
-        "path": "/",
         "global": "movies",
       },
       "error": {
-        "path": "/",
         "global": "moviesFailed"
       }
     }

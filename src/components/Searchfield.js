@@ -1,20 +1,49 @@
 import {InputComponent} from "../InputComponent";
 import {Collection} from "../Collection";
 
+/**
+ *
+ * @typedef {Object} SearchfieldProperties
+ * @property {string} type - always Textfield
+ * @property {string} label - the label
+ * @property {boolean} required - indicates whether the value is required
+ * @property {string} value - the value of the Textfield
+ * @property {string} placeholder - the placeholder for the Textfield
+ * @property {string} enabled - the enabled
+ * @property {string} help - the items
+ * @property {string} items - the items
+ * @property {string} itemKey - the property name to use as value
+ * @property {string} itemLabel - the property name for displaying a label
+ * @property {string} itemsEmpty - the text to show when collection is empty
+ * @property {string} sort - the sort
+ * @property {string} filter - the filter
+ */
+
+/**
+ * Searchfield
+ *
+ */
 export class Searchfield extends InputComponent {
+
+  /**
+   * Constructor for Searchfield
+   *
+   * @param {SearchfieldProperties} props the properties for the component
+   */
   constructor(properties) {
     super(properties);
     this._componentNode = document.createElement("div");
     this.optionsNode = document.createElement("ul");
     this.optionsNode.setAttribute("class", "dropdown-menu");
     this.collections = new Collection();
-    this.selectedIndex =  -1;
+    this.selectedIndex = -1;
     this.optionsNodes = [];
     this._unfilteredItems = [];
     this._items = [];
     this._itemKey = "title";
     this._itemLabel = "title";
     this._itemsEmpty = "No results";
+    this._selected = undefined; // the selected value
   }
 
   setProperty(name, value) {
@@ -43,38 +72,52 @@ export class Searchfield extends InputComponent {
       this.setPlaceholder(value);
     } else if (name === "help") {
       this.setHelp(value);
+    } else if (name === "selectAction") {
+      this.setSelectAction(value);
+    } else if (name === "selectedItem") {
+      this.setSelected(value);
+    } else {
+      //console.debug("Searchfield: Unknown property ", name);
     }
   }
 
-  setItemsEmpty(itemsEmpty){
+  setSelected(value){
+    this._selected = value;
+  }
+
+  setSelectAction(action) {
+    this.selectAction = action;
+  }
+
+  setItemsEmpty(itemsEmpty) {
     this._itemsEmpty = itemsEmpty;
   }
 
-  setItemKey(itemKey){
+  setItemKey(itemKey) {
     this._itemKey = itemKey;
   }
 
-  setItemLabel(itemLabel){
+  setItemLabel(itemLabel) {
     this._itemLabel = itemLabel;
   }
 
-  setItems(rowData){
+  setItems(rowData) {
     this.removeChildNodes(this.optionsNode);
     if (Array.isArray(rowData)) {
       this.optionsNodes = [];
       this.selectedIndex = 0;
 
       this.collections.clearFilter();
-      this.collections.addStartsWith(this._itemKey, this.getValue() );
+      this.collections.addStartsWith(this._itemKey, this.getValue());
 
       let items = this.collections.find(rowData);
       this._items = items;
 
-      for (let x=0; x<items.length; x++) {
-        let item = items[ x ];
+      for (let x = 0; x < items.length; x++) {
+        let item = items[x];
         let node = document.createElement("a");
         node.setAttribute("class", "dropdown-item " + (this.selectedIndex === x ? "active" : ""));
-        node.innerText = item[ this._itemLabel ];
+        node.innerText = item[this._itemLabel];
         this.optionsNodes.push(node);
         this.optionsNode.appendChild(node);
       }
@@ -88,30 +131,39 @@ export class Searchfield extends InputComponent {
     }
   }
 
-  arrowUp(){
+  arrowUp() {
     this.setSelectedIndex(this.selectedIndex - 1);
   }
 
-  arrowDown(){
+  arrowDown() {
     this.setSelectedIndex(this.selectedIndex + 1);
   }
 
-  select(){
-    this.input.value = this._items[ this.selectedIndex ].title;
+  select() {
+    let selected = this._items[this.selectedIndex];
+
+    this.input.value = selected.title;
     this.setDropdownVisible(false);
     this.input.select();
-    this.firePropertyChanged("selected", this.input.value );
-  }
+    this.firePropertyChanged("value", this.input.value);
 
-  setSelectedIndex(index){
-    if (index > -1 && index < this._items.length ){
-      this.optionsNodes[ this.selectedIndex ].setAttribute("class", "dropdown-item");
-      this.selectedIndex = index;
-      this.optionsNodes[ index ].setAttribute("class", "dropdown-item active");
+    this._selected = selected[ this._itemKey ];
+
+    this.firePropertyChanged("selected", this._selected);
+    if (this.selectAction !== undefined) {
+      this.fireAction(this.selectAction);
     }
   }
 
-  setDropdownVisible(visible){
+  setSelectedIndex(index) {
+    if (index > -1 && index < this._items.length) {
+      this.optionsNodes[this.selectedIndex].setAttribute("class", "dropdown-item");
+      this.selectedIndex = index;
+      this.optionsNodes[index].setAttribute("class", "dropdown-item active");
+    }
+  }
+
+  setDropdownVisible(visible) {
     this.dropdownVisible = visible === true;
     this.optionsNode.style.display = this.dropdownVisible ? "block" : "none";
   }
@@ -124,11 +176,12 @@ export class Searchfield extends InputComponent {
 
 
     this.input.addEventListener('keyup', function (evt) {
+      this.setDropdownVisible(true);
       if (evt.key === "ArrowDown") {
         this.arrowDown();
       } else if (evt.key === "ArrowUp") {
         this.arrowUp();
-      } else if (evt.key === "Enter"){
+      } else if (evt.key === "Enter") {
         this.select();
       } else {
         this._changed(evt.srcElement.value);
@@ -136,7 +189,7 @@ export class Searchfield extends InputComponent {
     }.bind(this), false);
     this.setRequired(properties.required);
     this.setLabel(properties.label);
-    if (properties.validation){
+    if (properties.validation) {
       this.setValidationMessage(properties.validation.message);
       this.setRegex(properties.validation.regex);
     }
@@ -162,6 +215,7 @@ export class Searchfield extends InputComponent {
     // }
     this._componentNode.setAttribute("class", "sf-searchfield input-group" + (properties.class ? " " + properties.class : ""));
     this._componentNode.appendChild(this.optionsNode);
+    this._componentNode.setAttribute("class", "card");
     return this._componentNode;
   }
 
@@ -207,7 +261,7 @@ export class Searchfield extends InputComponent {
   }
 
   _changed(value) {
-    this.firePropertyChanged("value", value );
+    this.firePropertyChanged("value", value);
     if (this.action === undefined) {
       this.setItems(this._unfilteredItems);
     } else {

@@ -1,12 +1,35 @@
 import {InputComponent} from "../InputComponent";
 
+/**
+ *
+ * @typedef {Object} TextfieldProperties
+ * @property {string} type - always Textfield
+ * @property {string} label - the label
+ * @property {boolean} required - indicates whether the value is required
+ * @property {string} value - the value of the Textfield
+ * @property {string} placeholder - the placeholder for the Textfield
+ *
+ */
+
+/**
+ *
+ *
+ *
+ */
 export class Textfield extends InputComponent {
-  constructor(properties) {
-    super(properties);
+
+  /**
+   * Constructor for Textfield
+   *
+   * @param {TextfieldProperties} props the properties for the component
+   */
+  constructor(props) {
+    super(props);
     this._componentNode = document.createElement("div");
     this._iconBefore = null;
     this._iconAfter = null;
     this._value = "";
+    this.setProperties(props);
   }
 
   setProperty(name, value) {
@@ -26,6 +49,8 @@ export class Textfield extends InputComponent {
       this.setValidationMessage(value);
     } else if (name === "placeholder") {
       this.setPlaceholder(value);
+    } else {
+      console.warn("Textfield: Unknown property ", name);
     }
   }
 
@@ -107,6 +132,11 @@ export class Textfield extends InputComponent {
     return this.regex.test(this.inputNode.value);
   }
 
+  /**
+   * Sets the regular expression used for checking if the value is valid
+   *
+   * @param regex
+   */
   setRegex(regex) {
     if (regex === undefined) {
       this.regex = undefined;
@@ -126,6 +156,12 @@ export class Textfield extends InputComponent {
     return !this.inputNode.hasAttribute("disabled");
   }
 
+  /**
+   * he placeholder attribute represents a short hint (a word or short phrase) intended to aid the user
+   * with data entry when the control has no value.
+   *
+   * @param text
+   */
   setPlaceholder(text) {
     this.inputNode.setAttribute("placeholder", text === undefined ? "" : text);
   }
@@ -134,6 +170,11 @@ export class Textfield extends InputComponent {
     return this.inputNode.getAttribute("placeholder");
   }
 
+  /**
+   * Sets the value
+   *
+   * @param text the value
+   */
   setValue(text) {
     this.inputNode.value = text === undefined ? "" : text;
   }

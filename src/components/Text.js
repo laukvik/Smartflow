@@ -1,6 +1,10 @@
 import {Component} from "../Component";
 
-class Text extends Component {
+/**
+ * Displays text
+ *
+ */
+export class Text extends Component {
 
   constructor(properties) {
     super(properties);
@@ -36,5 +40,3 @@ class Text extends Component {
   }
 
 }
-
-export {Text}

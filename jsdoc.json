@@ -11,7 +11,10 @@
   },
   "templates": {
     "cleverLinks": false,
-    "monospaceLinks": false
+    "monospaceLinks": false,
+    "default": {
+      "outputSourceFiles": false
+    }
   },
   "opts": {
     "template": "templates/default",

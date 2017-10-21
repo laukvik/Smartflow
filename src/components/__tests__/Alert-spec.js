@@ -5,7 +5,7 @@ describe('properties', function () {
   describe('setting id', function () {
 
     it('should be set', function () {
-      let btn = new Alert({});
+      let btn = new Alert({"":""});
       let node = btn.buildComponent({}, {"id":"luring"});
       expect(node.getAttribute("id")).toBe("luring");
     });

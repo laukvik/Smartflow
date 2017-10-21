@@ -1,8 +1,25 @@
 /**
- * View.
+ *
+ * @typedef {Object} ViewProperties
+ * @property {id} id - the Html Element ID
+ * @property {path} path - the path to active this view to. E.g /category/{category}/{id}.
+ * @property {components} components - an array of components
+ *
+ */
+
+/**
+ * An abstract class.
  *
  */
 export class View {
+
+  /**
+   * Constructor for Textfield
+   *
+   * @param {ViewProperties} props the properties for the component
+   */
+  constructor(props) {
+  }
 
   setSmartflowInstance(smartflow) {
     this.__smartflowInstance = smartflow;
@@ -13,7 +30,7 @@ export class View {
    *
    * @param {Action} action the action to start
    */
-  runSmartflow(action) {
+  runAction(action) {
     this.__smartflowInstance.runAction(action, this);
   }
 
@@ -39,14 +56,21 @@ export class View {
   }
 
   /**
-   * Indicates a state has been changed
+   * Indicates the private state  changed
    *
-   * @TODO - Should add globalStateChanged method
-   *
-   * @param {String} state the named state
-   * @param {Object} value the value of the state
+   * @param {String} state the name
+   * @param {Object} value the value
    */
   stateChanged(state, value) {
+  }
+
+  /**
+   * Indicates the global state changed
+   *
+   * @param {String} state the name
+   * @param {Object} value the value
+   */
+  globalChanged(state, value) {
   }
 
   /**
@@ -58,6 +82,21 @@ export class View {
   }
 
   componentChanged(evt) {
+  }
+
+  /**
+   * Indicates the path was changed. When the active path is /category/12/15 and the path in the properties
+   * is /category/{category}/{id} the event will be:
+   *
+   * {
+   *   category: 12,
+   *   id: 15
+   * }
+   *
+   * @param evt
+   */
+  pathChanged(evt) {
+
   }
 
 }

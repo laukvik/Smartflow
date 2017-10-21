@@ -2,22 +2,31 @@ import {PresentationComponent} from "../PresentationComponent";
 import {Collection} from "../Collection";
 
 /**
+ *
+ * @typedef {Object} CardProperties
+ * @property {string} type - always Card
+ * @property {title} title - the title
+ * @property {description} description - the description
+ * @property {photo} photo - the photo
+ * @property {button} button - the button
+ * @property {action} action - the action
+ *
+ */
+
+/**
  * Card
  *
- * <div class="card" style="width: 20rem;">
- *     <img class="card-img-top" src="..." alt="Card image cap">
- *      <div class="card-block">
- *          <h4 class="card-title">Card title</h4>
- *          <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
- *          <a href="#" class="btn btn-primary">Go somewhere</a>
- *      </div>
- * </div>
  *
- * @private
  */
 export class Card extends PresentationComponent {
-  constructor(properties) {
-    super(properties);
+
+  /**
+   * Constructor for Card
+   *
+   * @param {CardProperties} props the properties for the component
+   */
+  constructor(props) {
+    super(props);
     this._componentNode = document.createElement("div");
     this.collections = new Collection();
     this.buttons = [];
@@ -38,6 +47,8 @@ export class Card extends PresentationComponent {
       //this.setAction(value);
     } else if (name === "button") {
       //this.setButton(value);
+    } else {
+      console.warn("Card: Unknown property ", name);
     }
   }
 

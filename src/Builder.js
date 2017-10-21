@@ -5,7 +5,7 @@
  * @param ctrl
  * @constructor
  */
-import {SCOPES} from "./Application";
+import {SCOPES} from "./Scope";
 import {InputComponent} from "./InputComponent";
 import {Layout} from "./components/Layout";
 import {Button} from "./components/Button";
@@ -99,10 +99,14 @@ export class Builder {
   }
 
   buildComponents() {
-    let ctrlID = this.ctrl.constructor.name;
+    let viewElementId = this.ctrl.constructor.name;
     let comps = this.ctrl.smartflow.components;
     this.ctrl.smartflow.componentInstances = [];
-    let rootNode = document.getElementById(ctrlID);
+    let rootNode = document.getElementById(viewElementId);
+    if (rootNode === null || rootNode === undefined) {
+      console.error("Smartflow: Failed to find element for view: ", viewElementId);
+      return;
+    }
     for (let x = 0; x < comps.length; x++) {
       this.buildChildNode(rootNode, comps[x]);
     }
@@ -155,7 +159,7 @@ export class Builder {
           let bind = this.parseScope(value);
           if (bind.scope === SCOPES.NONE) {
             componentInstance.setProperty(key, bind.value);
-            this.applyBindings(componentInstance, value, path);
+            this.applyBindings(componentInstance, value, path); // TODO - FIX THIS
             path.pop();
           } else {
             componentInstance.setBinding(key, bind.value, bind.scope, path.shift());

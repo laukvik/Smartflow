@@ -1,4 +1,4 @@
-import {SCOPES} from "./Application";
+import {SCOPES} from "./Scope";
 
 /**
  *
@@ -12,6 +12,15 @@ export class Component {
     this._stateListeners = [];
     this._componentNode = null;
     this._valueBindings = {};
+  }
+
+  setProperties(properties){
+    if (typeof properties === "object") {
+      for (let key in properties) {
+        let value = properties[ key ];
+        this.setProperty(key, value);
+      }
+    }
   }
 
   /**
@@ -35,7 +44,8 @@ export class Component {
   firePropertyChanged(name, value) {
     let binding = this._valueBindings[ name ];
     if (binding === undefined) {
-      console.warn("SmartflowComponent: invalid property ", name);
+      let a = this;
+      console.warn(a.constructor.name + ": invalid property ", name);
       return;
     }
     this.smartflow.firePropertyChanged(this, binding, value);
@@ -149,7 +159,7 @@ export class Component {
 
   setClass(className) {
     this._componentClass = className;
-    this._componentNode.setAttribute("class", this._componentBaseClass + (className == undefined ? "" : className));
+  //  this._componentNode.setAttribute("class", this._componentBaseClass + (className == undefined ? "" : className));
   }
 
   getClass() {
