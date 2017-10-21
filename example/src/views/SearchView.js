@@ -8,6 +8,7 @@ import {View} from "../../../src/View";
 import {Searchfield} from "../../../src/components/Searchfield";
 import {GotoMovieAction} from "../actions/GotoMovieAction";
 import {FindMoviesAction} from "../actions/FindMoviesAction";
+import {Card} from "../../../src/components/Card";
 
 export class SearchView extends View {
 
@@ -27,7 +28,13 @@ export class SearchView extends View {
           "itemLabel": "title",
           "itemsEmpty": "No movies found",
           "selected": "{global:selectedMovie}",
-          "selectAction": GotoMovieAction
+          "selectAction": GotoMovieAction,
+          "component": {
+            "type": Card,
+            "title": "title",
+            "photos": "posterurl",
+            "description": "storyline"
+          }
         }
       ]
     };

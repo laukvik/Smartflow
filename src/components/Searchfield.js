@@ -17,6 +17,7 @@ import {Collection} from "../Collection";
  * @property {string} itemsEmpty - the text to show when collection is empty
  * @property {string} sort - the sort
  * @property {string} filter - the filter
+ * @property {string} component - the component to render as an item
  */
 
 /**
@@ -33,8 +34,10 @@ export class Searchfield extends InputComponent {
   constructor(properties) {
     super(properties);
     this._componentNode = document.createElement("div");
+    this._componentNode.setAttribute("class", "Searchfield");
     this.optionsNode = document.createElement("ul");
     this.optionsNode.setAttribute("class", "dropdown-menu");
+    this.optionsNode.style.position = "";
     this.collections = new Collection();
     this.selectedIndex = -1;
     this.optionsNodes = [];
@@ -76,9 +79,15 @@ export class Searchfield extends InputComponent {
       this.setSelectAction(value);
     } else if (name === "selectedItem") {
       this.setSelected(value);
+    } else if (name === "component") {
+        this.setComponent(value);
     } else {
       //console.debug("Searchfield: Unknown property ", name);
     }
+  }
+
+  setComponent(value){
+    this._itemComponent = value;
   }
 
   setSelected(value){
@@ -115,13 +124,25 @@ export class Searchfield extends InputComponent {
 
       for (let x = 0; x < items.length; x++) {
         let item = items[x];
-        let node = document.createElement("a");
-        node.setAttribute("class", "dropdown-item " + (this.selectedIndex === x ? "active" : ""));
-        node.innerText = item[this._itemLabel];
+        let node;
+        if (this._itemComponent === undefined) {
+          node = document.createElement("a");
+          node.setAttribute("class", "dropdown-item " + (this.selectedIndex === x ? "active" : ""));
+          node.innerText = item[this._itemLabel];
+        } else {
+          let copy = Object.assign( {}, this._itemComponent );
+          for (let key in this._itemComponent) {
+            if (key !== "type") {
+              copy[ key ] = item[  this._itemComponent[key] ];
+            }
+          }
+          node = document.createElement("div");
+          node.setAttribute("class", "dropdown-item");
+          this._builder.buildChildNode(node, copy);
+        }
         this.optionsNodes.push(node);
         this.optionsNode.appendChild(node);
       }
-
       if (items.length === 0) {
         let node = document.createElement("small");
         node.setAttribute("class", "dropdown-item disabled");
@@ -129,6 +150,7 @@ export class Searchfield extends InputComponent {
         this.optionsNode.appendChild(node);
       }
     }
+    this.setSelectedIndex(0);
   }
 
   arrowUp() {
@@ -169,6 +191,7 @@ export class Searchfield extends InputComponent {
   }
 
   buildComponent(builder, properties) {
+    this._builder = builder;
     this.action = properties.action;
     this.input = document.createElement("input");
     this.input.setAttribute("type", "text");

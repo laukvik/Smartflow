@@ -126,6 +126,10 @@ export class Component {
     return div;
   }
 
+  getNode(){
+    return this._componentNode;
+  }
+
   setView(viewController) {
     this.ctrl = viewController;
   }
