@@ -8,6 +8,8 @@ import {Items} from "../../../src/components/Items";
 import {Text} from "../../../src/components/Text";
 import {Table} from "../../../src/components/Table";
 import {Radio} from "../../../src/components/Radio";
+import {Card} from "../../../src/components/Card";
+import {Photo} from "../../../src/components/Photo";
 
 /**
  * Table view with details of all movies in catalog.
@@ -50,6 +52,14 @@ export class CatalogView extends View {
           "visible": "{global:listView}",
           "columns": [
             {
+              "label": "Poster",
+              "key": "title",
+              "component": {
+                "type": Photo,
+                "url": "posterurl"
+              }
+            },
+            {
               "label": "Title",
               "key": "title"
             },
@@ -60,7 +70,7 @@ export class CatalogView extends View {
             {
               "label": "Year",
               "key": "year"
-            },
+            }
           ],
           "items": "{global:movies}"
         },
@@ -70,10 +80,9 @@ export class CatalogView extends View {
           "items": "{global:movies}",
           "visible": "{global:listView}",
           "component": {
-            "type": "Card",
+            "type": Card,
             "title": "title",
             "description": "storyline",
-            "photo": "poster"
           },
           "sort": {
             "match": "title",

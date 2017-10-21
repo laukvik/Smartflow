@@ -18,10 +18,13 @@ import {Collection} from "../Collection";
  * @property {string} sort - the sort
  * @property {string} filter - the filter
  * @property {string} component - the component to render as an item
+ * @property {string} selectAction - the action to run when an item is selected
  */
 
 /**
- * Searchfield
+ *
+ *  Allows to search through items by display items that starts with the specified
+ * value in the input field.
  *
  */
 export class Searchfield extends InputComponent {
@@ -29,7 +32,7 @@ export class Searchfield extends InputComponent {
   /**
    * Constructor for Searchfield
    *
-   * @param {SearchfieldProperties} props the properties for the component
+   * @param {SearchfieldProperties} properties the properties for the component
    */
   constructor(properties) {
     super(properties);

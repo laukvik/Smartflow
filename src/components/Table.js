@@ -1,5 +1,7 @@
 import {InputComponent} from "../InputComponent";
 import {Collection} from "../Collection";
+import {Photo} from "./Photo";
+import {Scope} from "../Scope";
 
 /**
  *
@@ -163,7 +165,6 @@ class Table extends InputComponent {
     if (Array.isArray(rowData)) {
       let rows = this.collections.find(rowData);
       this._items = rows;
-
       this.removeChildNodes(this.bodyNode);
       for (let y = 0; y < rows.length; y++) {
         let row = rows[y];
@@ -185,15 +186,31 @@ class Table extends InputComponent {
           }.bind(this), false);
         }
 
-
+        // Iterate through all columns
         for (let x = 0; x < this.columns.length; x++) {
           let column = this.columns[x];
-          let cellData = row[column.key];
           let tdNode = document.createElement("td");
           trNode.appendChild(tdNode);
-          if (column.format) {
+
+          let cellData = row[column.key];
+
+          if (column.component) {
+            // Custom renderer
+            let columnComponent = column.component;
+            let copy = Object.assign( {}, columnComponent );
+            for (let key in columnComponent) {
+              if (key !== "type") {
+                copy[ key ] = row[ columnComponent[key] ];
+              }
+            }
+            copy[ "width" ] = "50";
+            this.builder.buildChildNode(tdNode, copy);
+
+          } else if (column.format) {
+            // Date format
             tdNode.innerText = this.builder.formatter.formatDate(cellData, column.format);
           } else {
+            // Plain text
             tdNode.innerText = cellData;
           }
         }

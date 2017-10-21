@@ -32,7 +32,6 @@ export class SearchView extends View {
           "component": {
             "type": Card,
             "title": "title",
-            "photos": "posterurl",
             "description": "storyline"
           }
         }
