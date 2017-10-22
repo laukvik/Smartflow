@@ -64,7 +64,14 @@ export class Radio extends InputComponent {
       this.setFilter(value);
     } else if (name === "visible") {
       this.setVisible(value);
+    } else if (name === "distinct") {
+      this.setItemDistinct(value);
     }
+  }
+
+  setItemDistinct(itemDistinct){
+    this._itemDistinct = itemDistinct;
+    this.collections.setDistinct(this._itemDistinct);
   }
 
   _update() {
@@ -158,7 +165,7 @@ export class Radio extends InputComponent {
     if (Array.isArray(rowData)) {
       let items = this.collections.find(rowData);
       this._items = rowData;
-      let gui = "sf-radio-" + Math.round(100000);
+      let gui = "sf-radio-" + Math.random();
       for (let x = 0; x < items.length; x++) {
         let item = items[x];
         let itemText = item[ this._itemLabel ];
@@ -182,7 +189,7 @@ export class Radio extends InputComponent {
 
         let text = document.createElement("span");
         labelNode.appendChild(text);
-        text.innerText = itemText;
+        text.innerText = itemText === "" ? String.fromCharCode(127, 32, 127) : itemText;
 
         let self = this;
         input.addEventListener("change", function () {

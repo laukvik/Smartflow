@@ -15,7 +15,12 @@ class Tabs extends PresentationComponent {
     this._componentNode.setAttribute("class", "Tabs");
   }
 
-  setProperties(properties) {
+  setProperty(name, value) {
+    if (name === "visible") {
+      this.setVisible(value);
+    } else if (name === "index") {
+      this.setSelectedIndex(value);
+    }
   }
 
   buildComponent(builder, properties) {

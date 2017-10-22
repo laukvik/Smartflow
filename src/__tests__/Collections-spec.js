@@ -2,9 +2,18 @@ import {Collection} from '../Collection';
 import {Data} from './Data';
 
 let rows = Data.getMoviesRows();
-let keyset = Data.getMoviesKeys();
 
 describe('Collection', function () {
+
+  describe('distinct', function () {
+
+    it('should find distinct', function () {
+      let c = new Collection({});
+      c.setDistinct("year");
+      expect(c.find(rows).length).toBe(3);
+    });
+
+  });
 
   describe('filters', function () {
 

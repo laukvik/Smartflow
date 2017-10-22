@@ -34,19 +34,35 @@ export class CatalogView extends View {
 
         {
           "type": Radio,
-          "label": "View",
-          "selected": "{view:isListView}",
+          "label": "Year",
+          "selected": "{view:selectedYear}",
           "itemKey": "year",
           "itemLabel": "year",
           "items": "{global:movies}",
-          "itemDistinct": "year",
+          "distinct": "year",
           "sort": {
             "match": "title",
             "order": "asc"
           }
         },
+
+        {
+          "type": Radio,
+          "label": "Rating",
+          "selected": "{view:selectedRating}",
+          "itemKey": "contentRating",
+          "itemLabel": "contentRating",
+          "items": "{global:movies}",
+          "distinct": "contentRating",
+          "sort": {
+            "match": "contentRating",
+            "order": "asc"
+          }
+        },
+
         {
           "type": Tabs,
+          "index": 0,
           "tabs": [
             {
               "label": "Posters",
@@ -77,6 +93,13 @@ export class CatalogView extends View {
                     }
                   ],
                   "items": "{global:movies}",
+                  "filter":
+                    {
+                      "match": "year",
+                      "type": "is",
+                      "value": "{view:selectedYear}"
+                    }
+                  ,
                   "sort": {
                     "match": "title",
                     "order": "asc"
