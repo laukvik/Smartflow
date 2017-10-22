@@ -11,6 +11,8 @@ import {Radio} from "../../../src/components/Radio";
 import {Card} from "../../../src/components/Card";
 import {Photo} from "../../../src/components/Photo";
 import {Tabs} from "../../../src/components/Tabs";
+import {Link} from "../../../src/components/Link";
+import {Duration} from "../components/Duration";
 
 /**
  * Table view with details of all movies in catalog.
@@ -31,7 +33,6 @@ export class CatalogView extends View {
           "heading": "Catalog",
           "text": "All movies"
         },
-
         {
           "type": Radio,
           "label": "Year",
@@ -45,7 +46,6 @@ export class CatalogView extends View {
             "order": "asc"
           }
         },
-
         {
           "type": Radio,
           "label": "Rating",
@@ -59,13 +59,12 @@ export class CatalogView extends View {
             "order": "asc"
           }
         },
-
         {
           "type": Tabs,
           "index": 0,
           "tabs": [
             {
-              "label": "Posters",
+              "label": "List",
               "components": [
                 {
                   "type": Table,
@@ -86,6 +85,14 @@ export class CatalogView extends View {
                     {
                       "label": "Genre",
                       "key": "genres"
+                    },
+                    {
+                      "label": "Duration",
+                      "key": "duration",
+                      "component": {
+                        "type": Duration,
+                        "value": "{duration}"
+                      }
                     },
                     {
                       "label": "Year",
@@ -109,7 +116,7 @@ export class CatalogView extends View {
               ]
             },
             {
-              "label": "List",
+              "label": "Posters",
               "components": [
                 {
                   "type": Items,

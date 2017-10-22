@@ -40,7 +40,6 @@ export class Searchfield extends InputComponent {
     this._componentNode.setAttribute("class", "Searchfield");
     this.optionsNode = document.createElement("ul");
     this.optionsNode.setAttribute("class", "dropdown-menu");
-    this.optionsNode.style.position = "";
     this.collections = new Collection();
     this.selectedIndex = -1;
     this.optionsNodes = [];
