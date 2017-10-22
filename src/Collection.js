@@ -14,12 +14,14 @@ export class Collection {
     this.clearFilter();
     this.clearSort();
     this.clearPaging();
+    this.clearDistinct();
   }
 
   setProperties(properties){
     this.setSort(properties.sort);
     this.setPaging(properties.paging);
-    this.setFilter(properties._filters);
+    this.setFilter(properties.filters);
+    this.setDistinct(properties.distinct);
   }
 
   clearFilter(){
@@ -32,6 +34,9 @@ export class Collection {
     this._paging = {};
   }
 
+  clearDistinct(){
+    this._distincts = [];
+  }
   _addFilter(key, value, compareType, datePattern) {
     if (!datePattern) {
       this._filters.push(
@@ -98,6 +103,14 @@ export class Collection {
       this.pageIndex = paging.page;
     }
     this.pageEnabled = this.pageSize !== undefined;
+  }
+
+  setDistinct(distincts){
+    if (Array.isArray(distincts)){
+      this._distincts = distincts;
+    } else {
+      this._distincts = [];
+    }
   }
 
   addSort(key, order) {

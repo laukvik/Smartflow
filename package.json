@@ -10,7 +10,7 @@
     "build": "webpack",
     "pack": "webpack --help",
     "test": "jest src",
-    "watch": "jest --watch",
+    "watch": "webpack --watch",
     "www": "npm run start",
     "coverage": "jest ./src/  --coverage",
     "eslint": "eslint ./src/*.js",

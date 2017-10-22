@@ -1,5 +1,10 @@
 import {PresentationComponent} from "../PresentationComponent";
 
+/**
+ *
+ *
+ *
+ */
 class Tabs extends PresentationComponent {
   constructor(properties) {
     super(properties);
@@ -7,13 +12,14 @@ class Tabs extends PresentationComponent {
     this.contents = [];
     this.links = [];
     this._componentNode = document.createElement("div");
+    this._componentNode.setAttribute("class", "Tabs");
   }
 
   setProperties(properties) {
   }
 
   buildComponent(builder, properties) {
-    if (Array.isArray(this.properties.tabs)) {
+    if (Array.isArray(properties.tabs)) {
       this.labelsNode = document.createElement("ul");
       this.labelsNode.setAttribute("class", "nav nav-pills nav-justified");
       this.contentsNode = document.createElement("div");
@@ -21,8 +27,8 @@ class Tabs extends PresentationComponent {
       this._componentNode.appendChild(this.labelsNode);
       this._componentNode.appendChild(this.contentsNode);
 
-      for (let x = 0; x < this.properties.tabs.length; x++) {
-        let tab = this.properties.tabs[x];
+      for (let x = 0; x < properties.tabs.length; x++) {
+        let tab = properties.tabs[x];
         let liNode = document.createElement("li");
         liNode.setAttribute("class", "nav-item");
         liNode.setAttribute("role", "presentation");
@@ -53,10 +59,9 @@ class Tabs extends PresentationComponent {
         }
       }
 
-      this.setSelectedIndex(this.properties.selectedIndex);
+      this.setSelectedIndex(properties.selectedIndex);
     }
 
-    //this._componentNode.setAttribute("class", "sf-tabs" + (properties.class ? " " + properties.class : ""));
     return this._componentNode;
   }
 

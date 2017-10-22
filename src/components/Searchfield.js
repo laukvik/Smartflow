@@ -199,8 +199,6 @@ export class Searchfield extends InputComponent {
     this.input = document.createElement("input");
     this.input.setAttribute("type", "text");
     this.input.setAttribute("class", "form-control");
-
-
     this.input.addEventListener('keyup', function (evt) {
       this.setDropdownVisible(true);
       if (evt.key === "ArrowDown") {
@@ -219,32 +217,12 @@ export class Searchfield extends InputComponent {
       this.setValidationMessage(properties.validation.message);
       this.setRegex(properties.validation.regex);
     }
-    if (properties.icon_before) {
-      let addonBefore = document.createElement("span");
-      addonBefore.setAttribute("class", "input-group-addon");
-      let iconBefore = document.createElement("span");
-      iconBefore.setAttribute("class", "glyphicon " + properties.icon_before);
-      addonBefore.appendChild(iconBefore);
-      this._componentNode.appendChild(addonBefore);
-    }
     this._componentNode.appendChild(this.input);
-    if (properties.icon_after) {
-      let addonAfter = document.createElement("span");
-      addonAfter.setAttribute("class", "input-group-addon");
-      let iconAfter = document.createElement("span");
-      iconAfter.setAttribute("class", "glyphicon " + properties.icon_after);
-      addonAfter.appendChild(iconAfter);
-      this._componentNode.appendChild(addonAfter);
-    }
-    // if (properties.id){
-    //   this._componentNode.setAttribute("id", properties.id);
-    // }
     this._componentNode.setAttribute("class", "sf-searchfield input-group" + (properties.class ? " " + properties.class : ""));
     this._componentNode.appendChild(this.optionsNode);
     this._componentNode.setAttribute("class", "card");
     return this._componentNode;
   }
-
 
   isValid() {
     return true;

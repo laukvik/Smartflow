@@ -101,8 +101,4 @@ export class Card extends PresentationComponent {
     this.fireAction(this._action);
   }
 
-  setVisible(isVisible) {
-    this._componentNode.style.display = isVisible === true ? "block" : "none";
-  }
-
 }

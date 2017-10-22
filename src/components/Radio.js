@@ -40,7 +40,6 @@ export class Radio extends InputComponent {
   }
 
   setProperty(name, value) {
-    console.info("setProperty: ", name, value);
     if (name === "selected") {
       this.setSelected(value);
     } else if (name === "items") {
@@ -112,7 +111,7 @@ export class Radio extends InputComponent {
 
   setEnabled(enabled) {
     for (let x = 0; x < this.inputNodes.length; x++) {
-      this.inputNodes[x].disabled = enabled == false;
+      this.inputNodes[x].disabled = enabled === false;
     }
   }
 
@@ -128,7 +127,7 @@ export class Radio extends InputComponent {
   setSelected(selected) {
     for (let x = 0; x < this.inputNodes.length; x++) {
       let inp = this.inputNodes[x];
-      inp.checked = inp.value == selected;
+      inp.checked = inp.value === selected;
     }
   }
 
@@ -147,13 +146,18 @@ export class Radio extends InputComponent {
     return this.vertical;
   }
 
+  _changed(index) {
+    let item = this._items[index];
+    this.setSelectedIndex(index);
+    this.firePropertyChanged("selected", item[ this._itemKey ]);
+  }
+
   setItems(rowData) {
     this.removeChildNodes(this._componentNode);
     this.inputNodes = [];
     if (Array.isArray(rowData)) {
       let items = this.collections.find(rowData);
       this._items = rowData;
-
       let gui = "sf-radio-" + Math.round(100000);
       for (let x = 0; x < items.length; x++) {
         let item = items[x];
@@ -182,10 +186,7 @@ export class Radio extends InputComponent {
 
         let self = this;
         input.addEventListener("change", function () {
-          console.info("Radio: ", x);
-
-          self.setSelectedIndex(x);
-          self.firePropertyChanged("selected", itemValue);
+          self._changed(x);
         });
       }
     }

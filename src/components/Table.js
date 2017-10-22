@@ -1,7 +1,7 @@
 import {InputComponent} from "../InputComponent";
 import {Collection} from "../Collection";
 import {Photo} from "./Photo";
-import {Scope} from "../Scope";
+import {Scope, SCOPES} from "../Scope";
 
 /**
  *
@@ -36,13 +36,17 @@ class Table extends InputComponent {
     this.columns = [];
     this._items = [];
     this.inputNodes = [];
-    this.headerNode = document.createElement("div");
-    this.bodyNode = document.createElement("div");
-    this._componentNode = document.createElement("table");
-  }
-
-  setVisible2(){
-
+    this.tableNode = document.createElement("table");
+    this.tableNode.setAttribute("class", "table");
+    this.headerNode = document.createElement("thead");
+    this.bodyNode = document.createElement("tbody");
+    this.footerNode = document.createElement("tfoot");
+    this.tableNode.appendChild(this.headerNode);
+    this.tableNode.appendChild(this.bodyNode);
+    this.tableNode.appendChild(this.headerNode);
+    this.tableNode.appendChild(this.footerNode);
+    this._componentNode = document.createElement("div");
+    this._componentNode.appendChild(this.tableNode);
   }
 
   setProperty(name, value) {
@@ -69,20 +73,6 @@ class Table extends InputComponent {
 
   buildComponent(builder, properties) {
     this.builder = builder;
-    // Table
-
-    this._componentNode.setAttribute("class", "table");
-    // Head
-    let theadNode = document.createElement("thead");
-    let headerRowNode = document.createElement("tr");
-    theadNode.appendChild(headerRowNode);
-    this._componentNode.appendChild(theadNode);
-    // Body
-    let bodyNode = document.createElement("tbody");
-    this._componentNode.appendChild(bodyNode);
-    this.headerNode = headerRowNode;
-    this.bodyNode = bodyNode;
-    this._componentNode.setAttribute("class", "sf-table" + (properties.class ? " " + properties.class : ""));
     return this._componentNode;
   }
 
@@ -197,21 +187,23 @@ class Table extends InputComponent {
           let column = this.columns[x];
           let tdNode = document.createElement("td");
           trNode.appendChild(tdNode);
-
           let cellData = row[column.key];
-
           if (column.component) {
             // Custom renderer
             let columnComponent = column.component;
             let copy = Object.assign( {}, columnComponent );
             for (let key in columnComponent) {
               if (key !== "type") {
-                copy[ key ] = row[ columnComponent[key] ];
+                let s = Scope.parseScope(columnComponent[key]);
+                if (s.scope === SCOPES.NONE){
+                  copy[ key ] = s.value;
+
+                } else if (s.scope === SCOPES.COMPONENT) {
+                  copy[ key ] = row[ s.value ];
+                }
               }
             }
-            copy[ "width" ] = "50";
             this.builder.buildChildNode(tdNode, copy);
-
           } else if (column.format) {
             // Date format
             tdNode.innerText = this.builder.formatter.formatDate(cellData, column.format);
