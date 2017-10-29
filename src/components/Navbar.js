@@ -1,11 +1,12 @@
 import {PresentationComponent} from "../PresentationComponent";
 
 export class Navbar extends PresentationComponent {
+
   constructor(properties) {
     super(properties);
     this.buttons = [];
     this.actions = [];
-    this._componentNode = document.createElement("nav");
+    this.createComponentNode("nav", "Navigation", "navbar navbar-toggleable-md navbar-light bg-faded");
     this._expanded = false;
   }
 

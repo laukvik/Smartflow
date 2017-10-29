@@ -2,6 +2,8 @@ import {Component} from "../Component";
 
 /**
  *
+ *
+ *
  * @typedef {Object} AlertProperties
  * @property {text} text - the message
  * @property {style} style - the style of alert (info, success, warning, error)
@@ -9,9 +11,23 @@ import {Component} from "../Component";
  *
  */
 
+export const AlertStyle = {
+  INFO: "info",
+  DANGER: "danger",
+  SUCCESS: "success",
+  WARNING: "warning"
+};
+
 /**
  * Alert
  *
+ * @example
+ *
+ * {
+ * "type": Alert,
+ * "text": "Document saved.",
+ * "style": AlertStyle.SUCCESS
+ * }
  *
  */
 export class Alert extends Component {
@@ -23,7 +39,7 @@ export class Alert extends Component {
    */
   constructor(properties) {
     super(properties);
-    this._componentNode = document.createElement("div");
+    this.createComponentNode("div", "Alert");
     this._componentNode.setAttribute("role", "alert");
     this._buttonNode = document.createElement("button");
     this._buttonNode.setAttribute("type", "button");

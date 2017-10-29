@@ -1,10 +1,31 @@
 import {Component} from "../Component";
 
+export const ButtonStyle = {
+  PRIMARY: "primary",
+  SECONDARY: "secondary",
+  INFO: "info",
+  DANGER: "danger",
+  SUCCESS: "success",
+  WARNING: "warning"
+};
+
+/**
+ * Buttton for triggering action
+ *
+ * @example
+ * {
+ * "type": Button,
+ * "label": "Send",
+ * "style": ButtonStyle.SECONDARY,
+ * "badge": 3,
+ * "action": GotoMovieAction
+ * }
+ */
 class Button extends Component {
 
   constructor(properties) {
     super(properties);
-    this._componentNode = document.createElement("button");
+    this.createComponentNode("button", "Button");
     this._textNode = document.createTextNode("");
     this._badgeNode = document.createElement("span");
     this._badgeNode.setAttribute("class", "badge");
@@ -54,13 +75,15 @@ class Button extends Component {
   buildComponent(builder, properties) {
     this._componentNode.setAttribute("class", "btn " + ("btn-"+this._buttonStyle)  + + (properties.class ? " " + properties.class : ""));
     this._componentNode.addEventListener("click", function () {
-      this._clicked(properties);
+      this._clicked();
     }.bind(this), false);
     return this._componentNode;
   }
 
-  _clicked(action) {
-    this.fireAction(action.action);
+  _clicked() {
+    if (this.action !== undefined) {
+      this.fireAction(this.action);
+    }
   }
 
   setEnabled(isEnabled) {

@@ -1,10 +1,10 @@
 import {PresentationComponent} from "../PresentationComponent";
 
 export class Layout extends PresentationComponent {
+
   constructor(properties) {
     super(properties);
-    this._componentNode = document.createElement("div");
-
+    this.createComponentNode("div", "Layout");
   }
 
   setProperties(properties) {
@@ -12,7 +12,6 @@ export class Layout extends PresentationComponent {
   }
 
   buildComponent(builder, properties) {
-    //this._componentNode.setAttribute("class", "sf-layout container" + (properties.class ? " " + properties.class : ""));
     let rows = document.createElement("div");
     rows.setAttribute("class", "row");
     this._componentNode.appendChild(rows);

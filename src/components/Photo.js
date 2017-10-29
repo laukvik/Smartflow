@@ -23,7 +23,7 @@ export class Photo extends PresentationComponent {
    */
   constructor(props) {
     super(props);
-    this._componentNode = document.createElement("div");
+    this.createComponentNode("div", "Photo");
     this._imgNode = document.createElement("img");
     this._componentNode.appendChild(this._imgNode);
   }
@@ -31,11 +31,23 @@ export class Photo extends PresentationComponent {
   setProperty(name, value) {
     if (name === "url") {
       this.setUrl(value);
+    } else if (name === "width") {
+      this.setWidth(value);
+    } else if (name === "height") {
+      this.setHeight(value);
     } else if (name === "visible") {
       this.setVisible(value);
     } else  {
       console.warn("Photo: Unknown property ", name);
     }
+  }
+
+  setWidth(value) {
+    this._imgNode.setAttribute("width", value);
+  }
+
+  setHeight(value) {
+    this._imgNode.setAttribute("height", value);
   }
 
   setUrl(url) {

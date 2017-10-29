@@ -14,12 +14,14 @@ export class Collection {
     this.clearFilter();
     this.clearSort();
     this.clearPaging();
+    this.clearDistinct();
   }
 
   setProperties(properties){
     this.setSort(properties.sort);
     this.setPaging(properties.paging);
-    this.setFilter(properties._filters);
+    this.setFilter(properties.filters);
+    this.setDistinct(properties.distinct);
   }
 
   clearFilter(){
@@ -32,6 +34,9 @@ export class Collection {
     this._paging = {};
   }
 
+  clearDistinct(){
+    this._distinct = undefined;
+  }
   _addFilter(key, value, compareType, datePattern) {
     if (!datePattern) {
       this._filters.push(
@@ -100,6 +105,10 @@ export class Collection {
     this.pageEnabled = this.pageSize !== undefined;
   }
 
+  setDistinct(distinct){
+    this._distinct = distinct;
+  }
+
   addSort(key, order) {
     this._sorting.push({"key": key, "order": order});
   }
@@ -114,10 +123,6 @@ export class Collection {
     } else {
       this.addSort(sort.match, sort.order);
     }
-  }
-
-  parse(){
-
   }
 
   find(items) {
@@ -199,14 +204,27 @@ export class Collection {
       return items.slice(startIndex, endIndex);
     };
 
-
-
-
     let rows = items;
 
     if (this._filters.length > 0) {
       rows = rows.filter(collectionFilter);
     }
+
+    if (this._distinct !== undefined) {
+      let obj = {};
+      for (let y=0; y<rows.length; y++) {
+        let row = rows[y];
+        let v = row[ this._distinct ];
+        obj[ v ] = v;
+      }
+      rows = [];
+      for (let o in obj) {
+        let row = {};
+        row[ this._distinct ] = o;
+        rows.push(row);
+      }
+    }
+
     if (this._sorting.length > 0) {
       rows = rows.sort(collectionSorter);
     }

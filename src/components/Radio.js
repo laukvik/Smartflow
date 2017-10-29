@@ -1,5 +1,6 @@
 import {InputComponent} from "../InputComponent";
 import {Collection} from "../Collection";
+import {Scope} from "../Scope";
 
 /**
  *
@@ -33,7 +34,7 @@ export class Radio extends InputComponent {
     this.inputNodes = [];
     this._items = [];
     this.collections = new Collection();
-    this._componentNode = document.createElement("div");
+    this.createComponentNode("div", "Radio");
     this._itemKey = "value";
     this._itemLabel = "text";
   }
@@ -61,7 +62,20 @@ export class Radio extends InputComponent {
       this.setSort(value);
     } else if (name === "filter") {
       this.setFilter(value);
+    } else if (name === "visible") {
+      this.setVisible(value);
+    } else if (name === "distinct") {
+      this.setItemDistinct(value);
+    } else if (name === "class") {
+      this.setClass(value);
+    } else if (name === "id") {
+      this.setID(value);
     }
+  }
+
+  setItemDistinct(itemDistinct){
+    this._itemDistinct = itemDistinct;
+    this.collections.setDistinct(this._itemDistinct);
   }
 
   _update() {
@@ -95,7 +109,7 @@ export class Radio extends InputComponent {
     this._update();
   }
 
-  buildComponent(builder, properties){
+  buildInputNode(builder, properties) {
     return this._componentNode;
   }
 
@@ -108,7 +122,7 @@ export class Radio extends InputComponent {
 
   setEnabled(enabled) {
     for (let x = 0; x < this.inputNodes.length; x++) {
-      this.inputNodes[x].disabled = enabled == false;
+      this.inputNodes[x].disabled = enabled === false;
     }
   }
 
@@ -124,7 +138,14 @@ export class Radio extends InputComponent {
   setSelected(selected) {
     for (let x = 0; x < this.inputNodes.length; x++) {
       let inp = this.inputNodes[x];
-      inp.checked = inp.value == selected;
+      inp.checked = inp.value === selected;
+    }
+  }
+
+  setSelectedIndex(index){
+    for (let x = 0; x < this.inputNodes.length; x++) {
+      let inp = this.inputNodes[x];
+      inp.checked = x === index;
     }
   }
 
@@ -136,14 +157,19 @@ export class Radio extends InputComponent {
     return this.vertical;
   }
 
+  _changed(index) {
+    let item = this._items[index];
+    this.setSelectedIndex(index);
+    this.firePropertyChanged("selected", item[ this._itemKey ]);
+  }
+
   setItems(rowData) {
     this.removeChildNodes(this._componentNode);
     this.inputNodes = [];
     if (Array.isArray(rowData)) {
       let items = this.collections.find(rowData);
       this._items = rowData;
-
-      let gui = "sf-radio-" + Math.round(100000);
+      let gui = "sf-radio-" + Math.random();
       for (let x = 0; x < items.length; x++) {
         let item = items[x];
         let itemText = item[ this._itemLabel ];
@@ -167,14 +193,11 @@ export class Radio extends InputComponent {
 
         let text = document.createElement("span");
         labelNode.appendChild(text);
-        text.innerText = itemText;
+        text.innerText = itemText === "" ? String.fromCharCode(127, 32, 127) : itemText;
 
-        let inputs = this.inputNodes;
         let self = this;
         input.addEventListener("change", function () {
-          self.firePropertyChanged("selected", inputs.filter(function (inp) {
-            return inp.checked
-          }));
+          self._changed(x);
         });
       }
     }

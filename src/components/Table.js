@@ -1,5 +1,7 @@
 import {InputComponent} from "../InputComponent";
 import {Collection} from "../Collection";
+import {Photo} from "./Photo";
+import {Scope, SCOPES} from "../Scope";
 
 /**
  *
@@ -34,9 +36,17 @@ class Table extends InputComponent {
     this.columns = [];
     this._items = [];
     this.inputNodes = [];
-    this.headerNode = document.createElement("div");
-    this.bodyNode = document.createElement("div");
-    this._componentNode = document.createElement("table");
+    this.createComponentNode("div", "Table");
+    this.tableNode = document.createElement("table");
+    this.tableNode.setAttribute("class", "table");
+    this.headerNode = document.createElement("thead");
+    this.bodyNode = document.createElement("tbody");
+    this.footerNode = document.createElement("tfoot");
+    this.tableNode.appendChild(this.headerNode);
+    this.tableNode.appendChild(this.bodyNode);
+    this.tableNode.appendChild(this.headerNode);
+    this.tableNode.appendChild(this.footerNode);
+    this._componentNode.appendChild(this.tableNode);
   }
 
   setProperty(name, value) {
@@ -54,6 +64,8 @@ class Table extends InputComponent {
       this.setFilter(value);
     } else if (name === "paging") {
       this.setPaging(value);
+    } else if (name === "visible") {
+      this.setVisible(value);
     } else {
       //console.warn("Table: Unkown property ", name);
     }
@@ -61,20 +73,6 @@ class Table extends InputComponent {
 
   buildComponent(builder, properties) {
     this.builder = builder;
-    // Table
-
-    this._componentNode.setAttribute("class", "table");
-    // Head
-    let theadNode = document.createElement("thead");
-    let headerRowNode = document.createElement("tr");
-    theadNode.appendChild(headerRowNode);
-    this._componentNode.appendChild(theadNode);
-    // Body
-    let bodyNode = document.createElement("tbody");
-    this._componentNode.appendChild(bodyNode);
-    this.headerNode = headerRowNode;
-    this.bodyNode = bodyNode;
-    this._componentNode.setAttribute("class", "sf-table" + (properties.class ? " " + properties.class : ""));
     return this._componentNode;
   }
 
@@ -163,7 +161,6 @@ class Table extends InputComponent {
     if (Array.isArray(rowData)) {
       let rows = this.collections.find(rowData);
       this._items = rows;
-
       this.removeChildNodes(this.bodyNode);
       for (let y = 0; y < rows.length; y++) {
         let row = rows[y];
@@ -185,15 +182,33 @@ class Table extends InputComponent {
           }.bind(this), false);
         }
 
-
+        // Iterate through all columns
         for (let x = 0; x < this.columns.length; x++) {
           let column = this.columns[x];
-          let cellData = row[column.key];
           let tdNode = document.createElement("td");
           trNode.appendChild(tdNode);
-          if (column.format) {
+          let cellData = row[column.key];
+          if (column.component) {
+            // Custom renderer
+            let columnComponent = column.component;
+            let copy = Object.assign( {}, columnComponent );
+            for (let key in columnComponent) {
+              if (key !== "type") {
+                let s = Scope.parseScope(columnComponent[key]);
+                if (s.scope === SCOPES.NONE){
+                  copy[ key ] = s.value;
+
+                } else if (s.scope === SCOPES.COMPONENT) {
+                  copy[ key ] = row[ s.value ];
+                }
+              }
+            }
+            this.builder.buildChildNode(tdNode, copy);
+          } else if (column.format) {
+            // Date format
             tdNode.innerText = this.builder.formatter.formatDate(cellData, column.format);
           } else {
+            // Plain text
             tdNode.innerText = cellData;
           }
         }

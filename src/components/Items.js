@@ -26,7 +26,7 @@ export class Items extends PresentationComponent {
    */
   constructor(properties) {
     super(properties);
-    this._componentNode = document.createElement("div");
+    this.createComponentNode("div", "Items");
     this.collections = new Collection();
   }
 
@@ -39,6 +39,10 @@ export class Items extends PresentationComponent {
       this.setFilter(value);
     } else if (name === "paging") {
       this.setPaging(value);
+    } else if (name === "visible") {
+      this.setVisible(value);
+    } else {
+      //console.warn("Items: Invalid property ", name );
     }
   }
 

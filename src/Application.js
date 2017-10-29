@@ -297,8 +297,7 @@ export class Application {
             let contentType = this.getResponseHeader('content-type');
             actionEvent.response.contentType = contentType;
 
-            // TODO - Add support for variants of content types eg application/json;utf-8 etc
-            if (contentType === 'application/json') {
+            if (contentType.indexOf('application/json') === 0) {
               actionEvent.response.body = JSON.parse(this.response);
             } else if (contentType === 'application/xml') {
               actionEvent.response.body = this.responseXML;
@@ -516,6 +515,7 @@ export class Application {
 
   //--------------------------------- State ----------------------------------------
   _fireGlobalStateChanged(state, value) {
+    // console.info("GlobalState: ", state, value);
     for (let x = 0; x < this._controllers.length; x++) {
       let viewController = this._controllers[x];
       // Loop each component in view

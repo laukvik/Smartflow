@@ -25,7 +25,7 @@ export class Textfield extends InputComponent {
    */
   constructor(props) {
     super(props);
-    this._componentNode = document.createElement("div");
+    this.createComponentNode("div", "Textfield");
     this._iconBefore = null;
     this._iconAfter = null;
     this._value = "";

@@ -24,6 +24,18 @@ export class Component {
   }
 
   /**
+   * Creates an HTML node
+   * @param tagName the name of the tag
+   * @param baseClass the component CSS class name
+   * @param cssClass the custom CSS class name
+   */
+  createComponentNode(tagName, baseClass, cssClass) {
+    this._componentNode = document.createElement(tagName);
+    this.setBaseClass(baseClass);
+    this.setClass(cssClass);
+  }
+
+  /**
    * Sets the value for a named property
    *
    * @param name
@@ -65,7 +77,7 @@ export class Component {
       delete this._valueBindings[ name ];
       return;
     }
-    if (scope === SCOPES.NONE || scope === SCOPES.VIEW || scope === SCOPES.GLOBAL) {
+    if (scope === SCOPES.NONE || scope === SCOPES.VIEW || scope === SCOPES.GLOBAL  || scope === SCOPES.COMPONENT) {
       this._valueBindings[ name ] = {
         "state" : value,
         "property" : name,
@@ -80,38 +92,10 @@ export class Component {
   getBindingByState(state, scope) {
     for (let propertyName in this._valueBindings) {
       let b = this._valueBindings[ propertyName ];
-      if (b.scope == scope && b.state == state){
+      if (b.scope === scope && b.state === state){
         return b;
       }
     }
-  }
-
-  parseScope(value){
-    let isString = typeof value === 'string';
-    if (!isString) {
-      return {
-        "scope": SCOPES.NONE,
-        "value": value
-      };
-    }
-    if (value.indexOf("{") === 0 && value.lastIndexOf("}") === value.length-1) {
-      let innerValue = value.substring(1, value.length-1);
-      if (innerValue.toUpperCase().startsWith(SCOPES.GLOBAL)) {
-        return {
-          "scope": SCOPES.GLOBAL,
-          "value": innerValue.substring(7)
-        }
-      } else {
-        return {
-          "scope": SCOPES.VIEW,
-          "value": innerValue
-        }
-      }
-    }
-    return {
-      "scope": SCOPES.NONE,
-      "value": value
-    };
   }
 
   setProperties(properties) {
@@ -124,6 +108,10 @@ export class Component {
     let div = document.createElement("div");
     div.innerText = "[Smartflow:" + this.constructor.name + "]";
     return div;
+  }
+
+  getNode(){
+    return this._componentNode;
   }
 
   setView(viewController) {
@@ -139,12 +127,12 @@ export class Component {
   }
 
   setVisible(visible) {
-    this._componentNode.style.display = visible == true ? "block" : "none";
+    this._componentNode.style.display = (visible == 'true' || visible == true) ? "block" : "none";
   }
 
   setID(id) {
     this._componentID = id;
-    if (id != undefined) {
+    if (id !== undefined) {
       this._componentNode.setAttribute("id", id);
     }
   }
@@ -158,12 +146,16 @@ export class Component {
   }
 
   setClass(className) {
-    this._componentClass = className;
-  //  this._componentNode.setAttribute("class", this._componentBaseClass + (className == undefined ? "" : className));
+    this._componentClassName = className;
+    let newClassName =
+      (!this._componentBaseClass ? "" : this._componentBaseClass) +
+      (!this._componentClassName ? "" : " " + this._componentClassName);
+    console.info("setClass: ", newClassName, this._componentClassName );
+    // this._componentNode.setAttribute("class", newClassName);
   }
 
   getClass() {
-    return this._componentClass;
+    return this._componentClassName;
   }
 
   fireAction(action) {

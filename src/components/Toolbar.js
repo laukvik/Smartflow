@@ -1,11 +1,12 @@
 import {InputComponent} from "../InputComponent";
 
 export class Toolbar extends InputComponent {
+
   constructor(properties) {
     super(properties);
     this.buttons = [];
     this.actions = [];
-    this._componentNode = document.createElement("div");
+    this.createComponentNode("div", "Toolbar");
   }
 
   setProperty(name, value) {
@@ -16,15 +17,12 @@ export class Toolbar extends InputComponent {
 
   setProperties(properties) {
     this.removeChildNodes(this._groupNode);
-    this._componentNode.setAttribute("class", "sf-toolbar btn-toolbar" + (properties.class ? " " + properties.class : ""));
     if (Array.isArray(properties.actions)) {
       for (let x = 0; x < properties.actions.length; x++) {
         let component = properties.actions[x];
         let btn = document.createElement("button");
         btn.setAttribute("type", "button");
         btn.setAttribute("class", "btn " + (component.style ? " btn-" + component.style : "btn-default"));
-
-
         btn.innerText = component.label;
         this._groupNode.appendChild(btn);
         this.buttons.push(btn);

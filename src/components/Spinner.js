@@ -3,7 +3,7 @@ import {Component} from "../Component";
 export class Spinner extends Component {
   constructor(properties) {
     super(properties);
-    this._componentNode = document.createElement("div");
+    this.createComponentNode("div", "Spinner");
   }
 
   setProperty(name, value) {
@@ -13,7 +13,6 @@ export class Spinner extends Component {
   }
 
   buildComponent(builder, properties) {
-    this._componentNode.setAttribute("class", "sf-spinner" + (properties.class ? " " + properties.class : ""));
     let icon = document.createElement("span");
     icon.setAttribute("class", "glyphicon glyphicon-repeat sf-spinner-animation");
     this._componentNode.appendChild(icon);
