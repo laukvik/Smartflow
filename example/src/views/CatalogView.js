@@ -13,6 +13,8 @@ import {Photo} from "../../../src/components/Photo";
 import {Tabs} from "../../../src/components/Tabs";
 import {Link} from "../../../src/components/Link";
 import {Duration} from "../components/Duration";
+import {FindMoviesAction} from "../actions/FindMoviesAction";
+import {ButtonStyle} from "../../../src/components/Button";
 
 /**
  * Table view with details of all movies in catalog.
@@ -124,7 +126,12 @@ export class CatalogView extends View {
                   "component": {
                     "type": Card,
                     "title": "title",
-                    "description": "storyline"
+                    "description": "storyline",
+                    "button": {
+                      "label": "GO",
+                      "action": FindMoviesAction,
+                      "style": ButtonStyle.DANGER
+                    }
                   },
                   "sort": {
                     "match": "title",

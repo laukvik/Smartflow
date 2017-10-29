@@ -36,8 +36,7 @@ export class Searchfield extends InputComponent {
    */
   constructor(properties) {
     super(properties);
-    this._componentNode = document.createElement("div");
-    this._componentNode.setAttribute("class", "Searchfield");
+    this.createComponentNode("div", "Searchfield");
     this.optionsNode = document.createElement("ul");
     this.optionsNode.setAttribute("class", "dropdown-menu");
     this.collections = new Collection();

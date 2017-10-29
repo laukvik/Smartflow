@@ -87,14 +87,18 @@ export class Builder {
         console.warn("Component not found: ", componentProperties.type);
         return;
       }
-      c.setBaseClass(componentType);
+      // c.setBaseClass(componentType);
     } else {
       c = new componentProperties.type();
     }
     c.setSmartflow(this.smartflow);
     c.setView(this.ctrl);
-    c.setID(componentProperties.id);
-    c.setClass(componentProperties.class);
+    if (componentProperties.id) {
+      c.setID(componentProperties.id);
+    }
+    if (componentProperties.class) {
+      c.setClass(componentProperties["class"]);
+    }
     return c;
   }
 

@@ -6,13 +6,13 @@ import {PresentationComponent} from "../PresentationComponent";
  *
  */
 class Tabs extends PresentationComponent {
+
   constructor(properties) {
     super(properties);
     this.labels = [];
     this.contents = [];
     this.links = [];
-    this._componentNode = document.createElement("div");
-    this._componentNode.setAttribute("class", "Tabs");
+    this.createComponentNode("div", "Tabs");
   }
 
   setProperty(name, value) {

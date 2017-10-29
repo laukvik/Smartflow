@@ -25,7 +25,7 @@ class Button extends Component {
 
   constructor(properties) {
     super(properties);
-    this._componentNode = document.createElement("button");
+    this.createComponentNode("button", "Button");
     this._textNode = document.createTextNode("");
     this._badgeNode = document.createElement("span");
     this._badgeNode.setAttribute("class", "badge");

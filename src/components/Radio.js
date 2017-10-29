@@ -34,8 +34,7 @@ export class Radio extends InputComponent {
     this.inputNodes = [];
     this._items = [];
     this.collections = new Collection();
-    this._componentNode = document.createElement("div");
-    this._componentNode.setAttribute("class", "Radio");
+    this.createComponentNode("div", "Radio");
     this._itemKey = "value";
     this._itemLabel = "text";
   }

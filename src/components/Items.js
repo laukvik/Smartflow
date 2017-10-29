@@ -26,7 +26,7 @@ export class Items extends PresentationComponent {
    */
   constructor(properties) {
     super(properties);
-    this._componentNode = document.createElement("div");
+    this.createComponentNode("div", "Items");
     this.collections = new Collection();
   }
 

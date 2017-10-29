@@ -39,10 +39,8 @@ export class Alert extends Component {
    */
   constructor(properties) {
     super(properties);
-    this._componentNode = document.createElement("div");
-    this._componentNode.setAttribute("class", "Alert");
+    this.createComponentNode("div", "Alert");
     this._componentNode.setAttribute("role", "alert");
-    this._componentNode.setAttribute("class", "alert alert-danger");
     this._buttonNode = document.createElement("button");
     this._buttonNode.setAttribute("type", "button");
     this._buttonNode.setAttribute("class", "close");

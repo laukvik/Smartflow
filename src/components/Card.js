@@ -27,8 +27,7 @@ export class Card extends PresentationComponent {
    */
   constructor(props) {
     super(props);
-    this._componentNode = document.createElement("div");
-    this._componentNode.setAttribute("class", "Card");
+    this.createComponentNode("div", "Card");
     this.collections = new Collection();
     this.buttons = [];
     this.actions = [];
@@ -106,8 +105,6 @@ export class Card extends PresentationComponent {
 
   setPhoto(url) {
     this.photoNode.src = url;
-
-    this.photoNode = document.createElement("img");
   }
 
 

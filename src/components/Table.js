@@ -36,6 +36,7 @@ class Table extends InputComponent {
     this.columns = [];
     this._items = [];
     this.inputNodes = [];
+    this.createComponentNode("div", "Table");
     this.tableNode = document.createElement("table");
     this.tableNode.setAttribute("class", "table");
     this.headerNode = document.createElement("thead");
@@ -45,7 +46,6 @@ class Table extends InputComponent {
     this.tableNode.appendChild(this.bodyNode);
     this.tableNode.appendChild(this.headerNode);
     this.tableNode.appendChild(this.footerNode);
-    this._componentNode = document.createElement("div");
     this._componentNode.appendChild(this.tableNode);
   }
 

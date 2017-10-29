@@ -7,8 +7,8 @@ import {Button, ButtonStyle} from "../../../src/components/Button";
 
 export class SearchView extends View {
 
-  constructor() {
-    super();
+  constructor(properties) {
+    super(properties);
 
     this.smartflow = {
       "path": "/",
@@ -21,13 +21,14 @@ export class SearchView extends View {
           "button": {
             "type": Button,
             "label": "Send",
-            "style": ButtonStyle.PRIMARY,
+            "style": ButtonStyle.DANGER,
             "action": GotoMovieAction
           }
         },
         {
           "type": Searchfield,
           "id": "mySearchfield",
+          "class": "mySearches",
           "label": "Search",
           "value": "{global:selectedMovie}",
           "placeholder": "Enter name of a movie",
@@ -41,7 +42,7 @@ export class SearchView extends View {
             "type": Card,
             "title": "title",
             "description": "storyline",
-            "photo": "porterurl"
+            "photo": "posterurl"
           }
         }
       ]

@@ -4,7 +4,7 @@ import {Formatter} from "../Formatter";
 class Datepicker extends InputComponent {
   constructor(properties) {
     super(properties);
-    this._componentNode = document.createElement("div");
+    this.createComponentNode("div", "Datepicker");
     this.input = document.createElement("input");
     this.input.setAttribute("type", "text");
     this.input.setAttribute("class", "form-control");

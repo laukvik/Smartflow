@@ -24,6 +24,18 @@ export class Component {
   }
 
   /**
+   * Creates an HTML node
+   * @param tagName the name of the tag
+   * @param baseClass the component CSS class name
+   * @param cssClass the custom CSS class name
+   */
+  createComponentNode(tagName, baseClass, cssClass) {
+    this._componentNode = document.createElement(tagName);
+    this.setBaseClass(baseClass);
+    this.setClass(cssClass);
+  }
+
+  /**
    * Sets the value for a named property
    *
    * @param name
@@ -42,7 +54,6 @@ export class Component {
    * @private
    */
   firePropertyChanged(name, value) {
-    console.info("firePropertyChanged: ", name, value);
     let binding = this._valueBindings[ name ];
     if (binding === undefined) {
       let a = this;
@@ -121,7 +132,7 @@ export class Component {
 
   setID(id) {
     this._componentID = id;
-    if (id != undefined) {
+    if (id !== undefined) {
       this._componentNode.setAttribute("id", id);
     }
   }
@@ -135,12 +146,16 @@ export class Component {
   }
 
   setClass(className) {
-    this._componentClass = className;
-  //  this._componentNode.setAttribute("class", this._componentBaseClass + (className == undefined ? "" : className));
+    this._componentClassName = className;
+    let newClassName =
+      (!this._componentBaseClass ? "" : this._componentBaseClass) +
+      (!this._componentClassName ? "" : " " + this._componentClassName);
+    console.info("setClass: ", newClassName, this._componentClassName );
+    // this._componentNode.setAttribute("class", newClassName);
   }
 
   getClass() {
-    return this._componentClass;
+    return this._componentClassName;
   }
 
   fireAction(action) {

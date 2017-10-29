@@ -21,7 +21,7 @@ export class Link extends Component {
    */
   constructor(properties) {
     super(properties);
-    this._componentNode = document.createElement("div");
+    this.createComponentNode("div", "Link");
     this._aNode = document.createElement("a");
     this._componentNode.appendChild(this._aNode);
   }

@@ -6,7 +6,7 @@ export class Pulldown extends InputComponent {
   constructor(properties) {
     super(properties);
     this.collections = new Collection();
-    this._componentNode = document.createElement("select");
+    this.createComponentNode("div", "Pulldown");
     this._componentNode.addEventListener('change', function () {
       this._changed();
     }.bind(this), false);

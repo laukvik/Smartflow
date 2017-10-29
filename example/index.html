@@ -6,18 +6,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <link rel="stylesheet" HREF="./node_modules/bootstrap/dist/css/bootstrap.min.css">
   <style>
-    .card-blocksssss{
-      padding: 1.25rem;
+
+    body{
+      padding: 1em; background-color: #cccccc
     }
-    .media img{
-      height: 100px;
-      margin-right: 1em;
-      margin-bottom: 1em;
+    .dropdown-item{
+      white-space: normal;
     }
   </style>
 
 </head>
-<body style="padding: 1em; background-color: #cccccc">
+<body>
 
 <div id="NavigationView"></div>
 <div id="NotFoundView"></div>
@@ -29,39 +28,7 @@
 
 <script src="./dist/bundle.js"></script>
 
-<div id="note"></div>
 
-<script>
-
-  class Component{
-      render(){
-
-      }
-  }
-
-  class Note extends Component {
-
-    constructor(name) {
-        super();
-        this.name = name;
-      }
-      render() {
-          let node = document.createElement("div");
-          node.innerText = "Morten";
-          return node;
-      }
-
-  }
-
-  class Smart {
-    static render(component, element) {
-      element.appendChild(component.render());
-    }
-  }
-
-  Smart.render( new Note("morten"), document.getElementById("note") );
-
-</script>
 
 </body>
 </html>
