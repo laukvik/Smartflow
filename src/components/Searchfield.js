@@ -160,6 +160,10 @@ export class Searchfield extends InputComponent {
           node.setAttribute("class", "dropdown-item");
           this._builder.buildChildNode(node, copy);
         }
+        node.addEventListener("click", () => {
+          this.setSelectedIndex(x);
+          this.select();
+        });
         this.optionsNodes.push(node);
         this.optionsNode.appendChild(node);
       }
