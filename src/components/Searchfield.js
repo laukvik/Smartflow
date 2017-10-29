@@ -36,7 +36,7 @@ export class Searchfield extends InputComponent {
    */
   constructor(properties) {
     super(properties);
-    this.createComponentNode("div", "Searchfield");
+    this.createComponentNode("div");
     this.optionsNode = document.createElement("ul");
     this.optionsNode.setAttribute("class", "dropdown-menu");
     this.collections = new Collection();
@@ -211,6 +211,7 @@ export class Searchfield extends InputComponent {
   setDropdownVisible(visible) {
     this.dropdownVisible = visible === true;
     this.optionsNode.style.display = this.dropdownVisible ? "block" : "none";
+    this.optionsNode.style.position = "unset";
   }
 
   buildInputNode(builder, properties) {
@@ -226,7 +227,6 @@ export class Searchfield extends InputComponent {
 
     this._componentNode.setAttribute("class", "Searchfield input-group" + (properties.class ? " " + properties.class : ""));
 
-    //this._componentNode.setAttribute("class", "card");
     return this._componentNode;
   }
 

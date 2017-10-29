@@ -29,10 +29,9 @@ export class Component {
    * @param baseClass the component CSS class name
    * @param cssClass the custom CSS class name
    */
-  createComponentNode(tagName, baseClass, cssClass) {
+  createComponentNode(tagName, cssClass) {
     this._componentNode = document.createElement(tagName);
-    this.setBaseClass(baseClass);
-    this.setClass(cssClass);
+    this._componentBaseClass = cssClass;
   }
 
   /**
@@ -110,10 +109,6 @@ export class Component {
     return div;
   }
 
-  getNode(){
-    return this._componentNode;
-  }
-
   setView(viewController) {
     this.ctrl = viewController;
   }
@@ -127,35 +122,19 @@ export class Component {
   }
 
   setVisible(visible) {
-    this._componentNode.style.display = (visible == 'true' || visible == true) ? "block" : "none";
+    this._componentNode.style.display = (visible === 'true' || visible === true) ? "block" : "none";
   }
 
   setID(id) {
-    this._componentID = id;
-    if (id !== undefined) {
+    if (id !== undefined){
       this._componentNode.setAttribute("id", id);
     }
   }
 
-  getID() {
-    return this._componentID;
-  }
-
-  setBaseClass(baseClass){
-    this._componentBaseClass = baseClass;
-  }
-
   setClass(className) {
-    this._componentClassName = className;
-    let newClassName =
-      (!this._componentBaseClass ? "" : this._componentBaseClass) +
-      (!this._componentClassName ? "" : " " + this._componentClassName);
-    console.info("setClass: ", newClassName, this._componentClassName );
-    // this._componentNode.setAttribute("class", newClassName);
-  }
+    let cssClass = this.constructor.name + " " + (this._componentBaseClass ? this._componentBaseClass : "") + (className === undefined ? "" : " " + className);
 
-  getClass() {
-    return this._componentClassName;
+    this._componentNode.setAttribute("class", cssClass);
   }
 
   fireAction(action) {

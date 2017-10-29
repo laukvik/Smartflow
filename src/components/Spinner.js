@@ -3,7 +3,7 @@ import {Component} from "../Component";
 export class Spinner extends Component {
   constructor(properties) {
     super(properties);
-    this.createComponentNode("div", "Spinner");
+    this.createComponentNode("div");
   }
 
   setProperty(name, value) {

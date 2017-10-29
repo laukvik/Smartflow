@@ -9,7 +9,6 @@ export class PresentationComponent extends Component {
 
   constructor(properties) {
     super(properties);
-    this.componentRootNode = document.createElement("div");
   }
 
   buildComponent() {

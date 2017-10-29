@@ -22,7 +22,7 @@ class Checkbox extends InputComponent {
     this._items = [];
     this.divNodes = []; // each option
     this.inputNodes = []; // the input inside each option
-    this.createComponentNode("div", "Checkbox");
+    this.createComponentNode("div");
     this._itemKey = "value";
     this._itemLabel = "text";
   }

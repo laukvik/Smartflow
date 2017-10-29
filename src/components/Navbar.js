@@ -6,7 +6,7 @@ export class Navbar extends PresentationComponent {
     super(properties);
     this.buttons = [];
     this.actions = [];
-    this.createComponentNode("nav", "Navigation", "navbar navbar-toggleable-md navbar-light bg-faded");
+    this.createComponentNode('nav', "navbar navbar-toggleable-md navbar-light bg-faded");
     this._expanded = false;
   }
 

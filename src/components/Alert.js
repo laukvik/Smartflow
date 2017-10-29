@@ -39,7 +39,7 @@ export class Alert extends Component {
    */
   constructor(properties) {
     super(properties);
-    this.createComponentNode("div", "Alert");
+    this.createComponentNode("div");
     this._componentNode.setAttribute("role", "alert");
     this._buttonNode = document.createElement("button");
     this._buttonNode.setAttribute("type", "button");

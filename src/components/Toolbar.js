@@ -6,7 +6,7 @@ export class Toolbar extends InputComponent {
     super(properties);
     this.buttons = [];
     this.actions = [];
-    this.createComponentNode("div", "Toolbar");
+    this.createComponentNode("div");
   }
 
   setProperty(name, value) {

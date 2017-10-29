@@ -36,7 +36,7 @@ class Table extends InputComponent {
     this.columns = [];
     this._items = [];
     this.inputNodes = [];
-    this.createComponentNode("div", "Table");
+    this.createComponentNode("div");
     this.tableNode = document.createElement("table");
     this.tableNode.setAttribute("class", "table");
     this.headerNode = document.createElement("thead");

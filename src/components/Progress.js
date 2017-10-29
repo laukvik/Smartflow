@@ -4,7 +4,7 @@ class Progress extends PresentationComponent {
   constructor(properties) {
     super(properties);
     this.value = 0;
-    this.createComponentNode("div", "Progress");
+    this.createComponentNode("div");
     this.progressBarNode = document.createElement("div");
     this._componentNode.appendChild(this.progressBarNode);
   }
