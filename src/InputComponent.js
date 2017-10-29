@@ -34,24 +34,29 @@ export class InputComponent extends Component {
     this.helpNode.style.display = text == undefined ? "none" : "block";
   }
 
-  // Bygger HTML og adder listeners
+  buildInputNode(builder, properties) {
+    return document.createElement("div");
+  }
+
   buildComponent(builder, properties) {
+    let inputNode = this.buildInputNode(builder, properties);
+    this.componentRootNode.appendChild(inputNode);
     return this._componentNode;
   }
 
-  // TODO - Is Root node in use?
-  setRootNode(componentNode) {
-    this.componentNode = componentNode;
-    this.removeChildNodes(this.componentRootNode);
-    this.componentRootNode.appendChild(this._labelNode);
-    this.componentRootNode.appendChild(this.errorNode);
-    this.componentRootNode.appendChild(componentNode);
-    this.componentRootNode.appendChild(this.helpNode);
-  }
-
-  getRootNode() {
-    return this.componentRootNode;
-  }
+  // // TODO - Is Root node in use?
+  // setRootNode(componentNode) {
+  //   this.componentNode = componentNode;
+  //   this.removeChildNodes(this.componentRootNode);
+  //   this.componentRootNode.appendChild(this._labelNode);
+  //   this.componentRootNode.appendChild(this.errorNode);
+  //   this.componentRootNode.appendChild(componentNode);
+  //   this.componentRootNode.appendChild(this.helpNode);
+  // }
+  //
+  // getRootNode() {
+  //   return this.componentRootNode;
+  // }
 
   validate() {
     return true;

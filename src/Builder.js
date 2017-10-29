@@ -176,10 +176,10 @@ export class Builder {
     let node = componentInstance.buildComponent(this, comp);
     this.applyBindings(componentInstance, comp, []);
     componentInstance.setProperties(comp);
-    if (componentInstance instanceof InputComponent) {
-      componentInstance.setRootNode(node); //
-      node = componentInstance.getRootNode();
-    }
+    // if (componentInstance instanceof InputComponent) {
+    //   componentInstance.setRootNode(node); //
+    //   node = componentInstance.getRootNode();
+    // }
     if (node === undefined) {
       console.warn("Smartflow.builder: Component not found! ", comp);
     } else {

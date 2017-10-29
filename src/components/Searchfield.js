@@ -49,6 +49,24 @@ export class Searchfield extends InputComponent {
     this._itemLabel = "title";
     this._itemsEmpty = "No results";
     this._selected = undefined; // the selected value
+
+    this.input = document.createElement("input");
+    this.input.setAttribute("type", "text");
+    this.input.setAttribute("class", "form-control");
+    this.input.addEventListener('keyup', function (evt) {
+      this.setDropdownVisible(true);
+      if (evt.key === "ArrowDown") {
+        this.arrowDown();
+      } else if (evt.key === "ArrowUp") {
+        this.arrowUp();
+      } else if (evt.key === "Enter") {
+        this.select();
+      } else {
+        this._changed(evt.srcElement.value);
+      }
+    }.bind(this), false);
+    this._componentNode.appendChild(this.input);
+    this._componentNode.appendChild(this.optionsNode);
   }
 
   setProperty(name, value) {
@@ -192,34 +210,20 @@ export class Searchfield extends InputComponent {
     this.optionsNode.style.display = this.dropdownVisible ? "block" : "none";
   }
 
-  buildComponent(builder, properties) {
+  buildInputNode(builder, properties) {
     this._builder = builder;
     this.action = properties.action;
-    this.input = document.createElement("input");
-    this.input.setAttribute("type", "text");
-    this.input.setAttribute("class", "form-control");
-    this.input.addEventListener('keyup', function (evt) {
-      this.setDropdownVisible(true);
-      if (evt.key === "ArrowDown") {
-        this.arrowDown();
-      } else if (evt.key === "ArrowUp") {
-        this.arrowUp();
-      } else if (evt.key === "Enter") {
-        this.select();
-      } else {
-        this._changed(evt.srcElement.value);
-      }
-    }.bind(this), false);
+
     this.setRequired(properties.required);
     this.setLabel(properties.label);
     if (properties.validation) {
       this.setValidationMessage(properties.validation.message);
       this.setRegex(properties.validation.regex);
     }
-    this._componentNode.appendChild(this.input);
-    this._componentNode.setAttribute("class", "sf-searchfield input-group" + (properties.class ? " " + properties.class : ""));
-    this._componentNode.appendChild(this.optionsNode);
-    this._componentNode.setAttribute("class", "card");
+
+    this._componentNode.setAttribute("class", "Searchfield input-group" + (properties.class ? " " + properties.class : ""));
+
+    //this._componentNode.setAttribute("class", "card");
     return this._componentNode;
   }
 

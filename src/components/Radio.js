@@ -35,6 +35,7 @@ export class Radio extends InputComponent {
     this._items = [];
     this.collections = new Collection();
     this._componentNode = document.createElement("div");
+    this._componentNode.setAttribute("class", "Radio");
     this._itemKey = "value";
     this._itemLabel = "text";
   }
@@ -66,6 +67,10 @@ export class Radio extends InputComponent {
       this.setVisible(value);
     } else if (name === "distinct") {
       this.setItemDistinct(value);
+    } else if (name === "class") {
+      this.setClass(value);
+    } else if (name === "id") {
+      this.setID(value);
     }
   }
 
@@ -105,7 +110,7 @@ export class Radio extends InputComponent {
     this._update();
   }
 
-  buildComponent(builder, properties){
+  buildInputNode(builder, properties) {
     return this._componentNode;
   }
 

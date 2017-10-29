@@ -29,5 +29,39 @@
 
 <script src="./dist/bundle.js"></script>
 
+<div id="note"></div>
+
+<script>
+
+  class Component{
+      render(){
+
+      }
+  }
+
+  class Note extends Component {
+
+    constructor(name) {
+        super();
+        this.name = name;
+      }
+      render() {
+          let node = document.createElement("div");
+          node.innerText = "Morten";
+          return node;
+      }
+
+  }
+
+  class Smart {
+    static render(component, element) {
+      element.appendChild(component.render());
+    }
+  }
+
+  Smart.render( new Note("morten"), document.getElementById("note") );
+
+</script>
+
 </body>
 </html>

@@ -33,7 +33,42 @@ export class Card extends PresentationComponent {
     this.buttons = [];
     this.actions = [];
     this.components = [];
+
+    this.blockNode = document.createElement("div");
+    this.blockNode.setAttribute("class", "card-block");
+
+    this.buttonNode = document.createElement("a");
+    this.buttonNode.setAttribute("class", "btn btn-primary");
+    this.photoNode = document.createElement("img");
+    this.photoNode.setAttribute("class", "card-img-top");
+    this.titleNode = document.createElement("h4");
+    this.descriptionNode = document.createElement("p");
+    this.descriptionNode.setAttribute("class", "card-text");
+
+    this._componentNode.appendChild(this.photoNode);
+    this._componentNode.appendChild(this.blockNode);
+    this.blockNode.appendChild(this.titleNode);
+    this.blockNode.appendChild(this.descriptionNode);
+    this.blockNode.appendChild(this.buttonNode);
+
+    this.buttonNode.addEventListener("click", function () {
+      this._clicked();
+    }.bind(this), false);
   }
+
+  /**
+   <div class="card" style="width: 20rem;">
+       <img class="card-img-top" src="..." alt="Card image cap">
+       <div class="card-block">
+         <h4 class="card-title">Card title</h4>
+         <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+         <a href="#" class="btn btn-primary">Go somewhere</a>
+       </div>
+   </div>
+
+   * @param name
+   * @param value
+   */
 
   setProperty(name, value) {
     if (name === "visible") {
@@ -45,12 +80,20 @@ export class Card extends PresentationComponent {
     } else if (name === "photo") {
       this.setPhoto(value);
     } else if (name === "action") {
-      //this.setAction(value);
+      this.setAction(value);
     } else if (name === "button") {
-      //this.setButton(value);
+      this.setButton(value);
     } else {
       console.warn("Card: Unknown property ", name);
     }
+  }
+
+  setAction(action){
+    this._action = action;
+  }
+
+  setButton(button){
+    this.buttonNode = button;
   }
 
   setTitle(title) {
@@ -63,36 +106,13 @@ export class Card extends PresentationComponent {
 
   setPhoto(url) {
     this.photoNode.src = url;
+
+    this.photoNode = document.createElement("img");
   }
 
+
   buildComponent(builder, properties) {
-    let cardImgTop = document.createElement("img");
-    cardImgTop.setAttribute("class", "card-img-top");
-    let cardBlock = document.createElement("div");
-    cardBlock.setAttribute("class", "card-block");
-    let cardTitle = document.createElement("h4");
-    //cardTitle.innerText = properties.title;
-    cardTitle.setAttribute("class", "card-title");
-    let cardText = document.createElement("p");
-    cardText.setAttribute("class", "card-text");
-    //cardText.innerText = properties.description;
-    let a = document.createElement("button");
-    a.setAttribute("class", "btn " + (properties.style ? " btn-" + properties.style : "btn-default"));
-    //a.innerText = properties.button;
-    a.addEventListener("click", function () {
-      this._clicked();
-    }.bind(this), false);
 
-    this._action = properties.action;
-    this._componentNode.appendChild(cardImgTop);
-    this._componentNode.appendChild(cardBlock);
-    cardBlock.appendChild(cardTitle);
-    cardBlock.appendChild(cardText);
-    //cardBlock.appendChild(a);
-
-    this.titleNode = cardTitle;
-    this.descriptionNode = cardText;
-    this.photoNode = cardImgTop;
 
     return this._componentNode;
   }
