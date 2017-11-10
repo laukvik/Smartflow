@@ -1,7 +1,6 @@
 import {Component} from "../Component";
 
 export const ButtonStyle = {
-  DEFAULT: "",
   PRIMARY: "btn-primary",
   SECONDARY: "btn-secondary",
   INFO: "btn-info",
@@ -25,6 +24,11 @@ export const BadgeStyle = {
   INFO: "badge-info",
   LIGHT: "badge-light",
   DARK: "badge-dark"
+};
+
+export const BadgeShape = {
+  NORMAL: "",
+  ROUND: "badge-pill",
 };
 
 export const Outline = {
@@ -61,6 +65,7 @@ export class Button extends Component {
     this._active = false;
     this._style = null;
     this._outline = null;
+    this._badgeShape = null;
     this._textNode = document.createElement("span");
     this._spaceNode = document.createTextNode(" ");
     this._badgeNode = document.createElement("span");
@@ -101,6 +106,8 @@ export class Button extends Component {
       this.setBadge(value);
     } else if (name === "badgeStyle") {
       this.setBadgeStyle(value);
+    } else if (name === "badgeShape") {
+      this.setBadgeShape(value);
     } else if (name === "action") {
       this.action = value;
     } else if (name === "active") {
@@ -115,6 +122,15 @@ export class Button extends Component {
   setOutline(outline){
     this._outline = outline;
     this._updateClass();
+  }
+
+  setBadgeShape(badgeShape){
+    if (!Object.values(BadgeShape).includes(badgeShape)){
+      console.warn("Button: Illegal badgeShape", badgeShape);
+      return;
+    }
+    this._badgeShape = badgeShape;
+    this._updateBadgeClass();
   }
 
   setButtonStyle(style){
@@ -150,7 +166,11 @@ export class Button extends Component {
 
   setBadgeStyle(badgeStyle){
     this._badgeStyle = badgeStyle;
-    this._badgeNode.setAttribute("class", "badge" + (!this._badgeStyle ? "": " " + this._badgeStyle));
+    this._updateBadgeClass();
+  }
+
+  _updateBadgeClass(){
+    this._badgeNode.setAttribute("class", "badge" + (this._badgeStyle ? " " + this._badgeStyle : "") + (this._badgeShape ? " " + this._badgeShape : ""));
   }
 
 

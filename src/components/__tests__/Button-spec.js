@@ -1,4 +1,4 @@
-import {BadgeStyle, Button, ButtonSize, ButtonStyle, Outline} from '../Button';
+import {BadgeShape, BadgeStyle, Button, ButtonSize, ButtonStyle, Outline} from '../Button';
 
 describe('Button', function () {
 
@@ -11,10 +11,11 @@ describe('Button', function () {
       b.setButtonStyle(ButtonStyle.PRIMARY);
       b.setBadge("4");
       b.setBadgeStyle(BadgeStyle.LIGHT);
+      b.setBadgeShape(BadgeShape.ROUND);
       b.setActive(true);
       b.setSize(ButtonSize.LARGE);
       expect(b.render().outerHTML).toBe(
-        '<button class="btn btn-lg btn-primary active" role="button" disabled="true" aria-pressed="true"><span>Notifications</span> <span class="badge badge-light">4</span></button>'
+        '<button class="btn btn-lg btn-primary active" role="button" disabled="true" aria-pressed="true"><span>Notifications</span> <span class="badge badge-light badge-pill">4</span></button>'
       );
     });
 
