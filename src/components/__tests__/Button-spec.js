@@ -1,35 +1,38 @@
-import {Button} from '../Button';
+import {BadgeStyle, Button, ButtonSize, ButtonStyle, Outline} from '../Button';
 
-describe('properties', function () {
+describe('Button', function () {
 
-  describe('setting id', function () {
+  describe('render', function () {
 
-    it('should be set', function () {
-      let btn = new Button({});
-      let node = btn.buildComponent({}, {"id":"luring"});
-      expect(node.getAttribute("id")).toBe("luring");
+    it('should render all properties', function () {
+      let b = new Button({});
+      b.setLabel("Notifications");
+      b.setEnabled(false);
+      b.setButtonStyle(ButtonStyle.PRIMARY);
+      b.setBadge("4");
+      b.setBadgeStyle(BadgeStyle.LIGHT);
+      b.setActive(true);
+      b.setSize(ButtonSize.LARGE);
+      expect(b.render().outerHTML).toBe(
+        '<button class="btn btn-lg btn-primary active" role="button" disabled="true" aria-pressed="true"><span>Notifications</span> <span class="badge badge-light">4</span></button>'
+      );
     });
 
-    it('should be null when not specified', function () {
-      let btn = new Button({});
-      let node = btn.buildComponent({}, {});
-      expect(node.getAttribute("id")).toBeNull();
+    it('should render outline', function () {
+      let b = new Button({});
+      b.setLabel("Notifications");
+      b.setOutline(Outline.DANGER);
+      expect(b.render().outerHTML).toBe(
+        '<button class="btn btn-outline-danger" role="button"><span>Notifications</span> </button>'
+      );
     });
 
-  });
-
-  describe('setting class', function () {
-
-    it('should be set', function () {
-      let btn = new Button({});
-      let node = btn.buildComponent({}, {"class":"luring"});
-      expect(node.getAttribute("class")).toBe("btn btn-default luring");
-    });
-
-    it('should be null when not specified', function () {
-      let btn = new Button({});
-      let node = btn.buildComponent({}, {});
-      expect(node.getAttribute("class")).toBe("btn btn-default");
+    it('should render simple button', function () {
+      let b = new Button({});
+      b.setLabel("Notifications");
+      expect(b.render().outerHTML).toBe(
+        '<button class="btn" role="button"><span>Notifications</span> </button>'
+      );
     });
 
   });
