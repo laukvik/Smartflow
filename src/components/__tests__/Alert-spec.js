@@ -1,38 +1,21 @@
-import {Alert} from '../Alert';
+import {Alert, AlertStyle} from '../Alert';
 
 describe('properties', function () {
 
-  describe('setting id', function () {
+  describe('render', function () {
 
-    it('should be set', function () {
-      let btn = new Alert({"":""});
-      let node = btn.buildComponent({}, {"id":"luring"});
-      expect(node.getAttribute("id")).toBe("luring");
-    });
-
-    it('should be null when not specified', function () {
-      let btn = new Alert({});
-      let node = btn.buildComponent({}, {});
-      expect(node.getAttribute("id")).toBeNull();
-    });
-
-  });
-
-  describe('setting class', function () {
-
-    it('should be set', function () {
-      let btn = new Alert({});
-      let node = btn.buildComponent({}, {"class":"luring"});
-      expect(node.getAttribute("class")).toBe("sf-alert alert alert-danger luring");
-    });
-
-    it('should be null when not specified', function () {
-      let btn = new Alert({});
-      let node = btn.buildComponent({}, {});
-      expect(node.getAttribute("class")).toBe("sf-alert alert alert-danger");
+    it('should use all properties', function () {
+      let a = new Alert();
+      a.setText("This is a primary alert—check it out!");
+      a.setAlertStyle(AlertStyle.PRIMARY);
+      a.setClosable(true);
+      expect(a.render().outerHTML).toBe(
+        '<div role="alert" class="alert alert-primary alert-dismissible"><span>This is a primary alert—check it out!</span><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button></div>'
+      );
     });
 
   });
+
 
 });
 

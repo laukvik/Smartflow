@@ -1,35 +1,32 @@
-import {Textfield} from '../Textfield';
+import {Textfield, TextfieldType} from '../Textfield';
 
-describe('properties', function () {
+describe('textfield', function () {
 
-  describe('setting id', function () {
+  describe('render', function () {
 
-    it('should be set', function () {
-      let btn = new Textfield({});
-      let node = btn.buildComponent({}, {"id":"luring"});
-      expect(node.getAttribute("id")).toBe("luring");
-    });
+    it('should render all props', function () {
+      let t = new Textfield();
+      t.setLabel("Sallary");
+      t.setBefore("USD");
+      t.setAfter(".00");
+      t.setPlaceholder("Amount");
+      t.setValidationMessage("Sorry, thats not enough sallary!");
+      t.setError("Sorry, thats not enough sallary!");
+      t.setHelp("Enter your desired sallary.");
+      t.setTextfieldType(TextfieldType.NUMBER);
 
-    it('should be null when not specified', function () {
-      let btn = new Textfield({});
-      let node = btn.buildComponent({}, {});
-      expect(node.getAttribute("id")).toBeNull();
-    });
-
-  });
-
-  describe('setting class', function () {
-
-    it('should be set', function () {
-      let btn = new Textfield({});
-      let node = btn.buildComponent({}, {"class":"luring"});
-      expect(node.getAttribute("class")).toBe("sf-textfield input-group luring");
-    });
-
-    it('should be null when not specified', function () {
-      let btn = new Textfield({});
-      let node = btn.buildComponent({}, {});
-      expect(node.getAttribute("class")).toBe("sf-textfield input-group");
+      expect(t.buildComponent().outerHTML).toBe(
+        '<div class="form-group">' +
+          '<label>Sallary</label>' +
+          '<div class="input-group">' +
+            '<span class="input-group-addon">USD</span>' +
+            '<input class="form-control" placeholder="Amount" type="number">' +
+            '<span class="input-group-addon">.00</span>' +
+          '</div>' +
+          '<div class="form-control-feedback" style="display: block;">Sorry, thats not enough sallary!</div>' +
+          '<small class="form-text text-muted" style="display: block;">Enter your desired sallary.</small>' +
+        '</div>'
+      );
     });
 
   });

@@ -16,6 +16,7 @@ export const ButtonSize = {
 };
 
 export const BadgeStyle = {
+  DEFAULT: "badge-default",
   PRIMARY: "badge-primary",
   SECONDARY: "badge-secondary",
   SUCCESS: "badge-success",

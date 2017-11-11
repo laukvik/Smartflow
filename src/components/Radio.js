@@ -34,16 +34,14 @@ export class Radio extends InputComponent {
     this.inputNodes = [];
     this._items = [];
     this.collections = new Collection();
-    this.createComponentNode("div");
     this._itemKey = "value";
     this._itemLabel = "text";
+    this._inputNode = document.createElement("div");
   }
 
   setProperty(name, value) {
     if (name === "selected") {
       this.setSelected(value);
-    } else if (name === "items") {
-      this.setItems(value);
     } else if (name === "enabled") {
       this.setEnabled(value);
     } else if (name === "label") {
@@ -54,6 +52,15 @@ export class Radio extends InputComponent {
       this.setVertical(value);
     } else if (name === "validation") {
       this.setValidationMessage(value);
+    } else if (name === "class") {
+      this.setClass(value);
+    } else if (name === "id") {
+      this.setID(value);
+    } else if (name === "visible") {
+      this.setVisible(value);
+
+    } else if (name === "items") {
+      this.setItems(value);
     } else if (name === "itemKey") {
       this.setItemKey(value);
     } else if (name === "itemLabel") {
@@ -62,15 +69,13 @@ export class Radio extends InputComponent {
       this.setSort(value);
     } else if (name === "filter") {
       this.setFilter(value);
-    } else if (name === "visible") {
-      this.setVisible(value);
     } else if (name === "distinct") {
       this.setItemDistinct(value);
-    } else if (name === "class") {
-      this.setClass(value);
-    } else if (name === "id") {
-      this.setID(value);
     }
+  }
+
+  getInputElement(){
+    return this._inputNode;
   }
 
   setItemDistinct(itemDistinct){
@@ -107,10 +112,6 @@ export class Radio extends InputComponent {
   setPaging(paging) {
     this.collections.setPaging(paging);
     this._update();
-  }
-
-  buildInputNode(builder, properties) {
-    return this._componentNode;
   }
 
   isValid() {
@@ -164,7 +165,7 @@ export class Radio extends InputComponent {
   }
 
   setItems(rowData) {
-    this.removeChildNodes(this._componentNode);
+    this.removeChildNodes(this._inputNode);
     this.inputNodes = [];
     if (Array.isArray(rowData)) {
       let items = this.collections.find(rowData);
@@ -177,7 +178,7 @@ export class Radio extends InputComponent {
 
         let div = document.createElement("div");
         div.setAttribute("class", "form-check form-check-inline");
-        this._componentNode.appendChild(div);
+        this._inputNode.appendChild(div);
 
         let labelNode = document.createElement("label");
         labelNode.setAttribute("class", "form-check-label");
