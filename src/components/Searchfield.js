@@ -36,7 +36,7 @@ export class Searchfield extends InputComponent {
    */
   constructor(properties) {
     super(properties);
-    this.createComponentNode("div");
+    this.getComponentNode().style.position = "relative";
     this.optionsNode = document.createElement("ul");
     this.optionsNode.setAttribute("class", "dropdown-menu");
     this.collections = new Collection();
@@ -49,10 +49,12 @@ export class Searchfield extends InputComponent {
     this._itemsEmpty = "No results";
     this._selected = undefined; // the selected value
 
-    this.input = document.createElement("input");
-    this.input.setAttribute("type", "text");
-    this.input.setAttribute("class", "form-control");
-    this.input.addEventListener('keyup', function (evt) {
+    this._inputNode = document.createElement("input");
+    this._inputNode.setAttribute("type", "search");
+    this._inputNode.setAttribute("class", "form-control");
+    this._inputNode.setAttribute("spellcheck", "false");
+    this._inputNode.style.width = "100%";
+    this._inputNode.addEventListener('keyup', function (evt) {
       this.setDropdownVisible(true);
       if (evt.key === "ArrowDown") {
         this.arrowDown();
@@ -64,8 +66,13 @@ export class Searchfield extends InputComponent {
         this._changed(evt.srcElement.value);
       }
     }.bind(this), false);
-    this._componentNode.appendChild(this.input);
-    this._componentNode.appendChild(this.optionsNode);
+    // this._inputNode.addEventListener('blur', function (evt) {
+    //   this.setDropdownVisible(false);
+    // }.bind(this), false);
+  }
+
+  getInputElement(){
+    return this._searchNode;
   }
 
   setProperty(name, value) {
@@ -75,6 +82,7 @@ export class Searchfield extends InputComponent {
       this.setLabel(value);
     } else if (name === "required") {
       this.setRequired(value);
+
     } else if (name === "items") {
       this._unfilteredItems = value;
       this.setItems(value);
@@ -92,8 +100,7 @@ export class Searchfield extends InputComponent {
       this.setItemsEmpty(value);
     } else if (name === "placeholder") {
       this.setPlaceholder(value);
-    } else if (name === "help") {
-      this.setHelp(value);
+
     } else if (name === "selectAction") {
       this.setSelectAction(value);
     } else if (name === "selectedItem") {
@@ -101,8 +108,14 @@ export class Searchfield extends InputComponent {
     } else if (name === "component") {
         this.setComponent(value);
     } else {
-      //console.debug("Searchfield: Unknown property ", name);
+      console.debug("Searchfield: Unknown property ", name);
     }
+  }
+
+  updateInputGroup(){
+    this.removeChildNodes(this._inputGroup);
+    this._inputGroup.appendChild(this._inputNode);
+    this.getComponentNode().appendChild(this.optionsNode);
   }
 
   setComponent(value){
@@ -187,10 +200,10 @@ export class Searchfield extends InputComponent {
   select() {
     let selected = this._items[this.selectedIndex];
 
-    this.input.value = selected.title;
+    this._inputNode.value = selected.title;
     this.setDropdownVisible(false);
-    this.input.select();
-    this.firePropertyChanged("value", this.input.value);
+    this._inputNode.select();
+    this.firePropertyChanged("value", this._inputNode.value);
 
     this._selected = selected[ this._itemKey ];
 
@@ -211,23 +224,10 @@ export class Searchfield extends InputComponent {
   setDropdownVisible(visible) {
     this.dropdownVisible = visible === true;
     this.optionsNode.style.display = this.dropdownVisible ? "block" : "none";
-    this.optionsNode.style.position = "unset";
-  }
-
-  buildInputNode(builder, properties) {
-    this._builder = builder;
-    this.action = properties.action;
-
-    this.setRequired(properties.required);
-    this.setLabel(properties.label);
-    if (properties.validation) {
-      this.setValidationMessage(properties.validation.message);
-      this.setRegex(properties.validation.regex);
-    }
-
-    this._componentNode.setAttribute("class", "Searchfield input-group" + (properties.class ? " " + properties.class : ""));
-
-    return this._componentNode;
+    this.optionsNode.style.position = "absolute";
+    this.optionsNode.style.top = "38";
+    this.optionsNode.style.float = "none";
+    // this.optionsNode.style.transform = "translate3d(0px, 38px, 0px)";
   }
 
   isValid() {
@@ -243,30 +243,30 @@ export class Searchfield extends InputComponent {
 
   setEnabled(isEnabled) {
     if (isEnabled) {
-      this.input.removeAttribute("disabled");
+      this._inputNode.removeAttribute("disabled");
     } else {
-      this.input.setAttribute("disabled", "true");
+      this._inputNode.setAttribute("disabled", "true");
     }
   }
 
   isEnabled() {
-    return !this.input.hasAttribute("disabled");
+    return !this._inputNode.hasAttribute("disabled");
   }
 
   setPlaceholder(text) {
-    this.input.setAttribute("placeholder", text === undefined ? "" : text);
+    this._inputNode.setAttribute("placeholder", text);
   }
 
   getPlaceholder() {
-    return this.input.getAttribute("placeholder");
+    return this._inputNode.getAttribute("placeholder");
   }
 
   setValue(text) {
-    this.input.value = text === undefined ? "" : text;
+    this._inputNode.value = text === undefined ? "" : text;
   }
 
   getValue() {
-    let s = this.input.value;
+    let s = this._inputNode.value;
     return s === undefined ? '' : s;
   }
 

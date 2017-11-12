@@ -5,6 +5,7 @@ import {SearchView} from "./views/SearchView";
 import {CatalogView} from "./views/CatalogView";
 import {EditView} from "./views/EditView";
 import {DetailsView} from "./views/DetailsView";
+import {InputExamplesView} from "./views/InputExamplesView";
 
 let config = {
   "LoginAction": "/api/login",
@@ -28,10 +29,10 @@ app.setConfig(config);
 app.loadLanguage("no", langNO);
 app.loadLanguage("en", langEN);
 app.setDefaultLocale("en");
-app.addView(new SearchView());
-app.addView(new CatalogView());
-app.addView(new DetailsView());
-app.addView(new EditView());
-app.addView(new NotFoundView());
-app.addView(new NavigationView());
+app.addView(new InputExamplesView());
+// app.addView(new CatalogView());
+// app.addView(new DetailsView());
+// app.addView(new EditView());
+// app.addView(new NotFoundView());
+// app.addView(new NavigationView());
 app.start();

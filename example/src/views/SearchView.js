@@ -3,7 +3,14 @@ import {Searchfield} from "../../../src/components/Searchfield";
 import {GotoMovieAction} from "../actions/GotoMovieAction";
 import {FindMoviesAction} from "../actions/FindMoviesAction";
 import {Card} from "../../../src/components/Card";
-import {Button, ButtonStyle} from "../../../src/components/Button";
+import {BadgeShape, BadgeStyle, Button, ButtonSize, ButtonStyle, Outline} from "../../../src/components/Button";
+import {Alert, AlertStyle} from "../../../src/components/Alert";
+import {Textfield, TextfieldType} from "../../../src/components/Textfield";
+import {Radio} from "../../../src/components/Radio";
+import {Checkbox} from "../../../src/components/Checkbox";
+import {Pulldown} from "../../../src/components/Pulldown";
+import {NumberField} from "../../../src/components/NumberField";
+import {Datepicker} from "../../../src/components/Datepicker";
 
 export class SearchView extends View {
 
@@ -14,36 +21,13 @@ export class SearchView extends View {
       "path": "/",
       "components": [
         {
-          "type": Card,
-          "title": "Latin",
-          "description": "Lorem ipsum sit amet.",
-          "photo": "",
-          "button": {
-            "type": Button,
-            "label": "Send",
-            "style": ButtonStyle.DANGER,
-            "action": GotoMovieAction
-          }
-        },
-        {
           "type": Searchfield,
-          "id": "mySearchfield",
-          "class": "mySearches",
           "label": "Search",
-          "value": "{global:selectedMovie}",
-          "placeholder": "Enter name of a movie",
-          "items": "{global:movies}",
+          "placeholder": "Search movies",
+          "help": "Find your favorite movie by typing the first letter",
           "itemKey": "title",
           "itemLabel": "title",
-          "itemsEmpty": "No movies found",
-          "selected": "{global:selectedMovie}",
-          "selectAction": GotoMovieAction,
-          "component": {
-            "type": Card,
-            "title": "title",
-            "description": "storyline",
-            "photo": "posterurl"
-          }
+          "items": "{global:movies}"
         }
       ]
     };

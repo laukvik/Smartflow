@@ -1,49 +1,163 @@
 import {InputComponent} from "../InputComponent";
 import {Formatter} from "../Formatter";
+import {Collection} from "../Collection";
 
-class Datepicker extends InputComponent {
+export class Datepicker extends InputComponent {
+
   constructor(properties) {
     super(properties);
-    this.createComponentNode("div");
-    this.input = document.createElement("input");
-    this.input.setAttribute("type", "text");
-    this.input.setAttribute("class", "form-control");
-    this.previousButton = document.createElement("button");
-    this.previousButton.setAttribute("class", "btn btn-default btn-xs");
-    let prevIcon = document.createElement("span");
-    prevIcon.setAttribute("class", "glyphicon glyphicon-menu-left");
-    prevIcon.setAttribute("aria-hidden", "true");
-    this.previousButton.appendChild(prevIcon);
-    this.nextButton = document.createElement("button");
-    this.nextButton.setAttribute("class", "btn btn-default btn-xs");
-    let nextIcon = document.createElement("span");
-    nextIcon.setAttribute("class", "glyphicon glyphicon-menu-right");
-    nextIcon.setAttribute("aria-hidden", "true");
-    this.nextButton.appendChild(nextIcon);
+    this.getComponentNode().style.position = "relative";
+    this._inputNode = document.createElement("input");
+    this._inputNode.setAttribute("type", "text");
+    this._inputNode.setAttribute("class", "form-control");
 
-    // TODO - Remove i18n for days
-    this.dayNames = ["Søndag", "Mandag", "Tirsdag", "Onsdag", "Torsdag", "Fredag", "Lørdag"];
-    // TODO - Remove i18n for months
-    this.monthNames = ["Januar", "Februar", "Mars", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Desember"];
+    this._dropdownNode = document.createElement("div");
+    this._dropdownNode.style.top = "70px";
+    this._dropdownNode.setAttribute("class", "dropdown-menu");
+    this.getComponentNode().appendChild(this._dropdownNode);
+
+    this._detailsNode = document.createElement("div");
+
+
+
+    this.previousButton = document.createElement("button");
+    this.previousButton.setAttribute("class", "btn btn-primary btn-sm btn-block");
+    this.previousButton.innerHTML = '&#8249;';
+    this.previousButton.setAttribute("style", "font-weight: bold;");
+
+    this.nextButton = document.createElement("button");
+    this.nextButton.setAttribute("class", "btn btn-primary btn-sm btn-block");
+    this.nextButton.innerHTML = '&#8250;';
+    this.nextButton.setAttribute("style", "font-weight: bold;");
+
+    this.openButton = document.createElement("button");
+    this.openButton.setAttribute("class", "input-group-addon btn");
+    this.openIcon = document.createElement("img");
+    this.setIcon(Datepicker.getCalendarIcon());
+    this.openButton.appendChild(this.openIcon);
+    this.openButton.addEventListener("click", function () {
+      this._togglePickerVisible();
+    }.bind(this, false));
+
+    this.setDayNames(["Søndag", "Mandag", "Tirsdag", "Onsdag", "Torsdag", "Fredag", "Lørdag"]);
+    this.setMonthNames(["Januar", "Februar", "Mars", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Desember"]);
     this.formatter = new Formatter();
 
     this.startsWithMonday = true;
-    this.dateFormat = "YYYY.MM.DD";
+    this.setFormat("YYYY-MM-DD");
     this.selectedDate = undefined;
     this.year = new Date().getUTCFullYear();
     this.month = new Date().getUTCMonth();
-    this.pickerVisible = false;
+    this.pickerVisible = false; // TODO - Flytt til data-attribute
+
+    this.collections = new Collection();
+
+    this._rebuildCalendar();
   }
 
   setProperty(name, value) {
+
     if (name === "label") {
       this.setLabel(value);
-    } else if (name === "items") {
+    } else if (name === "required") {
       this.setRequired(value);
     } else if (name === "enabled") {
       this.setEnabled(value);
+    } else if (name === "help") {
+      this.setHelp(value);
+
+    } else if (name === "items") {
+      this._unfilteredItems = value;
+      this.setItems(value);
+      this._rebuildCalendar();
+    } else if (name === "value") {
+      this.setValue(value);
+    } else if (name === "sort") {
+      this.setSort(value);
+    } else if (name === "filter") {
+      this.setFilter(value);
+    } else if (name === "itemKey") {
+      this.setItemKey(value);
+    } else if (name === "itemLabel") {
+      this.setItemLabel(value);
+    } else if (name === "itemsEmpty") {
+      this.setItemsEmpty(value);
+
     }
   }
+
+  setItemsEmpty(itemsEmpty) {
+    this._itemsEmpty = itemsEmpty;
+  }
+
+  setItemKey(itemKey) {
+    this._itemKey = itemKey;
+  }
+
+  setItemLabel(itemLabel) {
+    this._itemLabel = itemLabel;
+  }
+
+  setSort(sort) {
+    this.collections.setSort(sort);
+  }
+
+  setFilter(filter) {
+    if (Array.isArray(filter)) {
+      this.collections.setFilter(filter);
+    } else {
+      this.filter = [];
+    }
+  }
+
+  setItems(items) {
+    if (Array.isArray(items)) {
+      this._items = this.collections.find(items);
+    }
+  }
+
+  findItemsByValue(value){
+    this.collections.clearFilter();
+    this.collections.addEquals(this._itemKey, value);
+    return this.collections.find(this._unfilteredItems);
+  }
+
+  setDetails(items){
+    this.removeChildNodes(this._detailsNode);
+    let ul = document.createElement("ul");
+    ul.setAttribute("class", "list-group");
+    this._detailsNode.appendChild(ul);
+    if (Array.isArray(items)){
+      for (let x=0; x<items.length; x++) {
+        const item = items[x];
+        let li = document.createElement("li");
+        li.setAttribute("class", "list-group-item");
+        li.innerText = item[ "title" ];
+        ul.appendChild(li);
+      }
+    }
+  }
+
+  setIcon(){
+    this.openIcon.setAttribute("src", Datepicker.getCalendarIcon());
+  }
+
+  static getCalendarIcon(){
+    return "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABUAAAAVCAYAAACpF6WWAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAGMSURBVDhPtZQ9S8NQGIWDg+DoIg7iIAhSaWnaJmbwBwhdO+lQUBHBVXRx0EmHgpOCiCDoIE4dir/B2V3QwY9BHFTEqfF549twm0RJGzzwcG/OezhJw22sqFzXHSuVSo8wo1aiyuXyDpkrvYyrUqnYhJYIrbDOgs9+nrUmXhR8l7UF9+zH1V9wHGc0KORijUFbipSwFG4MPwR/F4JSqBqzV5iS0mfD9LnbNN4tT++wPpkzgyPYYt6EemR2IO/GNOQpmrZtz7EeR2cdmH2yrkIN7jq+wKwVK83Kv5ee8w4nskLPQ1jK5jA4ChlFj5yGv0u5+yLzzSjkPY10KVUpfuI5hQ2NdClVKbPwH8V+Wwt9foGtkS6lKjVFbl+z12rF1FOp/KfJyIGXbF3tmHoqZd7Q3IvneUNqx5S6tFAojJD50FxD7USlLmW2JxloF4vFSbUT1UupfBrlbC6r9avM0vdgY1kDP6P+lM/nh6ULzqT9RJ/2jVU+sv3yBdJTtXK53CCbdYwLuMzAaVBoWdY34cNuEWVgeSMAAAAASUVORK5CYII=";
+  }
+
+  setFormat(dateFormat) {
+    this.dateFormat = dateFormat;
+  }
+
+  setDayNames(dayNames){
+    this.dayNames = dayNames;
+  }
+
+  setMonthNames(monthNames){
+    this.monthNames = monthNames;
+  }
+
 
   setValue(value) {
     this.setDate(this.formatter.parse(value, this.dateFormat));
@@ -57,23 +171,21 @@ class Datepicker extends InputComponent {
     this.selectedDate = value;
     this.month = this.selectedDate.getUTCMonth();
     this.year = this.selectedDate.getUTCFullYear();
-    this.input.value = this.formatter.formatDate(this.selectedDate, this.dateFormat);
+    this._inputNode.value = this.formatter.formatDate(this.selectedDate, this.dateFormat);
     this._rebuildCalendar();
   }
 
   _setPickerVisible(visible){
-    this.pickerVisible = visible == true;
-    this.inputGroup2.setAttribute("class", "dropdown-menu");
-    this.inputGroup2.style.display = this.pickerVisible ? "block" : "none";
+    this.pickerVisible = visible === true;
+    this._dropdownNode.style.display = this.pickerVisible ? "block" : "none";
   }
 
-  static isSameDate(date1, date2){
-    if (date1 == undefined || date2 == undefined) {
-      return false;
+  setEnabled(isEnabled) {
+    if (isEnabled) {
+      this._inputNode.removeAttribute("disabled");
+    } else {
+      this._inputNode.setAttribute("disabled", "true");
     }
-    return date1.getUTCDate() === date2.getUTCDate()
-      && date1.getUTCFullYear() === date2.getUTCFullYear()
-      && date1.getUTCMonth() === date2.getUTCMonth();
   }
 
   _getDayName(index){
@@ -98,43 +210,42 @@ class Datepicker extends InputComponent {
     d2.setUTCMilliseconds(0);
     d2.setUTCFullYear(year);
     d2.setUTCDate(1);
+
     // Month
     let thead = document.createElement("thead");
     let trMonth = document.createElement("tr");
     d2.setUTCMonth(month);
-    trMonth.setAttribute("class", "sf-datepicker__month");
-
     let trMonthTH_left = document.createElement("th");
     trMonthTH_left.appendChild(this.previousButton);
+    // trMonthTH_left.style.textAlign = "center";
     trMonthTH_left.addEventListener("click", function(){
       this.previousMonth();
     }.bind(this, false));
-
     let trMonthTH_right = document.createElement("th");
     trMonthTH_right.appendChild(this.nextButton);
+    // trMonthTH_right.style.textAlign = "center";
     trMonthTH_right.addEventListener("click", function(){
       this.nextMonth();
     }.bind(this, false));
-
     let trMonthTH = document.createElement("th");
+    trMonthTH.setAttribute("style", "text-align: center;");
     trMonthTH.setAttribute("colspan", "5");
     trMonthTH.innerText = "" + this._getMonthName(month) + " " + this.year;
-
     trMonth.appendChild(trMonthTH_left);
     trMonth.appendChild(trMonthTH);
     trMonth.appendChild(trMonthTH_right);
 
-
     // Weekdays
     let trDays = document.createElement("tr");
-    trDays.setAttribute("class", "sf-datepicker__weekdays");
     for (let x = 0; x < 7; x++) {
       let trDaysTD = document.createElement("th");
+      trDaysTD.setAttribute("style", "text-align: center; height: 2em;");
       trDaysTD.innerText = "" + this._getDayName(x).substr(0,2);
       trDays.appendChild(trDaysTD);
     }
     thead.appendChild(trMonth);
     thead.appendChild(trDays);
+
     // Body
     let tbody = document.createElement("tbody");
     for (let y = 0; y < 6; y++) {
@@ -145,15 +256,27 @@ class Datepicker extends InputComponent {
         let v = d.getUTCDate();
         let td = document.createElement("td");
         td.innerText = "" + v;
+
+
+        let hasItems = false;
+        if (Array.isArray(this._unfilteredItems)){
+          let formattedValue = this.formatter.formatDate(d, this.dateFormat);
+          let items = this.findItemsByValue(formattedValue);
+          hasItems = items.length > 0;
+        }
+
+        td.setAttribute("style", "width: 3em; height: 2em; text-align: center; cursor: pointer;" + (hasItems ? " text-decoration: underline;" : ""));
         td.setAttribute("data-sf-datepicker-millis", d.getTime() + "");
         td.addEventListener("click", function () {
           this._selectedDay(td)
+        }.bind(this, false));
+        td.addEventListener("mouseover", function () {
+          this.mouseOver(td)
         }.bind(this, false));
         tr.appendChild(td);
 
         let isToday = Datepicker.isSameDate(d, new Date());
         let isSelected = Datepicker.isSameDate(d, this.selectedDate);
-        let isNextMonth = d.getUTCMonth() > month;
         let otherMonth = !(d.getUTCMonth() === month);
         let isWeekend = d.getUTCDay() === 0 || d.getUTCDay() === 6;
         let isDisabled = false;
@@ -163,39 +286,15 @@ class Datepicker extends InputComponent {
           (isToday? " today":"") +
           (otherMonth ? " othermonth": "") +
           (isWeekend ? " weekend":""));
-        if (x == 0 && isNextMonth){
-          //addRow = false;
-        }
       }
       if (addRow){
         tbody.appendChild(tr);
       }
     }
-    let table = document.createElement("table");
-    table.setAttribute("class", "sf-datepicker");
+    const table = document.createElement("table");
     table.appendChild(thead);
     table.appendChild(tbody);
-    this.inputGroup2.style.position = "static";
     return table;
-  }
-
-  static getDate(x, y , month, year, startsWithMonday){
-    let index = y*7 + x;
-    let d = new Date();
-    d.setUTCHours(0);
-    d.setUTCMinutes(0);
-    d.setUTCSeconds(0);
-    d.setUTCMilliseconds(0);
-    d.setUTCFullYear(year);
-    d.setUTCMonth(month);
-    d.setUTCDate(1);
-    let weekdayStart = d.getUTCDay();
-    if (startsWithMonday && weekdayStart == 0) {
-      weekdayStart = 7;
-    }
-    let dayIndex = index - (weekdayStart-2);
-    d.setUTCDate(dayIndex);
-    return d;
   }
 
   nextMonth(){
@@ -218,45 +317,40 @@ class Datepicker extends InputComponent {
     this._rebuildCalendar();
   }
 
-  _selectedDay(day){
+  getDateByTD(day){
     let data = day.getAttribute("data-sf-datepicker-millis");
     let d = new Date();
     d.setTime(parseInt(data));
-    console.info("_selectedDay: ", d, data);
+    return d;
+  }
+
+  _selectedDay(day){
+    // let data = day.getAttribute("data-sf-datepicker-millis");
+    // let d = new Date();
+    // d.setTime(parseInt(data));
+    // console.info("_selectedDay: ", d, data);
+    let d = this.getDateByTD(day);
     let formattedValue = this.formatter.formatDate(d, this.dateFormat);
     this.setDate(d);
-    this.fireState(this.stateValue, formattedValue);
+    this.firePropertyChanged("value", formattedValue);
     this._setPickerVisible(false);
   }
 
-  buildComponent(builder, properties){
-    if (properties.states) {
-      this.stateValue = properties.states.value;
-    }
-    this._componentNode.setAttribute("class", "sf-datepicker" + (properties.class ? " " + properties.class : ""));
-    this.inputGroup1 = document.createElement("div");
-    this.inputGroup1.appendChild(this.input);
-    this.inputGroup1.setAttribute("class", "input-group");
-    this.inputGroup2 = document.createElement("div");
-    this._componentNode.appendChild(this.inputGroup1);
-    this._componentNode.appendChild(this.inputGroup2);
-    let addonAfter = document.createElement("span");
-    addonAfter.setAttribute("class", "input-group-addon btn");
-    let iconAfter = document.createElement("span");
-    iconAfter.setAttribute("class", "glyphicon glyphicon-calendar");
-    addonAfter.appendChild(iconAfter);
-    addonAfter.addEventListener("click", function () {
-      this._togglePickerVisible();
-    }.bind(this, false));
-    this.inputGroup1.appendChild(addonAfter);
-    this.setRequired(properties.required);
-    this.setLabel(properties.label);
-    this.removeChildNodes(this.inputGroup2);
-    this._rebuildCalendar();
-    this.input.setAttribute("placeholder", this.dateFormat);
-    this._setPickerVisible(false);
-    this.setValue(properties.value);
-    return this._componentNode;
+  mouseOver(day){
+    let date = this.getDateByTD(day);
+    let formattedValue = this.formatter.formatDate(date, this.dateFormat);
+    const items = this.findItemsByValue(formattedValue);
+    this.setDetails(items);
+  }
+
+  getInputElement(){
+    return this._inputNode;
+  }
+
+  updateInputGroup(){
+    this.removeChildNodes(this._inputGroup);
+    this._inputGroup.appendChild(this.getInputElement());
+    this._inputGroup.appendChild(this.openButton);
   }
 
   _togglePickerVisible(){
@@ -264,18 +358,38 @@ class Datepicker extends InputComponent {
   }
 
   _rebuildCalendar(){
-    this.removeChildNodes(this.inputGroup2);
-    this.inputGroup2.appendChild(this.buildCalendar(this.month, this.year));
+    this.removeChildNodes(this._dropdownNode);
+    let table = this.buildCalendar(this.month, this.year);
+    this._dropdownNode.appendChild(table);
+    this._dropdownNode.appendChild(this._detailsNode);
   }
 
-  setEnabled(isEnabled) {
-    if (isEnabled) {
-      this.input.removeAttribute("disabled");
-    } else {
-      this.input.setAttribute("disabled", "true");
+  static getDate(x, y , month, year, startsWithMonday){
+    let index = y*7 + x;
+    let d = new Date();
+    d.setUTCHours(0);
+    d.setUTCMinutes(0);
+    d.setUTCSeconds(0);
+    d.setUTCMilliseconds(0);
+    d.setUTCFullYear(year);
+    d.setUTCMonth(month);
+    d.setUTCDate(1);
+    let weekdayStart = d.getUTCDay();
+    if (startsWithMonday && weekdayStart == 0) {
+      weekdayStart = 7;
     }
+    let dayIndex = index - (weekdayStart-2);
+    d.setUTCDate(dayIndex);
+    return d;
+  }
+
+  static isSameDate(date1, date2){
+    if (date1 == undefined || date2 == undefined) {
+      return false;
+    }
+    return date1.getUTCDate() === date2.getUTCDate()
+      && date1.getUTCFullYear() === date2.getUTCFullYear()
+      && date1.getUTCMonth() === date2.getUTCMonth();
   }
 
 }
-
-export {Datepicker}

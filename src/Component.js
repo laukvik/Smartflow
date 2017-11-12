@@ -34,6 +34,10 @@ export class Component {
     this._componentBaseClass = cssClass;
   }
 
+  getComponentNode(){
+    return this._componentNode;
+  }
+
   /**
    * Sets the value for a named property
    *
@@ -134,7 +138,7 @@ export class Component {
   setClass(className) {
     let cssClass = this.constructor.name + " " + (this._componentBaseClass ? this._componentBaseClass : "") + (className === undefined ? "" : " " + className);
 
-    this._componentNode.setAttribute("class", cssClass);
+    // this._componentNode.setAttribute("class", cssClass);
   }
 
   fireAction(action) {

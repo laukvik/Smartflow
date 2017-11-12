@@ -11,23 +11,6 @@ import {InputComponent} from "../InputComponent";
  *
  */
 
-export const TextfieldType = {
-  TEXT : "text",
-  SEARCH : "search",
-  EMAIL : "email",
-  URL : "url",
-  TELEPHONE : "tel",
-  PASSWORD : "password",
-  NUMBER : "number",
-  DATETIME : "datetime-local",
-  DATE : "date",
-  MONTH : "month",
-  WEEK : "week",
-  TIME : "time",
-  COLOR : "color",
-};
-
-
 
 /**
  * <div>
@@ -41,18 +24,19 @@ export const TextfieldType = {
  * <div>Error message</div>
  * </div>
  */
-export class Textfield extends InputComponent {
+export class NumberField extends InputComponent {
 
   /**
-   * Constructor for Textfield
+   * Constructor for NumberField
    *
-   * @param {TextfieldProperties} props the properties for the component
+   * @param {NumberFieldProperties} props the properties for the component
    */
   constructor() {
     super();
     this._value = null;
 
     this._inputNode = document.createElement("input");
+    this._inputNode.setAttribute("type", "number");
 
     this._inputNode.setAttribute("class", "form-control");
     this._inputNode.addEventListener('keyup', function () {
@@ -73,8 +57,6 @@ export class Textfield extends InputComponent {
   setProperty(name, value) {
     if (name === "enabled") {
       this.setEnabled(value);
-    } else if (name === "readOnly") {
-      this.setReadOnly(value);
     } else if (name === "value") {
       this.setValue(value);
     } else if (name === "label") {
@@ -85,30 +67,37 @@ export class Textfield extends InputComponent {
       this.setRequired(value);
     } else if (name === "help") {
       this.setHelp(value);
-    } else if (name === "regex") {
-      this.setRegex(value);
     } else if (name === "validation") {
       this.setValidationMessage(value);
     } else if (name === "placeholder") {
       this.setPlaceholder(value);
-
     } else if (name === "before") {
       this.setBefore(value);
     } else if (name === "after") {
       this.setAfter(value);
-    } else if (name === "textfieldType"){
-      this.setTextfieldType(value);
+
+    } else if (name === "min") {
+      this.setMin(value);
+    } else if (name === "max") {
+      this.setMax(value);
+    } else if (name === "step") {
+      this.setStep(value);
+
     } else {
-      console.warn("Textfield: Unknown property ", name);
+      console.warn("NumberField: Unknown property ", name);
     }
   }
 
-  setReadOnly(isReadOnly){
-    if (isReadOnly){
-      this._inputNode.setAttribute("readOnly", "true");
-    } else {
-      this._inputNode.removeAttribute("readOnly");
-    }
+  setMin(minimum){
+      this._inputNode.setAttribute("min", minimum);
+  }
+
+  setMax(max){
+      this._inputNode.setAttribute("max", max);
+  }
+
+  setStep(step){
+      this._inputNode.setAttribute("step", step);
   }
 
   setBefore(text){
@@ -132,10 +121,6 @@ export class Textfield extends InputComponent {
     }
   }
 
-  setTextfieldType(textfieldType){
-    this._inputNode.setAttribute("type", textfieldType);
-  }
-
   getInputElement(){
     return this._inputNode;
   }
@@ -150,31 +135,11 @@ export class Textfield extends InputComponent {
   }
 
   isValid() {
-    if (this.getValue() === '') {
-      if (this.isRequired()) {
-        return false;
-      }
-    }
-    if (this.regex === undefined) {
-      // No validation
-      if (this.isRequired()) {
-        return this._inputNode.value.length > 0;
-      }
-      return true;
-    }
-    return this.regex.test(this._inputNode.value);
-  }
-
-  /**
-   * Sets the regular expression used for checking if the value is valid
-   *
-   * @param regex
-   */
-  setRegex(regex) {
-    if (regex === undefined) {
-      this.regex = undefined;
-    }
-    this.regex = new RegExp(regex);
+    const min = this._inputNode.getAttribute("min");
+    const max = this._inputNode.getAttribute("max");
+    const v = this._inputNode.value;
+    console.info("Valid: ", min, max, v);
+    return v >= min && v <= max;
   }
 
   setEnabled(isEnabled) {
@@ -183,10 +148,6 @@ export class Textfield extends InputComponent {
     } else {
       this._inputNode.setAttribute("disabled", "true");
     }
-  }
-
-  isEnabled() {
-    return !this._inputNode.hasAttribute("disabled");
   }
 
   /**
