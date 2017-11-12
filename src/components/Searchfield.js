@@ -88,6 +88,8 @@ export class Searchfield extends InputComponent {
       this.setItems(value);
     } else if (name === "value") {
       this.setValue(value);
+    } else if (name === "help") {
+      this.setHelp(value);
     } else if (name === "sort") {
       this.setSort(value);
     } else if (name === "filter") {
@@ -225,7 +227,7 @@ export class Searchfield extends InputComponent {
     this.dropdownVisible = visible === true;
     this.optionsNode.style.display = this.dropdownVisible ? "block" : "none";
     this.optionsNode.style.position = "absolute";
-    this.optionsNode.style.top = "38";
+    this.optionsNode.style.top = "70px";
     this.optionsNode.style.float = "none";
     // this.optionsNode.style.transform = "translate3d(0px, 38px, 0px)";
   }
