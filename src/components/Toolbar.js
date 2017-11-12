@@ -22,7 +22,7 @@ export class Toolbar extends InputComponent {
         let component = properties.actions[x];
         let btn = document.createElement("button");
         btn.setAttribute("type", "button");
-        btn.setAttribute("class", "btn " + (component.style ? " btn-" + component.style : "btn-default"));
+        btn.setAttribute("class", "btn " + (component.buttonStyle ? " " + component.buttonStyle : ""));
         btn.innerText = component.label;
         this._groupNode.appendChild(btn);
         this.buttons.push(btn);
@@ -31,11 +31,6 @@ export class Toolbar extends InputComponent {
         }.bind(this), false);
       }
     }
-  }
-
-  setVisible(visible) {
-    this._componentVisible = visible === true;
-    this._componentNode.style.display = this._componentVisible ? "block" : "none";
   }
 
   buildComponent(builder, properties) {

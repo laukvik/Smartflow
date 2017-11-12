@@ -4,6 +4,7 @@
   "description": "Easy to use application flow management.",
   "main": "src/Application.js",
   "scripts": {
+    "start": "webpack-dev-server --content-base example/ example/src/app.js",
     "babel": "babel src -d dist",
     "build-dev": "webpack webpack-dev-server",
     "dev": "webpack-dev-server --progress --colors",

@@ -16,4 +16,9 @@ export class PresentationComponent extends Component {
     div.innerText = "[Smartflow:" + this.constructor.name + "]";
     return div;
   }
+
+  setVisible(visible) {
+    this.getComponentNode().style.display = visible === true ? "block" : "none";
+  }
+
 }

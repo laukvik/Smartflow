@@ -54,10 +54,6 @@ export class InputComponent extends Component {
     return this.getComponentNode();
   }
 
-  validate() {
-    return true;
-  }
-
   setRequired(required) {
     this._required = required === true;
   }
