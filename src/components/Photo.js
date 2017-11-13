@@ -23,7 +23,7 @@ export class Photo extends PresentationComponent {
    */
   constructor(props) {
     super(props);
-    this.createComponentNode("div", "Photo");
+    this.createComponentNode("div");
     this._imgNode = document.createElement("img");
     this._componentNode.appendChild(this._imgNode);
   }

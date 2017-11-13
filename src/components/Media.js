@@ -8,7 +8,7 @@ export class Media extends PresentationComponent {
     this.buttons = [];
     this.actions = [];
     this.components = [];
-    this.createComponentNode("div", "Media");
+    this.createComponentNode("div");
   }
 
   setProperty(name, value) {

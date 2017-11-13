@@ -4,7 +4,7 @@ export class Layout extends PresentationComponent {
 
   constructor(properties) {
     super(properties);
-    this.createComponentNode("div", "Layout");
+    this.createComponentNode("div");
   }
 
   setProperties(properties) {

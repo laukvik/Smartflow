@@ -11,24 +11,36 @@ import {Checkbox} from "../../../src/components/Checkbox";
 import {Pulldown} from "../../../src/components/Pulldown";
 import {NumberField} from "../../../src/components/NumberField";
 import {Datepicker} from "../../../src/components/Datepicker";
+import {Dialog} from "../../../src/components/Dialog";
+import {Link} from "../../../src/components/Link";
+import {Items} from "../../../src/components/Items";
+import {List} from "../../../src/components/List";
+import {Media} from "../../../src/components/Media";
+import {Navbar} from "../../../src/components/Navbar";
+import {Photo} from "../../../src/components/Photo";
+import {Progress} from "../../../src/components/Progress";
+import {Spinner} from "../../../src/components/Spinner";
+import {Table} from "../../../src/components/Table";
+import {Tabs} from "../../../src/components/Tabs";
+import {Toolbar} from "../../../src/components/Toolbar";
 
-export class SearchView extends View {
+export class ProgressExamplesView extends View {
 
   constructor(properties) {
     super(properties);
 
     this.smartflow = {
-      "path": "/",
+      "path": "/examples/progress",
       "components": [
+
         {
-          "type": Searchfield,
-          "label": "Search",
-          "placeholder": "Search movies",
-          "help": "Find your favorite movie by typing the first letter",
-          "itemKey": "title",
-          "itemLabel": "title",
-          "items": "{global:movies}"
-        }
+          "type": Progress,
+          "value": 30
+        },
+        {
+          "type": Spinner,
+        },
+
       ]
     };
   }

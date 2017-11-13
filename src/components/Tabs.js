@@ -12,7 +12,7 @@ class Tabs extends PresentationComponent {
     this.labels = [];
     this.contents = [];
     this.links = [];
-    this.createComponentNode("div", "Tabs");
+    this.createComponentNode("div");
   }
 
   setProperty(name, value) {

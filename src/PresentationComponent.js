@@ -9,7 +9,6 @@ export class PresentationComponent extends Component {
 
   constructor(properties) {
     super(properties);
-    this.componentRootNode = document.createElement("div");
   }
 
   buildComponent() {
@@ -17,4 +16,9 @@ export class PresentationComponent extends Component {
     div.innerText = "[Smartflow:" + this.constructor.name + "]";
     return div;
   }
+
+  setVisible(visible) {
+    this.getComponentNode().style.display = visible === true ? "block" : "none";
+  }
+
 }

@@ -6,7 +6,7 @@ export class Dialog extends PresentationComponent {
     this.buttons = [];
     this.actions = [];
     this.components = [];
-    this.createComponentNode("div", "Dialog");
+    this.createComponentNode("div");
   }
 
   setProperty(name, value) {

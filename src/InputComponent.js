@@ -11,91 +11,65 @@ export class InputComponent extends Component {
   constructor(properties) {
     super(properties);
     this.comp = properties;
-    this.componentRootNode = document.createElement("div");
-    this.componentRootNode.setAttribute("class", "form-group");
+    this.createComponentNode("div");
+    this._labelNode = document.createElement("label");
+    this.getComponentNode().appendChild(this._labelNode);
 
-    this._labelNode = document.createElement("legend");
-    this._requiredNode = document.createElement("span");
-    this._requiredNode.setAttribute("class", "text-danger");
-    this._labelNode.appendChild(this._requiredNode);
+    // Input Group
+    this._inputGroup = document.createElement("div");
+    this._inputGroup.setAttribute("class", "input-group");
+    this.getComponentNode().appendChild(this._inputGroup);
 
-    this.helpNode = document.createElement("small");
-    this.helpNode.setAttribute("class", "form-text text-muted");
-    this.helpNode.style.display = "none";
+    // Validation error
+    this._errorNode = document.createElement("div");
+    this._errorNode.setAttribute("class", "form-control-feedback");
+    this.setError(null);
+    this.getComponentNode().appendChild(this._errorNode);
 
-    this.errorNode = document.createElement("div");
-    this.errorNode.setAttribute("class", "text-danger");
+    // Help
+    this._helpNode = document.createElement("small");
+    this._helpNode.setAttribute("class", "form-text text-muted");
+    this._helpNode.style.display = "none";
+    this.getComponentNode().appendChild(this._helpNode);
 
     this.setValidationMessage("Required");
+    this.updateClass();
+  }
+
+  updateClass(){
+    this.getComponentNode().setAttribute("class", "form-group" + (this._errorNode.innerText ? " has-danger" : ""));
+  }
+
+  updateInputGroup(){
+    this._inputGroup.appendChild(this.getInputElement());
   }
 
   setHelp(text) {
-    this.helpNode.innerText = text;
-    this.helpNode.style.display = text == undefined ? "none" : "block";
-  }
-
-  buildInputNode(builder, properties) {
-    return document.createElement("div");
+    this._helpNode.textContent = text;
+    this._helpNode.style.display = text? "block" : "none";
   }
 
   buildComponent(builder, properties) {
-    let inputNode = this.buildInputNode(builder, properties);
-    this.componentRootNode.appendChild(inputNode);
-    return this._componentNode;
-  }
-
-  // // TODO - Is Root node in use?
-  // setRootNode(componentNode) {
-  //   this.componentNode = componentNode;
-  //   this.removeChildNodes(this.componentRootNode);
-  //   this.componentRootNode.appendChild(this._labelNode);
-  //   this.componentRootNode.appendChild(this.errorNode);
-  //   this.componentRootNode.appendChild(componentNode);
-  //   this.componentRootNode.appendChild(this.helpNode);
-  // }
-  //
-  // getRootNode() {
-  //   return this.componentRootNode;
-  // }
-
-  validate() {
-    return true;
+    this.updateInputGroup();
+    return this.getComponentNode();
   }
 
   setRequired(required) {
-    this.required = required == true;
-    this._requiredNode.innerText = this.required ? "*" : "";
+    this._required = required === true;
   }
 
   isRequired() {
-    return this.required;
-  }
-
-  setElement(node) {
-    this._componentNode = node;
-  }
-
-  getElement() {
-    return this._componentNode;
+    return this._required;
   }
 
   setLabel(text) {
-    this._labelNode.innerText = text;
-    this._requiredNode = document.createElement("span");
-    this._requiredNode.setAttribute("class", "text-danger");
-    this._labelNode.appendChild(this._requiredNode);
-  }
-
-  getLabel() {
-    return this._labelNode.innerText;
+    this._labelNode.textContent = text;
   }
 
   setError(text) {
-    this.errorNode.innerText = text;
-  }
-
-  getError() {
-    return this.errorNode.innerText;
+    this._errorNode.textContent = text ? text : null;
+    this._errorNode.style.display = text? "block" : "none";
+    this.updateClass();
   }
 
   validate() {
@@ -103,17 +77,17 @@ export class InputComponent extends Component {
       this.setError("");
       return true;
     } else {
-      this.setError(this.validationMessage);
+      this.setError(this._validationMessage);
       return false;
     }
   }
 
   setValidationMessage(message) {
-    this.validationMessage = message;
+    this._validationMessage = message;
   }
 
   getValidationMessage() {
-    return this.validationMessage;
+    return this._validationMessage;
   }
 
 }

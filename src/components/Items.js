@@ -26,8 +26,9 @@ export class Items extends PresentationComponent {
    */
   constructor(properties) {
     super(properties);
-    this.createComponentNode("div", "Items");
+    this.createComponentNode("div");
     this.collections = new Collection();
+    this.layout = null;
   }
 
   setProperty(name, value) {
@@ -41,10 +42,19 @@ export class Items extends PresentationComponent {
       this.setPaging(value);
     } else if (name === "visible") {
       this.setVisible(value);
+    } else if (name === "layout") {
+      this.setLayout(value);
     } else {
       //console.warn("Items: Invalid property ", name );
     }
   }
+
+  setLayout(layout) {
+    if (Array.isArray(layout)){
+      this.layout = layout;
+    }
+  }
+
 
   setSort(sort) {
     this.collections.setSort(sort);
@@ -62,6 +72,48 @@ export class Items extends PresentationComponent {
     this.collections.setPaging(paging);
   }
 
+  setItemsWithLayout(items) {
+    this.removeChildNodes(this._componentNode);
+
+    // Layout
+    const container = document.createElement("div");
+    container.setAttribute("class", "container-fluid");
+    this.getComponentNode().appendChild(container);
+    let row = null;
+    let column = null;
+
+    this._unfilteredItems = Array.isArray(items) ? items : [];
+    // Filter
+    this._items = this.collections.find(this._unfilteredItems);
+    // For each
+    for (let n = 0; n < this._items.length; n++) {
+      let item = this._items[n];
+      let component = {};
+      //
+      for (let componentKey in this._component) {
+        let itemValue = this._component[ componentKey ];
+        let value = item[ itemValue ];
+        component[ componentKey ] = value;
+      }
+      // Don't interpret component type. It's always fixed.
+      component.type = this._component.type;
+
+      // Layout
+      if (n % this.layout.length === 0) {
+        row = document.createElement("div");
+        row.setAttribute("class", "row");
+        container.appendChild(row);
+      }
+
+      column = document.createElement("div");
+      column.setAttribute("class", "col-sm-" + this.layout[ n % this.layout.length ]);
+
+      row.appendChild(column);
+
+      this._builder.buildChildNode(column, component);
+    }
+  }
+
   setItems(items) {
     this.removeChildNodes(this._componentNode);
     this._unfilteredItems = Array.isArray(items) ? items : [];
@@ -73,10 +125,8 @@ export class Items extends PresentationComponent {
       let component = {};
       //
       for (let componentKey in this._component) {
-        let itemKey = item[ componentKey ]; // description
         let itemValue = this._component[ componentKey ];
         let value = item[ itemValue ];
-        //console.info("key: ", componentKey, itemKey, itemValue, value );
         component[ componentKey ] = value;
       }
       // Don't interpret component type. It's always fixed.

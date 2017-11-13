@@ -6,7 +6,7 @@ class List extends PresentationComponent {
     super(properties);
     this._items = [];
     this.collections = new Collection();
-    this.createComponentNode("ul", "List");
+    this.createComponentNode("ul");
     this._itemKey = "value";
     this._itemLabel = "text";
     this._itemBadge = "text";

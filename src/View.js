@@ -34,9 +34,6 @@ export class View {
     this.__smartflowInstance.runAction(action, this);
   }
 
-  pathChanged(path, params) {
-  }
-
   /**
    * Indicates the view can initialize itself.
    */

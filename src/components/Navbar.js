@@ -1,13 +1,55 @@
 import {PresentationComponent} from "../PresentationComponent";
 
+export const NavbarStyle = {
+  DARK: "bg-dark",
+  LIGHT: "bg-light"
+};
+
 export class Navbar extends PresentationComponent {
 
-  constructor(properties) {
-    super(properties);
+  constructor() {
+    super();
+
     this.buttons = [];
     this.actions = [];
-    this.createComponentNode("nav", "Navigation", "navbar navbar-toggleable-md navbar-light bg-faded");
-    this._expanded = false;
+
+    // Build elements
+    this.createComponentNode('nav');
+    this.buttonNode = document.createElement("button");
+    this.buttonNode.setAttribute("class", "navbar-toggler navbar-toggler-right");
+    this.buttonNode.setAttribute("type", "button");
+    this.buttonNode.setAttribute("data-toggle", "collapse");
+    this.buttonNode.setAttribute("aria-expanded", "false");
+    this.buttonNode.setAttribute("aria-label", "Toggle navigation");
+    this.buttonNode.addEventListener("click", function () {
+      this.toggleExpanded();
+    }.bind(this), false);
+
+    // Button
+    let togglerIcon = document.createElement("span");
+    togglerIcon.setAttribute("class", "navbar-toggler-icon");
+    this.buttonNode.appendChild(togglerIcon);
+    this.getComponentNode().appendChild(this.buttonNode);
+
+    // Brand
+    this._brandNode = document.createElement("a");
+    this._brandNode.setAttribute("class", "navbar-brand");
+    this.getComponentNode().appendChild(this._brandNode);
+
+    /*************************************************************/
+    let div = document.createElement("div");
+    this.collapseNode = div;
+    div.setAttribute("class", "collapse navbar-collapse");
+    this.ul = document.createElement("ul");
+    this.ul.setAttribute("class", "navbar-nav mr-auto");
+
+
+    this.getComponentNode().appendChild(div);
+    div.appendChild(this.ul);
+    /******************************************************/
+
+    // this._expanded = false;
+    this.setExpanded(false)
   }
 
   setProperty(name, value) {
@@ -15,12 +57,45 @@ export class Navbar extends PresentationComponent {
       this.setVisible(value);
     } else if (name === 'expanded') {
       this.setExpanded(value);
+    } else if (name === 'navbarStyle') {
+      this.setNavbarStyle(value);
+    } else if (name === 'buttons'){
+      this.setButtons(value);
+    } else if (name === 'title'){
+      this.setLabel(value);
     }
   }
 
-  setVisible(visible) {
-    this._componentVisible = visible === true;
-    this._componentNode.style.display = this._componentVisible ? "block" : "none";
+  setLabel(title){
+    this._brandNode.innerText = title;
+  }
+
+  setButtons(buttons){
+    if (Array.isArray(buttons)) {
+      for (let x = 0; x < buttons.length; x++) {
+        let btn = buttons[x];
+        let li = document.createElement("li");
+        li.setAttribute("class", "nav-item");
+        let a = document.createElement("a");
+        a.setAttribute("class", "nav-link"+ (btn.enabled === false ? " disabled" : ""));
+        // a.setAttribute("href", "#" + new btn.action().getSmartflow().path);
+        // console.info("Button: ", );
+        a.innerText = btn.label;
+        if (btn.enabled === false) {
+          a.setAttribute("disabled", false);
+        }
+        a.addEventListener("click", function () {
+          this._clicked(btn.action);
+        }.bind(this), false);
+
+        li.appendChild(a);
+        this.ul.appendChild(li);
+      }
+    }
+  }
+
+  setNavbarStyle(navbarStyle) {
+    this.getComponentNode().setAttribute("class", "navbar navbar-toggleable-md navbar-light " + (navbarStyle ? " " + navbarStyle : ""));
   }
 
   setExpanded(expanded){
@@ -48,68 +123,10 @@ export class Navbar extends PresentationComponent {
    * aria-controls="navbarSupportedContent"
    * aria-expanded="false" aria-label="Toggle navigation">
    * @param builder
-   * @param properties
    * @returns {Element|*}
    */
-  buildComponent(builder, properties) {
-    this._componentNode.setAttribute("class", "navbar navbar-toggleable-md navbar-light bg-faded");
-
-    let button = document.createElement("button");
-    this.buttonNode = button;
-    button.setAttribute("class", "navbar-toggler navbar-toggler-right");
-    button.setAttribute("type", "button");
-    button.setAttribute("data-toggle", "collapse");
-    button.setAttribute("aria-expanded", "false");
-    button.setAttribute("aria-label", "Toggle navigation");
-    button.addEventListener("click", function () {
-      this.toggleExpanded();
-    }.bind(this), false);
-
-    // Button
-    let toggler = document.createElement("span");
-    toggler.setAttribute("class", "navbar-toggler-icon");
-    button.appendChild(toggler);
-    this._componentNode.appendChild(button);
-
-    // Brand
-    let brand = document.createElement("a");
-    brand.setAttribute("class", "navbar-brand");
-    brand.innerText = properties.label;
-    this._componentNode.appendChild(brand);
-
-    let div = document.createElement("div");
-    this.collapseNode = div;
-    div.setAttribute("class", "collapse navbar-collapse");
-    let ul = document.createElement("ul");
-    ul.setAttribute("class", "navbar-nav mr-auto");
-
-    // Build buttons
-    if (Array.isArray(properties.buttons)) {
-      let buttons = properties.buttons;
-
-      for (let x = 0; x < buttons.length; x++) {
-        let btn = buttons[x];
-
-        let li = document.createElement("li");
-        li.setAttribute("class", "nav-item");
-        let a = document.createElement("a");
-        a.setAttribute("class", "nav-link"+ (btn.enabled == false ? " disabled" : ""));
-        a.innerText = btn.label;
-        if (btn.enabled == false) {
-          a.setAttribute("disabled", false);
-        }
-
-        a.addEventListener("click", function () {
-          this._clicked(btn.action);
-        }.bind(this), false);
-
-        li.appendChild(a);
-        ul.appendChild(li);
-      }
-    }
-    this._componentNode.appendChild(div);
-    div.appendChild(ul);
-    return this._componentNode;
+  buildComponent(builder) {
+    return this.getComponentNode();
   }
 
   _clicked(action) {

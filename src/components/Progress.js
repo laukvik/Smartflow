@@ -1,12 +1,19 @@
 import {PresentationComponent} from "../PresentationComponent";
 
+
+
 class Progress extends PresentationComponent {
+
   constructor(properties) {
     super(properties);
     this.value = 0;
-    this.createComponentNode("div", "Progress");
+    this.createComponentNode("div");
     this.progressBarNode = document.createElement("div");
+    this._helpNode = document.createElement("div");
+    this._helpNode.setAttribute("class", "form-text text-muted");
+    this._helpNode.innerText = "Loading...";
     this._componentNode.appendChild(this.progressBarNode);
+    this._componentNode.appendChild(this._helpNode);
   }
 
   setProperty(name, value) {

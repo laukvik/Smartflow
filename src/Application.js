@@ -458,9 +458,11 @@ export class Application {
   findViewByPath(path) {
     for (let x = 0; x < this._controllers.length; x++) {
       let view = this._controllers[x];
-      let p = new Path(view.smartflow.path);
-      if (p.matches(path)) {
-        return view;
+      if (view.smartflow.path){
+        let p = new Path(view.smartflow.path);
+        if (p.matches(path)) {
+          return view;
+        }
       }
     }
     return undefined;
@@ -468,6 +470,9 @@ export class Application {
 
   setPath(pathString) {
     let view = this.findViewByPath(pathString);
+    if (!view) {
+      return;
+    }
     let p = new Path(view.smartflow.path);
     let map = p.parse(pathString);
     this._path = pathString;

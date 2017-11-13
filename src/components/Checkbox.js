@@ -22,7 +22,7 @@ class Checkbox extends InputComponent {
     this._items = [];
     this.divNodes = []; // each option
     this.inputNodes = []; // the input inside each option
-    this.createComponentNode("div", "Checkbox");
+    this._inputNode = document.createElement("div");
     this._itemKey = "value";
     this._itemLabel = "text";
   }
@@ -30,8 +30,6 @@ class Checkbox extends InputComponent {
   setProperty(name, value) {
     if (name === "selected") {
       this.setSelected(value);
-    } else if (name === "items") {
-      this.setItems(value);
     } else if (name === "enabled") {
       this.setEnabled(value);
     } else if (name === "label") {
@@ -42,12 +40,19 @@ class Checkbox extends InputComponent {
       this.setVertical(value);
     } else if (name === "validation") {
       this.setValidationMessage(value);
+
+    } else if (name === "items") {
+      this.setItems(value);
     } else if (name === "itemKey") {
       this.setItemKey(value);
     } else if (name === "itemLabel") {
       this.setItemLabel(value);
     } else if (name === "sort") {
       this.setSort(value);
+    } else if (name === "filter") {
+      this.setFilter(value);
+    } else if (name === "distinct") {
+      this.setItemDistinct(value);
     } else if (name === "filter") {
       this.setFilter(value);
     }
@@ -69,6 +74,11 @@ class Checkbox extends InputComponent {
     } else {
       this.filter = [];
     }
+  }
+
+  setItemDistinct(itemDistinct){
+    this._itemDistinct = itemDistinct;
+    this.collections.setDistinct(this._itemDistinct);
   }
 
   setPaging(paging) {
@@ -95,8 +105,8 @@ class Checkbox extends InputComponent {
     this.setSelected(properties.selected);
   }
 
-  buildComponent(builder, properties) {
-    return this._componentNode;
+  getInputElement(){
+    return this._inputNode;
   }
 
   isValid() {
@@ -151,7 +161,7 @@ class Checkbox extends InputComponent {
   }
 
   setItems(rowData) {
-    this.removeChildNodes(this._componentNode);
+    this.removeChildNodes(this._inputNode);
     if (Array.isArray(rowData)) {
       this._items = rowData;
       let items = this.collections.find(rowData);
@@ -164,7 +174,7 @@ class Checkbox extends InputComponent {
         let div = document.createElement("div");
         this.divNodes.push(div);x
         div.setAttribute("class", "form-check" + this.isVertical() ? "" : " form-check-inline");
-        this._componentNode.appendChild(div);
+        this._inputNode.appendChild(div);
 
         let labelNode = document.createElement("label");
         labelNode.setAttribute("class", "form-check-label");

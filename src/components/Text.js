@@ -8,7 +8,7 @@ export class Text extends Component {
 
   constructor(properties) {
     super(properties);
-    this.createComponentNode("div", "Text");
+    this.createComponentNode("div");
 
     this._headingNode = document.createElement("h1");
     this._textNode = document.createElement("p");
