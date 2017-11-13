@@ -13,7 +13,10 @@
     "test": "{src}/*.js"
   },
   "dependencies": {
-    "bootstrap": "^4.0.0-beta.2"
+    "bootstrap": "^4.0.0-beta.2",
+    "regenerator-runtime": "^0.11.0",
+    "webpack": "^3.8.1",
+    "webpack-dev-server": "^2.9.4"
   },
   "devDependencies": {
     "babel-cli": "6.26.0",
@@ -25,9 +28,6 @@
     "eslint": "^3.19.0",
     "eslint-config-google": "^0.8.0",
     "jest": "^21.1.0",
-    "jest-cli": "^21.1.0",
-    "regenerator-runtime": "^0.11.0",
-    "webpack": "^3.8.1",
-    "webpack-dev-server": "^2.9.4"
+    "jest-cli": "^21.1.0"
   }
 }
