@@ -3,16 +3,13 @@
  *
  */
 import {View} from "../../../src/View";
-import {GotoSearchAction} from "../actions/GotoSearchAction";
-import {GotoCatalogAction} from "../actions/GotoCatalogAction";
-import {GotoNewMovieAction} from "../actions/GotoNewMovieAction";
 import {GotoPresentationExamplesAction} from "../actions/GotoPresentationAction";
 import {GotoInputExamplesAction} from "../actions/GotoInputExamplesAction";
 import {GotoTableExamplesAction} from "../actions/GotoTableExamplesAction";
 import {GotoItemsExamplesAction} from "../actions/GotoItemsExamplesAction";
 import {GotoProgressExamplesAction} from "../actions/GotoProgressExamplesAction";
 import {GotoDialogsExamplesAction} from "../actions/GotoDialogsExamplesAction";
-import {NavbarStyle} from "../../../src/components/Navbar";
+import {Navbar, NavbarStyle} from "../../../src/components/Navbar";
 import {GotoButtonExamplesAction} from "../actions/GotoButtonExamplesAction";
 
 export class NavigationView extends View {
@@ -23,7 +20,7 @@ export class NavigationView extends View {
     this.smartflow = {
       "components": [
         {
-          "type": "Navbar",
+          "type": Navbar,
           "title": "Smartflow",
           "navbarStyle": NavbarStyle.LIGHT,
           "buttons": [
@@ -55,18 +52,6 @@ export class NavigationView extends View {
               "label": "Buttons",
               "action": GotoButtonExamplesAction
             },
-            // {
-            //   "label": "Search",
-            //   "action": GotoSearchAction
-            // },
-            // {
-            //   "label": "Catalog",
-            //   "action": GotoCatalogAction
-            // },
-            // {
-            //   "label": "New...",
-            //   "action": GotoNewMovieAction
-            // }
           ]
         }
       ]

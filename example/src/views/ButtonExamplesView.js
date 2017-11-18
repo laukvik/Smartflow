@@ -1,7 +1,7 @@
 import {View} from "../../../src/View";
 
 import {FindMoviesAction} from "../actions/FindMoviesAction";
-import {BadgeShape, BadgeStyle, Button, ButtonSize, ButtonStyle, Outline} from "../../../src/components/Button";
+import {Button, ButtonStyle} from "../../../src/components/Button";
 import {Toolbar} from "../../../src/components/Toolbar";
 
 
@@ -15,29 +15,33 @@ export class ButtonExamplesView extends View {
       "components": [
 
         {
-          "type": Button,
-          "label": "Primary",
-          "buttonStyle": ButtonStyle.PRIMARY
-        },
-
-        {
           "type": Toolbar,
           "label": "Send",
           "actions": [
             {
               "type": Button,
-              "label": "New",
+              "label": "Primary",
+              "buttonStyle": ButtonStyle.PRIMARY
+            },
+            {
+              "type": Button,
+              "label": "Secondary",
               "buttonStyle": ButtonStyle.SECONDARY
             },
             {
               "type": Button,
-              "label": "Open",
+              "label": "Warning",
               "buttonStyle": ButtonStyle.WARNING
             },
             {
               "type": Button,
-              "label": "Save",
+              "label": "Danger",
               "buttonStyle": ButtonStyle.DANGER
+            },
+            {
+              "type": Button,
+              "label": "Success",
+              "buttonStyle": ButtonStyle.SUCCESS
             },
           ]
         },
