@@ -18,7 +18,7 @@ import {List} from "../../../src/components/List";
 import {Media} from "../../../src/components/Media";
 import {Navbar} from "../../../src/components/Navbar";
 import {Photo} from "../../../src/components/Photo";
-import {Progress} from "../../../src/components/Progress";
+import {Progress, ProgressbarStyle} from "../../../src/components/Progress";
 import {Spinner} from "../../../src/components/Spinner";
 import {Table} from "../../../src/components/Table";
 import {Tabs} from "../../../src/components/Tabs";
@@ -35,7 +35,10 @@ export class ProgressExamplesView extends View {
 
         {
           "type": Progress,
-          "value": 30
+          "value": 30,
+          "progressbarStyle": ProgressbarStyle.DANGER,
+          "animated": true,
+          "striped": true
         },
         {
           "type": Spinner,
@@ -46,7 +49,6 @@ export class ProgressExamplesView extends View {
   }
 
   viewInitialized() {
-    this.runAction(new FindMoviesAction());
   }
 
 }

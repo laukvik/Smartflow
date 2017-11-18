@@ -1,10 +1,5 @@
 import {View} from "../../../src/View";
 import {Searchfield} from "../../../src/components/Searchfield";
-import {GotoMovieAction} from "../actions/GotoMovieAction";
-import {FindMoviesAction} from "../actions/FindMoviesAction";
-import {Card} from "../../../src/components/Card";
-import {BadgeShape, BadgeStyle, Button, ButtonSize, ButtonStyle, Outline} from "../../../src/components/Button";
-import {Alert, AlertStyle} from "../../../src/components/Alert";
 import {Textfield, TextfieldType} from "../../../src/components/Textfield";
 import {Radio} from "../../../src/components/Radio";
 import {Checkbox} from "../../../src/components/Checkbox";
@@ -26,6 +21,7 @@ export class InputExamplesView extends View {
           "textfieldType": TextfieldType.EMAIL,
           "validation": "Email address is required",
           "help": "Please enter your email address",
+          "value": "",
           "required": true,
           "placeholder": "",
           "after": "@gmail.com",
@@ -104,7 +100,6 @@ export class InputExamplesView extends View {
   }
 
   viewInitialized() {
-    this.runAction(new FindMoviesAction());
   }
 
 }

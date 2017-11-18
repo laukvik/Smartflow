@@ -2,7 +2,7 @@ import {View} from "../../../src/View";
 import {Items} from "../../../src/components/Items";
 import {Text} from "../../../src/components/Text";
 import {FindMoviesAction} from "../actions/FindMoviesAction";
-import {ButtonStyle} from "../../../src/components/Button";
+import {Button, ButtonStyle} from "../../../src/components/Button";
 import {Card} from "../../../src/components/Card";
 
 
@@ -24,17 +24,6 @@ export class ItemsExamplesView extends View {
           "type": Items,
           "items": "{global:movies}",
           "layout": [3,3,3,3],
-          "component": {
-            "type": Card,
-            "photo": "posterurl",
-            "title": "title",
-            "description": "storyline",
-            "button": {
-              "label": "GO",
-              "action": FindMoviesAction,
-              "buttonStyle": ButtonStyle.DANGER
-            }
-          },
           "sort": {
             "match": "title",
             "order": "asc"
@@ -49,7 +38,19 @@ export class ItemsExamplesView extends View {
           "paging": {
             "size": 10,
             "page": 0
-          }
+          },
+          "component": {
+            "type": Card,
+            "photo": "posterurl",
+            "title": "title",
+            "description": "storyline",
+            "button": {
+              "type": Button,
+              "label": "GO",
+              "action": FindMoviesAction,
+              "buttonStyle": ButtonStyle.DANGER
+            }
+          },
         }
       ]
     };

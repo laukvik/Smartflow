@@ -1,28 +1,9 @@
 import {View} from "../../../src/View";
-import {Searchfield} from "../../../src/components/Searchfield";
-import {GotoMovieAction} from "../actions/GotoMovieAction";
-import {FindMoviesAction} from "../actions/FindMoviesAction";
-import {Card} from "../../../src/components/Card";
-import {BadgeShape, BadgeStyle, Button, ButtonSize, ButtonStyle, Outline} from "../../../src/components/Button";
-import {Alert, AlertStyle} from "../../../src/components/Alert";
-import {Textfield, TextfieldType} from "../../../src/components/Textfield";
-import {Radio} from "../../../src/components/Radio";
-import {Checkbox} from "../../../src/components/Checkbox";
-import {Pulldown} from "../../../src/components/Pulldown";
-import {NumberField} from "../../../src/components/NumberField";
-import {Datepicker} from "../../../src/components/Datepicker";
+import {Button, ButtonSize, ButtonStyle} from "../../../src/components/Button";
 import {Dialog} from "../../../src/components/Dialog";
-import {Link} from "../../../src/components/Link";
-import {Items} from "../../../src/components/Items";
-import {List} from "../../../src/components/List";
-import {Media} from "../../../src/components/Media";
-import {Navbar} from "../../../src/components/Navbar";
-import {Photo} from "../../../src/components/Photo";
-import {Progress} from "../../../src/components/Progress";
-import {Spinner} from "../../../src/components/Spinner";
-import {Table} from "../../../src/components/Table";
-import {Tabs} from "../../../src/components/Tabs";
-import {Toolbar} from "../../../src/components/Toolbar";
+import {Text} from "../../../src/components/Text";
+import {OpenAlertAction} from "../actions/AlertDialogAction";
+import {CloseAlertDialogAction,OpenAlertAction} from "../actions/AlertDialogAction";
 
 export class DialogExamplesView extends View {
 
@@ -32,11 +13,50 @@ export class DialogExamplesView extends View {
     this.smartflow = {
       "path": "/examples/dialogs",
       "components": [
-
+        {
+          "type": Button,
+          "label": "Open alert",
+          "buttonStyle": ButtonStyle.INFO,
+          "action": OpenAlertAction
+        },
+        {
+          "type": Button,
+          "label": "Open confirm",
+          "buttonStyle": ButtonStyle.PRIMARY,
+          "action": null
+        },
+        {
+          "type": Button,
+          "label": "Open custom",
+          "buttonStyle": ButtonStyle.PRIMARY,
+          "action": null
+        },
         {
           "type": Dialog,
           "title": "Dialog title",
-          "description": "Lorem ipsum sit amet",
+          "open": "{global:dialogAlertOpen}",
+          "components": [
+            {
+              "type": Text,
+              "value": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+            },
+          ],
+          "buttons": [
+            {
+              "type": Button,
+              "label": "Save changes",
+              "buttonStyle": ButtonStyle.PRIMARY,
+              "size": ButtonSize.SMALL,
+              "action": CloseAlertDialogAction
+            },
+            {
+              "type": Button,
+              "label": "Cancel",
+              "buttonStyle": ButtonStyle.DEFAULT,
+              "size": ButtonSize.SMALL,
+              "action": CloseAlertDialogAction
+            },
+          ]
         },
 
       ]
@@ -44,7 +64,6 @@ export class DialogExamplesView extends View {
   }
 
   viewInitialized() {
-    this.runAction(new FindMoviesAction());
   }
 
 }

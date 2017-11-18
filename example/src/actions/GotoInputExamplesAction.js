@@ -1,4 +1,4 @@
-import {ClientAction} from "../../../src/ClientAction";
+import {ClientAction} from "../../../src/Action";
 
 export class GotoInputExamplesAction extends ClientAction {
 

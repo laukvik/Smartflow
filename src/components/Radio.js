@@ -37,6 +37,7 @@ export class Radio extends InputComponent {
     this._itemKey = "value";
     this._itemLabel = "text";
     this._inputNode = document.createElement("div");
+    this.getComponentNode().appendChild(this._inputNode);
   }
 
   setProperty(name, value) {
@@ -58,7 +59,6 @@ export class Radio extends InputComponent {
       this.setID(value);
     } else if (name === "visible") {
       this.setVisible(value);
-
     } else if (name === "items") {
       this.setItems(value);
     } else if (name === "itemKey") {
@@ -74,8 +74,10 @@ export class Radio extends InputComponent {
     }
   }
 
-  getInputElement(){
-    return this._inputNode;
+  updateInputGroup(){
+    this.removeChildNodes(this.getInputGroup());
+    this.getInputGroup().appendChild(this._inputNode);
+    this.getInputGroup().appendChild(this.openButton);
   }
 
   setItemDistinct(itemDistinct){

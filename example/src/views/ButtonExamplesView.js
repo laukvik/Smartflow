@@ -17,7 +17,7 @@ export class ButtonExamplesView extends View {
         {
           "type": Toolbar,
           "label": "Send",
-          "actions": [
+          "buttons": [
             {
               "type": Button,
               "label": "Primary",
@@ -52,7 +52,6 @@ export class ButtonExamplesView extends View {
   }
 
   viewInitialized() {
-    this.runAction(new FindMoviesAction());
   }
 
 }

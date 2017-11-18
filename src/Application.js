@@ -14,10 +14,9 @@
 import {Formatter} from "./Formatter";
 import {Builder} from "./Builder";
 import {View} from "./View";
-import {ServerAction} from "./ServerAction";
-import {ClientAction} from "./ClientAction";
 import {Path} from "./Path";
 import {Scope, SCOPES} from "./Scope";
+import {Action} from "./Action";
 
 const HTTP_STATUS_CODES = {
   INFO: 100,
@@ -71,14 +70,6 @@ export class Application {
     view.componentChanged(componentEvent);
   }
 
-  /**
-   * Returns true if the action is an Action instance
-   * @param {Action} action the action
-   * @returns {boolean}
-   */
-  isAction(action) {
-    return Object.getPrototypeOf(action) instanceof ClientAction || Object.getPrototypeOf(action) instanceof ServerAction;
-  }
 
   //--------------------------------- Config ---------------------------------
   setConfig(config) {
@@ -90,7 +81,7 @@ export class Application {
   }
 
   getRequestUrl(action) {
-    if (!this.isAction(action)) {
+    if (!Action.isAction(action)) {
       return undefined;
     }
     if (this._config === undefined) {
@@ -150,37 +141,27 @@ export class Application {
 
   //--------------------------------- View ----------------------------------------
   /**
-   * Returns true if the view is an instance of View
-   * @param {View} view
-   * @returns {boolean}
-   */
-  isView(view) {
-    return view instanceof View;
-  }
-
-  /**
    * Adds the view
    *
    * @param {View} view the view
    *
    */
   addView(view) {
-    if (!this.isView(view)) {
+    if (!View.isView(view)) {
       console.warn("Smartflow: Not a view ", view);
       return;
     }
     this._controllers.push(view);
-    view.setSmartflowInstance(this);
+    view.setApplication(this);
     view._states = {};
-    this._buildComponents(view);
+    view.buildView(view.smartflow.components);
   }
 
-  _buildComponents(view) {
-    if (view.smartflow.components) {
-      let builder = new Builder(view, this._formatter, this);
-      builder.buildComponents();
-    }
-  }
+  // _buildComponents(view) {
+  //   if (view.smartflow.components) {
+  //     Builder.buildComponentsByProperties(view.smartflow.components, view);
+  //   }
+  // }
 
   /**
    * Removes the view
@@ -188,7 +169,7 @@ export class Application {
    * @param {View} view the view
    */
   removeView(view) {
-    if (!this.isView(view)) {
+    if (!View.isView(view)) {
       return;
     }
     for (let x = 0; x < this._controllers.length; x++) {
@@ -216,11 +197,11 @@ export class Application {
   }
 
   runAction(action, callerCtrl) {
-    if (!this.isAction(action)) {
+    if (!Action.isAction(action)) {
       return false;
     }
 
-    if (!this.isView(callerCtrl)) {
+    if (!View.isView(callerCtrl)) {
       return false;
     }
     action._smartflowCaller = callerCtrl;
@@ -493,7 +474,7 @@ export class Application {
         let p = new Path(ctrl.smartflow.path);
         if (ctrl.smartflow.path !== undefined && !p.matches(path)) {
           ctrl.viewDisabled();
-          this._setViewVisible(ctrl, false);
+          // this._setViewVisible(ctrl, false);
         }
       }
     }
@@ -505,28 +486,22 @@ export class Application {
           this._controller = ctrl;
           ctrl.viewEnabled();
           ctrl.pathChanged(path, map);
-          this._setViewVisible(ctrl, true);
+          // this._setViewVisible(ctrl, true);
         }
       }
     }
   }
 
-  _setViewVisible(ctrl, isVisible) {
-    let el = document.getElementById(ctrl.constructor.name);
-    if (el) {
-      el.style.display = isVisible ? "block" : "none";
-    }
-  }
-
   //--------------------------------- State ----------------------------------------
   _fireGlobalStateChanged(state, value) {
-    // console.info("GlobalState: ", state, value);
+    console.info("state(global): ", state, value);
     for (let x = 0; x < this._controllers.length; x++) {
       let viewController = this._controllers[x];
       // Loop each component in view
-      for (let index in viewController.smartflow.componentInstances) {
-        let componentInstance = viewController.smartflow.componentInstances[ index ];
+      for (let index in viewController._smartflowComponentInstances) {
+        let componentInstance = viewController._smartflowComponentInstances[ index ];
         let binding = componentInstance.getBindingByState(state, SCOPES.GLOBAL);
+        // console.info("globalStateChanged: ", componentInstance, binding);
         if (binding) {
           componentInstance.setProperty(binding.property, value);
         }
@@ -537,6 +512,7 @@ export class Application {
   }
 
   _firePrivateStateChanged(state, value, viewController, fromComponent) {
+    console.info("state(private): ", state, value);
     if (value === undefined || value === null) {
       delete( this._states[state] );
     } else {
@@ -544,8 +520,8 @@ export class Application {
     }
 
     // Loop each component in view
-    for (let index in viewController.smartflow.componentInstances) {
-      let componentInstance = viewController.smartflow.componentInstances[ index ];
+    for (let index in viewController._smartflowComponentInstances) {
+      let componentInstance = viewController._smartflowComponentInstances[ index ];
       if (componentInstance !== fromComponent) {
         let binding = componentInstance.getBindingByState(state, SCOPES.VIEW);
         if (binding) {

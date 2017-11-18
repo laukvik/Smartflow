@@ -41,6 +41,11 @@ export class PresentationExamplesView extends View {
           "type": Card,
           "title": "Card title",
           "description": "Lorem ipsum sit amet",
+          "button":             {
+            "type": Button,
+            "label": "Primary",
+            "buttonStyle": ButtonStyle.PRIMARY
+          }
         },
 
         {
@@ -91,7 +96,6 @@ export class PresentationExamplesView extends View {
   }
 
   viewInitialized() {
-    this.runAction(new FindMoviesAction());
   }
 
 }

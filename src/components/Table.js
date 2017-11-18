@@ -2,6 +2,7 @@ import {InputComponent} from "../InputComponent";
 import {Collection} from "../Collection";
 import {Photo} from "./Photo";
 import {Scope, SCOPES} from "../Scope";
+import {Builder} from "../Builder";
 
 /**
  *
@@ -203,7 +204,10 @@ class Table extends InputComponent {
                 }
               }
             }
-            this.builder.buildChildNode(tdNode, copy);
+            let c = Builder.buildComponentByProperties(copy, this.getView());
+            tdNode.appendChild(c.getComponentNode());
+
+            // this.builder.buildChildNode(tdNode, copy);
           } else if (column.format) {
             // Date format
             tdNode.innerText = this.builder.formatter.formatDate(cellData, column.format);

@@ -1,78 +1,80 @@
 import {PresentationComponent} from "../PresentationComponent";
+import {Builder} from "../Builder";
 
 export class Dialog extends PresentationComponent {
+
   constructor(properties) {
     super(properties);
     this.buttons = [];
     this.actions = [];
     this.components = [];
     this.createComponentNode("div");
+
+    this.getComponentNode().setAttribute("tabindex", "-1");
+    this.getComponentNode().setAttribute("role", "dialog");
+    this.getComponentNode().setAttribute("class", "modal");
+
+    this.dialogValidatoonNode = document.createElement("div");
+    this.dialogValidatoonNode.setAttribute("class", "alert alert-warning alert-dismissible");
+    this.dialogValidatoonNode.style.display = "none";
+
+    this.modalDialog = document.createElement("div");
+    this.modalDialog.setAttribute("class", "modal-dialog");
+    this.modalDialog.setAttribute("role", "document");
+
+    let modalContent = document.createElement("div");
+    modalContent.setAttribute("class", "modal-content");
+    let modalHeader = document.createElement("div");
+    modalHeader.setAttribute("class", "modal-header");
+    this.contentBody = document.createElement("div");
+    this.contentBody.setAttribute("class", "modal-body");
+    this.modalTitle = document.createElement("h5");
+    modalHeader.appendChild(this.modalTitle);
+
+    this.contentFooter = document.createElement("div");
+    this.contentFooter.setAttribute("class", "modal-footer");
+    this.getComponentNode().appendChild(this.modalDialog);
+
+    this.modalDialog.appendChild(modalContent);
+    modalContent.appendChild(modalHeader);
+    modalContent.appendChild(this.contentBody);
+    modalContent.appendChild(this.contentFooter);
+    this.contentBody.appendChild(this.dialogValidatoonNode);
   }
 
   setProperty(name, value) {
-    if (name === "visible") {
-      this.setVisible(value);
+    if (name === "open") {
+      this.setOpen(value);
     } else if (name === "title") {
       this.setTitle(value);
+    } else if (name === "buttons") {
+      this.setButtons(value);
+    } else if (name === "components") {
+      this.setComponents(value);
+    }
+  }
+
+  setComponents(components){
+    if (Array.isArray(components)) {
+      this.components = Builder.buildComponentsByProperties(components, this.getView());
+      this.components.forEach(b => {
+        this.contentBody.appendChild(b.getComponentNode());
+      })
+    }
+  }
+
+  setButtons(buttons){
+    if (Array.isArray(buttons)) {
+      this.buttons = Builder.buildComponentsByProperties(buttons, this.getView());
+      this.removeChildNodes(this.contentFooter);
+      this.buttons.forEach(b => {
+        this.contentFooter.appendChild(b.getComponentNode());
+      })
     }
   }
 
   buildComponent(builder, properties) {
-    this.properties = properties;
-    this.dialogValidatoonNode = document.createElement("div");
-    this.dialogValidatoonNode.setAttribute("class", "alert alert-warning alert-dismissible");
-    this.dialogValidatoonNode.style.display = "none";
-    //this.dialogNode = div;
-    this._componentNode.setAttribute("tabindex", "-1");
-    this._componentNode.setAttribute("role", "dialog");
-    this._componentNode.setAttribute("class", "modal fade in");
-    let dialog = document.createElement("div");
-    this._componentNode.setAttribute("role", "document");
-    dialog.setAttribute("class", "modal-dialog");
-    let content = document.createElement("div");
-    content.setAttribute("class", "modal-content");
-    let contentHeader = document.createElement("div");
-    contentHeader.setAttribute("class", "modal-header");
-    let contentBody = document.createElement("div");
-    contentBody.setAttribute("class", "modal-body");
-    let modalTitle = document.createElement("h4");
-    contentHeader.appendChild(modalTitle);
-    let contentFooter = document.createElement("div");
-    contentFooter.setAttribute("class", "modal-footer");
-    this._componentNode.appendChild(dialog);
-    dialog.appendChild(content);
-    content.appendChild(contentHeader);
-    content.appendChild(contentBody);
-    content.appendChild(contentFooter);
-    contentBody.appendChild(this.dialogValidatoonNode);
-    if (Array.isArray(properties.components)) {
-      let panelComponents = properties.components;
-      for (let n = 0; n < panelComponents.length; n++) {
-        let panelNode = document.createElement("div");
-        let panelComponent = panelComponents[n];
-        contentBody.appendChild(panelNode);
-        let componentInstance = builder.buildChildNode(panelNode, panelComponent);
-        this.components.push(componentInstance);
-      }
-    }
-    if (Array.isArray(properties.actions)) {
-      for (let x = 0; x < properties.actions.length; x++) {
-        let component = properties.actions[x];
-        let btn = document.createElement("button");
-        btn.setAttribute("type", "button");
-        btn.setAttribute("class", "btn " + (component.style ? " btn-" + component.style : "btn-default"));
-        btn.innerText = component.label;
-        contentFooter.appendChild(btn);
-        this.buttons.push(btn);
-        this.actions.push(component);
-        btn.addEventListener("click", function (evt) {
-          this._clicked(evt.srcElement, component);
-        }.bind(this), false);
-      }
-    }
-    this.titleNode = modalTitle;
-    this._componentNode.setAttribute("class", "sf-dialog" + (properties.class ? " " + properties.class : ""));
-    return this._componentNode;
+    return this.getComponentNode();
   }
 
   _clicked(btn) {
@@ -103,12 +105,12 @@ export class Dialog extends PresentationComponent {
   }
 
   setTitle(title) {
-    this.titleNode.innerText = title;
+    this.modalTitle.innerText = title;
   }
 
-  setVisible(open) {
-    this.open = open == true;
-    this._componentNode.style.display = this.open ? "block" : "none";
+  setOpen(open) {
+    this.open = open === true;
+    this.getComponentNode().style.display = this.open ? "block" : "none";
     document.body.setAttribute("class", this.open ? "modal-open" : "");
   }
 

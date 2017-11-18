@@ -1,5 +1,6 @@
 import {PresentationComponent} from "../PresentationComponent";
 import {Collection} from "../Collection";
+import {Builder} from "../Builder";
 
 /**
  *
@@ -44,9 +45,16 @@ export class Items extends PresentationComponent {
       this.setVisible(value);
     } else if (name === "layout") {
       this.setLayout(value);
+    } else if (name === "component") {
+      this.setComponent(value);
     } else {
       //console.warn("Items: Invalid property ", name );
     }
+  }
+
+  setComponent(component){
+    console.info("SetComponent: ", component);
+    this._component = component;
   }
 
   setLayout(layout) {
@@ -119,6 +127,9 @@ export class Items extends PresentationComponent {
     this._unfilteredItems = Array.isArray(items) ? items : [];
     // Filter
     this._items = this.collections.find(this._unfilteredItems);
+
+    // Builder.buildComponentsByProperties(this._items, this.getView());
+
     // For each
     for (let n = 0; n < this._items.length; n++) {
       let item = this._items[n];
@@ -130,8 +141,13 @@ export class Items extends PresentationComponent {
         component[ componentKey ] = value;
       }
       // Don't interpret component type. It's always fixed.
-      component.type = this._component.type;
-      this._builder.buildChildNode(this._componentNode, component);
+      if (this._component.type){
+        component.type = this._component.type;
+        let c = Builder.buildComponentByProperties(component, this.getView());
+        this._componentNode.appendChild(c.getComponentNode());
+        // this._builder.buildChildNode(this._componentNode, component);
+      }
+
     }
   }
 

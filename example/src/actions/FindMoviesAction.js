@@ -1,4 +1,4 @@
-import {ServerAction} from "../../../src/ServerAction";
+import {ServerAction} from "../../../src/Action";
 
 export class FindMoviesAction extends ServerAction {
 

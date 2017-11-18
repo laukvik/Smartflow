@@ -80,7 +80,7 @@ export class Button extends Component {
     this._componentNode.appendChild(this._spaceNode);
 
     this._componentNode.addEventListener("click", function () {
-      this._clicked();
+      this._buttonClicked();
     }.bind(this), false);
   }
 
@@ -110,7 +110,7 @@ export class Button extends Component {
     } else if (name === "badgeShape") {
       this.setBadgeShape(value);
     } else if (name === "action") {
-      this.action = value;
+      this.setAction(value);
     } else if (name === "active") {
       this.setActive(value);
     } else if (name === "size") {
@@ -118,6 +118,10 @@ export class Button extends Component {
     } else if (name === "outline") {
       this.setOutline(value);
     }
+  }
+
+  setAction(action){
+    this._action = action;
   }
 
   setOutline(outline){
@@ -179,9 +183,9 @@ export class Button extends Component {
     return this._componentNode;
   }
 
-  _clicked() {
-    if (this.action !== undefined) {
-      this.fireAction(this.action);
+  _buttonClicked() {
+    if (this._action !== undefined) {
+      this.fireAction(this._action);
     }
   }
 

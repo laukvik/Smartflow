@@ -20,7 +20,7 @@ export class Text extends Component {
   setProperty(name, value) {
     if (name === "heading") {
       this.setHeading(value);
-    } else if (name === "text") {
+    } else if (name === "value") {
       this.setText(value);
     } else if (name === "visible") {
       this.setVisible(value);

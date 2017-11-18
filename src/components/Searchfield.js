@@ -54,6 +54,8 @@ export class Searchfield extends InputComponent {
     this._inputNode.setAttribute("class", "form-control");
     this._inputNode.setAttribute("spellcheck", "false");
     this._inputNode.style.width = "100%";
+
+
     this._inputNode.addEventListener('keyup', function (evt) {
       this.setDropdownVisible(true);
       if (evt.key === "ArrowDown") {
@@ -66,13 +68,11 @@ export class Searchfield extends InputComponent {
         this._changed(evt.srcElement.value);
       }
     }.bind(this), false);
+
     // this._inputNode.addEventListener('blur', function (evt) {
     //   this.setDropdownVisible(false);
     // }.bind(this), false);
-  }
-
-  getInputElement(){
-    return this._searchNode;
+    this.updateInputGroup();
   }
 
   setProperty(name, value) {
@@ -115,8 +115,8 @@ export class Searchfield extends InputComponent {
   }
 
   updateInputGroup(){
-    this.removeChildNodes(this._inputGroup);
-    this._inputGroup.appendChild(this._inputNode);
+    this.removeChildNodes(this.getInputGroup());
+    this.getInputGroup().appendChild(this._inputNode);
     this.getComponentNode().appendChild(this.optionsNode);
   }
 

@@ -25,6 +25,7 @@ class Checkbox extends InputComponent {
     this._inputNode = document.createElement("div");
     this._itemKey = "value";
     this._itemLabel = "text";
+    this.getComponentNode().appendChild(this._inputNode);
   }
 
   setProperty(name, value) {

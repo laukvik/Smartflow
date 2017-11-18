@@ -40,19 +40,23 @@ export class InputComponent extends Component {
     this.getComponentNode().setAttribute("class", "form-group" + (this._errorNode.innerText ? " has-danger" : ""));
   }
 
-  updateInputGroup(){
-    this._inputGroup.appendChild(this.getInputElement());
+  getInputGroup(){
+    return this._inputGroup;
   }
+
+  // updateInputGroup(){
+  //   this._inputGroup.appendChild(this.getInputElement());
+  // }
 
   setHelp(text) {
     this._helpNode.textContent = text;
     this._helpNode.style.display = text? "block" : "none";
   }
 
-  buildComponent(builder, properties) {
-    this.updateInputGroup();
-    return this.getComponentNode();
-  }
+  // buildComponent(builder, properties) {
+  //   this.updateInputGroup();
+  //   return this.getComponentNode();
+  // }
 
   setRequired(required) {
     this._required = required === true;

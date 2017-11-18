@@ -1,4 +1,4 @@
-import {SCOPES} from "./Scope";
+import {Scope, SCOPES} from "./Scope";
 
 /**
  *
@@ -24,6 +24,15 @@ export class Component {
   }
 
   /**
+   * Sets the value for a named property
+   *
+   * @param name
+   * @param value
+   */
+  setProperty(name, value) {
+  }
+
+  /**
    * Creates an HTML node
    * @param tagName the name of the tag
    * @param baseClass the component CSS class name
@@ -39,16 +48,7 @@ export class Component {
   }
 
   /**
-   * Sets the value for a named property
-   *
-   * @param name
-   * @param value
-   */
-  setProperty(name, value) {
-  }
-
-  /**
-   * Informs Smartflow that the value of the property changed. This method
+   * Informs the application that the value of the property changed. This method
    * should only be called from the component when the component changed its
    * properties.
    *
@@ -60,10 +60,11 @@ export class Component {
     let binding = this._valueBindings[ name ];
     if (binding === undefined) {
       let a = this;
-      console.warn(a.constructor.name + ": invalid property ", name);
+      console.warn(a.constructor.name + ": invalid property ", name, value, this._valueBindings);
       return;
     }
-    this.smartflow.firePropertyChanged(this, binding, value);
+    this.getView().getApplication().firePropertyChanged(this, binding, value);
+    // this.smartflow.firePropertyChanged(this, binding, value);
   }
 
   /**
@@ -80,6 +81,7 @@ export class Component {
       delete this._valueBindings[ name ];
       return;
     }
+    console.info("setBinding: ", name, value, scope, path);
     if (scope === SCOPES.NONE || scope === SCOPES.VIEW || scope === SCOPES.GLOBAL  || scope === SCOPES.COMPONENT) {
       this._valueBindings[ name ] = {
         "state" : value,
@@ -101,17 +103,15 @@ export class Component {
     }
   }
 
-  setProperties(properties) {
-    this.setID(properties.id);
-    this.setClass(properties.class);
-    this._properties = properties;
-  }
-
-  buildComponent() {
-    let div = document.createElement("div");
-    div.innerText = "[Smartflow:" + this.constructor.name + "]";
-    return div;
-  }
+  // /**
+  //  * @deprecated Should not be used. All components must build in constructor
+  //  * @returns {Element}
+  //  */
+  // buildComponent() {
+  //   let div = document.createElement("div");
+  //   div.innerText = "[Smartflow:" + this.constructor.name + "]";
+  //   return div;
+  // }
 
   setView(viewController) {
     this.ctrl = viewController;
@@ -121,9 +121,9 @@ export class Component {
     return this.ctrl;
   }
 
-  setSmartflow(smartflow) {
-    this.smartflow = smartflow;
-  }
+  // setSmartflow(smartflow) {
+  //   this.smartflow = smartflow;
+  // }
 
   setVisible(visible) {
     this._componentNode.style.display = (visible === 'true' || visible === true) ? "block" : "none";
@@ -137,12 +137,12 @@ export class Component {
 
   setClass(className) {
     let cssClass = this.constructor.name + " " + (this._componentBaseClass ? this._componentBaseClass : "") + (className === undefined ? "" : " " + className);
-
     // this._componentNode.setAttribute("class", cssClass);
   }
 
   fireAction(action) {
-    this.smartflow.runAction(new action(), this.getView());
+    this.getView().getApplication().runAction(new action(), this.getView());
+    // this.smartflow.runAction(new action(), this.getView());
   }
 
   removeChildNodes(node) {

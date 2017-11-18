@@ -1,5 +1,6 @@
 import {PresentationComponent} from "../PresentationComponent";
 import {Collection} from "../Collection";
+import {Builder} from "../Builder";
 
 /**
  *
@@ -37,8 +38,6 @@ export class Card extends PresentationComponent {
     this.blockNode = document.createElement("div");
     this.blockNode.setAttribute("class", "card-block");
 
-    this.buttonNode = document.createElement("a");
-    this.buttonNode.setAttribute("class", "btn btn-primary");
     this.photoNode = document.createElement("img");
     this.photoNode.setAttribute("class", "card-img-top");
     this.titleNode = document.createElement("h4");
@@ -49,11 +48,6 @@ export class Card extends PresentationComponent {
     this._componentNode.appendChild(this.blockNode);
     this.blockNode.appendChild(this.titleNode);
     this.blockNode.appendChild(this.descriptionNode);
-    this.blockNode.appendChild(this.buttonNode);
-
-    this.buttonNode.addEventListener("click", function () {
-      this._clicked();
-    }.bind(this), false);
   }
 
   /**
@@ -82,6 +76,10 @@ export class Card extends PresentationComponent {
     } else if (name === "action") {
       this.setAction(value);
     } else if (name === "button") {
+      console.info("Card.button undefined: ", value);
+      if (!value){
+        return;
+      }
       this.setButton(value);
     } else {
       console.warn("Card: Unknown property ", name);
@@ -93,7 +91,9 @@ export class Card extends PresentationComponent {
   }
 
   setButton(button){
-    this.buttonNode = button;
+    this.buttonInstance = Builder.buildComponentByProperties(button, this.getView());
+    this.buttonNode = this.buttonInstance.getComponentNode();
+    this.blockNode.appendChild(this.buttonNode);
   }
 
   setTitle(title) {
@@ -108,15 +108,8 @@ export class Card extends PresentationComponent {
     this.photoNode.src = url;
   }
 
-
   buildComponent(builder, properties) {
-
-
     return this._componentNode;
-  }
-
-  _clicked(){
-    this.fireAction(this._action);
   }
 
 }

@@ -53,6 +53,13 @@ export class Datepicker extends InputComponent {
     this.collections = new Collection();
 
     this._rebuildCalendar();
+    this.updateInputGroup();
+  }
+
+  updateInputGroup(){
+    this.removeChildNodes(this.getInputGroup());
+    this.getInputGroup().appendChild(this._inputNode);
+    this.getInputGroup().appendChild(this.openButton);
   }
 
   setProperty(name, value) {
@@ -65,7 +72,6 @@ export class Datepicker extends InputComponent {
       this.setEnabled(value);
     } else if (name === "help") {
       this.setHelp(value);
-
     } else if (name === "items") {
       this._unfilteredItems = value;
       this.setItems(value);
@@ -82,7 +88,6 @@ export class Datepicker extends InputComponent {
       this.setItemLabel(value);
     } else if (name === "itemsEmpty") {
       this.setItemsEmpty(value);
-
     }
   }
 
@@ -341,16 +346,6 @@ export class Datepicker extends InputComponent {
     let formattedValue = this.formatter.formatDate(date, this.dateFormat);
     const items = this.findItemsByValue(formattedValue);
     this.setDetails(items);
-  }
-
-  getInputElement(){
-    return this._inputNode;
-  }
-
-  updateInputGroup(){
-    this.removeChildNodes(this._inputGroup);
-    this._inputGroup.appendChild(this.getInputElement());
-    this._inputGroup.appendChild(this.openButton);
   }
 
   _togglePickerVisible(){

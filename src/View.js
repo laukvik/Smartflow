@@ -7,22 +7,50 @@
  *
  */
 
+import {Builder} from "./Builder";
+
 /**
  * An abstract class.
  *
  */
 export class View {
 
-  /**
-   * Constructor for Textfield
-   *
-   * @param {ViewProperties} props the properties for the component
-   */
-  constructor(props) {
+  constructor() {
+    this._smartflowComponentInstances = [];
   }
 
-  setSmartflowInstance(smartflow) {
-    this.__smartflowInstance = smartflow;
+  mapBinding(component){
+    this._smartflowComponentInstances.push(component);
+  }
+
+  static isView(view) {
+    return view instanceof View;
+  }
+
+  buildView(properties){
+    if (Array.isArray(properties)){
+      this._components = Builder.buildComponentsByProperties(properties, this);
+      this._components.forEach( b => {
+        this.getViewElement().appendChild(b.getComponentNode());
+      });
+    }
+  }
+
+  setVisible(visible){
+    const el = this.getViewElement();
+    el.style.display = visible ? "block" : "none";
+  }
+
+  getViewElement(){
+    return document.getElementById(this.constructor.name);
+  }
+
+  setApplication(application){
+    this.__smartflowInstance = application;
+  }
+
+  getApplication(){
+    return this.__smartflowInstance;
   }
 
   /**
@@ -44,12 +72,14 @@ export class View {
    * Indicates the view has been enabled
    */
   viewEnabled() {
+    this.setVisible(true);
   }
 
   /**
    * Indicates the view has been disabled
    */
   viewDisabled() {
+    this.setVisible(false);
   }
 
   /**

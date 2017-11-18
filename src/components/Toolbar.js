@@ -1,49 +1,37 @@
 import {InputComponent} from "../InputComponent";
+import {Builder} from "../Builder";
 
 export class Toolbar extends InputComponent {
 
-  constructor(properties) {
-    super(properties);
+  constructor() {
+    super();
     this.buttons = [];
-    this.actions = [];
     this.createComponentNode("div");
+    this.getComponentNode().setAttribute("role", "toolbar");
+    this._groupNode = document.createElement("div");
+    this._groupNode.setAttribute("class", "btn-group");
+    this.getComponentNode().appendChild(this._groupNode);
   }
 
   setProperty(name, value) {
     if (name === "visible") {
       this.setVisible(value);
+    } else if (name === "buttons"){
+      this.setButtons(value);
     }
   }
 
-  setProperties(properties) {
+  setButtons(buttons){
+    this.buttons = Builder.buildComponentsByProperties(buttons, this.getView());
     this.removeChildNodes(this._groupNode);
-    if (Array.isArray(properties.actions)) {
-      for (let x = 0; x < properties.actions.length; x++) {
-        let component = properties.actions[x];
-        let btn = document.createElement("button");
-        btn.setAttribute("type", "button");
-        btn.setAttribute("class", "btn " + (component.buttonStyle ? " " + component.buttonStyle : ""));
-        btn.innerText = component.label;
-        this._groupNode.appendChild(btn);
-        this.buttons.push(btn);
-        btn.addEventListener("click", function () {
-          this._clicked(properties.actions[x].action);
-        }.bind(this), false);
-      }
-    }
+    this.buttons.forEach( b => {
+      this._groupNode.appendChild(b.getComponentNode());
+    });
   }
 
   buildComponent(builder, properties) {
-    this._componentNode.setAttribute("role", "toolbar");
-    let groupNode = document.createElement("div");
-    groupNode.setAttribute("class", "btn-group");
-    this._componentNode.appendChild(groupNode);
-    this._groupNode = groupNode;
-    return this._componentNode;
+    return this.getComponentNode();
   }
 
-  _clicked(action) {
-    this.fireAction(action);
-  }
 }
 
