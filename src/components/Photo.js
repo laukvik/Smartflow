@@ -1,5 +1,4 @@
 import {PresentationComponent} from "../PresentationComponent";
-import {Collection} from "../Collection";
 
 /**
  *
@@ -21,8 +20,8 @@ export class Photo extends PresentationComponent {
    *
    * @param {PhotoProperties} props the properties for the component
    */
-  constructor(props) {
-    super(props);
+  constructor() {
+    super();
     this.createComponentNode("div");
     this._imgNode = document.createElement("img");
     this._componentNode.appendChild(this._imgNode);

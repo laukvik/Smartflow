@@ -157,12 +157,6 @@ export class Application {
     view.buildView(view.smartflow.components);
   }
 
-  // _buildComponents(view) {
-  //   if (view.smartflow.components) {
-  //     Builder.buildComponentsByProperties(view.smartflow.components, view);
-  //   }
-  // }
-
   /**
    * Removes the view
    *
@@ -292,20 +286,15 @@ export class Application {
             } else if (statusCode === HTTP_STATUS_CODES.SUCCESS) {
               // Success
               actionEvent.path = action.getSmartflow().success.path;
-              //actionEvent.params = self._findParams(actionEvent.path).param;
               actionEvent.states[action.getSmartflow().success.state] = actionEvent.response.body;
-
               actionEvent.global[action.getSmartflow().success.global] = actionEvent.response.body;
-
               delete (actionEvent.error);
-
               self._fireActionPerformed(action, actionEvent);
 
             } else if (statusCode >= HTTP_STATUS_CODES.REDIRECT && statusCode < HTTP_STATUS_CODES.ERROR) {
               // Redirect
               let errorRedirectMessage = "Error: Server responded " + statusCode + " (" + action.constructor.name + ")";
               actionEvent.path = action.getSmartflow().error.path;
-              //actionEvent.params = self._findParams(actionEvent.path).param;
               actionEvent.error = errorRedirectMessage;
               actionEvent.states[action.getSmartflow().error.state] = errorRedirectMessage;
               self._fireActionPerformed(action, actionEvent);
@@ -314,7 +303,6 @@ export class Application {
               // Client error
               let errorClientMessage = "Error: Server responded " + statusCode + " (" + action.constructor.name + ") ";
               actionEvent.path = action.getSmartflow().error.path;
-              //actionEvent.params = self._findParams(actionEvent.path).param;
               actionEvent.error = errorClientMessage;
               actionEvent.states[action.getSmartflow().error.state] = errorClientMessage;
               self._fireActionPerformed(action, actionEvent);
@@ -323,7 +311,6 @@ export class Application {
               // Server error
               let errorServerMessage = "Error: Server responded " + statusCode + " (" + action.constructor.name + ")  ";
               actionEvent.path = action.getSmartflow().error.path;
-              //actionEvent.params = self._findParams(actionEvent.path).param;
               actionEvent.error = errorServerMessage;
               actionEvent.states[action.getSmartflow().error.state] = errorServerMessage;
               self._fireActionPerformed(action, actionEvent);
@@ -364,7 +351,6 @@ export class Application {
         actionEvent.states = action.getSmartflow().states === undefined ? {} : action.getSmartflow().states;
         actionEvent.addStates = action.getSmartflow().addStates === undefined ? {} : action.getSmartflow().addStates;
         actionEvent.removeStates = action.getSmartflow().removeStates === undefined ? {} : action.getSmartflow().removeStates;
-
         actionEvent.global = action.getSmartflow().global === undefined ? {} : action.getSmartflow().global;
         this._fireActionPerformed(action, actionEvent);
       }
@@ -474,7 +460,6 @@ export class Application {
         let p = new Path(ctrl.smartflow.path);
         if (ctrl.smartflow.path !== undefined && !p.matches(path)) {
           ctrl.viewDisabled();
-          // this._setViewVisible(ctrl, false);
         }
       }
     }
@@ -486,7 +471,6 @@ export class Application {
           this._controller = ctrl;
           ctrl.viewEnabled();
           ctrl.pathChanged(path, map);
-          // this._setViewVisible(ctrl, true);
         }
       }
     }
@@ -501,7 +485,6 @@ export class Application {
       for (let index in viewController._smartflowComponentInstances) {
         let componentInstance = viewController._smartflowComponentInstances[ index ];
         let binding = componentInstance.getBindingByState(state, SCOPES.GLOBAL);
-        // console.info("globalStateChanged: ", componentInstance, binding);
         if (binding) {
           componentInstance.setProperty(binding.property, value);
         }
@@ -518,7 +501,6 @@ export class Application {
     } else {
       this._states[state] = value;
     }
-
     // Loop each component in view
     for (let index in viewController._smartflowComponentInstances) {
       let componentInstance = viewController._smartflowComponentInstances[ index ];
@@ -529,7 +511,6 @@ export class Application {
         }
       }
     }
-
     // Inform view controller
     viewController.stateChanged(state, value);
   }

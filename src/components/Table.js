@@ -30,8 +30,8 @@ class Table extends InputComponent {
    *
    * @param {TableProperties} props the properties for the component
    */
-  constructor(properties) {
-    super(properties);
+  constructor() {
+    super();
     this.collections = new Collection();
     this.selected = [];
     this.columns = [];
@@ -68,7 +68,7 @@ class Table extends InputComponent {
     } else if (name === "visible") {
       this.setVisible(value);
     } else {
-      //console.warn("Table: Unkown property ", name);
+      console.warn("Table: Unkown property ", name);
     }
   }
 

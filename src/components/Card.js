@@ -26,8 +26,8 @@ export class Card extends PresentationComponent {
    *
    * @param {CardProperties} props the properties for the component
    */
-  constructor(props) {
-    super(props);
+  constructor() {
+    super();
     this.createComponentNode("div");
     this.getComponentNode().setAttribute("class", "card");
     this.collections = new Collection();

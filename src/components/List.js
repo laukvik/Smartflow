@@ -2,8 +2,9 @@ import {PresentationComponent} from "../PresentationComponent";
 import {Collection} from "../Collection";
 
 class List extends PresentationComponent {
-  constructor(properties) {
-    super(properties);
+
+  constructor() {
+    super();
     this._items = [];
     this.collections = new Collection();
     this.createComponentNode("ul");
@@ -25,6 +26,8 @@ class List extends PresentationComponent {
       this.setPaging(value);
     } else if (name === "itemBadge") {
       this.setItemBadge(value);
+    } else {
+      console.warn("List: Unknown property ", name);
     }
   }
 

@@ -29,8 +29,8 @@ export class Radio extends InputComponent {
    *
    * @param {RadioProperties} properties the properties for the component
    */
-  constructor(properties) {
-    super(properties);
+  constructor() {
+    super();
     this.inputNodes = [];
     this._items = [];
     this.collections = new Collection();
@@ -71,6 +71,8 @@ export class Radio extends InputComponent {
       this.setFilter(value);
     } else if (name === "distinct") {
       this.setItemDistinct(value);
+    } else {
+      console.warn("Radio: Unknown property ", name);
     }
   }
 

@@ -19,8 +19,8 @@ export class Link extends Component {
    *
    * @param {LinkProperties} properties the properties for the component
    */
-  constructor(properties) {
-    super(properties);
+  constructor() {
+    super();
     this.createComponentNode("div");
     this._aNode = document.createElement("a");
     this._componentNode.appendChild(this._aNode);
@@ -35,6 +35,8 @@ export class Link extends Component {
       this.setVisible(value);
     } else if (name === "tooltips") {
       this.setTooltips(value);
+    } else {
+      console.warn("Link: Unknown property ", name);
     }
   }
 

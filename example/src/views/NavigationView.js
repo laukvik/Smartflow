@@ -11,6 +11,8 @@ import {GotoProgressExamplesAction} from "../actions/GotoProgressExamplesAction"
 import {GotoDialogsExamplesAction} from "../actions/GotoDialogsExamplesAction";
 import {Navbar, NavbarStyle} from "../../../src/components/Navbar";
 import {GotoButtonExamplesAction} from "../actions/GotoButtonExamplesAction";
+import {GettingStartedAction} from "../actions/GettingStartedAction";
+import {GotoDocumentationAction} from "../actions/GotoDocumentationAction";
 
 export class NavigationView extends View {
 
@@ -24,6 +26,14 @@ export class NavigationView extends View {
           "title": "Smartflow",
           "navbarStyle": NavbarStyle.LIGHT,
           "buttons": [
+            {
+              "label": "Getting started",
+              "action": GettingStartedAction
+            },
+            {
+              "label": "Documentation",
+              "action": GotoDocumentationAction
+            },
             {
               "label": "Input",
               "action": GotoInputExamplesAction

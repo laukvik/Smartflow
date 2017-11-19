@@ -5,10 +5,10 @@ import {PresentationComponent} from "../PresentationComponent";
  *
  *
  */
-class Tabs extends PresentationComponent {
+export class Tabs extends PresentationComponent {
 
-  constructor(properties) {
-    super(properties);
+  constructor() {
+    super();
     this.labels = [];
     this.contents = [];
     this.links = [];
@@ -20,6 +20,8 @@ class Tabs extends PresentationComponent {
       this.setVisible(value);
     } else if (name === "index") {
       this.setSelectedIndex(value);
+    } else {
+      console.warn("Tabs: Unknown property ", name);
     }
   }
 
@@ -88,5 +90,3 @@ class Tabs extends PresentationComponent {
   }
 
 }
-
-export {Tabs};

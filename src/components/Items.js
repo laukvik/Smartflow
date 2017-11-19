@@ -25,8 +25,8 @@ export class Items extends PresentationComponent {
    *
    * @param {ItemsProperties} properties the properties for the component
    */
-  constructor(properties) {
-    super(properties);
+  constructor() {
+    super();
     this.createComponentNode("div");
     this.collections = new Collection();
     this.layout = null;
@@ -48,12 +48,11 @@ export class Items extends PresentationComponent {
     } else if (name === "component") {
       this.setComponent(value);
     } else {
-      //console.warn("Items: Invalid property ", name );
+      console.warn("Items: Invalid property ", name );
     }
   }
 
   setComponent(component){
-    console.info("SetComponent: ", component);
     this._component = component;
   }
 
@@ -62,7 +61,6 @@ export class Items extends PresentationComponent {
       this.layout = layout;
     }
   }
-
 
   setSort(sort) {
     this.collections.setSort(sort);
@@ -95,12 +93,12 @@ export class Items extends PresentationComponent {
     this._items = this.collections.find(this._unfilteredItems);
     // For each
     for (let n = 0; n < this._items.length; n++) {
-      let item = this._items[n];
+      // let item = this._items[n];
       let component = {};
       //
       for (let componentKey in this._component) {
         let itemValue = this._component[ componentKey ];
-        let value = item[ itemValue ];
+        // let value = item[ itemValue ];
         component[ componentKey ] = value;
       }
       // Don't interpret component type. It's always fixed.
@@ -128,8 +126,6 @@ export class Items extends PresentationComponent {
     // Filter
     this._items = this.collections.find(this._unfilteredItems);
 
-    // Builder.buildComponentsByProperties(this._items, this.getView());
-
     // For each
     for (let n = 0; n < this._items.length; n++) {
       let item = this._items[n];
@@ -145,7 +141,6 @@ export class Items extends PresentationComponent {
         component.type = this._component.type;
         let c = Builder.buildComponentByProperties(component, this.getView());
         this._componentNode.appendChild(c.getComponentNode());
-        // this._builder.buildChildNode(this._componentNode, component);
       }
 
     }

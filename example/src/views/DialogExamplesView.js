@@ -2,7 +2,6 @@ import {View} from "../../../src/View";
 import {Button, ButtonSize, ButtonStyle} from "../../../src/components/Button";
 import {Dialog} from "../../../src/components/Dialog";
 import {Text} from "../../../src/components/Text";
-import {OpenAlertAction} from "../actions/AlertDialogAction";
 import {CloseAlertDialogAction,OpenAlertAction} from "../actions/AlertDialogAction";
 
 export class DialogExamplesView extends View {

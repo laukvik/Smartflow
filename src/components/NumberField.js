@@ -65,8 +65,6 @@ export class NumberField extends InputComponent {
       this.setHelp(value);
     } else if (name === "required") {
       this.setRequired(value);
-    } else if (name === "help") {
-      this.setHelp(value);
     } else if (name === "validation") {
       this.setValidationMessage(value);
     } else if (name === "placeholder") {
@@ -75,14 +73,12 @@ export class NumberField extends InputComponent {
       this.setBefore(value);
     } else if (name === "after") {
       this.setAfter(value);
-
     } else if (name === "min") {
       this.setMin(value);
     } else if (name === "max") {
       this.setMax(value);
     } else if (name === "step") {
       this.setStep(value);
-
     } else {
       console.warn("NumberField: Unknown property ", name);
     }

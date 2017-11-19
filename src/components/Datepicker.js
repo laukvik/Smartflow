@@ -4,8 +4,8 @@ import {Collection} from "../Collection";
 
 export class Datepicker extends InputComponent {
 
-  constructor(properties) {
-    super(properties);
+  constructor() {
+    super();
     this.getComponentNode().style.position = "relative";
     this._inputNode = document.createElement("input");
     this._inputNode.setAttribute("type", "text");
@@ -17,9 +17,6 @@ export class Datepicker extends InputComponent {
     this.getComponentNode().appendChild(this._dropdownNode);
 
     this._detailsNode = document.createElement("div");
-
-
-
     this.previousButton = document.createElement("button");
     this.previousButton.setAttribute("class", "btn btn-primary btn-sm btn-block");
     this.previousButton.innerHTML = '&#8249;';
@@ -63,7 +60,6 @@ export class Datepicker extends InputComponent {
   }
 
   setProperty(name, value) {
-
     if (name === "label") {
       this.setLabel(value);
     } else if (name === "required") {
@@ -88,6 +84,8 @@ export class Datepicker extends InputComponent {
       this.setItemLabel(value);
     } else if (name === "itemsEmpty") {
       this.setItemsEmpty(value);
+    } else {
+      console.warn("Datepicker: Unknown property ", name);
     }
   }
 
@@ -143,8 +141,8 @@ export class Datepicker extends InputComponent {
     }
   }
 
-  setIcon(){
-    this.openIcon.setAttribute("src", Datepicker.getCalendarIcon());
+  setIcon(icon){
+    this.openIcon.setAttribute("src", icon);
   }
 
   static getCalendarIcon(){
@@ -284,10 +282,8 @@ export class Datepicker extends InputComponent {
         let isSelected = Datepicker.isSameDate(d, this.selectedDate);
         let otherMonth = !(d.getUTCMonth() === month);
         let isWeekend = d.getUTCDay() === 0 || d.getUTCDay() === 6;
-        let isDisabled = false;
         td.setAttribute("class",
           (isSelected ? " active": "") +
-          (isDisabled ? " disabled": "") +
           (isToday? " today":"") +
           (otherMonth ? " othermonth": "") +
           (isWeekend ? " weekend":""));
@@ -330,10 +326,6 @@ export class Datepicker extends InputComponent {
   }
 
   _selectedDay(day){
-    // let data = day.getAttribute("data-sf-datepicker-millis");
-    // let d = new Date();
-    // d.setTime(parseInt(data));
-    // console.info("_selectedDay: ", d, data);
     let d = this.getDateByTD(day);
     let formattedValue = this.formatter.formatDate(d, this.dateFormat);
     this.setDate(d);

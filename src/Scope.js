@@ -1,3 +1,11 @@
+
+export const SCOPES = {
+  NONE: "NONE",
+  COMPONENT: "COMPONENT",
+  VIEW: "VIEW",
+  GLOBAL: "GLOBAL"
+};
+
 /**
  * Specifies what scope to find data.
  *
@@ -34,7 +42,6 @@ export class Scope {
       let c = value.charAt(x);
       if (c === '{') {
         if (afterStart) {
-          variable = "{";
           console.warn("Scope: ");
         }
         afterStart = true;
@@ -90,11 +97,3 @@ export class Scope {
   }
 
 }
-
-
-export const SCOPES = {
-  NONE: "NONE",
-  COMPONENT: "COMPONENT",
-  VIEW: "VIEW",
-  GLOBAL: "GLOBAL"
-};

@@ -63,6 +63,8 @@ export class Navbar extends PresentationComponent {
       this.setButtons(value);
     } else if (name === 'title'){
       this.setLabel(value);
+    } else {
+      console.warn("Navbar: Unknown property ", name);
     }
   }
 

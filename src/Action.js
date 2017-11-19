@@ -12,7 +12,7 @@ export class Action {
    *
    * @param {ServerActionProperties} props the properties for the action
    */
-  constructor(props) {
+  constructor() {
     this.smartflow = {};
   }
 
@@ -82,8 +82,8 @@ export class ServerAction extends Action {
    *
    * @param {ServerActionProperties} props the properties for the action
    */
-  constructor(props) {
-    super(props);
+  constructor() {
+    super();
     this.smartflow = {};
   }
 
@@ -128,8 +128,8 @@ export class ClientAction extends Action {
    *
    * @param {ClientActionProperties} props the properties for the action
    */
-  constructor(props) {
-    super(props);
+  constructor() {
+    super();
     this.smartflow = {};
   }
 

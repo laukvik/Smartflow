@@ -2,14 +2,16 @@ import {Component} from "../Component";
 
 export class Spinner extends Component {
 
-  constructor(properties) {
-    super(properties);
+  constructor() {
+    super();
     this.createComponentNode("div");
   }
 
   setProperty(name, value) {
     if (name === "visible") {
       this.setVisible(value);
+    } else {
+      console.warn("Spinner: Unknown property ", name);
     }
   }
 

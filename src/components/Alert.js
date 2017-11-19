@@ -43,8 +43,8 @@ export class Alert extends Component {
    *
    * @param {AlertProperties} properties the properties for the component
    */
-  constructor(properties) {
-    super(properties);
+  constructor() {
+    super();
     this._closable = false;
     this.createComponentNode("div");
     this._componentNode.setAttribute("role", "alert");
@@ -75,6 +75,8 @@ export class Alert extends Component {
       this.setVisible(value);
     } else if (name === "closable") {
       this.setClosable(value);
+    } else {
+      console.warn("Alert: Unknown property ", name);
     }
   }
 

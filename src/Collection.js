@@ -165,10 +165,6 @@ export class Collection {
           if (value < filterValue) {
             count++;
           }
-        } else if (filterType === 'any') {
-
-        } else if (filterType === 'all') {
-
         }
       }
       return count === filter.length;

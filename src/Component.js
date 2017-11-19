@@ -1,4 +1,4 @@
-import {Scope, SCOPES} from "./Scope";
+import {SCOPES} from "./Scope";
 
 /**
  *
@@ -7,8 +7,7 @@ import {Scope, SCOPES} from "./Scope";
  */
 export class Component {
 
-  constructor(properties) {
-    this.properties = properties;
+  constructor() {
     this._stateListeners = [];
     this._componentNode = null;
     this._valueBindings = {};
@@ -64,7 +63,6 @@ export class Component {
       return;
     }
     this.getView().getApplication().firePropertyChanged(this, binding, value);
-    // this.smartflow.firePropertyChanged(this, binding, value);
   }
 
   /**
@@ -90,7 +88,7 @@ export class Component {
         "path": path
       };
     } else {
-      console.warn("SmartflowComponent: invalid scope ", scope);
+      console.warn("Component: invalid scope ", scope);
     }
   }
 
@@ -103,16 +101,6 @@ export class Component {
     }
   }
 
-  // /**
-  //  * @deprecated Should not be used. All components must build in constructor
-  //  * @returns {Element}
-  //  */
-  // buildComponent() {
-  //   let div = document.createElement("div");
-  //   div.innerText = "[Smartflow:" + this.constructor.name + "]";
-  //   return div;
-  // }
-
   setView(viewController) {
     this.ctrl = viewController;
   }
@@ -120,10 +108,6 @@ export class Component {
   getView() {
     return this.ctrl;
   }
-
-  // setSmartflow(smartflow) {
-  //   this.smartflow = smartflow;
-  // }
 
   setVisible(visible) {
     this._componentNode.style.display = (visible === 'true' || visible === true) ? "block" : "none";

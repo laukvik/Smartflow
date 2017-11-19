@@ -83,15 +83,12 @@ export class Textfield extends InputComponent {
       this.setHelp(value);
     } else if (name === "required") {
       this.setRequired(value);
-    } else if (name === "help") {
-      this.setHelp(value);
     } else if (name === "regex") {
       this.setRegex(value);
     } else if (name === "validation") {
       this.setValidationMessage(value);
     } else if (name === "placeholder") {
       this.setPlaceholder(value);
-
     } else if (name === "before") {
       this.setBefore(value);
     } else if (name === "after") {

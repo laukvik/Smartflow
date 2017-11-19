@@ -34,8 +34,8 @@ export class Searchfield extends InputComponent {
    *
    * @param {SearchfieldProperties} properties the properties for the component
    */
-  constructor(properties) {
-    super(properties);
+  constructor() {
+    super();
     this.getComponentNode().style.position = "relative";
     this.optionsNode = document.createElement("ul");
     this.optionsNode.setAttribute("class", "dropdown-menu");
@@ -69,9 +69,6 @@ export class Searchfield extends InputComponent {
       }
     }.bind(this), false);
 
-    // this._inputNode.addEventListener('blur', function (evt) {
-    //   this.setDropdownVisible(false);
-    // }.bind(this), false);
     this.updateInputGroup();
   }
 
@@ -82,7 +79,6 @@ export class Searchfield extends InputComponent {
       this.setLabel(value);
     } else if (name === "required") {
       this.setRequired(value);
-
     } else if (name === "items") {
       this._unfilteredItems = value;
       this.setItems(value);
@@ -102,7 +98,6 @@ export class Searchfield extends InputComponent {
       this.setItemsEmpty(value);
     } else if (name === "placeholder") {
       this.setPlaceholder(value);
-
     } else if (name === "selectAction") {
       this.setSelectAction(value);
     } else if (name === "selectedItem") {

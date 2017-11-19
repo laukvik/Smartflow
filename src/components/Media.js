@@ -2,8 +2,9 @@ import {PresentationComponent} from "../PresentationComponent";
 import {Collection} from "../Collection";
 
 export class Media extends PresentationComponent {
-  constructor(properties) {
-    super(properties);
+
+  constructor() {
+    super();
     this.collections = new Collection();
     this.buttons = [];
     this.actions = [];
@@ -35,6 +36,8 @@ export class Media extends PresentationComponent {
       this.setSort(value);
     } else if (name === "filter") {
       this.setFilter(value);
+    } else {
+      console.warn("Media: Unknown property ", name);
     }
   }
 

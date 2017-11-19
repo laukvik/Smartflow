@@ -14,10 +14,10 @@ import {Collection} from "../Collection";
  *
  * @private
  */
-class Checkbox extends InputComponent {
+export class Checkbox extends InputComponent {
 
-  constructor(properties) {
-    super(properties);
+  constructor() {
+    super();
     this.collections = new Collection();
     this._items = [];
     this.divNodes = []; // each option
@@ -41,7 +41,6 @@ class Checkbox extends InputComponent {
       this.setVertical(value);
     } else if (name === "validation") {
       this.setValidationMessage(value);
-
     } else if (name === "items") {
       this.setItems(value);
     } else if (name === "itemKey") {
@@ -54,8 +53,8 @@ class Checkbox extends InputComponent {
       this.setFilter(value);
     } else if (name === "distinct") {
       this.setItemDistinct(value);
-    } else if (name === "filter") {
-      this.setFilter(value);
+    } else {
+      console.warn("Checkbox: Unknown property ", name);
     }
   }
 
@@ -82,11 +81,6 @@ class Checkbox extends InputComponent {
     this.collections.setDistinct(this._itemDistinct);
   }
 
-  setPaging(paging) {
-    this.collections.setPaging(paging);
-    this._update();
-  }
-
   setItemKey(itemKey){
     this._itemKey = itemKey;
   }
@@ -106,13 +100,9 @@ class Checkbox extends InputComponent {
     this.setSelected(properties.selected);
   }
 
-  getInputElement(){
-    return this._inputNode;
-  }
-
   isValid() {
     if (this.isRequired()) {
-      var arr = this.getSelected();
+      const arr = this.getSelected();
       return arr.length > 0;
     }
     return true;
@@ -173,7 +163,7 @@ class Checkbox extends InputComponent {
         let itemValue = item[ this._itemKey ];
 
         let div = document.createElement("div");
-        this.divNodes.push(div);x
+        this.divNodes.push(div);
         div.setAttribute("class", "form-check" + this.isVertical() ? "" : " form-check-inline");
         this._inputNode.appendChild(div);
 
@@ -204,5 +194,3 @@ class Checkbox extends InputComponent {
   }
 
 }
-
-export {Checkbox}

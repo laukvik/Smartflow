@@ -6,8 +6,8 @@ import {Component} from "../Component";
  */
 export class Text extends Component {
 
-  constructor(properties) {
-    super(properties);
+  constructor() {
+    super();
     this.createComponentNode("div");
 
     this._headingNode = document.createElement("h1");
@@ -24,6 +24,8 @@ export class Text extends Component {
       this.setText(value);
     } else if (name === "visible") {
       this.setVisible(value);
+    } else {
+      console.warn("Text: Unknown property ", name);
     }
   }
 

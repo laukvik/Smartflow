@@ -164,11 +164,11 @@ export class Formatter {
 
     // Build integer format
     let intString = "";
-    for (var x=0; x<intFormat.length; x++) {
+    for (let x=0; x<intFormat.length; x++) {
       // The format
-      var f = intFormat[ intFormat.length - x - 1 ];
+      const f = intFormat[ intFormat.length - x - 1 ];
       // The value
-      var v = x < intV.length ? intV[ intV.length - x - 1 ] : -1;
+      const v = x < intV.length ? intV[ intV.length - x - 1 ] : -1;
 
       if (v > -1){
         intString = ((f === '#' || f === '0') ? v : f) + intString;

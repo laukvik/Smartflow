@@ -27,6 +27,8 @@ export class Heading extends Component {
       this.setVisible(value);
     } else if (name === "size") {
       this.setSize(value);
+    } else {
+      console.warn("Heading: Unknown property ", name);
     }
   }
 

@@ -9,8 +9,8 @@ export const ProgressbarStyle = {
 
 export class Progress extends PresentationComponent {
 
-  constructor(properties) {
-    super(properties);
+  constructor() {
+    super();
     this.value = 0;
     this.createComponentNode("div");
     this.progressNode = document.createElement("div");
@@ -45,6 +45,8 @@ export class Progress extends PresentationComponent {
       this.setAnimated(true);
     } else if (name === "striped") {
       this.setStriped(true);
+    } else {
+      console.warn("Progress: Unknown property ", name);
     }
   }
 

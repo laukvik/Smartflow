@@ -3,8 +3,8 @@ import {Builder} from "../Builder";
 
 export class Dialog extends PresentationComponent {
 
-  constructor(properties) {
-    super(properties);
+  constructor() {
+    super();
     this.buttons = [];
     this.actions = [];
     this.components = [];
@@ -51,6 +51,8 @@ export class Dialog extends PresentationComponent {
       this.setButtons(value);
     } else if (name === "components") {
       this.setComponents(value);
+    } else {
+      console.warn("Dialog: Unknown property ", name);
     }
   }
 

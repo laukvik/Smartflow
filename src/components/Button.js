@@ -60,8 +60,8 @@ export const Outline = {
  */
 export class Button extends Component {
 
-  constructor(properties) {
-    super(properties);
+  constructor() {
+    super();
     this._size = null;
     this._active = false;
     this._style = null;
@@ -117,6 +117,8 @@ export class Button extends Component {
       this.setSize(value);
     } else if (name === "outline") {
       this.setOutline(value);
+    } else {
+      console.warn("Button: Unknown property ", name);
     }
   }
 

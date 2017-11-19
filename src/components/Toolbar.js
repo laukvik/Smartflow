@@ -18,6 +18,8 @@ export class Toolbar extends InputComponent {
       this.setVisible(value);
     } else if (name === "buttons"){
       this.setButtons(value);
+    } else {
+      console.warn("Toolbar: Unknown property ", name);
     }
   }
 

@@ -8,9 +8,8 @@ import {Component} from "./Component";
  */
 export class InputComponent extends Component {
 
-  constructor(properties) {
-    super(properties);
-    this.comp = properties;
+  constructor() {
+    super();
     this.createComponentNode("div");
     this._labelNode = document.createElement("label");
     this.getComponentNode().appendChild(this._labelNode);
@@ -44,19 +43,10 @@ export class InputComponent extends Component {
     return this._inputGroup;
   }
 
-  // updateInputGroup(){
-  //   this._inputGroup.appendChild(this.getInputElement());
-  // }
-
   setHelp(text) {
     this._helpNode.textContent = text;
     this._helpNode.style.display = text? "block" : "none";
   }
-
-  // buildComponent(builder, properties) {
-  //   this.updateInputGroup();
-  //   return this.getComponentNode();
-  // }
 
   setRequired(required) {
     this._required = required === true;

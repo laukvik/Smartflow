@@ -3,8 +3,8 @@ import {Collection} from "../Collection";
 
 export class Pulldown extends InputComponent {
 
-  constructor(properties) {
-    super(properties);
+  constructor() {
+    super();
     this.collections = new Collection();
     this._inputNode = document.createElement("select");
     this._inputNode.setAttribute("class", "form-control");
@@ -41,6 +41,8 @@ export class Pulldown extends InputComponent {
       this.setSort(value);
     } else if (name === "filter") {
       this.setFilter(value);
+    } else {
+      console.warn("Pulldown: Unknown property ", name);
     }
   }
 

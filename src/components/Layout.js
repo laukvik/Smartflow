@@ -2,8 +2,8 @@ import {PresentationComponent} from "../PresentationComponent";
 
 export class Layout extends PresentationComponent {
 
-  constructor(properties) {
-    super(properties);
+  constructor() {
+    super();
     this.createComponentNode("div");
   }
 
