@@ -44,7 +44,7 @@ export const Outline = {
 };
 
 /**
- * Buttton for triggering action
+ * Button for triggering action
  *
  * https://getbootstrap.com/docs/4.0/components/buttons/
  *

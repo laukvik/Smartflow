@@ -10,6 +10,21 @@ export class Media extends PresentationComponent {
     this.actions = [];
     this.components = [];
     this.createComponentNode("div");
+    this.getComponentNode().setAttribute("class", "media");
+
+    this.photoNode = document.createElement("img");
+    this.photoNode.setAttribute("class", "d-flex mr-3");
+
+    let mediaBody = document.createElement("div");
+    mediaBody.setAttribute("class", "media-body");
+    this.titleNode = document.createElement("h5");
+    this.titleNode.setAttribute("class", "mt-0");
+    this.descriptionNode = document.createElement("p");
+
+    this.getComponentNode().appendChild(this.photoNode);
+    this.getComponentNode().appendChild(mediaBody);
+    mediaBody.appendChild(this.titleNode);
+    mediaBody.appendChild(this.descriptionNode);
   }
 
   setProperty(name, value) {
@@ -17,112 +32,26 @@ export class Media extends PresentationComponent {
       this.setVisible(value);
     } else if (name === "title") {
       this.setTitle(value);
+    } else if (name === "photo") {
+      this.setPhoto(value);
     } else if (name === "description") {
       this.setDescription(value);
-
-    } else if (name === "items") {
-      this.setItems(value);
-
-    } else if (name === "itemPhoto") {
-      this.setItemPhoto(value);
-
-    } else if (name === "itemTitle") {
-      this.setItemTitle(value);
-
-    } else if (name === "itemDescription") {
-      this.setItemDescription(value);
-
-    } else if (name === "sort") {
-      this.setSort(value);
-    } else if (name === "filter") {
-      this.setFilter(value);
     } else {
       console.warn("Media: Unknown property ", name);
     }
-  }
-
-  setItemTitle(itemTitle) {
-    this._itemTitle = itemTitle;
-  }
-
-  setItemDescription(itemDescription) {
-    this._itemDescription = itemDescription;
-  }
-
-  setItemPhoto(itemPhoto) {
-    this._itemPhoto = itemPhoto;
-  }
-
-  setPaging(paging) {
-    this.collections.setPaging(paging);
-  }
-
-  setSort(sort) {
-    this.collections.setSort(sort);
-  }
-
-  setFilter(filter) {
-    if (Array.isArray(filter)) {
-      this.collections.setFilter(filter);
-    } else {
-      this.filter = [];
-    }
-  }
-
-  setItems(rowData){
-    this.removeChildNodes(this._componentNode);
-    this.inputNodes = [];
-    if (Array.isArray(rowData)) {
-      let items = this.collections.find(rowData);
-      this._items = rowData;
-
-      for (let x = 0; x < items.length; x++) {
-        let item = items[x];
-        let itemSrc = item[ this._itemPhoto ];
-        let itemTitle = item[ this._itemTitle ];
-        let itemDesc = item[ this._itemDescription ];
-        let itemButton = null;
-        let itemAction = null;
-
-        let node = this.buildMedia(itemSrc, itemTitle, itemDesc, itemButton, itemAction );
-
-        this._componentNode.appendChild(node);
-      }
-    }
-  }
-
-  buildMedia(src, title, description, button, action) {
-    let media = document.createElement("div");
-    media.setAttribute("class", "media");
-    let mediaObject = document.createElement("img");
-    mediaObject.setAttribute("class", "d-flex mr-3");
-    if (src !== undefined){
-      mediaObject.setAttribute("src", src);
-    }
-    let mediaBody = document.createElement("div");
-    mediaBody.setAttribute("class", "media-body");
-    let mediaHeading = document.createElement("h5");
-    mediaHeading.innerText = title;
-    mediaHeading.setAttribute("class", "mt-0");
-    let cardText = document.createElement("p");
-    cardText.innerText = description;
-    media.appendChild(mediaObject);
-    media.appendChild(mediaBody);
-    mediaBody.appendChild(mediaHeading);
-    mediaBody.appendChild(cardText);
-    return media;
   }
 
   setTitle(title) {
     this.titleNode.innerText = title;
   }
 
+  setPhoto(url) {
+    this.photoNode.setAttribute("src", url);
+  }
+
   setDescription(description) {
     this.descriptionNode.innerText = description;
   }
 
-  setVisible(isVisible) {
-    this._componentNode.style.display = isVisible === true ? "block" : "none";
-  }
 
 }

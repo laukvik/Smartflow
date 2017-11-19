@@ -1,28 +1,11 @@
 import {View} from "../../../src/View";
-import {Searchfield} from "../../../src/components/Searchfield";
-import {GotoMovieAction} from "../actions/GotoMovieAction";
-import {FindMoviesAction} from "../actions/FindMoviesAction";
 import {Card} from "../../../src/components/Card";
-import {BadgeShape, BadgeStyle, Button, ButtonSize, ButtonStyle, Outline} from "../../../src/components/Button";
+import {Button, ButtonStyle} from "../../../src/components/Button";
 import {Alert, AlertStyle} from "../../../src/components/Alert";
-import {Textfield, TextfieldType} from "../../../src/components/Textfield";
-import {Radio} from "../../../src/components/Radio";
-import {Checkbox} from "../../../src/components/Checkbox";
-import {Pulldown} from "../../../src/components/Pulldown";
-import {NumberField} from "../../../src/components/NumberField";
-import {Datepicker} from "../../../src/components/Datepicker";
-import {Dialog} from "../../../src/components/Dialog";
 import {Link} from "../../../src/components/Link";
-import {Items} from "../../../src/components/Items";
 import {List} from "../../../src/components/List";
 import {Media} from "../../../src/components/Media";
-import {Navbar} from "../../../src/components/Navbar";
-import {Photo} from "../../../src/components/Photo";
-import {Progress} from "../../../src/components/Progress";
-import {Spinner} from "../../../src/components/Spinner";
-import {Table} from "../../../src/components/Table";
-import {Tabs} from "../../../src/components/Tabs";
-import {Toolbar} from "../../../src/components/Toolbar";
+import {Carousel} from "../../../src/components/Carousel";
 
 export class PresentationExamplesView extends View {
 
@@ -32,6 +15,14 @@ export class PresentationExamplesView extends View {
     this.smartflow = {
       "path": "/examples/presentation",
       "components": [
+        {
+          "type": Carousel,
+          "items": "{global:movies}",
+          "title": "title",
+          "description": "storyline",
+          "photo": "posterurl",
+          "index": 3
+        },
         {
           "type": Alert,
           "alertStyle": AlertStyle.DANGER,
@@ -59,38 +50,17 @@ export class PresentationExamplesView extends View {
           "url": "http://www.google.com",
         },
 
-        // {
-        //   "type": Media,
-        //   "label": "Link title",
-        //   "url": "http://www.google.com",
-        // },
-        // {
-        //   "type": Navbar,
-        //   "label": "Link title",
-        //   "url": "http://www.google.com",
-        // },
-        // {
-        //   "type": Photo,
-        //   "label": "Link title",
-        //   "url": "http://www.google.com",
-        // },
+        {
+          "type": Media,
+          "title": "Media heading",
+          "description": "Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.",
+          "photo": "https://images-na.ssl-images-amazon.com/images/M/MV5BODMwM2M4ZmItMzk4Ny00YTBhLTkyN2EtYTAzMmIwNjMxNjQxL2ltYWdlXkEyXkFqcGdeQXVyMTk0NTY2ODQ@._V1_SX203_CR0,0,203,300_AL_.jpg",
+        },
 
 
-        // {
-        //   "type": Tabs,
-        //   "label": "Link title",
-        //   "url": "http://www.google.com",
-        // },
-        // {
-        //   "type": Text,
-        //   "label": "Link title",
-        //   "url": "http://www.google.com",
-        // },
-        // {
-        //   "type": Toolbar,
-        //   "label": "Link title",
-        //   "url": "http://www.google.com",
-        // },
+
+
+
       ]
     };
   }

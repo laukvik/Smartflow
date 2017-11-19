@@ -76,12 +76,6 @@ export class Radio extends InputComponent {
     }
   }
 
-  updateInputGroup(){
-    this.removeChildNodes(this.getInputGroup());
-    this.getInputGroup().appendChild(this._inputNode);
-    this.getInputGroup().appendChild(this.openButton);
-  }
-
   setItemDistinct(itemDistinct){
     this._itemDistinct = itemDistinct;
     this.collections.setDistinct(this._itemDistinct);
