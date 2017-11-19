@@ -23,7 +23,13 @@ export class ItemsExamplesView extends View {
         {
           "type": Items,
           "items": "{global:movies}",
-          "layout": [3,3,3,3],
+          "layout": {
+            "xs": 12,
+            "sm": 6,
+            "md": 6,
+            "lg": 3,
+            "xl": 2,
+          },
           "sort": {
             "match": "title",
             "order": "asc"

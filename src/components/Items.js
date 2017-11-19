@@ -1,6 +1,7 @@
 import {PresentationComponent} from "../PresentationComponent";
 import {Collection} from "../Collection";
 import {Builder} from "../Builder";
+import {Layout} from "./Layout";
 
 /**
  *
@@ -57,9 +58,9 @@ export class Items extends PresentationComponent {
   }
 
   setLayout(layout) {
-    if (Array.isArray(layout)){
+    // if (Array.isArray(layout)){
       this.layout = layout;
-    }
+    // }
   }
 
   setSort(sort) {
@@ -93,8 +94,9 @@ export class Items extends PresentationComponent {
     const container = document.createElement("div");
     container.setAttribute("class", "container-fluid");
     this.getComponentNode().appendChild(container);
-    let row = null;
-    let column = null;
+    const row = document.createElement("div");
+    row.setAttribute("class", "row");
+    const css = Layout.parseGridLayout(this.layout);
 
     this._unfilteredItems = Array.isArray(items) ? items : [];
     // Filter
@@ -106,28 +108,19 @@ export class Items extends PresentationComponent {
       //
       for (let componentKey in this._component) {
         let itemValue = this._component[ componentKey ];
-        let value = item[ itemValue ];
-        component[ componentKey ] = value;
+        component[ componentKey ] = item[ itemValue ];
       }
       // Don't interpret component type. It's always fixed.
       component.type = this._component.type;
 
-      // Layout
-      if (n % this.layout.length === 0) {
-        row = document.createElement("div");
-        row.setAttribute("class", "row");
-        container.appendChild(row);
-      }
-
-      column = document.createElement("div");
-      column.setAttribute("class", "col-sm-" + this.layout[ n % this.layout.length ]);
-
+      const column = document.createElement("div");
+      column.setAttribute("class", css);
       row.appendChild(column);
 
       let c = Builder.buildComponentByProperties(component, this.getView());
       column.appendChild(c.getComponentNode());
-
     }
+    container.appendChild(row);
   }
 
   setItemsWithoutLayout(items) {
