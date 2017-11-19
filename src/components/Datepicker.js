@@ -309,7 +309,7 @@ export class Datepicker extends InputComponent {
   }
 
   previousMonth(){
-    if (this.month < 0){
+    if (this.month < 1){
       this.month = 11;
       this.year--;
     } else {
