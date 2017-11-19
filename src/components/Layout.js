@@ -1,39 +1,71 @@
 import {PresentationComponent} from "../PresentationComponent";
+import {Builder} from "../Builder";
+
+export const LayoutSize = {
+  XS: "xs",
+  SM: "sm",
+  MD: "md",
+  LG: "lg",
+  XL: "xl",
+};
 
 export class Layout extends PresentationComponent {
 
   constructor() {
     super();
     this.createComponentNode("div");
+    this.getComponentNode().setAttribute("class", "container");
   }
 
-  setProperties(properties) {
-    this._componentNode.setAttribute("class", "container");
+  setProperty(name, value) {
+    if (name === "components"){
+      this.setComponents(value);
+    } else {
+      console.warn("Layout: Unknown property ", name);
+    }
   }
 
-  buildComponent(builder, properties) {
-    let rows = document.createElement("div");
+  static parseGridLayout(layout){
+    let gridClass = "";
+    if (layout[LayoutSize.XS]) {
+      gridClass += " col-xs-" + layout[LayoutSize.XS];
+    }
+    if (layout[LayoutSize.SM]) {
+      gridClass += " col-sm-" + layout[LayoutSize.SM];
+    }
+    if (layout[LayoutSize.MD]) {
+      gridClass += " col-md-" + layout[LayoutSize.MD];
+    }
+    if (layout[LayoutSize.LG]) {
+      gridClass += " col-lg-" + layout[LayoutSize.LG];
+    }
+    if (layout[LayoutSize.XL]) {
+      gridClass += " col-xl-" + layout[LayoutSize.XL];
+    }
+
+    return gridClass.trim();
+  }
+
+  setComponents(components) {
+    this.removeChildNodes(this.getComponentNode());
+    const rows = document.createElement("div");
     rows.setAttribute("class", "row");
-    this._componentNode.appendChild(rows);
-    if (Array.isArray(properties.components)) {
-      for (let x = 0; x < properties.components.length; x++) {
-        let c = properties.components[x];
+    this.getComponentNode().appendChild(rows);
+    if (Array.isArray(components)) {
+      for (let x = 0; x < components.length; x++) {
+        const component = components[x];
         // Grid
-        let layoutCell = document.createElement("div");
-        if (c.layout) {
-          let layout = c.layout;
-          let colsXS = layout["col-xs"] === undefined ? "" : " col-xs-" + c["col-xs"];
-          let colsSM = layout["col-sm"] === undefined ? "" : " col-sm-" + c["col-sm"];
-          let colsMD = layout["col-md"] === undefined ? "" : " col-md-" + c["col-md"];
-          let colsLG = layout["col-lg"] === undefined ? "" : " col-lg-" + c["col-lg"];
-          let colsXL = layout["col-xl"] === undefined ? "" : " col-xl-" + c["col-xl"];
-          let gridClass = (colsXS + colsSM + colsMD + colsLG + colsXL);
-          layoutCell.setAttribute("class", gridClass);
+        const layoutCell = document.createElement("div");
+        if (component.layout) {
+          const {layout} = component;
+          layoutCell.setAttribute("class", Layout.parseGridLayout(layout));
+        } else {
+          console.warn("Layout: No layout");
         }
         rows.appendChild(layoutCell);
-        builder.buildChildNode(layoutCell, c);
+        const c = Builder.buildComponentByProperties(component, this.getView());
+        layoutCell.appendChild(c.getComponentNode());
       }
     }
-    return this._componentNode;
   }
 }

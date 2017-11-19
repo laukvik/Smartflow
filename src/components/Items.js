@@ -78,6 +78,14 @@ export class Items extends PresentationComponent {
     this.collections.setPaging(paging);
   }
 
+  setItems(items){
+    if (!this.layout){
+      this.setItemsWithoutLayout(items);
+    } else {
+      this.setItemsWithLayout(items);
+    }
+  }
+
   setItemsWithLayout(items) {
     this.removeChildNodes(this._componentNode);
 
@@ -93,12 +101,12 @@ export class Items extends PresentationComponent {
     this._items = this.collections.find(this._unfilteredItems);
     // For each
     for (let n = 0; n < this._items.length; n++) {
-      // let item = this._items[n];
+      let item = this._items[n];
       let component = {};
       //
       for (let componentKey in this._component) {
         let itemValue = this._component[ componentKey ];
-        // let value = item[ itemValue ];
+        let value = item[ itemValue ];
         component[ componentKey ] = value;
       }
       // Don't interpret component type. It's always fixed.
@@ -116,11 +124,13 @@ export class Items extends PresentationComponent {
 
       row.appendChild(column);
 
-      this._builder.buildChildNode(column, component);
+      let c = Builder.buildComponentByProperties(component, this.getView());
+      column.appendChild(c.getComponentNode());
+
     }
   }
 
-  setItems(items) {
+  setItemsWithoutLayout(items) {
     this.removeChildNodes(this._componentNode);
     this._unfilteredItems = Array.isArray(items) ? items : [];
     // Filter

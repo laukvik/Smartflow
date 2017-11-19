@@ -2,20 +2,15 @@ import {Layout} from '../Layout';
 
 describe('properties', function () {
 
-  describe('setting id', function () {
+  describe('parseGridLayout', function () {
 
     it('should be set', function () {
-      let btn = new Layout({});
-      let node = btn.buildComponent({}, {"id":"luring"});
-      expect(node.getAttribute("id")).toBe("luring");
+      const css = Layout.parseGridLayout({
+        "sm": 2,
+        "md": 3
+      });
+      expect(css).toBe("col-sm-2 col-md-3");
     });
-
-    it('should be null when not specified', function () {
-      let btn = new Layout({});
-      let node = btn.buildComponent({}, {});
-      expect(node.getAttribute("id")).toBeNull();
-    });
-
   });
 
   describe('setting class', function () {
