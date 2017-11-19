@@ -31,9 +31,5 @@ export class Toolbar extends InputComponent {
     });
   }
 
-  buildComponent(builder, properties) {
-    return this.getComponentNode();
-  }
-
 }
 

@@ -52,9 +52,4 @@ export class Link extends Component {
     this._aNode.setAttribute("href", url);
   }
 
-  buildComponent(builder, properties) {
-    return this._componentNode;
-  }
-
-
 }

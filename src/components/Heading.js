@@ -32,10 +32,6 @@ export class Heading extends Component {
     }
   }
 
-  buildComponent(){
-    return this.getComponentNode();
-  }
-
   setValue(heading) {
     this.getComponentNode().innerText = heading;
   }

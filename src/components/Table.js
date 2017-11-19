@@ -72,11 +72,6 @@ class Table extends InputComponent {
     }
   }
 
-  buildComponent(builder, properties) {
-    this.builder = builder;
-    return this._componentNode;
-  }
-
   setRowKey(rowKey) {
     this.rowKey = rowKey;
   }
@@ -123,7 +118,7 @@ class Table extends InputComponent {
   }
 
   setSelectable(selectable) {
-    this.selectable = selectable == true;
+    this.selectable = selectable === true;
     this.setColumns(this.columns);
     this._update();
   }

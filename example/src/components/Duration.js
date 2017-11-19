@@ -7,8 +7,8 @@ import {Component} from "../../../src/Component";
 
 export class Duration extends Component {
 
-  constructor(properties) {
-    super(properties);
+  constructor() {
+    super();
     this._componentNode = document.createElement("div");
   }
 
@@ -19,11 +19,8 @@ export class Duration extends Component {
   }
 
   setValue(value) {
-    this._componentNode.innerText = value == undefined ? "" : (value.substring(2, value.length-1) + " min");
+    this._componentNode.innerText = value === undefined ? "" : (value.substring(2, value.length-1) + " min");
   }
 
-  buildComponent(builder, properties) {
-    return this._componentNode;
-  }
 
 }

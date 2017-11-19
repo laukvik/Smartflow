@@ -27,9 +27,9 @@ export class View {
     return view instanceof View;
   }
 
-  buildView(properties){
-    if (Array.isArray(properties)){
-      this._components = Builder.buildComponentsByProperties(properties, this);
+  buildViewComponents(components){
+    if (Array.isArray(components)){
+      this._components = Builder.buildComponentsByProperties(components, this);
       this._components.forEach( b => {
         this.getViewElement().appendChild(b.getComponentNode());
       });

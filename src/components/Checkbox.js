@@ -109,7 +109,7 @@ export class Checkbox extends InputComponent {
   }
 
   setVertical(isVertical) {
-    this.vertical = isVertical == true;
+    this.vertical = isVertical === true;
   }
 
   isVertical() {
@@ -129,7 +129,7 @@ export class Checkbox extends InputComponent {
         let found = false;
         for (let y = 0; y < selected.length; y++) {
           let selectedValue = selected[y];
-          if (inp.value == selectedValue) {
+          if (inp.value === selectedValue) {
             found = true;
           }
         }

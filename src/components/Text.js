@@ -29,10 +29,6 @@ export class Text extends Component {
     }
   }
 
-  buildComponent(){
-    return this._componentNode;
-  }
-
   setHeading(heading) {
     this._headingNode.innerText = heading;
   }

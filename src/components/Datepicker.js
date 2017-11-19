@@ -167,7 +167,7 @@ export class Datepicker extends InputComponent {
   }
 
   setDate(value){
-    if (value == undefined){
+    if (value === undefined){
       console.warn("Datepicker: value is undefined");
       return;
     }
@@ -362,7 +362,7 @@ export class Datepicker extends InputComponent {
     d.setUTCMonth(month);
     d.setUTCDate(1);
     let weekdayStart = d.getUTCDay();
-    if (startsWithMonday && weekdayStart == 0) {
+    if (startsWithMonday && weekdayStart === 0) {
       weekdayStart = 7;
     }
     let dayIndex = index - (weekdayStart-2);
@@ -371,7 +371,7 @@ export class Datepicker extends InputComponent {
   }
 
   static isSameDate(date1, date2){
-    if (date1 == undefined || date2 == undefined) {
+    if (date1 === undefined || date2 === undefined) {
       return false;
     }
     return date1.getUTCDate() === date2.getUTCDate()

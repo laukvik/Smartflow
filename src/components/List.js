@@ -62,10 +62,6 @@ class List extends PresentationComponent {
     this._update();
   }
 
-  buildComponent(builder, properties){
-    return this._componentNode;
-  }
-
   isValid() {
     if (this.isRequired()) {
       return this.getSelected() !== undefined;

@@ -154,7 +154,7 @@ export class Application {
     this._controllers.push(view);
     view.setApplication(this);
     view._states = {};
-    view.buildView(view.smartflow.components);
+    view.buildViewComponents(view.smartflow.components);
   }
 
   /**

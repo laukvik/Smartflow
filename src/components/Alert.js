@@ -97,10 +97,6 @@ export class Alert extends Component {
     this._updateClass();
   }
 
-  buildComponent(builder, properties) {
-    return this._componentNode;
-  }
-
   setText(text) {
     this._textNode.textContent = text;
   }

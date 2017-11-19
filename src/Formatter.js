@@ -22,7 +22,7 @@ export class Formatter {
   formatDay(index) {
     if (index >= 0 && index <= 6) {
       if (this.startsWithMonday) {
-        return this.dayNames[ index == 6 ? 0 : (index+1) ];
+        return this.dayNames[ index === 6 ? 0 : (index+1) ];
       } else {
         return this.dayNames[ index ];
       }
@@ -43,7 +43,7 @@ export class Formatter {
    * @private
    */
   _extract(value, key, pattern) {
-    if (value == undefined || key == undefined || pattern == undefined || value == "" || key == "" || pattern == "") {
+    if (value === undefined || key === undefined || pattern === undefined || value === "" || key === "" || pattern === "") {
       return;
     }
     let index = pattern.indexOf(key);
@@ -53,18 +53,18 @@ export class Formatter {
     return value.substring(index, index+key.length);
   }
   parse(value, format) {
-    if (value == undefined || format == undefined || value == "" || format == "") {
+    if (value === undefined || format === undefined || value === "" || format === "") {
       return;
     }
     let year = this._extract(value, "YYYY", format);
     let month = this._extract(value, "MM", format);
     let date = this._extract(value, "DD", format);
 
-    if (year == undefined || month == undefined || date == undefined) {
+    if (year === undefined || month === undefined || date === undefined) {
       return;
     }
 
-    if (year == "" || month == "" || date == "") {
+    if (year === "" || month === "" || date === "") {
       return;
     }
 

@@ -5,6 +5,9 @@ export class Spinner extends Component {
   constructor() {
     super();
     this.createComponentNode("div");
+    this.icon = document.createElement("span");
+    this.icon.setAttribute("class", "glyphicon glyphicon-repeat sf-spinner-animation");
+    this.getComponentNode().appendChild(this.icon);
   }
 
   setProperty(name, value) {
@@ -13,13 +16,6 @@ export class Spinner extends Component {
     } else {
       console.warn("Spinner: Unknown property ", name);
     }
-  }
-
-  buildComponent(builder, properties) {
-    let icon = document.createElement("span");
-    icon.setAttribute("class", "glyphicon glyphicon-repeat sf-spinner-animation");
-    this._componentNode.appendChild(icon);
-    return this._componentNode;
   }
 
   setVisible(isEnabled) {

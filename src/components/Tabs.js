@@ -1,4 +1,5 @@
 import {PresentationComponent} from "../PresentationComponent";
+import {Builder} from "../Builder";
 
 /**
  *
@@ -20,13 +21,15 @@ export class Tabs extends PresentationComponent {
       this.setVisible(value);
     } else if (name === "index") {
       this.setSelectedIndex(value);
+    } else if (name === "tabs") {
+      // this.setTabs(value);
     } else {
       console.warn("Tabs: Unknown property ", name);
     }
   }
 
-  buildComponent(builder, properties) {
-    if (Array.isArray(properties.tabs)) {
+  setTabs(tabs) {
+    if (Array.isArray(tabs)) {
       this.labelsNode = document.createElement("ul");
       this.labelsNode.setAttribute("class", "nav nav-pills nav-justified");
       this.contentsNode = document.createElement("div");
@@ -34,8 +37,8 @@ export class Tabs extends PresentationComponent {
       this._componentNode.appendChild(this.labelsNode);
       this._componentNode.appendChild(this.contentsNode);
 
-      for (let x = 0; x < properties.tabs.length; x++) {
-        let tab = properties.tabs[x];
+      for (let x = 0; x < tabs.length; x++) {
+        let tab = tabs[x];
         let liNode = document.createElement("li");
         liNode.setAttribute("class", "nav-item");
         liNode.setAttribute("role", "presentation");
@@ -61,7 +64,8 @@ export class Tabs extends PresentationComponent {
           let panelComponents = tab.components;
           for (let n = 0; n < panelComponents.length; n++) {
             let panelComponent = panelComponents[n];
-            builder.buildChildNode(contentNode, panelComponent);
+            let c = Builder.buildComponentByProperties(panelComponent);
+            contentNode.appendChild(c.getComponentNode());
           }
         }
       }

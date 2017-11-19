@@ -60,7 +60,7 @@ export class Progress extends PresentationComponent {
   }
 
   stateChanged(state, value) {
-    if (state == this.properties.states.value) {
+    if (state === this.properties.states.value) {
       this.setValue(value);
     }
   }

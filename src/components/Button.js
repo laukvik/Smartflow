@@ -180,11 +180,6 @@ export class Button extends Component {
     this._badgeNode.setAttribute("class", "badge" + (this._badgeStyle ? " " + this._badgeStyle : "") + (this._badgeShape ? " " + this._badgeShape : ""));
   }
 
-
-  buildComponent(builder, properties) {
-    return this._componentNode;
-  }
-
   _buttonClicked() {
     if (this._action !== undefined) {
       this.fireAction(this._action);
@@ -192,9 +187,9 @@ export class Button extends Component {
   }
 
   setEnabled(isEnabled) {
-    if (isEnabled == true) {
+    if (isEnabled === true) {
       this._componentNode.removeAttribute("disabled");
-    } else if (isEnabled == false){
+    } else if (isEnabled === false){
       this._componentNode.setAttribute("disabled", "true");
     }
   }

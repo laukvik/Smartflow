@@ -146,11 +146,5 @@ export class Items extends PresentationComponent {
     }
   }
 
-  buildComponent(builder, properties) {
-    this._builder = builder;
-    this._component = properties.component;
-    return this._componentNode;
-  }
-
 }
 

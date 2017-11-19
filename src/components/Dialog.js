@@ -75,10 +75,6 @@ export class Dialog extends PresentationComponent {
     }
   }
 
-  buildComponent(builder, properties) {
-    return this.getComponentNode();
-  }
-
   _clicked(btn) {
     let index = this.buttons.indexOf(btn);
     let a = this.actions[index];

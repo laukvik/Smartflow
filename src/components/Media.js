@@ -121,11 +121,6 @@ export class Media extends PresentationComponent {
     this.descriptionNode.innerText = description;
   }
 
-  buildComponent(builder, properties) {
-    this._componentNode.setAttribute("class", "");
-    return this._componentNode;
-  }
-
   setVisible(isVisible) {
     this._componentNode.style.display = isVisible === true ? "block" : "none";
   }

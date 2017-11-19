@@ -129,7 +129,7 @@ export class Pulldown extends InputComponent {
   setSelected(selected) {
     for (let x = 0; x < this._inputNode.options.length; x++) {
       let opt = this._inputNode.options[x];
-      opt.selected = opt.value == selected;
+      opt.selected = opt.value === selected;
     }
   }
 

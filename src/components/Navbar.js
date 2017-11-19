@@ -115,22 +115,6 @@ export class Navbar extends PresentationComponent {
     this.setExpanded(!this._expanded);
   }
 
-  /**
-   *
-   *
-   * <button class="navbar-toggler navbar-toggler-right"
-   * type="button"
-   * data-toggle="collapse"
-   * data-target="#navbarSupportedContent"
-   * aria-controls="navbarSupportedContent"
-   * aria-expanded="false" aria-label="Toggle navigation">
-   * @param builder
-   * @returns {Element|*}
-   */
-  buildComponent(builder) {
-    return this.getComponentNode();
-  }
-
   _clicked(action) {
     this.setExpanded(false);
     if (action !== undefined){

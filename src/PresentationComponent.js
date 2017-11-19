@@ -7,8 +7,8 @@ import {Component} from "./Component";
  */
 export class PresentationComponent extends Component {
 
-  constructor(properties) {
-    super(properties);
+  constructor() {
+    super();
   }
 
   buildComponent() {

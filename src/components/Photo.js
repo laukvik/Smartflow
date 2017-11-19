@@ -53,8 +53,4 @@ export class Photo extends PresentationComponent {
     this._imgNode.setAttribute("src", url);
   }
 
-  buildComponent(builder, properties) {
-    return this._componentNode;
-  }
-
 }
