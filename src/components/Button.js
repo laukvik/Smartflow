@@ -79,9 +79,7 @@ export class Button extends Component {
     this._componentNode.appendChild(this._textNode);
     this._componentNode.appendChild(this._spaceNode);
 
-    this._componentNode.addEventListener("click", function () {
-      this._buttonClicked();
-    }.bind(this), false);
+    this._componentNode.addEventListener("click", this._buttonClicked.bind(this));
   }
 
   _updateClass(){

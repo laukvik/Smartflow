@@ -1,5 +1,18 @@
 import {Component} from "../Component";
 
+export const TextColor = {
+  PRIMARY: "text-primary",
+  SECONDARY: "text-secondary",
+  SUCCESS: "text-success",
+  DANGER: "text-danger",
+  WARNING: "text-warning",
+  INFO: "text-info",
+  LIGHT: "text-light",
+  DARK: "text-dark",
+  MUTED: "text-muted",
+  WHITE: "text-white"
+};
+
 /**
  * Displays text
  *
@@ -9,28 +22,24 @@ export class Text extends Component {
   constructor() {
     super();
     this.createComponentNode("div");
-
-    this._headingNode = document.createElement("h1");
     this._textNode = document.createElement("p");
-
-    this._componentNode.appendChild(this._headingNode);
     this._componentNode.appendChild(this._textNode);
   }
 
   setProperty(name, value) {
-    if (name === "heading") {
-      this.setHeading(value);
-    } else if (name === "value") {
+    if (name === "value") {
       this.setText(value);
     } else if (name === "visible") {
       this.setVisible(value);
+    } else if (name === "color") {
+      this.setColor(value);
     } else {
       console.warn("Text: Unknown property ", name);
     }
   }
 
-  setHeading(heading) {
-    this._headingNode.innerText = heading;
+  setColor(color){
+    this._textNode.setAttribute("class", color);
   }
 
   setText(text) {

@@ -1,4 +1,5 @@
 import {PresentationComponent} from "../PresentationComponent";
+import {Query} from "../Query";
 
 /**
  * Carousel
@@ -34,8 +35,8 @@ export class Carousel extends PresentationComponent {
     this.nextTextNode.innerText = "Next";
     this.nextNode.appendChild(this.nextIconNode);
     this.nextNode.appendChild(this.nextTextNode);
-    this.nextIconNode.addEventListener("click", this.nextIndex.bind(this) );
-    this.prevIconNode.addEventListener("click", this.prevIndex.bind(this) );
+    this.nextNode.addEventListener("click", this.nextIndex.bind(this) );
+    this.prevNode.addEventListener("click", this.prevIndex.bind(this) );
     this.getComponentNode().appendChild(this.carouselIndicatorsNode);
     this.getComponentNode().appendChild(this.carouselInnerNode);
     this.getComponentNode().appendChild(this.prevNode);
@@ -61,9 +62,39 @@ export class Carousel extends PresentationComponent {
       this.setItems(value);
     } else if (name === "index") {
       this.setIndex(value);
+    } else if (name === "query") {
+      this.setQuery(value);
+    } else if (name === "title") {
+      this.setTitle(value);
+    } else if (name === "description") {
+      this.setDescription(value);
+    } else if (name === "photo") {
+      this.setPhoto(value);
+    } else if (name === "url") {
+      this.setUrl(value);
     } else {
       console.warn("Carousel: Unknown property ", name);
     }
+  }
+
+  setQuery(query){
+    this._query = query;
+  }
+
+  setTitle(title){
+    this._title = title;
+  }
+
+  setDescription(description){
+    this._description = description;
+  }
+
+  setPhoto(photo){
+    this._photo = photo;
+  }
+
+  setUrl(url){
+    this._url = url;
   }
 
   prevIndex(){
@@ -75,7 +106,6 @@ export class Carousel extends PresentationComponent {
   }
 
   setIndex(index){
-    console.info("index: ", index);
     if (this._index < this._itemNodes.length){
       this.setItemVisible(this._index, false);
     }
@@ -86,18 +116,23 @@ export class Carousel extends PresentationComponent {
   }
 
   setItemVisible(index, active){
-    console.info("setItemVisible: ", index, active);
     this._itemNodes[ index ].setAttribute("class", "carousel-item" + (active === true ? " active" : ""));
+    this.carouselIndicators[ index ].setAttribute("class", (active === true ? "active" : ""));
   }
 
   setItems(items){
-    console.info("Items: ", items);
     this._itemNodes = [];
+    this.carouselIndicators = [];
     this.removeChildNodes(this.carouselInnerNode);
     this.removeChildNodes(this.carouselIndicatorsNode);
 
-    if (Array.isArray(items)) {
-      items.forEach(item => {
+    const itemsList = Query.find(this._query, items);
+
+    if (Array.isArray(itemsList)) {
+      let itemIndex = -1;
+      itemsList.forEach(item => {
+
+        itemIndex++;
 
         // Carousel item
         const carouselItem = document.createElement("div");
@@ -107,15 +142,16 @@ export class Carousel extends PresentationComponent {
         const img = document.createElement("img");
         img.setAttribute("class", "d-block w-100");
         carouselItem.appendChild(img);
-        img.setAttribute("src", item["posterurl"]);
+        // Photo
+        img.setAttribute("src", this._url + Query.find(this._photo, item));
 
         const captionNode = document.createElement("div");
         captionNode.setAttribute("class", "carousel-caption d-none d-md-block");
 
         const titleNode = document.createElement("h3");
-        titleNode.innerText = item["title"];
+        titleNode.innerText = item[this._title];
         const descNode = document.createElement("p");
-        descNode.innerText = item["storyline"];
+        descNode.innerHTML = Query.find(this._description, item);
 
         carouselItem.appendChild(captionNode);
         captionNode.appendChild(titleNode);
@@ -125,12 +161,19 @@ export class Carousel extends PresentationComponent {
 
         // Indicators
         const li = this.createElement("li");
-        li.setAttribute("data-slide-to", "1");
+        li.setAttribute("data-slide-to", "" + itemIndex);
+        li.addEventListener("click", this.clicked.bind(this));
+        this.carouselIndicators.push(li);
         this.carouselIndicatorsNode.appendChild(li);
-
       });
     }
     this.setIndex(1);
+  }
+
+  clicked(evt){
+    const li = evt.srcElement;
+    const index = li.getAttribute("data-slide-to");
+    this.setIndex(index);
   }
 
 }

@@ -53,8 +53,6 @@ export class Radio extends InputComponent {
       this.setVertical(value);
     } else if (name === "validation") {
       this.setValidationMessage(value);
-    } else if (name === "class") {
-      this.setClass(value);
     } else if (name === "id") {
       this.setID(value);
     } else if (name === "visible") {

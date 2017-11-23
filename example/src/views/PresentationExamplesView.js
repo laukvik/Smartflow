@@ -6,6 +6,7 @@ import {Link} from "../../../src/components/Link";
 import {List} from "../../../src/components/List";
 import {Media} from "../../../src/components/Media";
 import {Carousel} from "../../../src/components/Carousel";
+import {PhotoOfTheDayAction} from "../actions/PhotoOfTheDayAction";
 
 export class PresentationExamplesView extends View {
 
@@ -17,11 +18,16 @@ export class PresentationExamplesView extends View {
       "components": [
         {
           "type": Carousel,
-          "items": "{global:movies}",
+          "items": "{global:gallery}",
+          "query": "/items",
           "title": "title",
-          "description": "storyline",
-          "photo": "posterurl",
-          "index": 3
+          "description": "/social/og:description",
+          "url": "https://yourshot.nationalgeographic.com",
+          "photo": "/sizes/800",
+          "index": 3,
+          "components": [
+
+          ]
         },
         {
           "type": Alert,
@@ -66,6 +72,7 @@ export class PresentationExamplesView extends View {
   }
 
   viewInitialized() {
+    this.runAction(new PhotoOfTheDayAction());
   }
 
 }

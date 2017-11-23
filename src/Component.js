@@ -119,14 +119,8 @@ export class Component {
     }
   }
 
-  setClass(className) {
-    let cssClass = this.constructor.name + " " + (this._componentBaseClass ? this._componentBaseClass : "") + (className === undefined ? "" : " " + className);
-    // this._componentNode.setAttribute("class", cssClass);
-  }
-
   fireAction(action) {
     this.getView().getApplication().runAction(new action(), this.getView());
-    // this.smartflow.runAction(new action(), this.getView());
   }
 
   removeChildNodes(node) {
