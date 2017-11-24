@@ -14,15 +14,27 @@ export class Layout extends PresentationComponent {
   constructor() {
     super();
     this.createComponentNode("div");
-    this.getComponentNode().setAttribute("class", "container");
+    this.getComponentNode().setAttribute("class", "container-fluid");
+    this._fullwidth = true;
   }
 
   setProperty(name, value) {
-    if (name === "components"){
+    if (name === "components") {
       this.setComponents(value);
+    } else if (name === "full"){
+      this.setFullWidth(value);
     } else {
       console.warn("Layout: Unknown property ", name);
     }
+  }
+
+  _updateClass(){
+    this.getComponentNode().setAttribute("class", this._fullwidth ? "container-fluid" : "container");
+  }
+
+  setFullWidth(fullwidth) {
+    this._fullwidth = fullwidth === true;
+    this._updateClass();
   }
 
   static parseGridLayout(layout){

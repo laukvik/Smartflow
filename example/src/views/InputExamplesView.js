@@ -18,9 +18,8 @@ export class InputExamplesView extends View {
       "components": [
         {
           "type": Layout,
+          "full": false,
           "components": [
-
-
             {
               "type": Textfield,
               "label": "Email",

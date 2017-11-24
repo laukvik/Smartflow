@@ -8,6 +8,7 @@ import {Media} from "../../../src/components/Media";
 import {Carousel} from "../../../src/components/Carousel";
 import {PhotoOfTheDayAction} from "../actions/PhotoOfTheDayAction";
 import {Photo} from "../../../src/components/Photo";
+import {Layout} from "../../../src/components/Layout";
 
 export class PresentationExamplesView extends View {
 
@@ -17,17 +18,30 @@ export class PresentationExamplesView extends View {
     this.smartflow = {
       "path": "/examples/presentation",
       "components": [
+
         {
-          "type": Carousel,
-          "items": "{global:gallery/items}",
-          "title": "title",
-          "description": "/social/og:description",
-          "url": "https://yourshot.nationalgeographic.com",
-          "photo": "/sizes/800",
-          "index": 3,
+          "type": Layout,
+          "full": false,
           "components": [
+            {
+              "type": Carousel,
+              "layout": {
+                "md": 12,
+                "lg": 10,
+              },
+              "items": "{global:gallery/items}",
+              "title": "title",
+              "description": "/social/og:description",
+              "url": "https://yourshot.nationalgeographic.com",
+              "photo": "/sizes/800",
+              "index": 3,
+              "components": [
+              ]
+            }
           ]
         },
+
+
         {
           "type": Alert,
           "alertStyle": AlertStyle.DANGER,
