@@ -13,15 +13,6 @@ export class Component {
     this._valueBindings = {};
   }
 
-  setProperties(properties){
-    if (typeof properties === "object") {
-      for (let key in properties) {
-        let value = properties[ key ];
-        this.setProperty(key, value);
-      }
-    }
-  }
-
   /**
    * Sets the value for a named property
    *
@@ -69,9 +60,12 @@ export class Component {
    * Binds a variable name to a scope
    *
    * @param name
+   * @param value
    * @param scope
+   * @param path
+   * @param query
    */
-  setBinding(name, value, scope, path) {
+  setBinding(name, value, scope, path, query) {
     if (name === undefined) {
       return;
     }
@@ -79,13 +73,13 @@ export class Component {
       delete this._valueBindings[ name ];
       return;
     }
-    console.info("setBinding: ", name, value, scope, path);
     if (scope === SCOPES.NONE || scope === SCOPES.VIEW || scope === SCOPES.GLOBAL  || scope === SCOPES.COMPONENT) {
       this._valueBindings[ name ] = {
         "state" : value,
         "property" : name,
         "scope": scope,
-        "path": path
+        "path": path,
+        "query": query
       };
     } else {
       console.warn("Component: invalid scope ", scope);

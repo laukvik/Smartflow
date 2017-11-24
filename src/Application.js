@@ -17,6 +17,7 @@ import {View} from "./View";
 import {Path} from "./Path";
 import {Scope, SCOPES} from "./Scope";
 import {Action} from "./Action";
+import {Query} from "./Query";
 
 const HTTP_STATUS_CODES = {
   INFO: 100,
@@ -486,7 +487,11 @@ export class Application {
         let componentInstance = viewController._smartflowComponentInstances[ index ];
         let binding = componentInstance.getBindingByState(state, SCOPES.GLOBAL);
         if (binding) {
-          componentInstance.setProperty(binding.property, value);
+          if (binding.query) {
+            componentInstance.setProperty(binding.property, Query.find(binding.query, value));
+          } else {
+            componentInstance.setProperty(binding.property, value);
+          }
         }
       }
       // Notify controller

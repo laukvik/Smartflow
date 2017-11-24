@@ -72,6 +72,15 @@ describe('Scope', () => {
       expect(v.scope).toBe(SCOPES.NONE);
       expect(v.value).toBe("selectedMovie");
     });
+
+    it('should find query', () => {
+      let v = Scope.parseScope("{global:selectedMovie/items/size}");
+      expect(v.scope).toBe(SCOPES.GLOBAL);
+      expect(v.value).toBe("selectedMovie");
+      expect(v.query).toBe("/items/size");
+    });
+
+
   });
 
 });

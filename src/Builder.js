@@ -20,7 +20,7 @@ export class Builder {
         if (bind.scope === SCOPES.NONE) {
           c.setProperty(key, bind.value);
         } else {
-          c.setBinding(key, bind.value, bind.scope);
+          c.setBinding(key, bind.value, bind.scope, undefined, bind.query);
         }
       }
     }

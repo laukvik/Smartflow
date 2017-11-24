@@ -64,7 +64,7 @@ export class Scope {
       return {
         "scope": SCOPES.NONE,
         "value": value,
-        "original": value
+        "original": value,
       }
     }
     if (value.indexOf("{") === 0 && value.lastIndexOf("}") === value.length - 1) {
@@ -72,12 +72,15 @@ export class Scope {
       let index = innerValue.indexOf(":");
       if (index > -1) {
         let scopeName = innerValue.substring(0, index );
+        let scopeValue = innerValue.substring(index+1);
+        let queryIndex = scopeValue.indexOf("/");
         for (let s in SCOPES) {
           if (s === scopeName.toUpperCase()) {
             return {
               "scope": s,
-              "value": innerValue.substring(index+1),
-              "original": value
+              "value": queryIndex > -1 ? scopeValue.substring(0,queryIndex) : scopeValue,
+              "original": value,
+              "query": queryIndex > -1 ? scopeValue.substr(queryIndex) : undefined
             }
           }
         }
@@ -85,14 +88,14 @@ export class Scope {
       return {
         "scope": SCOPES.COMPONENT,
         "value": innerValue,
-        "original": value
+        "original": value,
       }
     }
 
     return {
       "scope": SCOPES.NONE,
       "value": value,
-      "original": value
+      "original": value,
     }
   }
 
