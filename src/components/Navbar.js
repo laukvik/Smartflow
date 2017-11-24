@@ -1,8 +1,24 @@
 import {PresentationComponent} from "../PresentationComponent";
 
-export const NavbarStyle = {
+export const NavbarBackground = {
+  PRIMARY: "bg-primary",
+  SECONDARY: "bg-secondary",
+  SUCCESS: "bg-success",
+  DANGER: "bg-danger",
+  WARNING: "bg-warning",
+  INFO: "bg-info",
   DARK: "bg-dark",
   LIGHT: "bg-light"
+};
+
+export const NavbarColor = {
+  DARK: "navbar-dark",
+  LIGHT: "navbar-light"
+};
+
+export const NavbarPlacement = {
+  FIXED_TOP: "fixed-top",
+  FIXED_BOTTOM: "fixed-bottom",
 };
 
 export class Navbar extends PresentationComponent {
@@ -10,8 +26,9 @@ export class Navbar extends PresentationComponent {
   constructor() {
     super();
 
-    this.buttons = [];
-    this.actions = [];
+    this._buttons = [];
+    this._actions = [];
+    this._selectedIndex = -1;
 
     // Build elements
     this.createComponentNode('nav');
@@ -42,14 +59,26 @@ export class Navbar extends PresentationComponent {
     div.setAttribute("class", "collapse navbar-collapse");
     this.ul = document.createElement("ul");
     this.ul.setAttribute("class", "navbar-nav mr-auto");
-
-
     this.getComponentNode().appendChild(div);
     div.appendChild(this.ul);
-    /******************************************************/
-
-    // this._expanded = false;
     this.setExpanded(false)
+  }
+
+  setColor(color){
+    this._color = color;
+    this._updateClass();
+  }
+
+  setBackground(background){
+    this._background = background;
+    this._updateClass();
+  }
+
+  _updateClass() {
+    this.getComponentNode().setAttribute("class", "navbar navbar-toggleable-md "
+      + (this._color ? " " + this._color : "")
+      + (this._background ? " " + this._background : "")
+      + (this._placement ? " " + this._placement : ""));
   }
 
   setProperty(name, value) {
@@ -57,15 +86,35 @@ export class Navbar extends PresentationComponent {
       this.setVisible(value);
     } else if (name === 'expanded') {
       this.setExpanded(value);
-    } else if (name === 'navbarStyle') {
-      this.setNavbarStyle(value);
-    } else if (name === 'buttons'){
+    } else if (name === 'color') {
+      this.setColor(value);
+    } else if (name === 'background') {
+      this.setBackground(value);
+    } else if (name === 'buttons') {
       this.setButtons(value);
-    } else if (name === 'title'){
+    } else if (name === 'title') {
       this.setLabel(value);
+    } else if (name === "selectedIndex"){
+       this.setSelectedIndex(value);
+    } else if (name === "placement"){
+      this.setPlacement(value);
     } else {
       console.warn("Navbar: Unknown property ", name);
     }
+  }
+
+  setSelectedIndex(value) {
+    this._selectedIndex = typeof value === "number" ? value : -1;
+    this._selectedIndex = value;
+    let index = 0;
+    this._buttons.forEach(b => {
+      b.setAttribute("class", "nav-item" + (this._selectedIndex === index ? " active" : ""));
+      index++;
+    })
+  }
+
+  setPlacement(placement){
+    this._placement = placement;
   }
 
   setLabel(title){
@@ -73,32 +122,42 @@ export class Navbar extends PresentationComponent {
   }
 
   setButtons(buttons){
+    this._buttons = [];
+    this._actions = [];
     if (Array.isArray(buttons)) {
-      for (let x = 0; x < buttons.length; x++) {
-        let btn = buttons[x];
+      let index = 0;
+      buttons.forEach(btn => {
         let li = document.createElement("li");
+        this._buttons.push(li);
         li.setAttribute("class", "nav-item");
+        li.setAttribute("data-nav-item-index", index + "");
         let a = document.createElement("a");
         a.setAttribute("class", "nav-link"+ (btn.enabled === false ? " disabled" : ""));
-        // a.setAttribute("href", "#" + new btn.action().getSmartflow().path);
-        // console.info("Button: ", );
         a.innerText = btn.label;
-        if (btn.enabled === false) {
-          a.setAttribute("disabled", false);
-        }
-        a.addEventListener("click", function () {
-          this._clicked(btn.action);
-        }.bind(this), false);
+        this._actions.push(btn.action);
 
+        if (btn.enabled === false) {
+          a.setAttribute("disabled", "false");
+        }
+        a.addEventListener("click", this.clickHandler.bind(this) );
         li.appendChild(a);
         this.ul.appendChild(li);
-      }
+        index++;
+      })
     }
   }
 
-  setNavbarStyle(navbarStyle) {
-    this.getComponentNode().setAttribute("class", "navbar navbar-toggleable-md navbar-light " + (navbarStyle ? " " + navbarStyle : ""));
+  clickHandler(evt){
+    const li = evt.srcElement.parentElement;
+    const index = parseInt( li.getAttribute("data-nav-item-index") );
+    this.setSelectedIndex(index);
+    this.setExpanded(false);
+    if (this._actions[index] !== undefined){
+      this.fireAction(this._actions[index]);
+    }
   }
+
+
 
   setExpanded(expanded){
     this._expanded = expanded === true;
@@ -115,11 +174,5 @@ export class Navbar extends PresentationComponent {
     this.setExpanded(!this._expanded);
   }
 
-  _clicked(action) {
-    this.setExpanded(false);
-    if (action !== undefined){
-      this.fireAction(action);
-    }
-  }
 }
 

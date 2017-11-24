@@ -9,7 +9,6 @@ export class Query {
     }
     let arr = expression.split("/");
     arr.shift();
-    console.info("Arr: ", arr);
     if (arr.length === 0) {
       return json;
     }

@@ -134,7 +134,6 @@ export class NumberField extends InputComponent {
     const min = this._inputNode.getAttribute("min");
     const max = this._inputNode.getAttribute("max");
     const v = this._inputNode.value;
-    console.info("Valid: ", min, max, v);
     return v >= min && v <= max;
   }
 

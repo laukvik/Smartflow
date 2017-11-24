@@ -62,7 +62,6 @@ export class Card extends PresentationComponent {
     } else if (name === "action") {
       this.setAction(value);
     } else if (name === "button") {
-      console.info("Card.button undefined: ", value);
       if (!value){
         return;
       }
