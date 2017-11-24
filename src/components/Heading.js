@@ -9,6 +9,19 @@ export const HeadingSize = {
   H6: "h6",
 };
 
+export const HeadingColor = {
+  PRIMARY: "text-primary",
+  SECONDARY: "text-secondary",
+  SUCCESS: "text-success",
+  DANGER: "text-danger",
+  WARNING: "text-warning",
+  INFO: "text-info",
+  LIGHT: "text-light",
+  DARK: "text-dark",
+  MUTED: "text-muted",
+  WHITE: "text-white"
+};
+
 /**
  * Displays a heading
  *
@@ -27,9 +40,15 @@ export class Heading extends Component {
       this.setVisible(value);
     } else if (name === "size") {
       this.setSize(value);
+    } else if (name === "color") {
+      this.setColor(value);
     } else {
       console.warn("Heading: Unknown property ", name);
     }
+  }
+
+  setColor(color){
+    this.getComponentNode().setAttribute("class", color);
   }
 
   setValue(heading) {
