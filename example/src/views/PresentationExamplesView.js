@@ -7,6 +7,7 @@ import {List} from "../../../src/components/List";
 import {Media} from "../../../src/components/Media";
 import {Carousel} from "../../../src/components/Carousel";
 import {PhotoOfTheDayAction} from "../actions/PhotoOfTheDayAction";
+import {Photo} from "../../../src/components/Photo";
 
 export class PresentationExamplesView extends View {
 
@@ -62,6 +63,12 @@ export class PresentationExamplesView extends View {
         },
 
 
+        {
+          "type": Photo,
+          "url": "https://images-na.ssl-images-amazon.com/images/M/MV5BODMwM2M4ZmItMzk4Ny00YTBhLTkyN2EtYTAzMmIwNjMxNjQxL2ltYWdlXkEyXkFqcGdeQXVyMTk0NTY2ODQ@._V1_SX203_CR0,0,203,300_AL_.jpg",
+          "rounded": true,
+          "border": true
+        }
 
 
 

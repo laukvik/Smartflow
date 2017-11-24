@@ -18,13 +18,14 @@ export class Photo extends PresentationComponent {
   /**
    * Constructor for Card
    *
-   * @param {PhotoProperties} props the properties for the component
    */
   constructor() {
     super();
     this.createComponentNode("div");
     this._imgNode = document.createElement("img");
     this._componentNode.appendChild(this._imgNode);
+    this._border = false;
+    this._rounded = false;
   }
 
   setProperty(name, value) {
@@ -36,9 +37,27 @@ export class Photo extends PresentationComponent {
       this.setHeight(value);
     } else if (name === "visible") {
       this.setVisible(value);
+    } else if (name === "border") {
+      this.setBorder(value);
+    } else if (name === "rounded") {
+      this.setRounded(value);
     } else  {
       console.warn("Photo: Unknown property ", name);
     }
+  }
+
+  _updateClass(){
+    this._imgNode.setAttribute("class", (this._border ? "img-thumbnail" : "") + (this._rounded ? " rounded" : ""));
+  }
+
+  setBorder(border) {
+    this._border = border === true;
+    this._updateClass();
+  }
+
+  setRounded(rounded) {
+    this._rounded = rounded === true;
+    this._updateClass();
   }
 
   setWidth(value) {
