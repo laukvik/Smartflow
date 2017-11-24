@@ -8,3 +8,5 @@ example/node_modules/
 /dist/
 /example/dist/
 /docs/
+/package-lock.json
+/example/package-lock.json
