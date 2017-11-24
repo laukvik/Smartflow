@@ -62,8 +62,6 @@ export class Carousel extends PresentationComponent {
       this.setItems(value);
     } else if (name === "index") {
       this.setIndex(value);
-    } else if (name === "query") {
-      this.setQuery(value);
     } else if (name === "title") {
       this.setTitle(value);
     } else if (name === "description") {
@@ -75,10 +73,6 @@ export class Carousel extends PresentationComponent {
     } else {
       console.warn("Carousel: Unknown property ", name);
     }
-  }
-
-  setQuery(query){
-    this._query = query;
   }
 
   setTitle(title){
@@ -125,13 +119,9 @@ export class Carousel extends PresentationComponent {
     this.carouselIndicators = [];
     this.removeChildNodes(this.carouselInnerNode);
     this.removeChildNodes(this.carouselIndicatorsNode);
-
-    const itemsList = Query.find(this._query, items);
-
-    if (Array.isArray(itemsList)) {
+    if (Array.isArray(items)) {
       let itemIndex = -1;
-      itemsList.forEach(item => {
-
+      items.forEach(item => {
         itemIndex++;
 
         // Carousel item

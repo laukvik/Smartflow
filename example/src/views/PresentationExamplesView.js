@@ -18,15 +18,13 @@ export class PresentationExamplesView extends View {
       "components": [
         {
           "type": Carousel,
-          "items": "{global:gallery}",
-          "query": "/items",
+          "items": "{global:gallery/items}",
           "title": "title",
           "description": "/social/og:description",
           "url": "https://yourshot.nationalgeographic.com",
           "photo": "/sizes/800",
           "index": 3,
           "components": [
-
           ]
         },
         {
