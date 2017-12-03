@@ -1,4 +1,4 @@
-import {Datepicker} from '../Datepicker';
+import {Datepicker} from './Datepicker';
 
 describe('datepicker', function () {
 

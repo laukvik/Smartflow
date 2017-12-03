@@ -32,7 +32,7 @@ export class Scope {
    * Returns an array of all scopes in the string
    *
    * @param value
-   * @returns {string}
+   * @returns {Array}
    */
   static findScopes(value){
     let afterStart = false;
@@ -41,9 +41,9 @@ export class Scope {
     for (let x=0; x<value.length; x++) {
       let c = value.charAt(x);
       if (c === '{') {
-        if (afterStart) {
-          console.warn("Scope: ");
-        }
+        // if (afterStart) {
+        //   console.warn("Scope: ");
+        // }
         afterStart = true;
         variable = "{";
       } else if (c === '}' && afterStart) {

@@ -19,13 +19,13 @@ export class Component {
    * @param name
    * @param value
    */
+// eslint-disable-next-line no-unused-vars
   setProperty(name, value) {
   }
 
   /**
    * Creates an HTML node
    * @param tagName the name of the tag
-   * @param baseClass the component CSS class name
    * @param cssClass the custom CSS class name
    */
   createComponentNode(tagName, cssClass) {
@@ -49,8 +49,8 @@ export class Component {
   firePropertyChanged(name, value) {
     let binding = this._valueBindings[ name ];
     if (binding === undefined) {
-      let a = this;
-      console.warn(a.constructor.name + ": invalid property ", name, value, this._valueBindings);
+      // let a = this;
+      // console.debug(a.constructor.name + ": invalid property ", name, value, this._valueBindings);
       return;
     }
     this.getView().getApplication().firePropertyChanged(this, binding, value);
@@ -81,8 +81,6 @@ export class Component {
         "path": path,
         "query": query
       };
-    } else {
-      console.warn("Component: invalid scope ", scope);
     }
   }
 

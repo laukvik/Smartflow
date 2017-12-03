@@ -82,48 +82,49 @@ export class View {
     this.setVisible(false);
   }
 
-  /**
-   * Indicates the private state  changed
-   *
-   * @param {String} state the name
-   * @param {Object} value the value
-   */
-  stateChanged(state, value) {
-  }
-
-  /**
-   * Indicates the global state changed
-   *
-   * @param {String} state the name
-   * @param {Object} value the value
-   */
-  globalChanged(state, value) {
-  }
-
-  /**
-   * An action was performed.
-   *
-   * @param {Object} evt the event details
-   */
-  actionPerformed(evt) {
-  }
-
-  componentChanged(evt) {
-  }
-
-  /**
-   * Indicates the path was changed. When the active path is /category/12/15 and the path in the properties
-   * is /category/{category}/{id} the event will be:
-   *
-   * {
-   *   category: 12,
-   *   id: 15
-   * }
-   *
-   * @param evt
-   */
-  pathChanged(evt) {
-
-  }
+  // /*eslint-disable no-alert, no-console */
+  // /**
+  //  * Indicates the private state  changed
+  //  *
+  //  * @param {String} state the name
+  //  * @param {Object} value the value
+  //  */
+  // stateChanged(state, value) {
+  // }
+  //
+  // /**
+  //  * Indicates the global state changed
+  //  *
+  //  * @param {String} state the name
+  //  * @param {Object} value the value
+  //  */
+  // globalChanged(state, value) {
+  // }
+  //
+  // /**
+  //  * An action was performed.
+  //  *
+  //  * @param {Object} evt the event details
+  //  */
+  // actionPerformed(evt) {
+  // }
+  //
+  // componentChanged(evt) {
+  // }
+  //
+  // /**
+  //  * Indicates the path was changed. When the active path is /category/12/15 and the path in the properties
+  //  * is /category/{category}/{id} the event will be:
+  //  *
+  //  * {
+  //  *   category: 12,
+  //  *   id: 15
+  //  * }
+  //  *
+  //  * @param evt
+  //  */
+  // pathChanged(evt) {
+  // }
+  // /*eslint-enable no-alert */
 
 }

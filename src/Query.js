@@ -17,13 +17,11 @@ export class Query {
 
   static findByArray(arr, json) {
     let current = json;
-    let x = 0;
     arr.forEach(a => {
-      current = current[arr[x]];
+      current = current[a];
       if (!current) {
         return;
       }
-      x++;
     });
     return current;
   }

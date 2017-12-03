@@ -1,4 +1,4 @@
-import {Collection} from '../Collection';
+import {Collection} from '../src/Collection';
 import {Data} from './Data';
 
 let rows = Data.getMoviesRows();

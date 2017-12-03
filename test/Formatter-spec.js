@@ -1,4 +1,4 @@
-import {Formatter} from '../Formatter';
+import {Formatter} from '../src/Formatter';
 
 const FORMAT_PADDING = "YYYY.MM.DD";
 const FORMAT_NO_PADDING = "YYYY.M.D";

@@ -1,4 +1,4 @@
-import {Builder} from '../Builder';
+import {Builder} from '../src/Builder';
 
 describe('Builder', function () {
 

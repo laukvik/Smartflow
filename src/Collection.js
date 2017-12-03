@@ -17,13 +17,6 @@ export class Collection {
     this.clearDistinct();
   }
 
-  setProperties(properties){
-    this.setSort(properties.sort);
-    this.setPaging(properties.paging);
-    this.setFilter(properties.filters);
-    this.setDistinct(properties.distinct);
-  }
-
   clearFilter(){
     this._filters = [];
   }

@@ -1,4 +1,4 @@
-import {BadgeShape, BadgeStyle, Button, ButtonSize, ButtonStyle, Outline} from '../Button';
+import {BadgeShape, BadgeStyle, Button, ButtonSize, ButtonStyle, Outline} from './Button';
 
 describe('Button', function () {
 

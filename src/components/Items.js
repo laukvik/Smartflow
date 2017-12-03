@@ -134,10 +134,9 @@ export class Items extends PresentationComponent {
       let item = this._items[n];
       let component = {};
       //
-      for (let componentKey in this._component) {
-        let itemValue = this._component[ componentKey ];
-        let value = item[ itemValue ];
-        component[ componentKey ] = value;
+      for (const componentKey in this._component) {
+        const itemValue = this._component[ componentKey ];
+        component[ componentKey ] = item[ itemValue ];
       }
       // Don't interpret component type. It's always fixed.
       if (this._component.type){

@@ -1,4 +1,4 @@
-import {Path} from '../Path';
+import {Path} from '../src/Path';
 
 describe('Path', () => {
 

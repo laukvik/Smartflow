@@ -1,4 +1,4 @@
-import {Alert, AlertStyle} from '../Alert';
+import {Alert, AlertStyle} from './Alert';
 
 describe('properties', function () {
 

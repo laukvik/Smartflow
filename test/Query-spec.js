@@ -1,4 +1,4 @@
-import {Query} from '../Query';
+import {Query} from '../src/Query';
 
 describe('Query', () => {
 

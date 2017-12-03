@@ -130,7 +130,7 @@ export class Formatter {
    */
   formatNumber(value, format) {
     if (isNaN(value - parseFloat(value))) {
-      return undefined;
+      return "";
     }
     const sValue = value.toString();
 
@@ -187,7 +187,8 @@ export class Formatter {
       }
     }
     return (hasFractionFormat) ? (intString + '.' + fraString) : intString;
-  };
+  }
+
   formatJson(key, json) {
     if (key === undefined) {
       return '???undefined???';
@@ -198,7 +199,8 @@ export class Formatter {
       s = s.replace( '{' + k + '}', val );
     }
     return s;
-  };
+  }
+
   format(key, keys) {
     if (key === undefined) {
       return undefined;
@@ -222,7 +224,7 @@ export class Formatter {
       s = s.replace(symbol, arr[x]);
     }
     return s;
-  };
+  }
 }
 
 

@@ -1,4 +1,4 @@
-import {Scope,SCOPES} from '../Scope';
+import {Scope,SCOPES} from '../src/Scope';
 
 describe('Scope', () => {
 

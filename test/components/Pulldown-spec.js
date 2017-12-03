@@ -1,4 +1,4 @@
-import {Pulldown} from '../Pulldown';
+import {Pulldown} from './Pulldown';
 
 describe('properties', function () {
 

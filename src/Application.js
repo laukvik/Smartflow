@@ -11,13 +11,45 @@
  * @author Morten Laukvik
  *
  */
-import {Formatter} from "./Formatter";
-import {Builder} from "./Builder";
-import {View} from "./View";
-import {Path} from "./Path";
-import {Scope, SCOPES} from "./Scope";
 import {Action} from "./Action";
+import {Formatter} from "./Formatter";
+import {Path} from "./Path";
 import {Query} from "./Query";
+import {Scope, SCOPES} from "./Scope";
+import {View} from "./View";
+
+// import {Action,ClientAction,ServerAction} from "./Action";
+// import {Builder} from "./Builder";
+// import {Collection} from "./Collection";
+// import {Component} from "./Component";
+// import {InputComponent} from "./InputComponent";
+// import {PresentationComponent} from "./PresentationComponent";
+// import {Alert} from "./components/Alert";
+// import {Button} from "./components/Button";
+// import {Card} from "./components/Card";
+// import {Carousel} from "./components/Carousel";
+// import {Checkbox} from "./components/Checkbox";
+// import {Datepicker} from "./components/Datepicker";
+// import {Dialog} from "./components/Dialog";
+// import {Heading} from "./components/Heading";
+// import {Items} from "./components/Items";
+// import {Layout} from "./components/Layout";
+// import {Link} from "./components/Link";
+// import {List} from "./components/List";
+// import {Media} from "./components/Media";
+// import {Navbar} from "./components/Navbar";
+// import {NumberField} from "./components/NumberField";
+// import {Photo} from "./components/Photo";
+// import {Progress} from "./components/Progress";
+// import {Pulldown} from "./components/Pulldown";
+// import {Radio} from "./components/Radio";
+// import {Searchfield} from "./components/Searchfield";
+// import {Spinner} from "./components/Spinner";
+// import {Table} from "./components/Table";
+// import {Tabs} from "./components/Tabs";
+// import {Text} from "./components/Text";
+// import {Textfield} from "./components/Textfield";
+// import {Toolbar} from "./components/Toolbar";
 
 const HTTP_STATUS_CODES = {
   INFO: 100,
@@ -125,6 +157,7 @@ export class Application {
   }
 
   _autoDetectLocale() {
+    // noinspection Annotator
     let l = this.findClosestLocale(navigator.languages);
     this.setLocale(l === undefined ? this._localeDefault : l);
   }
@@ -149,8 +182,7 @@ export class Application {
    */
   addView(view) {
     if (!View.isView(view)) {
-      console.warn("Smartflow: Not a view ", view);
-      return;
+      throw new Error("Smartflow: Not a view ", view);
     }
     this._controllers.push(view);
     view.setApplication(this);
@@ -479,7 +511,6 @@ export class Application {
 
   //--------------------------------- State ----------------------------------------
   _fireGlobalStateChanged(state, value) {
-    console.info("state(global): ", state, value);
     for (let x = 0; x < this._controllers.length; x++) {
       let viewController = this._controllers[x];
       // Loop each component in view
@@ -500,7 +531,6 @@ export class Application {
   }
 
   _firePrivateStateChanged(state, value, viewController, fromComponent) {
-    console.info("state(private): ", state, value);
     if (value === undefined || value === null) {
       delete( this._states[state] );
     } else {

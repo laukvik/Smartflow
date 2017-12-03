@@ -1,21 +1,30 @@
 {
-  "name": "Smartflow",
-  "version": "0.1.2",
-  "description": "Easy to use application flow management.",
-  "main": "src/Application.js",
+  "name": "smartflow",
+  "version": "0.1.3",
+  "description": "A JavaScript library for creating SPA with ease",
+  "main": "dist/commonjs/index.js",
+  "module": "dist/es/index.js",
+  "jsnext:main": "dist/es/index.js",
   "scripts": {
-    "start": "webpack-dev-server --content-base example/ example/src/app.js",
-    "babel": "babel src -d dist",
-    "build-dev": "webpack webpack-dev-server",
-    "dev": "webpack-dev-server --progress --colors",
-    "build": "webpack",
-    "pack": "webpack --help",
-    "test": "jest src",
-    "watch": "webpack --watch",
-    "www": "npm run start",
-    "coverage": "jest ./src/  --coverage",
+    "build": "npm run build:commonjs && npm run build:umd",
+    "build:commonjs": "npm run clean:commonjs && babel ./src --out-dir dist/commonjs",
+    "build:umd": "npm run clean:umd && webpack --config webpack.config.umd.js --bail",
+    "babel": "babel src --out-dir dist/es",
+    "clean": "npm run clean:commonjs && npm run clean:umd",
+    "clean:commonjs": "rimraf dist/commonjs",
+    "clean:umd": "rimraf dist/umd",
+    "coverage": "jest --coverage --coverageDirectory=./dist/coverage",
+    "docs": "jsdoc -c jsdoc.json",
     "eslint": "eslint ./src/*.js",
-    "docs": "jsdoc -c jsdoc.json"
+    "test": "jest test",
+    "watch": "webpack --progress --colors --watch"
+  },
+  "jest": {
+    "globals": {
+      "__DEV__": true
+    },
+    "testRegex": "./test/.*.js$",
+    "rootDir": "."
   },
   "watch": {
     "test": "{src}/*.js"
@@ -35,27 +44,20 @@
     "url": "https://github.com/laukvik/Smartflow/issues"
   },
   "files": [
-    "smartflow.js",
+    "dist",
     "LICENSE"
   ],
   "homepage": "https://github.com/laukvik/Smartflow#readme",
-  "dependencies": {
-
-  },
+  "dependencies": {},
   "devDependencies": {
-    "babel-cli": "6.26.0",
-    "babel-jest": "^21.0.2",
-    "babel-loader": "^7.1.2",
-    "babel-preset-env": "^1.6.1",
-    "babel-preset-es2015": "^6.24.1",
-    "concat": "^1.0.3",
-    "eslint": "^3.19.0",
-    "eslint-config-google": "^0.8.0",
-    "jest": "^21.1.0",
-    "jest-cli": "^21.1.0",
-    "jsdoc": "^3.5.5",
-    "regenerator-runtime": "^0.11.0",
-    "webpack": "^3.8.1",
-    "webpack-dev-server": "^2.9.4"
+    "eslint": "~3.19.0",
+    "jsdoc": "~3.5.5",
+    "babel-cli": "~6.24.1",
+    "babel-core": "~6.25.0",
+    "babel-loader": "~7.1.2",
+    "babel-preset-env": "~1.6.1",
+    "jest": "~21.1.0",
+    "rimraf": "~2.6.2",
+    "webpack": "~3.8.1"
   }
 }

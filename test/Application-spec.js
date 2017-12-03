@@ -1,5 +1,5 @@
-import {Application} from '../Application';
-import {View} from "../View";
+import {Application} from '../src/Application';
+import {View} from "../src/View";
 
 describe('Application', () => {
 

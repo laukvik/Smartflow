@@ -1,4 +1,4 @@
-import {Textfield, TextfieldType} from '../Textfield';
+import {Textfield, TextfieldType} from './Textfield';
 
 describe('textfield', function () {
 
